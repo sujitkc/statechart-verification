@@ -1,0 +1,34 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{marvosym}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{framed}
+%\usepackage{amsmath,bm,times}
+\usetikzlibrary{positioning,shapes,arrows,backgrounds,fit, calc, shadows}
+
+\author{Sujit Kumar Chakrabarti, IIITB and Karthika Venkatesan, IIITB}
+\title{Formal Specification with Statecharts}
+\date{}
+\begin{document}
+\definecolor{lightblue}{rgb}{0.8,0.93,1.0} % color values Red, Green, Blue
+\definecolor{Blue}{rgb}{0,0,1.0} % color values Red, Green, Blue
+\definecolor{Red}{rgb}{1,0,0} % color values Red, Green, Blue
+\definecolor{Purple}{rgb}{0.5,0,0.5}
+\definecolor{Pink}{rgb}{0.7,0,0.2}
+
+\newcommand{\highlight}[1]{{\color{Red}(#1)}}
+\newcommand{\comment}[1]{{\color{Blue}#1}}
+
+\maketitle
+\abstract{
+UML Statecharts have enjoyed widespread popularity in software development community as a design and specification notation. It has primarily been employed for specification of object life-cycles. In this paper, we explore the option of using Statecharts in specifying GUI interactions. The idea has been explored earlier in the literature(\comment{cite}). The current state of the art has the following limitations: Firstly, there has been tremendous growth in the GUI interaction patterns in the last decade or so. Enhancements to the syntax and semantics of Statecharts are necessary to allow its use for specifying a wide variety of applications (e.g. web, mobile and desktop). Secondly, the Statechart semantics is not fully formalised. Various researchers have assumed certain semantics to present their work (\comment{cite}). However, there is lack of standardisation in the definition of formal semantics for Statechart. There is a need to formulate a standard and fully formal semantics for Statecharts. Thirdly and finally, use of Statechart as a fully formal specification language will achieve widespread use only if complemented by automated support for verification of specification models.
+
+In this work, we present certain enhancements and customisations to the Statechart syntax and semantics for specification of modern web applications. We also demonstrate how automatic detection of specification bugs can be performed through well-known model-checking and program analysis. We have used our specification approach in specifying a number of web applications. Our approach enabled early detection of several specification bugs and hence facilitated higher quality specification.
+}
+\end{document}
