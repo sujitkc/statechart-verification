@@ -1,0 +1,130 @@
+import java_cup.runtime.*;
+import java_cup.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+parser code 
+{:
+	
+	public Node root = null;
+	
+	public Node getTree() throws Exception {
+		if (root == null) {
+			this.parse();
+		}
+		return root;
+	}
+
+	public static parser getParser(String pPath) throws Exception {
+		InputStream is = null;
+		is = new FileInputStream(pPath);
+
+		return new parser(new Yylex(is));
+	}
+	
+	public static void main(String args[]) throws Exception {
+		InputStream is = null;
+		is = new FileInputStream(args[0]);
+		new parser(new Yylex(is)).parse();
+	}
+	
+	public void syntax_error(Symbol s){
+   	 System.out.println("compiler has detected a syntax error at line " + s.left 
+        + " column " + s.right+"Symbol <"+s.toString()+">");
+	}
+:}
+
+non terminal statechart,type_content,type_list,type,state,state_flow,state_flowcontent,state_content,statement,statement_list,declaration_statement;
+non terminal event_definition,type_specifier,identifier_list,assignment_statement,arithmetic_expr,event_block,event_statement_list,event_dest_state,event_statement,guard_expression,action_statement,message_statement;
+non terminal namespace_identifier,string_type,number_type,user_type,expr_LHS,expr_RHS;
+non terminal cnfdnf_formula,relational_expr,logical_operator,relational_operator,trans_flow,trans_stmts;
+
+terminal String IDENTIFIER;
+terminal Symbol LBRACE,RBRACE,SEMICOLON,COLON,OP_ASSIGN,OP_DOT,OP_MESSAGE,COMMA,LPAR_SQ,RPAR_SQ,GOTO_KEYWORD,DONE_KEYWORD,TRANSITIONS_KEYWORD,SRC_KEYWORD,STATE_KEYWORD,empty_KEYWORD,init_KEYWORD,CLICK_KEYWORD,LIST_KEYWORD,default_KEYWORD,TYPE_KEYWORD,EVENT_KEYWORD,belongs_to_KEYWORD,DEST_KEYWORD,VAR,IVAR,DVAR,MVAR,CONSTANT,STRING_KEYWORD,NUMBER_KEYWORD,AND,OR,UMIN,INC,DEC,EQU,NEQ,GRE,MIN,GEQ,LES,LEQ,LPAR,RPAR,NOT,ADD,MUL,DIV,MOD;
+
+precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
+precedence left LBRACE, RBRACE, AND, OR;
+precedence right OP_DOT;
+
+start with state_flowcontent;
+
+state_flowcontent::=STATE_KEYWORD IDENTIFIER:id LBRACE statement_list RBRACE state_flow {: State s = new State(id); FSM.states_list.add(s); FSM.printStatesList(FSM.states_list); :} | state_flow trans_flow 
+	
+				;
+
+state_flow::= state_flowcontent |
+			;
+
+statement_list::=
+	statement SEMICOLON
+	| statement_list statement SEMICOLON
+	| statement_list statement
+	;
+
+statement::=
+	declaration_statement
+	| COLON state_flowcontent
+	| init_KEYWORD COLON empty_KEYWORD {: System.out.println ("Empty Init statement is seen"); :}
+	| init_KEYWORD COLON assignment_statement {: System.out.println ("Init statement + assignment stmt is seen"); :}
+	| default_KEYWORD COLON IDENTIFIER:id {: System.out.println ("Default state is "+id); :}
+	;
+
+declaration_statement::=
+	identifier_list COLON IDENTIFIER:id COMMA declaration_statement {: System.out.println ("Declaration statement is seen " + id); :}
+	| identifier_list COLON IDENTIFIER:id {: System.out.println ("Declaration statement is seen of User type"); :}
+	| identifier_list COLON STRING_KEYWORD {: System.out.println ("Declaration statement is seen of String type"); :}
+	| identifier_list COLON IDENTIFIER:id1 LIST_KEYWORD COMMA declaration_statement {: System.out.println ("List of User type: "+id1); :}
+	| identifier_list COLON IDENTIFIER:id1 LIST_KEYWORD {: System.out.println ("List of User type: "+id1); :}
+	;
+assignment_statement::= 
+	expr_LHS OP_ASSIGN expr_RHS {: System.out.println ("Assignment statement is seen"); :}
+	| expr_LHS OP_ASSIGN expr_RHS COMMA assignment_statement {: System.out.println ("Assignment statements is seen"); :}
+	;
+
+identifier_list::=
+	IDENTIFIER:id {: System.out.println ("Identifier : "+id); :}
+	|identifier_list COMMA IDENTIFIER:id {: System.out.println ("Identifier List : "+id); :}
+	;
+
+expr_RHS::=expr_LHS|arithmetic_expr|CONSTANT;
+
+trans_flow::= TRANSITIONS_KEYWORD LBRACE trans_stmts RBRACE {: System.out.println ("Transitions"); :}
+			;
+
+trans_stmts::=SRC_KEYWORD COLON IDENTIFIER:id SEMICOLON {: System.out.println ("src " + id); :} DEST_KEYWORD COLON IDENTIFIER:id1 SEMICOLON {: System.out.println ("dest "+id1); :} {: Transition t = new Transition(id,id1); FSM.transition_list.add(t); FSM.printTransList(FSM.transition_list); :} event_definition 
+			;
+
+event_definition::=
+	IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ cnfdnf_formula RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
+	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
+	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
+	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ cnfdnf_formula RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :}
+	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :}
+	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} 
+
+	;
+cnfdnf_formula::= 
+		relational_expr
+		|relational_expr logical_operator cnfdnf_formula
+		| namespace_identifier logical_operator cnfdnf_formula
+		| namespace_identifier		
+		;
+
+relational_expr::=expr_RHS relational_operator expr_RHS;
+logical_operator::=AND|OR;
+relational_operator::=LES|LEQ|EQU|NEQ|GRE|GEQ|belongs_to_KEYWORD;
+expr_LHS::=IDENTIFIER|namespace_identifier;
+namespace_identifier::=IDENTIFIER:id OP_DOT IDENTIFIER:id2 {: System.out.println ("Name Space Identifier "+id +" " + id2); :}
+		| namespace_identifier OP_DOT IDENTIFIER:id1 {: System.out.println ("Name Space Identifier "+id1); :}
+		;
+action_statement::= 
+	assignment_statement {: System.out.println ("action statement is seen"); :}
+	;
+
+string_type::=IDENTIFIER:id COLON STRING_KEYWORD {: System.out.println ("String type: "+id); :} 
+	;
+number_type::=IDENTIFIER:id COLON NUMBER_KEYWORD {: System.out.println ("Number type: "+id); :} 
+	;
+user_type::=IDENTIFIER:id COLON IDENTIFIER:id1 LIST_KEYWORD {: System.out.println ("List of User type: "+id + "Type Name: " +id1); :} 
+	| IDENTIFIER:id COLON IDENTIFIER:id1 {: System.out.println ("User type: "+id + "Type Name: " +id1); :} 
+	;
