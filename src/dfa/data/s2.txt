@@ -1,0 +1,25 @@
+statechart sc {
+  state s1 {
+    state s11 {}
+    state s12 {}
+
+    transition t11 {
+      source : s1.s11;
+      destination : s1.s12;
+      guard : x;
+      action : x := y;
+    }
+
+  }
+
+  state s2 {
+
+  }
+
+  transition t1 {
+    source      : s1;
+    destination : s2;
+      guard : x;
+      action : x := y;
+  }
+}
