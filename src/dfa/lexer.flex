@@ -39,6 +39,8 @@ identifier = [A-Za-z][A-Za-z0-9]*
 "transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION); }
 "source"         { /* System.out.println("source");       */ return new Symbol(sym.SRC);        }
 "destination"    { /* System.out.println("destination");  */ return new Symbol(sym.DEST);       }
+"guard"          { /* System.out.println("guard");        */ return new Symbol(sym.GUARD);      }
+"action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION);     }
 "done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE);       }
 
 

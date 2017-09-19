@@ -10,5 +10,7 @@ statechart sc {
   transition t1 {
     source      : s1;
     destination : s2;
+    guard       : x ;
+    action      : x := y;
   }
 }

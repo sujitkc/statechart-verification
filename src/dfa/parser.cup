@@ -27,12 +27,17 @@ non terminal namespace_identifier,string_type,number_type,user_type,expr_LHS,exp
 non terminal cnfdnf_formula,relational_expr,logical_operator,relational_operator,trans_flow,trans_stmts;
 */
 
-non terminal ast.Statechart statechart;
-non terminal ast.State state;
-non terminal ast.Transition transition;
-non terminal List<String> fq_name;
-non terminal List<ast.State> states;
+non terminal ast.Statechart       statechart;
+non terminal ast.State            state;
+non terminal ast.Transition       transition;
+non terminal ast.Name             name;
+non terminal List<ast.State>      states;
 non terminal List<ast.Transition> transitions;
+
+non terminal ast.StatementList       statement_list;
+non terminal ast.Statement           statement;
+non terminal ast.AssignmentStatement assignment_statement;
+non terminal ast.Expression          expr;
 
 terminal String IDENTIFIER;
 terminal Symbol
@@ -41,7 +46,8 @@ terminal Symbol
     ASSIGN, OP_MESSAGE,
     GOTO, DONE,
     STATECHART, STATE, TRANSITION,
-    SRC, DEST, EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,
+    SRC, DEST, GUARD, ACTION,
+    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,
     BELONGSTO,
     VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER,
     AND, OR, NOT,
@@ -55,21 +61,24 @@ precedence right DOT;
 
 start with statechart;
 
-fq_name ::=
+/*********** fully qualified names like s1.s11 ****************/
+name ::=
     IDENTIFIER:id {:
-      RESULT = new ArrayList<String>();
-      RESULT.add(id);
+      RESULT = new ast.Name(id);
     :}
-  | IDENTIFIER:id DOT fq_name:idlist {:
+  |  name:idlist DOT IDENTIFIER:id
+    {:
       RESULT = idlist;
       RESULT.add(id);
     :}
   ;
 
+/*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
       states:st transitions:tr
-    RBRACE {:
+    RBRACE
+    {:
       RESULT = new ast.Statechart(id, st, tr);
     :}
   ;
@@ -77,13 +86,15 @@ statechart ::=
 state ::= 
     STATE IDENTIFIER:id LBRACE
       states:st transitions:tr
-    RBRACE {:
+    RBRACE
+    {:
       RESULT = new ast.State(id, st, tr);
     :}
   ;
 
 states ::=
-    state:s states:slist {:
+    states:slist state:s 
+    {:
       if(slist != null) {
         RESULT = slist;
       }
@@ -99,27 +110,66 @@ states ::=
 
 transition ::=
     TRANSITION IDENTIFIER:id LBRACE
-      SRC  COLON IDENTIFIER:src SEMICOLON
-      DEST COLON IDENTIFIER:des SEMICOLON
-    RBRACE {:
-      RESULT = new ast.Transition(id, src, des);
+      SRC  COLON name:src SEMICOLON
+      DEST COLON name:des SEMICOLON
+      GUARD COLON expr:g SEMICOLON
+      ACTION COLON statement:a
+    RBRACE
+    {:
+      RESULT = new ast.Transition(id, src, des, g, a);
     :}
   ;
 
 transitions ::=
-    transition:t transitions:tlist {:
+    transitions:tlist transition:t 
+    {:
       if(tlist != null) {
         RESULT = tlist;
       }
       else {
         RESULT = new ArrayList<ast.Transition>();
-        RESULT.add(t);
       }
+      RESULT.add(t);
     :}
   | {:
       RESULT = null;
     :}
   ;
+/*********** skeletal statechart structure - end *******/
+
+/********** expressions for action language - begin ******/
+expr ::=
+    name:n {:
+      RESULT = n;
+    :}
+  ;
+
+statement_list::=
+    statement_list:sl statement:s 
+    {:
+      sl.add(s);
+      RESULT = sl;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
+    :}
+  ;
+
+statement::=
+    expr SEMICOLON
+  | name:n ASSIGN expr:e SEMICOLON
+    {:
+      RESULT = new ast.AssignmentStatement(n, e);
+    :}
+  | LBRACE
+      statement_list:sl
+    RBRACE
+    {:
+      RESULT = sl;
+    :}
+  ;
+/********** expressions for action language - end ******/
 
 /*
 statement_list::=
