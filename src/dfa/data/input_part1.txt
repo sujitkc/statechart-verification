@@ -1,0 +1,42 @@
+state Login {
+	username,password:string;
+	init:username:=null,password:=null;
+}
+
+state BankHome {
+	userId: String;
+	init:empty;
+	defaultState:MyAccounts;
+	:state MyAccounts {
+		accounts: Accounts List,selectedAccount:Account;
+		init: selectedAccount:=null,accounts:=all;
+		:state AccountDetails {
+			init:empty;
+		}
+		:state AccountSummary {
+			acc:Account;
+			accno,balance:String
+			trans: Transaction List;
+			init: accno:=acc.accountNum,balance:=acc.balance,trans:=acc.translationList;
+		}
+	}
+}
+
+state Logout {
+	init:empty;
+}
+
+transitions {
+	src : Login;
+	dest : BankHome;
+	LoginBtn.click[Login.username.txt & Login.password.text] BankHome.UserId:=Login.username.text done;
+
+	src : AccountDetails;
+	dest : AccountSummary;
+	viewSummaryBtn.click[selectedAccount!=null & selectedAccount belongs_to MyAccounts.accounts] AccountSummary.acc:=selectedAccount done;
+
+	src : AccountSummary;
+	dest : AccountStatement;
+	viewStatementBtn.click[] AccountStatement.viewlist:=trans done;
+}
+

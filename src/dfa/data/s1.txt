@@ -1,0 +1,14 @@
+statechart sc {
+  state s1 {
+
+  }
+
+  state s2 {
+
+  }
+
+  transition t1 {
+    source      : s1;
+    destination : s2;
+  }
+}
