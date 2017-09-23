@@ -39,21 +39,24 @@ non terminal ast.Statement           statement;
 non terminal ast.AssignmentStatement assignment_statement;
 non terminal ast.Expression          expr;
 
+non terminal List<ast.Declaration> decl_list;
+non terminal ast.Declaration     decl;
+
 terminal String IDENTIFIER;
 terminal Symbol
-    LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ,
-    SEMICOLON, COLON, COMMA, DOT, 
+    LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
+    SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
-    GOTO, DONE,
-    STATECHART, STATE, TRANSITION,
-    SRC, DEST, GUARD, ACTION,
-    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,
-    BELONGSTO,
-    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER,
-    AND, OR, NOT,
-    INC, DEC,
-    EQU, NEQ, GRE, GEQ, LES, LEQ,
-    MIN, ADD, MUL, DIV, UMIN, MOD;
+    GOTO, DONE,                                      /* Control flow             */
+    STATECHART, STATE, TRANSITION,                   /* Statechart related       */
+    SRC, DEST, GUARD, ACTION,                        /* Transition label related */
+    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
+    BELONGSTO,                                       /* Set theoretic            */
+    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER, /* Variables related        */
+    AND, OR, NOT,                                    /* Logical operators        */
+    INC, DEC,                                        /* Increment, decrement     */
+    EQU, NEQ, GRE, GEQ, LES, LEQ,                    /* Relational operators     */
+    MIN, ADD, MUL, DIV, UMIN, MOD;                   /* Arithmetic operators     */
 
 precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
 precedence left LBRACE, RBRACE, AND, OR;
@@ -76,35 +79,32 @@ name ::=
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
+      decl_list:dlist
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, st, tr);
+      RESULT = new ast.Statechart(id, st, tr, dlist);
     :}
   ;
 
 state ::= 
     STATE IDENTIFIER:id LBRACE
+      decl_list:dlist
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, st, tr);
+      RESULT = new ast.State(id, st, tr, dlist);
     :}
   ;
 
 states ::=
     states:slist state:s 
     {:
-      if(slist != null) {
-        RESULT = slist;
-      }
-      else {
-        RESULT = new ArrayList<ast.State>();
-      }
+      RESULT = slist;
       RESULT.add(s);
     :}
   | {:
-       RESULT = null;
+       RESULT = new ArrayList<ast.State>();
     :}
   ;
 
@@ -169,6 +169,29 @@ statement::=
       RESULT = sl;
     :}
   ;
+
+decl_list ::= decl_list:dlist decl:d
+    {:
+       if(dlist != null) {
+        RESULT = dlist;
+      }
+      else {
+        RESULT = new ArrayList<ast.Declaration>();
+      }
+      RESULT.add(d);
+    :}
+  | {:
+      RESULT = null;
+    :}
+  ;
+
+decl ::=
+     IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON
+    {:
+      RESULT = new ast.Declaration(id, tid);
+    :}
+  ;
+
 /********** expressions for action language - end ******/
 
 /*

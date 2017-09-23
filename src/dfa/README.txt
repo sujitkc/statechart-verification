@@ -1,5 +1,6 @@
 To build
 --------
+  Change the value of MYLIBPATH to point to the directory where the jlex and cup are located.
   make
 
 To clean

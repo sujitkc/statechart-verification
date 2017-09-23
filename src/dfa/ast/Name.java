@@ -5,14 +5,10 @@ import java.util.ArrayList;
 
 public class Name implements Expression {
 
-  private List<String> name = new ArrayList<String>();
+  public final List<String> name = new ArrayList<String>();
 
   public Name(String id) {
     this.name.add(id);
-  }
-
-  public List<String> getName() {
-    return this.name;
   }
 
   public String toString() {

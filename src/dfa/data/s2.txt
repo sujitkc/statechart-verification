@@ -1,6 +1,11 @@
 statechart sc {
+  v : t;
+  v : t;
   state s1 {
-    state s11 {}
+    state s11 {
+      v : t;
+      v : t;
+    }
     state s12 {}
 
     transition t11 {

@@ -29,6 +29,5 @@ public class Analyser {
   }
 
   public static void analyse(ast.Statechart statechart) {
-
   }
 }
