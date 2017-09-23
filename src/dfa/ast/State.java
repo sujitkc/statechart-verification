@@ -46,6 +46,22 @@ public class State {
     }
   }
 
+  /*
+    Recursively sets up the source and destination States of transitions.
+    Preconditions:
+      The statechart should be setup.
+  */
+  protected void initialiseTransitions() {    
+ 
+    for(State s : this.states) {
+      s.initialiseTransitions();
+    }
+
+    for(Transition t : this.transitions) {
+      t.setSourceDestinationStates();
+    }
+  }
+
   public State getSuperstate() {
     return this.superstate;
   }
@@ -57,6 +73,11 @@ public class State {
       return superstates;
     }
     return new ArrayList<State>();
+  }
+
+  public Boolean isAncestor(State s) {
+    List<State> ancestors = s.getAllSuperstates();
+    return ancestors.contains(this);
   }
 
   public Environment getEnvironment() {
@@ -94,5 +115,4 @@ public class State {
     s += "}";
     return s;    
   }
-  
 }

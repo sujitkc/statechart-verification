@@ -123,16 +123,11 @@ transition ::=
 transitions ::=
     transitions:tlist transition:t 
     {:
-      if(tlist != null) {
-        RESULT = tlist;
-      }
-      else {
-        RESULT = new ArrayList<ast.Transition>();
-      }
+      RESULT = tlist;
       RESULT.add(t);
     :}
   | {:
-      RESULT = null;
+        RESULT = new ArrayList<ast.Transition>();
     :}
   ;
 /*********** skeletal statechart structure - end *******/

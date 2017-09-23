@@ -47,6 +47,11 @@ public class Transition {
     return this.environment;
   }
 
+  public void setSourceDestinationStates() {
+    this.source      = this.statechart.nameToState(this.sourceName);
+    this.destination = this.statechart.nameToState(this.destinationName);
+  }
+
   public void setStatechart(Statechart sc) {
     this.statechart = sc;
   }
