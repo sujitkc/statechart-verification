@@ -8,7 +8,8 @@ public class State {
   public final String name;
   public final List<State> states;
   public final List<Transition> transitions;
-  public final List<Declaration> declarations;
+//  public final List<Declaration> declarations;
+  public final DeclarationList declarations;
 
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -19,7 +20,7 @@ public class State {
       String            name,
       List<State>       states,
       List<Transition>  transitions,
-      List<Declaration> declarations) {
+      DeclarationList declarations) {
 
     this.name         = name;
     this.states       = states;
@@ -28,6 +29,25 @@ public class State {
 
     for(State st : this.states) {
       st.setSuperstate(this);
+    }
+  }
+
+  /* 
+    Takes a fully-qualified name and returns a State which has this
+    name. Returns null if such a State is not found.
+  */
+
+  protected State nameToState(Name name, int i) {
+    if(i == name.name.size() - 1) {
+      return this;
+    }
+    else {
+      for(State s : this.states) {
+        if(s.name.equals(name.name.get(i + 1))) {
+          return s.nameToState(name, i + 1);
+        }
+      }
+      return null;
     }
   }
 
@@ -51,7 +71,7 @@ public class State {
     Preconditions:
       The statechart should be setup.
   */
-  protected void initialiseTransitions() {    
+  protected void initialiseTransitions() throws Exception {    
  
     for(State s : this.states) {
       s.initialiseTransitions();

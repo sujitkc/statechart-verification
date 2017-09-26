@@ -12,8 +12,11 @@ public class Statechart extends State {
       String            name,
       List<State>       states,
       List<Transition>  transitions,
-      List<Declaration> declarations) {
+      DeclarationList declarations) throws Exception {
     super(name, states, transitions, declarations);
+
+    this.types.add(new BasicType("int"));
+    this.types.add(new BasicType("boolean"));
 
     this.statechart = null;
     for(State s : this.states) {
@@ -24,8 +27,7 @@ public class Statechart extends State {
       t.setStatechart(this);
     }
 
-    this.types.add(new BasicType("int"));
-    this.types.add(new BasicType("boolean"));
+    this.initialiseTransitions();
   }
 
   public State lub(State s1, State s2) {
@@ -54,17 +56,13 @@ public class Statechart extends State {
     }
     return null;
   }
-  /* 
-    Takes a fully-qualified name and returns a State which has this
-    name. Returns null if such a State is not found.
-  */
   public State nameToState(Name name) {
+/*
     State state = null;
     List<State> nextStates = new ArrayList<State>();
     nextStates.add(this);
     ListIterator<String> it = name.name.listIterator();
     while(it.hasNext()) {
-      String id = it.next();
       State nextState = null;
       String n = it.next();
       for(State st : nextStates) {
@@ -79,6 +77,11 @@ public class Statechart extends State {
       nextStates = state.states;
     }
     return state;
+*/
+    if(this.name.equals(name.name.get(0))) {
+      return this.nameToState(name, 0);
+    }
+    return null;
   }
 
   public String toString() {

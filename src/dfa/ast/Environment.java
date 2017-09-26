@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Environment {
-  private List<Declaration> declarations;
+  private DeclarationList declarations;
   private Environment next;
 
-  public Environment(List<Declaration> declarations, Environment next) {
+  public Environment(DeclarationList declarations, Environment next) {
     this.declarations = declarations;
     this.next = next;
   }
@@ -17,7 +17,7 @@ public class Environment {
     of the last environment.
   */
   public Environment copy(Environment env) {
-    List<Declaration> decs = new ArrayList<Declaration>();
+    DeclarationList decs = new DeclarationList();
     if(this.next == null) {
       return new Environment(decs, env);
     }

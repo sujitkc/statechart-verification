@@ -47,9 +47,15 @@ public class Transition {
     return this.environment;
   }
 
-  public void setSourceDestinationStates() {
-    this.source      = this.statechart.nameToState(this.sourceName);
+  public void setSourceDestinationStates() throws Exception {
+    this.source = this.statechart.nameToState(this.sourceName);
+    if(this.source == null) {
+      throw new Exception("Transition.setSourceDestinationStates : couldn't find state by name '" + this.sourceName + "'.");
+    }
     this.destination = this.statechart.nameToState(this.destinationName);
+    if(this.destination == null) {
+      throw new Exception("Transition.setSourceDestinationStates : couldn't find state by name '" + this.destinationName + "'.");
+    }
   }
 
   public void setStatechart(Statechart sc) {

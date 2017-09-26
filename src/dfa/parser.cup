@@ -39,7 +39,7 @@ non terminal ast.Statement           statement;
 non terminal ast.AssignmentStatement assignment_statement;
 non terminal ast.Expression          expr;
 
-non terminal List<ast.Declaration> decl_list;
+non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 
 terminal String IDENTIFIER;
@@ -168,10 +168,12 @@ statement::=
 decl_list ::= decl_list:dlist decl:d
     {:
       RESULT = dlist;
-      RESULT.add(d);
+      if(!RESULT.add(d)) {
+        throw new Exception("Duplication variable name '" + d.vname + "' declaration in same scope.");
+      }
     :}
   | {:
-      RESULT = new ArrayList<ast.Declaration>();
+      RESULT = new ast.DeclarationList();
     :}
   ;
 
