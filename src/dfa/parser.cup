@@ -167,16 +167,11 @@ statement::=
 
 decl_list ::= decl_list:dlist decl:d
     {:
-       if(dlist != null) {
-        RESULT = dlist;
-      }
-      else {
-        RESULT = new ArrayList<ast.Declaration>();
-      }
+      RESULT = dlist;
       RESULT.add(d);
     :}
   | {:
-      RESULT = null;
+      RESULT = new ArrayList<ast.Declaration>();
     :}
   ;
 

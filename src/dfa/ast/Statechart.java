@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 public class Statechart extends State {
 
+  public final List<Type> types = new ArrayList<Type>();
 
   public Statechart(
       String            name,
@@ -22,6 +23,9 @@ public class Statechart extends State {
     for(Transition t : this.transitions) {
       t.setStatechart(this);
     }
+
+    this.types.add(new BasicType("int"));
+    this.types.add(new BasicType("boolean"));
   }
 
   public State lub(State s1, State s2) {
@@ -42,6 +46,14 @@ public class Statechart extends State {
     return cca;
   }
 
+  public Type lookupType(String typeName) {
+    for(Type type : this.types) {
+      if(type.name.equals(typeName)) {
+        return type;
+      }
+    }
+    return null;
+  }
   /* 
     Takes a fully-qualified name and returns a State which has this
     name. Returns null if such a State is not found.

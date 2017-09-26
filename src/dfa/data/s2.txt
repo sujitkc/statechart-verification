@@ -1,10 +1,10 @@
 statechart sc {
-  v : t;
-  v : t;
+  v : int;
+  v : boolean;
   state s1 {
     state s11 {
-      v : t;
-      v : t;
+      v : int;
+      v : boolean;
     }
     state s12 {}
 

@@ -10,20 +10,24 @@ import java.util.ArrayList;
 import java_cup.runtime.Symbol;
 
 import ast.State;
+import ast.Statechart;
 import ast.Environment;
 import ast.Declaration;
 
 public class Analyser {
 
+  private final Statechart statechart;
+  private final Typechecker typechecker;
+
   public static void main(String[] args) {
     try {
       Parser parser = new Parser(new Lexer(new FileReader(args[0])));    
       Symbol result = parser.parse();
-      ast.Statechart statechart = (ast.Statechart)result.value;
+      Statechart statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");
       System.out.println(statechart.toString());
       System.out.println("Printing parsed Statechart ... done!");
-      (new Analyser()).analyse(statechart);
+      (new Analyser(statechart)).analyse();
       System.out.println("Printing analysed Statechart ...");
       System.out.println(statechart);
       System.out.println("Printing analysed Statechart ... done!");
@@ -37,6 +41,10 @@ public class Analyser {
     }
   }
 
+  public Analyser(Statechart statechart) {
+    this.statechart = statechart;
+    this.typechecker = new Typechecker(statechart);
+  }
   /*
     Constructs an environment consisting of all declarations of the lower State
     all the way upto the upper State. upper has to be an ancestor state of lower.
@@ -53,6 +61,7 @@ public class Analyser {
     }
   }
 
-  public void analyse(ast.Statechart statechart) {
+  public void analyse() throws Exception {
+    this.typechecker.typecheckDeclarations();
   }
 }
