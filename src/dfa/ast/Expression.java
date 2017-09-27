@@ -1,5 +1,13 @@
 package ast;
 
-public interface Expression {
-  String toString();
+public abstract class Expression {
+  protected Type type;
+
+  public Type getType() {
+    return this.type;
+  }
+
+  public void setType(Type type) {
+    this.type = type;
+  }
 }

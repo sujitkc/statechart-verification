@@ -62,6 +62,6 @@ public class Analyser {
   }
 
   public void analyse() throws Exception {
-    this.typechecker.typecheckDeclarations();
+    this.typechecker.typecheck();
   }
 }

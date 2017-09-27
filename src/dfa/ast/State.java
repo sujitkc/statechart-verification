@@ -30,13 +30,25 @@ public class State {
     for(State st : this.states) {
       st.setSuperstate(this);
     }
+    for(Transition t : this.transitions) {
+      t.setState(this);
+    }
+    this.declarations.setState(this);
   }
 
+
+  public String getFullName() {
+    if(this.superstate == null) {
+      return this.name;
+    }
+    else {
+      return this.superstate.getFullName() + "." + this.name;
+    }
+  }
   /* 
     Takes a fully-qualified name and returns a State which has this
     name. Returns null if such a State is not found.
   */
-
   protected State nameToState(Name name, int i) {
     if(i == name.name.size() - 1) {
       return this;

@@ -5,12 +5,32 @@ import java.util.List;
 
 public class DeclarationList extends ArrayList<Declaration>{
 
+  private State state;
+
+  public State getState() {
+    return this.state;
+  }
+
+  public Declaration lookup(String name) {
+    for(Declaration d : this) {
+      if(d.getFullVName().equals(name)) {
+        return d;
+      }
+    }
+    return null;
+  }
+
+  public void setState(State state) {
+    this.state = state;
+  }
+
   public boolean add(Declaration dec) {
     for(Declaration d : this) {
       if(d.vname.equals(dec.vname)) {
         return false;
       }
     }
+    dec.setDeclarationList(this);
     return super.add(dec);
   }
 }

@@ -3,7 +3,7 @@ package ast;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Name implements Expression {
+public class Name extends Expression {
 
   public final List<String> name = new ArrayList<String>();
 

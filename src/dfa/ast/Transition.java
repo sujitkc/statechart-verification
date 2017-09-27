@@ -3,15 +3,15 @@ package ast;
 import java.util.List;
 
 public class Transition {
-  private String name;
+  public final String name;
   private Name   sourceName;
   private Name   destinationName;
   private State source;
   private State destination;
-  private Expression guard;
-  private Statement action;
+  public final Expression guard;
+  public final Statement action;
 
-  private State parent;
+  private State state;
   private Statechart statechart;
 
   private Environment readEnvironment = null;
@@ -26,21 +26,33 @@ public class Transition {
     this.action = action;
   }
 
-  private Environment getReadEnvironment() {
+  public State getSource() {
+    return this.source;
+  }
+
+  public State getDestination() {
+    return this.destination;
+  }
+
+  public State getState() {
+    return this.state;
+  }
+
+  public Environment getReadEnvironment() {
     if(this.readEnvironment == null) {
       this.readEnvironment = new Environment(this.source.declarations, null);
     }
     return this.readEnvironment;
   }
 
-  private Environment getRWEnvironment() {
+  public Environment getRWEnvironment() {
     if(this.rwEnvironment == null) {
       this.rwEnvironment = this.destination.getEnvironment();
     }
     return this.rwEnvironment;
   }
 
-  private Environment getEnvironment() {
+  public Environment getEnvironment() {
     if(this.environment == null) {
       this.environment = this.getReadEnvironment().copy(this.getRWEnvironment());
     }
@@ -62,10 +74,14 @@ public class Transition {
     this.statechart = sc;
   }
 
+  public void setState(State s) {
+    this.state = s;
+  }
+
   public String toString() {
     String s = "\ntransition " + this.name + "{\n";
-    s += "source : " + this.source + "\n";
-    s += "destination : " + this.destination + "\n";
+    s += "source : " + this.source.getFullName() + "\n";
+    s += "destination : " + this.destination.getFullName() + "\n";
     s += "guard : " + this.guard + "\n";
     s += "action : " + this.action + "\n";
     s += "\n}";

@@ -12,6 +12,20 @@ public class Environment {
     this.next = next;
   }
 
+  public Declaration lookup(String name) {
+    Declaration dec = this.declarations.lookup(name);
+    if(dec != null) {
+      return dec;
+    }
+    else {
+      if(this.next != null) {
+        return this.next.lookup(name);
+      }
+      else {
+        return null;
+      }
+    }
+  }
   /*
     Returns a deep copy of the environment, with env as the next 
     of the last environment.
