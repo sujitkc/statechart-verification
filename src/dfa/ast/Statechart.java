@@ -29,14 +29,23 @@ public class Statechart extends State {
 
     this.initialiseTransitions();
   }
-
+/*
+  private List<String> stateNames(List<State> states) {
+    List<String> names = new ArrayList<String>();
+    for(State s : states) {
+      names.add(s.name);
+    }
+    return names;
+  }
+*/
   public State lub(State s1, State s2) {
     List<State> a1 = s1.getAllSuperstates();
     List<State> a2 = s2.getAllSuperstates();
-
+//    System.out.println("a1 = " + this.stateNames(a1));
+//    System.out.println("a2 = " + this.stateNames(a2));
     State cca = null;
-    while(a1.size() != 0 && a2.size() == 0) {
-      if(a1.get(0) == a2.get(0)) {
+    while(a1.size() != 0 && a2.size() != 0) {
+      if(a1.get(0).equals(a2.get(0))) {
         cca = a1.get(0);
         a1.remove(0);
         a2.remove(0);
@@ -45,6 +54,7 @@ public class Statechart extends State {
         break;
       }
     }
+    System.out.println("cca = " + cca.name);
     return cca;
   }
 
@@ -58,7 +68,6 @@ public class Statechart extends State {
   }
 
   public State nameToState(Name name) {
-
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
     }

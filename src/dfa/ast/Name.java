@@ -12,6 +12,13 @@ public class Name extends Expression {
     this.name.add(id);
   }
 
+  public Name(List<String> name) {
+    for(String id : name) {
+      this.name.add(id);
+    }
+  }
+
+
   public Declaration getDeclaration() {
     return this.declaration;
   }
@@ -20,6 +27,12 @@ public class Name extends Expression {
     String s = this.name.get(0);
     for(int i = 1; i < this.name.size(); i++) {
       s += "." + this.name.get(i);
+    }
+    if(this.type != null) {  
+      s += " : " + this.type.name;
+    }
+    else {
+      s += " : not-assigned";
     }
     return s;
   }
