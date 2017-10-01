@@ -86,7 +86,6 @@ public class Typechecker {
   }
 
   private void typecheckGuard(Expression guard, Environment env) throws Exception {
-    System.out.println("Typing checking guard " + guard.toString() + " in env = " + env.toString() + "\n");
     this.typecheckExpression(guard, env);
     if(guard.getType().name != "boolean") {
       throw new Exception("Typechecking failed for guard : " + guard.toString() +
