@@ -7,4 +7,10 @@ Add corresponding classes in the ast package.
 
 Add typechecking rules for individual expression types etc.
 
-Add 'formals' to state for write from incoming transitions
+Add to state:
+- entry, during and exit code blocks
+- formals declarations (to accept values from incoming transitions)
+
+Type declarations for struct, list, set etc.
+
+

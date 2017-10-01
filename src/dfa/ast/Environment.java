@@ -31,12 +31,11 @@ public class Environment {
     of the last environment.
   */
   public Environment copyInclusive(Environment env) {
-    DeclarationList decs = new DeclarationList();
     if(this.next == null) {
-      return new Environment(decs, env);
+      return new Environment(this.declarations, env);
     }
     else {
-      return new Environment(decs, this.next.copyInclusive(env));
+      return new Environment(this.declarations, this.next.copyInclusive(env));
     }
   }
 

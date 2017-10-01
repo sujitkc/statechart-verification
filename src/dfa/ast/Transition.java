@@ -17,7 +17,6 @@ public class Transition {
   
   // Variables declared in readEnvironment aren't allowed to be used as l-values, e.g.
   // LHS of an assignment
-  
   private Environment readOnlyEnvironment = null;
 
   // Variables declared in rwEnvironment can be used anywhere, both as r-values as well as
@@ -94,7 +93,7 @@ public class Transition {
     s += "destination : " + this.destination.getFullName() + "\n";
     s += "guard : " + this.guard + "\n";
     s += "action : " + this.action + "\n";
-    s += "\n}";
+    s += "\n}\n";
     return s;
   }
 }

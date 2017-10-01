@@ -125,7 +125,7 @@ public class State {
   }  
 
   public String toString() {
-    String s = "state " + this.name + "{\n";
+    String s = "\nstate " + this.name + "{\n";
      
     if(this.declarations != null) {
       for(Declaration d : this.declarations) {
@@ -144,7 +144,7 @@ public class State {
         s += tr.toString();
       }
     }
-    s += "}";
+    s += "}\n";
     return s;    
   }
 }

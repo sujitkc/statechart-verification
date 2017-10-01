@@ -33,4 +33,12 @@ public class DeclarationList extends ArrayList<Declaration>{
     dec.setDeclarationList(this);
     return super.add(dec);
   }
+
+  public String toString() {
+    String s = "\n";
+    for(Declaration d : this) {
+      s += d.toString() + '\n';
+    }
+    return s;
+  }
 }

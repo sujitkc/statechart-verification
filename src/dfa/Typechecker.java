@@ -80,28 +80,38 @@ public class Typechecker {
       typecheckName((Name)exp, env); 
     }
     else {
-      throw new Exception("Typechecking failed for expression: " + exp.toString() + " of type " + exp.getClass().getName() + ".");
+      throw new Exception("Typechecking failed for expression: " + exp.toString() +
+        " of type " + exp.getClass().getName() + ".");
     }
   }
 
   private void typecheckGuard(Expression guard, Environment env) throws Exception {
+    System.out.println("Typing checking guard " + guard.toString() + " in env = " + env.toString() + "\n");
     this.typecheckExpression(guard, env);
     if(guard.getType().name != "boolean") {
-      throw new Exception("Typechecking failed for guard : " + guard.toString() + " of type " + guard.getType().name + ". Should be boolean.");
+      throw new Exception("Typechecking failed for guard : " + guard.toString() +
+        " of type " + guard.getType().name + ". Should be boolean.");
     }
   }
 
-  private void typecheckAction(Statement action, Environment renv, Environment env, Environment wrenv) {
+  private void typecheckAction(
+    Statement action,
+    Environment renv,
+    Environment env,
+    Environment wrenv) {
 
   }
 
   private void typecheckTransition(Transition transition) throws Exception {
     State lub = this.statechart.lub(transition.getSource(), transition.getDestination());
     if(lub == null) {
-      throw new Exception("Typechecking failed for transition : " + transition.name + ". Null LUB ");
+      throw new Exception("Typechecking failed for transition : " + transition.name +
+        ". Null LUB ");
     }
     if(transition.getState() != lub) {
-      throw new Exception("Typechecking failed for transition : " + transition.name + ". Should be placed in state " + lub.name + " but placed in state " + transition.getState().name + ".");
+      throw new Exception("Typechecking failed for transition : " + transition.name +
+        ". Should be placed in state " + lub.name + " but placed in state " +
+        transition.getState().name + ".");
     }
     this.typecheckGuard(transition.guard, transition.getRWEnvironment());
     this.typecheckAction(transition.action,

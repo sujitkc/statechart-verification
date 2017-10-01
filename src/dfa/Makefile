@@ -1,6 +1,9 @@
 MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
 
 Analyser : Analyser.java Lexer.java sym.java Parser.java ast/*.java
+	if [ ! -d classes ]; then \
+		mkdir classes; \
+	fi;
 	javac -d classes *.java ast/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:ast:./;
 
 sym.java : parser.cup
