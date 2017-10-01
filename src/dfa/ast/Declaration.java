@@ -19,6 +19,10 @@ public class Declaration {
     return this.getState().getFullName() + this.vname;
   }
 
+  public Type getType() {
+    return this.type;
+  }
+
   public String toString() {
     return this.vname + " : " + this.typeName + ";";
   }

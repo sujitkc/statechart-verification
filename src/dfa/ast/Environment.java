@@ -30,17 +30,39 @@ public class Environment {
     Returns a deep copy of the environment, with env as the next 
     of the last environment.
   */
-  public Environment copy(Environment env) {
+  public Environment copyInclusive(Environment env) {
     DeclarationList decs = new DeclarationList();
     if(this.next == null) {
       return new Environment(decs, env);
     }
     else {
-      return new Environment(decs, this.next.copy(env));
+      return new Environment(decs, this.next.copyInclusive(env));
     }
   }
 
   public Environment copy() {
-    return this.copy(null);
+    return this.copyInclusive(null);
+  }
+
+  /* Returns a deep copy of the environment, until the passed environment env is met.
+     env is excluded.
+  */
+  public Environment copyExclusive(Environment env) throws Exception {
+    if(this.next == null || env.equals(this.next)) {
+      return new Environment(this.declarations, null);
+    }
+    else {
+      return new Environment(this.declarations, this.next.copyExclusive(env));
+    }
+  }
+
+  public String toString() {
+    String s = "Env() {";
+    s += this.declarations.toString();
+    s += "}";
+    if(this.next != null) {
+      s += this.next.toString();
+    }
+    return s;
   }
 }

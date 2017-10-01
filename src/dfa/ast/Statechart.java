@@ -56,28 +56,9 @@ public class Statechart extends State {
     }
     return null;
   }
+
   public State nameToState(Name name) {
-/*
-    State state = null;
-    List<State> nextStates = new ArrayList<State>();
-    nextStates.add(this);
-    ListIterator<String> it = name.name.listIterator();
-    while(it.hasNext()) {
-      State nextState = null;
-      String n = it.next();
-      for(State st : nextStates) {
-        if(n == st.name) {
-          nextState = st;  
-        }
-      }
-      if(nextState == null) {
-        return null;
-      }
-      state = nextState;
-      nextStates = state.states;
-    }
-    return state;
-*/
+
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
     }

@@ -13,7 +13,7 @@ public class DeclarationList extends ArrayList<Declaration>{
 
   public Declaration lookup(String name) {
     for(Declaration d : this) {
-      if(d.getFullVName().equals(name)) {
+      if(d.vname.equals(name)) {
         return d;
       }
     }

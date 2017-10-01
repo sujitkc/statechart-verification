@@ -6,9 +6,14 @@ import java.util.ArrayList;
 public class Name extends Expression {
 
   public final List<String> name = new ArrayList<String>();
+  private Declaration declaration;
 
   public Name(String id) {
     this.name.add(id);
+  }
+
+  public Declaration getDeclaration() {
+    return this.declaration;
   }
 
   public String toString() {
@@ -25,5 +30,9 @@ public class Name extends Expression {
 
   public void add(int i, String id) {
     this.name.add(i, id);
+  }
+
+  public void setDeclaration(Declaration declaration) {
+    this.declaration = declaration;
   }
 }

@@ -6,6 +6,7 @@ import ast.Expression;
 import ast.Type;
 import ast.Environment;
 import ast.Statement;
+import ast.Name;
 
 public class Typechecker {
 
@@ -42,19 +43,39 @@ public class Typechecker {
     this.typecheckDeclarations(this.statechart);
   }
 
-  private void typecheckGuard(Expression guard, Environment env) {
+  private void typecheckName(Name name, Environment env) throws Exception {
+    String lastName = name.name.get(name.name.size() - 1);
+    Declaration dec = env.lookup(lastName);
+    if(dec == null) {
+      throw new Exception("Undefined variable " + name.toString() + " looked in : " + env);
+    }
+    else {
+      name.setDeclaration(dec);
+      name.setType(dec.getType());
+    }
+  }
+
+  private void typecheckExpression(Expression exp, Environment env) throws Exception {
+    if(exp instanceof Name) {
+      typecheckName((Name)exp, env); 
+    }
+    throw new Exception("Typechecking failed for expression: " + exp.toString());
+  }
+
+  private void typecheckGuard(Expression guard, Environment env) throws Exception {
+    this.typecheckExpression(guard, env);
+  }
+
+  private void typecheckAction(Statement action, Environment renv, Environment env, Environment wrenv) {
 
   }
 
-  private void typecheckAction(Statement action, Environment renv, Environment env) {
-
-  }
-
-  private void typecheckTransition(Transition transition) {
+  private void typecheckTransition(Transition transition) throws Exception {
     this.typecheckGuard(transition.guard, transition.getRWEnvironment());
     this.typecheckAction(transition.action,
-      transition.getReadEnvironment(),
-      transition.getRWEnvironment());
+      transition.getReadOnlyEnvironment(),
+      transition.getRWEnvironment(),
+      transition.getWriteOnlyEnvironment());
   }
 
   private void typecheckCode(State state) throws Exception {

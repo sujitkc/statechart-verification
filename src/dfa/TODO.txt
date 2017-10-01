@@ -1,0 +1,10 @@
+Add more productions to the parser for:
+- various types of expressions
+- Type declarations
+- Events
+
+Add corresponding classes in the ast package.
+
+Add typechecking rules for individual expression types etc.
+
+Add 'formals' to state for write from incoming transitions
