@@ -43,7 +43,7 @@ identifier = [A-Za-z][A-Za-z0-9]*
 "action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION);     }
 "done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE);       }
 
-
+"+"				 {return new Symbol(sym.ADD);}
 ":="             { /* System.out.println("assign");       */ return new Symbol(sym.ASSIGN);     }
 "["              { /* System.out.println("LPAR_SQ");      */ return new Symbol(sym.LPAR_SQ);    }
 "]"              { /* System.out.println("RPAR_SQ");      */ return new Symbol(sym.RPAR_SQ);    }
