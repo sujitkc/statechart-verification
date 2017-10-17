@@ -31,6 +31,7 @@ non terminal ast.Statechart       statechart;
 non terminal ast.State            state;
 non terminal ast.Transition       transition;
 non terminal ast.Name             name;
+// non terminal ast.Operator         OPER;
 non terminal List<ast.State>      states;
 non terminal List<ast.Transition> transitions;
 
@@ -41,6 +42,7 @@ non terminal ast.Expression          expr;
 
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
+non terminal String OPER;
 
 terminal String IDENTIFIER;
 terminal Symbol
@@ -75,6 +77,29 @@ name ::=
       RESULT.add(id);
     :}
   ;
+
+
+OPER ::= 
+    ADD:a {:
+      RESULT = new String("+");
+    :}
+  | AND
+  | OR
+  | NOT
+  | EQU
+  | GRE
+  | LES
+  | GEQ
+  | LEQ
+  | NEQ
+  | MIN
+  | UMIN
+  | MOD
+  | DIV
+  | MUL
+
+;
+
 
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
@@ -133,11 +158,53 @@ transitions ::=
 /*********** skeletal statechart structure - end *******/
 
 /********** expressions for action language - begin ******/
+/*
 expr ::=
     name:n {:
-      RESULT = n;
+      RESULT = n; //unary expression
     :}
+     name:n1 OPER:o name:n2 
+      {:
+        RESULT = new ast.Name(n1.toString(),o,n2.toString()); //binary expression
+      :}
   ;
+  */
+
+  expr ::= 
+      name:n
+      {:
+        RESULT = n;
+      :} 
+
+      | expr:n OPER:o
+      {:
+        System.out.println(o);
+        ast.UnaryExpr u = new ast.UnaryExpr(n,o);
+        RESULT = u;
+//        ast.Name.add(u); 
+      :}
+      | expr:n name:n1
+      {:
+        System.out.println(n1);
+        ast.UnaryExpr u = new ast.UnaryExpr(n,n1);
+        RESULT = u;
+//        ast.Name.add(u); 
+      :}
+//      | OPER:o name:n 
+//      {:
+//        ast.Expression u = new ast.UnaryExpr(o,n);
+//        RESULT = u;
+//        ast.Name.add(u); 
+//     :}
+//      | expr:n1 OPER:p expr:n2 
+//      {:
+//        ast.BinaryExpr b = new ast.BinaryExpr(n1,p,n2);
+//        RESULT = b;
+//        System.out.println(p);
+//        ast.Name.add(b); 
+//      :}
+  ;
+
 
 statement_list::=
     statement_list:sl statement:s 
@@ -185,6 +252,30 @@ decl ::=
   ;
 
 /********** expressions for action language - end ******/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 statement_list::=
