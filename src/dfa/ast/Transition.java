@@ -14,10 +14,19 @@ public class Transition {
   private State state;
   private Statechart statechart;
 
-  private Environment readEnvironment = null;
-  private Environment environment = null;
-  private Environment rwEnvironment = null;
   
+  // Variables declared in readEnvironment aren't allowed to be used as l-values, e.g.
+  // LHS of an assignment
+  private Environment readOnlyEnvironment = null;
+
+  // Variables declared in rwEnvironment can be used anywhere, both as r-values as well as
+  // l-values.
+  private Environment rwEnvironment = null;
+
+  // Variables declared in writeOnlyEnvironment can be used only as l-values, e.g. LHS of 
+  // assignments. Their values shouldn't be used anywhere.
+  private Environment writeOnlyEnvironment = null;
+
   public Transition(String name, Name src, Name dest, Expression guard, Statement action) {
     this.name = name;
     this.sourceName = src;
@@ -38,25 +47,25 @@ public class Transition {
     return this.state;
   }
 
-  public Environment getReadEnvironment() {
-    if(this.readEnvironment == null) {
-      this.readEnvironment = new Environment(this.source.declarations, null);
+  public Environment getReadOnlyEnvironment() throws Exception {
+    if(this.readOnlyEnvironment == null) {
+      this.readOnlyEnvironment = this.source.getEnvironment().copyExclusive(this.state.getEnvironment());
     }
-    return this.readEnvironment;
+    return this.readOnlyEnvironment;
   }
 
-  public Environment getRWEnvironment() {
+  public Environment getWriteOnlyEnvironment() throws Exception {
+    if(this.writeOnlyEnvironment == null) {
+      this.writeOnlyEnvironment = this.destination.getEnvironment(); // Incorrect; needs to be fixed.
+    }
+    return this.writeOnlyEnvironment;
+  }
+
+  public Environment getRWEnvironment() throws Exception {
     if(this.rwEnvironment == null) {
-      this.rwEnvironment = this.destination.getEnvironment();
+      this.rwEnvironment = this.getReadOnlyEnvironment().copyInclusive(this.state.getEnvironment());
     }
     return this.rwEnvironment;
-  }
-
-  public Environment getEnvironment() {
-    if(this.environment == null) {
-      this.environment = this.getReadEnvironment().copy(this.getRWEnvironment());
-    }
-    return this.environment;
   }
 
   public void setSourceDestinationStates() throws Exception {
@@ -84,7 +93,7 @@ public class Transition {
     s += "destination : " + this.destination.getFullName() + "\n";
     s += "guard : " + this.guard + "\n";
     s += "action : " + this.action + "\n";
-    s += "\n}";
+    s += "\n}\n";
     return s;
   }
 }

@@ -33,10 +33,9 @@ public class Statechart extends State {
   public State lub(State s1, State s2) {
     List<State> a1 = s1.getAllSuperstates();
     List<State> a2 = s2.getAllSuperstates();
-
     State cca = null;
-    while(a1.size() != 0 && a2.size() == 0) {
-      if(a1.get(0) == a2.get(0)) {
+    while(a1.size() != 0 && a2.size() != 0) {
+      if(a1.get(0).equals(a2.get(0))) {
         cca = a1.get(0);
         a1.remove(0);
         a2.remove(0);
@@ -56,28 +55,8 @@ public class Statechart extends State {
     }
     return null;
   }
+
   public State nameToState(Name name) {
-/*
-    State state = null;
-    List<State> nextStates = new ArrayList<State>();
-    nextStates.add(this);
-    ListIterator<String> it = name.name.listIterator();
-    while(it.hasNext()) {
-      State nextState = null;
-      String n = it.next();
-      for(State st : nextStates) {
-        if(n == st.name) {
-          nextState = st;  
-        }
-      }
-      if(nextState == null) {
-        return null;
-      }
-      state = nextState;
-      nextStates = state.states;
-    }
-    return state;
-*/
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
     }
@@ -86,13 +65,7 @@ public class Statechart extends State {
 
   public String toString() {
     String s = "startchart " + this.name + " {";
-
-    if(this.declarations != null) {
-      for(Declaration d : this.declarations) {
-        s += d.toString() + "\n";
-      }
-    }
- 
+    s += this.declarations.toString(); 
     for(State st : this.states) {
       s += st.toString();
     }

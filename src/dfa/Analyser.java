@@ -45,21 +45,6 @@ public class Analyser {
     this.statechart = statechart;
     this.typechecker = new Typechecker(statechart);
   }
-  /*
-    Constructs an environment consisting of all declarations of the lower State
-    all the way upto the upper State. upper has to be an ancestor state of lower.
-  */
-  private Environment getEnvironmentExcluded(State lower, State upper) throws Exception {
-    if(!upper.isAncestor(lower)) {
-      throw new Exception("Analyser.getEnvironmentExcluded : upper should be an ancestor of lower.");
-    }
-    if(upper != lower.getSuperstate()) {
-      return new Environment(lower.declarations, getEnvironmentExcluded(lower.getSuperstate(), upper));
-    }
-    else {
-      return new Environment(lower.declarations, null);
-    }
-  }
 
   public void analyse() throws Exception {
     this.typechecker.typecheck();
