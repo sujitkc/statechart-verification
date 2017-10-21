@@ -98,6 +98,8 @@ public class State {
     return this.superstate;
   }
 
+  // returns the list of all superstates (this excluded), starting with the
+  // top-level statechart.
   public List<State> getAllSuperstates() {
     if(this.superstate != null) {
       List<State> superstates = this.superstate.getAllSuperstates();
@@ -107,6 +109,7 @@ public class State {
     return new ArrayList<State>();
   }
 
+  // returns true if this is a proper (non-reflexive) ancestor of State s.
   public Boolean isAncestor(State s) {
     List<State> ancestors = s.getAllSuperstates();
     return ancestors.contains(this);

@@ -9,6 +9,10 @@ To clean
 
 To run
 ------
-  ./run <input-file-name>
+  Single test case:
+  ./run.sh <input-file-name>
+
+  All test cases (listed in run.sh):
+  ./run.sh
 
 Test cases are placed in data/ directory.

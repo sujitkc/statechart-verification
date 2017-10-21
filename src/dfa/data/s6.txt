@@ -1,6 +1,6 @@
 statechart sc {
   v : int;
-  x : boolean;
+  x : int;
   y : boolean;
 
   state s1 {

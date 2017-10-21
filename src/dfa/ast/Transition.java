@@ -3,16 +3,16 @@ package ast;
 import java.util.List;
 
 public class Transition {
-  public final String name;
-  private Name   sourceName;
-  private Name   destinationName;
-  private State source;
-  private State destination;
-  public final Expression guard;
-  public final Statement action;
+  public  final String     name;
+  private       Name       sourceName;
+  private       Name       destinationName;
+  public  final Expression guard;
+  public  final Statement  action;
+  private       State      source;
+  private       State      destination;
 
-  private State state;
-  private Statechart statechart;
+  private       State      state;
+  private       Statechart statechart;
 
   
   // Variables declared in readEnvironment aren't allowed to be used as l-values, e.g.
@@ -26,6 +26,10 @@ public class Transition {
   // Variables declared in writeOnlyEnvironment can be used only as l-values, e.g. LHS of 
   // assignments. Their values shouldn't be used anywhere.
   private Environment writeOnlyEnvironment = null;
+
+  private Environment readEnvironment = null;
+
+  private Environment writeEnvironment = null;
 
   public Transition(String name, Name src, Name dest, Expression guard, Statement action) {
     this.name = name;
@@ -63,9 +67,23 @@ public class Transition {
 
   public Environment getRWEnvironment() throws Exception {
     if(this.rwEnvironment == null) {
-      this.rwEnvironment = this.getReadOnlyEnvironment().copyInclusive(this.state.getEnvironment());
+      this.rwEnvironment = this.state.getEnvironment();
     }
     return this.rwEnvironment;
+  }
+
+  public Environment getReadEnvironment() throws Exception {
+    if(this.readEnvironment == null) {
+      this.readEnvironment = this.source.getEnvironment();
+    }
+    return this.readEnvironment;
+  }
+
+  public Environment getWriteEnvironment() throws Exception {
+    if(this.writeEnvironment == null) {
+      this.writeEnvironment = this.getWriteOnlyEnvironment().copyInclusive(this.state.getEnvironment());
+    }
+    return this.writeEnvironment;
   }
 
   public void setSourceDestinationStates() throws Exception {
