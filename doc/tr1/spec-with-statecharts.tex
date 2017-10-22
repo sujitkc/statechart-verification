@@ -202,10 +202,29 @@ Directly, the following identities hold regarding the various environment types 
 
 In the above, we use intersection ($\cap$) in an overloaded sense by considering the environments as sets.
 
+The various environments for the principle elements are defined as summarised in table~\ref{t:env}
+\begin{table}
+\begin{center}
+\begin{tabular}{| l | c | c |}
+\hline
+	          & \textbf{State} $s$   & \textbf{Transition} $t$ \\
+\hline
+	$\sigma_R$ & $\sigma(s)$ & $\sigma(src(t))$ \\
+	$\sigma_W$ & $\sigma(s)$ & $\sigma(dest(t))$ \footnote{decision pending} \\
+	$\sigma_{RW}$ & $\sigma(s)$ & $\sigma(state(t))$ \\
+	$\sigma_{RO}$ & $\phi$ & $\sigma(src(t)) \setminus \sigma(state(t))$ \\
+	$\sigma_{WO}$ & $\phi$ & $\sigma(dest(t)) \setminus \sigma(state(t))$ \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Environments for states and transitions}
+\label{t:env}
+\end{table}
+
 
 \subsection{Typing}
+Our language is statically typed, i.e. all type-checking is completed at compile time. A specification typechecks if at the end of the typechecking process, all expression type nodes in the AST receive a valid type. Typechecking of all assignment instructions is considered successful if the RHS expression typechecks to a type matching the declared type of the name on the LHS; the assignment itself does not receive any type in such a case. As an example, we present $tAssignAdd$ below, the typing rule for an assignment with an addition on RHS.
 
-\subsubsection{Assignment}
 \inferrule[$tAssignAdd$]
 {\sigma_R^t \vdash e_1 : int \\ \sigma_R^t \vdash e_2 : int\\ \sigma_W^t[v] = int}
 {\sigma_R^t, \sigma_W^t \vdash v = e_1+e_2 : None}
