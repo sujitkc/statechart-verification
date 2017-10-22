@@ -9,10 +9,13 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{framed}
+\usepackage{tikz-uml}
+\usepackage{alltt}
+\usepackage{mathpartir}
 %\usepackage{amsmath,bm,times}
 \usetikzlibrary{positioning,shapes,arrows,backgrounds,fit, calc, shadows}
 
-\author{Sujit Kumar Chakrabarti, IIITB and Karthika Venkatesan, IIITB}
+\author{Karthika Venkatesan, IIITB \\ Sujit Kumar Chakrabarti, IIITB }
 \title{Formal Specification with Statecharts}
 \date{}
 \begin{document}
@@ -25,10 +28,271 @@
 \newcommand{\highlight}[1]{{\color{Red}(#1)}}
 \newcommand{\comment}[1]{{\color{Blue}#1}}
 
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{myrule}{Rule}
+
+
+\lstset{
+	language = ML,
+	basicstyle = \ttfamily,
+	stringstyle = \ttfamily,
+	keywordstyle=\color{Blue}\bfseries,
+	identifierstyle=\color{Pink},
+	frameround=tttt,
+%	numbers=left
+	showstringspaces=false
+}
+
 \maketitle
 \abstract{
-UML Statecharts have enjoyed widespread popularity in software development community as a design and specification notation. It has primarily been employed for specification of object life-cycles. In this paper, we explore the option of using Statecharts in specifying GUI interactions. The idea has been explored earlier in the literature(\comment{cite}). The current state of the art has the following limitations: Firstly, there has been tremendous growth in the GUI interaction patterns in the last decade or so. Enhancements to the syntax and semantics of Statecharts are necessary to allow its use for specifying a wide variety of applications (e.g. web, mobile and desktop). Secondly, the Statechart semantics is not fully formalised. Various researchers have assumed certain semantics to present their work (\comment{cite}). However, there is lack of standardisation in the definition of formal semantics for Statechart. There is a need to formulate a standard and fully formal semantics for Statecharts. Thirdly and finally, use of Statechart as a fully formal specification language will achieve widespread use only if complemented by automated support for verification of specification models.
-
-In this work, we present certain enhancements and customisations to the Statechart syntax and semantics for specification of modern web applications. We also demonstrate how automatic detection of specification bugs can be performed through well-known model-checking and program analysis. We have used our specification approach in specifying a number of web applications. Our approach enabled early detection of several specification bugs and hence facilitated higher quality specification.
+UML Statecharts have enjoyed widespread popularity in software development community as a design and specification notation. It has primarily been employed for specification of object life-cycles. In this paper, we explore the option of using Statecharts in specifying GUI interactions, typically in web applications. A notation like Statechart is very apt to be used as a formal specification language, provided the following features: Firstly, it should have well-defined semantics, so that specifications written in it can not be inherently ambiguous. Secondly, it should have tool support for automatic detection of specification bugs.
+In this work, we present enhancements and customisations to the Statechart syntax and semantics for specification of modern web applications. We also demonstrate how automatic detection of specification bugs can be performed through well-known model-checking and program analysis. We have used our specification approach in specifying a number of web applications. Our approach enabled early detection of several specification bugs and hence facilitated higher quality specification.
 }
+
+\section{Introduction}
+The importance of formal specification is well-known. They come with the benefits of succinctness and unambiguous semantics, which makes them appropriate to act like formal contract between the user and maker of a software system. This also provides the added -- and yet critical -- benefit of automatic verification, wherein specification defects can be detected very early in the development life-cycle.
+
+Adoption of formal languages and notations as de facto method for requirement specification has faced a number of hurdles. One of the main hurdles is the very mathematical nature of these languages: practising software engineers often consider these languages too hard to use. Though many of these specification languages are extremely powerful and have all the abstraction mechanisms to express the ideas of a domain, they need to be built up ground-up in the problem context using the language primitive, which is often considered too much of an effort.
+
+Efforts to ameliorate these issues have been made primarily in two directions: \emph{semi-formal languages} and \emph{domain-specific languages}. Semi-formal languages, e.g. UML, come with user-friendly outlook which make them easy and usable. They make compromises on the formal semantics part. Domain specific languages (\comment{cite}) give-up on the generality to gain on expressiveness in a given domain. The primitives in a DSL would also include the vocabulary of the domain to facilitate quick progress in the specification process.
+
+Statechart was proposed a visual formalism for specification of complex systems (\comment{cite Harel}). In particular, the `system' here is an object with a complex life-cycle going through a finite number of discrete \emph{states}. The notation has enjoyed a wide acceptance in software engineering community. It is a part of the UML suite for modelling object oriented system. Statechart is a semi-formal language. This is the main hurdle in researchers developing automation support for verifying Statechart models. Consequently, there has been a lot of work done in defining its formal semantics (\comment{cite}).
+
+There have been attempts to use Statechart as a domain specific language (\comment{cite}). An example of this is (\comment{cite Ricca-Tonella paper}) in which application of Statecharts as a specification notation for web-based systems was explored. Features of web-based systems have evolved significantly since the time of this paper. Predominantly plain HTML forms have given place to highly interactive user-interfaces, e.g. tabbed panels, with rich client side validations as well as AJAX which permits partial page updates via asynchronous server interactions. This calls for a further look at how Statechart notation could be adapted to allow specification of richly featured modern web applications.
+
+Another angle to look at is the growing complexity of web applications. This calls for increased levels of automation in engineering these systems, in particular, requirement analysis and verification. To achieve this goal, it is more important for specification formalisms to have a formally defined semantics,  than to have rich syntactic features. A formal specification language would open doors to a variety of automated approaches to analysis, design, generation of both code and tests for modern web based systems.
+
+In this paper, we introduce a specification language for GUI-intensive applications, in particular, web applications. This language takes inspiration from well-known imperative languages like C and Python (mutable variables, instructions, lexical scoping etc.), but borrows significantly some important aspect from Statecharts: \emph{viz.}, states, transitions, hierarchy and action language. We present our language through examples as well as  formal description of its abstract syntax and semantics. Through examples, we demonstrate how formal specifications for GUI applications can be written simply and intuitively using our language: the specification engineer uses her familiar programmatic constructs with little or no need to learn a very different looking language. The nitty-gritty implementation details can be conveniently abstracted away while maintaining the formal nature of the specification.
+
+We also present a set of defects that are possible in a specification written in this language. We present an approach to detect a particular class of defects, namely \emph{undefined variable access}, in the specifications. We use a well-known program analysis method (i.e. \emph{reaching definition} [\comment{cite Dragon book}] to detect undefined variable access. We present our experience in using our method to analyse the specifications we have developed. As it has turned out for us, our approach helped in early detection of many such defects, proving very helpful in creating a correct specification.
+
+Contributions of this work include:
+\begin{enumerate}
+	\item A formal specification language for GUI intensive applications, typically web applications
+	\item Illustration of specification defects possible in specification written using this notation
+	\item A static analysis method to detect the above defects automatically.
+\end{enumerate}
+
+\section{Statechart Language}
+Statechart provides a pictorial notation to describe the life-cycle of a system, usually object-oriented. It is an adaptation of the classical finite state automation with enhancement like hierarchical states, concurrent states, action language, communication etc., all aimed to increase its expressive power as a specification language of industrial strength software systems. 
+
+Statechart has been used widely in industry and academia as a part of various UML modelling tools [\comment{Rational Rose, Rhapsody, Telelogic, Statemate, Stateflow}]. In all industrial tools, the explicitly specified semantics of the language, if at all given, are semi-formal to the best of our knowledge. There has been a lot of research in formal specification of semantics for Statechart(-like) languages [\comment{J. Rushby paper in FASE'04 on Stateflow operational semantics etc.}]. They mostly target specific subsets of the Statechart language. We take a similar approach, defining formal syntax and semantics of the Statechart language for parts which we have found useful in formal specification of web applications. Mapping various existing features of the Statechart language to specification use-cases and formulating their formal description and building verification support for the same is a part of our ongoing research agenda.
+
+
+\section{Example}
+In this section, we informally introduce, through an example, the specific features that have been added or modified to the existing Statechart notation to enable better modelling of web applications.
+
+
+\subsection{Syntax}
+\begin{scriptsize}
+\lstinputlisting[frame=single]{syntax.ml}
+\end{scriptsize}
+
+Statechart specifications can be partitioned into their core Statechart part, and the trigger/guard/action part, typically abbreviated as the \emph{action} part. The core Statechart part of the specification gives the pictorial form and finite-state nature to the specification. The action part, essentially comprised of code fragments in an appropriate imperative programming language, adds arbitrary expressiveness to the Statechart, allowing it to be infinite state in reality. In our adaptation, we closely follow the Statechart language as in Harel's notation, except -- for the time being -- postponing the treatment of some of its advanced features. However, we have provided more detailed specification of the action language part, some of them in variance with existing norms. These specifications have been accommodated to align the notation more closely to the needs of specifying GUI intensive applications in general, and web apps in particular.
+
+
+The salient points of our syntax are:
+\begin{enumerate}
+	\item \emph{Set theoretic operations.}
+	\item \emph{Local variables.}
+	\item \emph{Input and output variables of states}
+\end{enumerate}
+
+
+\subsection{Semantics}
+Our action language has the following general semantic features.
+\begin{enumerate}
+	\item \emph{Lexical scope.} Events and variables declared in a state are visible within it, including the substates. Internal bindings shadow the external bindings.
+	\item \emph{Types.} In terms of types, our language is a statically and explicitly typed language; and these should be considered the primary aspects of the type system followed by our language. As added features (subject to evolution), primitive types are provided to represent integers and booleans. Composites like lists, sets, tuples and maps are natively provided -- all polymorphic (i.e. parameterised over types). Structures (as in C) are provided to create user defined types.  
+	\item \emph{Data-flow between states.} Action on a transition are allowed to use local events and variables of the source state and define any variables of the destination state. This feature allows data-flow between successively visited states without recourse to global variables.
+\end{enumerate}
+
+In the following, we present a more formal description of the language semantics.
+
+Code may occur in the following sites of the specification:
+\begin{itemize}
+	\item States: Entry, During and Exit clauses
+	\item Transition: Event, Guard and Action clauses.
+\end{itemize}
+
+The language is imperative, static typed and lexically scoped. The variables receive their types from \emph{explicit type declarations} (or just \emph{declarations}). Declarations can occur in staties, i.e. each state may have its own set of declarations.
+
+Variable names appearing in any piece of code is bound to one and only one declaration occuring in an appropriate environment as dictated by the lexical scoping rules of the language.
+
+\subsection{Some Definitions}
+To formalise the semantics, we introduce the following definitions:
+
+\begin{definition}[Enclosing state of a state. $superstate: state \mapsto state$] \label{d:ss}
+	Given a state, returns the enclosing state if it exists. for the statechart (i.e. the outermost state), returns $null$.
+\end{definition}
+
+\begin{definition}[Enclosing state of a transition. $state: transition \mapsto state$] \label{d:s}
+	Given a transition, returns the enclosing state.
+\end{definition}
+
+\begin{definition}[Source state. $src: transition \mapsto state$] \label{d:src}
+	Given a transition, returns the source state.
+\end{definition}
+
+\begin{definition}[Destination state. $dest: transition \mapsto state$] \label{d:dest}
+	Given a transition, returns the destination state.
+\end{definition}
+
+\begin{definition}[Child state. $\prec_1: state \times state \mapsto boolean$] \label{d:cs}
+	Given two states $s$ and $s'$, $s \prec_1 s' = true$ if $s' = superstate(s)$. $s \prec_1 s' = false$ otherwise.
+\end{definition}
+
+\begin{definition}[Proper descendent. $\prec: state \times state \mapsto boolean$] \label{d:desc}
+	Given two states $s$ and $s'$, $s \prec s' = true$ if for some integer $n \geq 0$, $\exists s_1, s_2, ..., s_n$ such that $s \prec_1 s_1$, $s_1 \prec_1 s_2$, ..., $s_{n - 1} \prec_1 s_n$, $s_n \prec_1 s'$.
+\end{definition}
+
+$(s \prec_1 s') \Rightarrow (s \prec s)$. We may also be more specific and talk about the $i$-th descendent ($\prec_i$) with its intuitive meaning (e.g. $\prec_1$ is $\prec_i$ with $i = 1$). We also introduce the reflexive version of the descendent relation $\preceq$ (i.e. $s \preceq s'$ if $s = s' \lor s \prec s'$).
+
+
+\begin{definition}[Lowest upper bound (LUB). $\sqcap: state \times state \mapsto state$] \label{d:lub}
+	Given two states $s_1$ and $s_2$, a state $s$ is defined as $s \sqcap s'$ (could be written as $\sqcap(s_1, s_2)$) iff: ($s_1 \preceq s \wedge s_2 \preceq s$) $\wedge$ (if ($\exists s' . s' \neq s \wedge s_1 \preceq s' \wedge s_2 \preceq s')$) $\Rightarrow s \prec s'$ 
+\end{definition}
+
+In other words, the LUB of two states $s_1$ and $s_2$ is their common ancestor which is proper descendent of any other common ancestor of $s_1$ and $s_2$ if it exists.
+
+\subsubsection{Environment}
+All names are looked up in an environment. An environment can be visualised as a linked list of declaration lists, shown as:
+
+$\sigma_1 = D_1 :: \sigma_2 = D_1 :: D_2 :: \sigma_3 = D_1 :: ... :: D_{n-1} :: \sigma_n  = D_1 :: ... :: D_{n-1} :: D_n :: \phi $
+
+where $D_1$, $D_2$, ... $D_n$ are declaration lists, $\phi$ represents an empty declaration list, Operator `$::$' represents the list construction operator. For an environment $\sigma = D :: \sigma'$, we define $dec(\sigma) = D$ and $next(\sigma) = \sigma'$.
+
+A lookup of a variable $v$ in an environment $\sigma$, denoted by $\sigma[v]$, consists of searching for $v$'s declaration in all the declaration lists in $\sigma$ starting from the left end. $v$ gets bound with the first matching declaration in this order.
+
+Also, an environment $\sigma$ is defined for a state $s$ ($\sigma^s$) or a transition $t$ ($\sigma^t$). States and transitions are referred to as \emph{principle elements} for the rest of the discussion.
+
+Finally, for an element, a number of environment types are defined as follows:
+
+\begin{definition}[Read environment $\sigma_R$]
+	A name which is \emph{used} in an expression (i.e. used as r-value) is looked up in the read environment. 
+\end{definition}
+
+\begin{definition}[Write environment $\sigma_W$]
+	A name which is \emph{defined} in an expression (i.e. used as l-value) is looked up in the write environment. 
+\end{definition}
+
+\begin{definition}[Read-Write environment $\sigma_{RW}$]
+	A name occuring in the read-write environment can be both used and defined in the context of a principle element. 
+\end{definition}
+
+
+\begin{definition}[Read-only environment $\sigma_{RO}$]
+	A name occuring in the read-only environment can be only used but not defined in the context of a principle element. 
+\end{definition}
+
+
+\begin{definition}[Write-only environment $\sigma_{WO}$]
+	A name occuring in the write-only environment can be only defined but not used in the context of a principle element. 
+\end{definition}
+
+Directly, the following identities hold regarding the various environment types above:
+\begin{enumerate}
+	\item $\sigma_R = \sigma_{RO} :: \sigma_{RW}$
+	\item $\sigma_W = \sigma_{WO} :: \sigma_{RW}$
+	\item $\sigma_{RO} \cap \sigma_{WO} = \phi$
+	\item $\sigma_{R} \cap \sigma_{W} = \sigma_{RW}$
+\end{enumerate}
+
+In the above, we use intersection ($\cap$) in an overloaded sense by considering the environments as sets.
+
+
+\subsection{Typing}
+
+\subsubsection{Assignment}
+\inferrule[$tAssignAdd$]
+{\sigma_R^t \vdash e_1 : int \\ \sigma_R^t \vdash e_2 : int\\ \sigma_W^t[v] = int}
+{\sigma_R^t, \sigma_W^t \vdash v = e_1+e_2 : None}
+
+\vspace{1cm}
+\begin{myrule}[Placement of Transition] \label{r:tp}
+	Given a transition $t$, $state(t) = src(t) \sqcap dest(t)$ 
+\end{myrule}
+
+
+\section{Specification Bugs} \label{s:sb}
+Like programs, requirement specifications are subject to faults \footnote{For our discussion, we use \emph{faults}, \emph{defects} and \emph{bugs} as synonyms.}. One of the most important goals of using formal methods is to detect such bugs automatically. Requirement bugs can be further classified as \emph{implicit} and \emph{explicit}.
+
+Implicit bugs are violations of universal properties. In programming, universal properties abound. Examples of violations of universal properties are accessing undefined variables, null-pointer dereferencing etc. Such bugs would most likely lead to catastrophic failures, like a program crash. Hence, modern compilers come with built-in support to detect many of these errors; programmers do not need to specify them explicitly. Such analysis is often based on static program analysis methods.
+
+Explicit bugs are violations of properties explicitly stated by the programmer, often arising out of the business domain, often specific to the system being modelled. For example, for a banking software, the \lstinline@balance@ attribute of a \lstinline@BankAccount@ class may never be allowed to hold a negative value. Such properties need additional analysis typically based on model-checking or theorem proving technology. 
+
+We have encountered a number of requirement bugs that could occur in a Statechart specification model which could be classified as implicit and explicit, in a sense very similar to the above. And interestingly, it turns out that the verification technologies applicable in detection of these bugs also correspond to the above: program analysis for implicit bugs, and model checking and theorem proving for explicit bugs.
+
+Further subsection of this section present some of the properties -- both implicit and explicit -- which could get violated in a specification leading to requirement bugs.  In section~\ref{s:ver}, we explain how they can be detected using static analysis techniques.
+
+\subsection{Undefined Variable Access}
+\begin{figure}
+\caption{Undefined variable}
+\label{f:undefined}
+\end{figure}
+
+Consider the Statechart fragment shown in figure~\ref{f:undefined}. On running static analysis on this model, several warnings are flagged, e.g. \lstinline@roomNumber@ for a student may turn out to be \lstinline@nil@ in a number of expressions where it is used. At several places, this corresponds to a serious flaw in the specification model. Room allocation can be done in two ways: either by first selecting a student and then going to the room allocation, or by first selecting the room and then going to the student selection. Once this process is completed, the composite state \lstinline@AllocateRoom@ terminates. Here, it is possible to complete the room allocation without actually completing the process. 
+
+\subsection{Non-Determinism}
+Statechart permits non-determinism. For instance, when multiple outgoing transitions from the current state are enabled simultaneously, the system must make a non-deterministic choice between them. Different flavours resolve non-determinism in different ways (\comment{cite various Statechart semantics papers}).
+
+Non-determinism is an instance of incompleteness in specification. Whether it is desired in the specification or not depends on the specific case. In any case, it would be desirable to be able to detect their presence automatically. For any configuration, the set of \emph{conflicting outgoing transitions} is nothing but the set of the outgoing transitions from all its states. To statically detect non-determinism, we need to check if for any given configuration, any two conflicting outgoing transitions can get enabled simultaneously.
+
+
+\subsection{Stuck Specification}
+Another problem is that of \emph{stuckness}: when there is no way left for the system to exit a particular configuration. Consider the simple Statechart fragement in figure~\ref{f:stuck}
+
+\begin{figure}[H]
+\resizebox{0.75\textwidth}{!}{%
+\begin{tikzpicture}[auto,
+    ->,
+  %  shorten >=2pt,
+    >=stealth,
+    node distance=1.5cm,
+    init/.style={%
+      circle, thick, fill=black
+    },
+    inv/.style={%
+      rectangle,draw=black, very thin, dashed,align=left,font=\scriptsize,
+      text ragged, minimum height=2em, minimum width=2em, inner sep=6pt
+    },
+    st/.style={%
+      rectangle, rounded corners=1.5mm, draw=black, thick, fill=lightblue, drop shadow,align=center,
+      text ragged, minimum height=2em, minimum width=2em, inner sep=6pt
+    },
+    tl/.style={%
+      -latex,draw=black, very thick
+    }
+  ]
+    \node[init] (s0)                {};
+    \node[st]  (s1) [right = of s0] {$s_1$: };
+    
+    \draw[tl] (s0) to node[inv, above left]{$t_1$: \_/\_/$x \gets 0$} (s1);
+    \draw[tl, loop above] (s1) to node[inv, above]{$t_2$: \_/\_/$x \gets x+1$} (s1);
+    \draw[tl] (s1.east) -- node[inv, above right]{$t_3$: \_/$x<0$/\_} ++(0:2cm);
+
+  \end{tikzpicture}
+}
+
+\caption{Stuck specification: The system can not exit $s_1$}
+\label{f:stuck}
+\end{figure}
+
+\subsection{Violation of External Specifications}
+Based on the specific domain, there may be any number of additional constraints which we may want our specification to follow. 
+
+
+\section{Verification} \label{s:ver}
+In this section, we outline a number of analyses that can be used to detect the specification bugs presented in section~\ref{s:sb}.
+
+\section{Conclusion and Future Work}
+
+
+Concurrent states (And states) are a very important feature of Statechart notation which we have not considered so far. We realise that it is very relevant for specification of web applications which themselves have a large amount of concurrency built in. In the next stage of our research, we are working on incorporating concurrency into our adaptation of Statecharts. This feature -- apart from adding expressiveness -- will also make a number of additional specification bugs possible. Our next effort will be to augment our verification tool set for automatic detection of the above bugs.
+
+Wherever there was a translation required for preparing an input to a verification tool, it was performed manually. This is tedious and error prone. There exists a wealth of prior work in this direction (\comment{cite Translation of Statechart to Model Checking}). We are currently in the process of implementing some of these translators, so that the translation can be automated.
+
+In this paper, we have focused on static verification techniques. However, Statechart specifications are an excellent starting point for automated test generation. In our earlier work, we have reported an end-to-end technique to generate test cases for web applications from Statechart specification (\comment{our ModSym 2016 paper}). With addition of further features to the Statechart notation, it will be necessary to extend this test generation method to accommodate these.
 \end{document}
