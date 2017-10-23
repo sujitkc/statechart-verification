@@ -112,13 +112,12 @@ public class Typechecker {
   }
 
   private void typecheckStatementList(
-    Statement s,
+    StatementList sl,
     Environment renv,
     Environment wenv,
     Environment rwenv,
     Environment roenv,
     Environment woenv) throws Exception {
-      StatementList sl = (StatementList)s;
       List<Statement> statements = sl.getStatements();
       for(Statement st : statements) {
         this.typecheckStatement(st, renv, wenv, rwenv, roenv, woenv);
@@ -154,7 +153,7 @@ public class Typechecker {
 
     }
     else if(s instanceof StatementList) {
-      this.typecheckStatementList(s, renv, wenv, rwenv, roenv, woenv);
+      this.typecheckStatementList((StatementList)s, renv, wenv, rwenv, roenv, woenv);
     }
   }
 
