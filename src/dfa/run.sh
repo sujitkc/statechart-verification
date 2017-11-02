@@ -1,12 +1,6 @@
-MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
+MYLIBPATH=/home/harika/Desktop/Github/statechart-verification/source/jflex-1.6.1/lib
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
-testcases=(
-  s2
-  s3 # assignment type mismatch
-  s4 # misplaced transition
-  s5 # unknown state
-  s6 # non boolean guard
-);
+
 
 if [ $# = 1 ]; then
   java -cp ${MYCLASSPATH} Analyser $1

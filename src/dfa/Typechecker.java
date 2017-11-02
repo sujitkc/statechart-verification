@@ -13,6 +13,7 @@ import ast.Statement;
 import ast.Statement;
 import ast.AssignmentStatement;
 import ast.StatementList;
+import ast.UnaryExpr;
 
 public class Typechecker {
 
@@ -93,9 +94,33 @@ public class Typechecker {
     }
   }
 
+  private void typecheckUnary(UnaryExpr exp, Environment env) throws Exception {
+    typecheckExpression(exp.n,env);
+    typecheckName(exp.n1,env);
+    if(exp.o == "~"){
+      if(exp.n.getType().name != "boolean"){
+      throw new Exception("Typechecking failed for expression: " + exp.n.toString() +
+        " of type " + exp.n.getClass().getName() + ".");
+      }
+    }
+    else if(exp.o == "+"){
+      if(exp.n1.getType().name != "int"){
+      throw new Exception("Typechecking failed for expression: " + exp.n1.toString() +
+        " of type " + exp.n1.getClass().getName() + ".");
+      }
+    }
+      if(exp.n.getType().name != "int"){
+      throw new Exception("Typechecking failed for expression: " + exp.n.toString() +
+        " of type " + exp.n.getClass().getName() + ".");
+      }
+  }
+
   private void typecheckExpression(Expression exp, Environment env) throws Exception {
     if(exp instanceof ast.Name) {
       typecheckName((Name)exp, env); 
+    }
+    else if(exp instanceof ast.UnaryExpr){
+      typecheckUnary((UnaryExpr)exp, env);
     }
     else {
       throw new Exception("Typechecking failed for expression: " + exp.toString() +

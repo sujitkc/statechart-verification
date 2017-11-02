@@ -5,12 +5,22 @@ import java.lang.*;
 
 public class BinaryExpr extends Expression{
 	public Expression n1,n2;
+	public enum Oper{
+		PLUS,
+		MINUS,
+		EQUAL
+	}
 	public String o;
 	public BinaryExpr(Expression n1, String o,Expression n2){
 		this.n1 = n1;
 		this.o = o;
 		this.n2 = n2;
-		System.out.println("harika");
+		if(o=="+"){
+			Oper op = Oper.PLUS;
+		}
+		if(o=="-"){
+			Oper op = Oper.MINUS;
+		}
 	}
 	public String toString() {
 		String s = n1.toString() + o + n2.toString();
