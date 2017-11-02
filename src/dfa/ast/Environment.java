@@ -12,6 +12,14 @@ public class Environment {
     this.next = next;
   }
 
+  public DeclarationList getDeclarations() {
+    return this.declarations;
+  }
+
+  public Environment getNextEnvironment() {
+    return this.next;
+  }
+
   public Declaration lookup(String name) {
     Declaration dec = this.declarations.lookup(name);
     if(dec != null) {

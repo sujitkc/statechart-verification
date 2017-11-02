@@ -20,4 +20,8 @@ public class StatementList extends Statement {
   public void add(int i, Statement s) {
     this.statements.add(i, s);
   }
+
+  public List<Statement> getStatements() {
+    return this.statements;
+  }
 }

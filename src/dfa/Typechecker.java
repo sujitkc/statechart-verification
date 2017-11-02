@@ -8,8 +8,11 @@ import ast.Declaration;
 import ast.Expression;
 import ast.Type;
 import ast.Environment;
-import ast.Statement;
 import ast.Name;
+import ast.Statement;
+import ast.Statement;
+import ast.AssignmentStatement;
+import ast.StatementList;
 
 public class Typechecker {
 
@@ -46,6 +49,15 @@ public class Typechecker {
     this.typecheckDeclarations(this.statechart);
   }
 
+  /*
+      Sets the type of the name object to appropriate type if the following work out:
+       - If name is a identifier, it will be looked up in the local environment env. If
+         a declaration is found, the same will be used to define the type of name.
+       - If name is a fully qualified name (e.g. a.b.c), its state is found (by name a.b),
+         If this state state is an ancestor of the state st of env, then we look up for name
+         in the declaration list of state. If found, the same will be used to define the type
+         of name.
+  */
   private void typecheckName(Name name, Environment env) throws Exception {
     Declaration dec = null;
     if(name.name.size() > 1) {
@@ -53,7 +65,13 @@ public class Typechecker {
       List<String> stateName = new ArrayList<String>(name.name.subList(0, name.name.size() - 1));
       State state = this.statechart.nameToState(new Name(stateName));
       if(state != null) {
-        dec = state.declarations.lookup(lastName);
+        State st = env.getDeclarations().getState();
+        if(st.equals(state) || state.isAncestor(st)) {
+          dec = state.declarations.lookup(lastName);
+        }
+        else {
+          throw new Exception("Undefined variable " + name.toString() + "; contents of state " + stateName + " are not visible in this context.");
+        }
       }
       else {
         throw new Exception("Undefined variable " + name.toString() + "; no state by name " + stateName + " found.");
@@ -93,12 +111,51 @@ public class Typechecker {
     }
   }
 
-  private void typecheckAction(
-    Statement action,
+  private void typecheckStatementList(
+    Statement s,
     Environment renv,
-    Environment env,
-    Environment wrenv) {
+    Environment wenv,
+    Environment rwenv,
+    Environment roenv,
+    Environment woenv) throws Exception {
+      StatementList sl = (StatementList)s;
+      List<Statement> statements = sl.getStatements();
+      for(Statement st : statements) {
+        this.typecheckStatement(st, renv, wenv, rwenv, roenv, woenv);
+      }
+  }
 
+  private void typecheckAssignmentStatement (
+      Statement s,
+      Environment renv,
+      Environment wenv,
+      Environment rwenv,
+      Environment roenv,
+      Environment woenv) throws Exception {
+      AssignmentStatement as = (AssignmentStatement)s;
+
+    this.typecheckName(as.lhs, wenv);
+    this.typecheckExpression(as.rhs, rwenv);
+
+    if(!as.lhs.getType().equals(as.rhs.getType())) {
+      throw new Exception("assignment lhs and rhs types don't match.");
+    }
+  }
+
+  private void typecheckStatement(
+    Statement s,
+    Environment renv,
+    Environment wenv,
+    Environment rwenv,
+    Environment roenv,
+    Environment woenv) throws Exception {
+    if(s instanceof AssignmentStatement) {
+      this.typecheckAssignmentStatement(s, renv, wenv, rwenv, roenv, woenv);
+
+    }
+    else if(s instanceof StatementList) {
+      this.typecheckStatementList(s, renv, wenv, rwenv, roenv, woenv);
+    }
   }
 
   private void typecheckTransition(Transition transition) throws Exception {
@@ -113,9 +170,11 @@ public class Typechecker {
         transition.getState().name + ".");
     }
     this.typecheckGuard(transition.guard, transition.getRWEnvironment());
-    this.typecheckAction(transition.action,
-      transition.getReadOnlyEnvironment(),
+    this.typecheckStatement(transition.action,
+      transition.getReadEnvironment(),
+      transition.getWriteEnvironment(),
       transition.getRWEnvironment(),
+      transition.getReadOnlyEnvironment(),
       transition.getWriteOnlyEnvironment());
   }
 
