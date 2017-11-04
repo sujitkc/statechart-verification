@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[12pt,a4paper]{report}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{listings}
@@ -51,6 +51,7 @@ UML Statecharts have enjoyed widespread popularity in software development commu
 In this work, we present enhancements and customisations to the Statechart syntax and semantics for specification of modern web applications. We also demonstrate how automatic detection of specification bugs can be performed through well-known model-checking and program analysis. We have used our specification approach in specifying a number of web applications. Our approach enabled early detection of several specification bugs and hence facilitated higher quality specification.
 }
 
+\chapter{Specification Language}
 \section{Introduction}
 The importance of formal specification is well-known. They come with the benefits of succinctness and unambiguous semantics, which makes them appropriate to act like formal contract between the user and maker of a software system. This also provides the added -- and yet critical -- benefit of automatic verification, wherein specification defects can be detected very early in the development life-cycle.
 
@@ -319,4 +320,141 @@ Concurrent states (And states) are a very important feature of Statechart notati
 Wherever there was a translation required for preparing an input to a verification tool, it was performed manually. This is tedious and error prone. There exists a wealth of prior work in this direction (\comment{cite Translation of Statechart to Model Checking}). We are currently in the process of implementing some of these translators, so that the translation can be automated.
 
 In this paper, we have focused on static verification techniques. However, Statechart specifications are an excellent starting point for automated test generation. In our earlier work, we have reported an end-to-end technique to generate test cases for web applications from Statechart specification (\comment{our ModSym 2016 paper}). With addition of further features to the Statechart notation, it will be necessary to extend this test generation method to accommodate these.
+
+
+\chapter{Design Notes}
+\section{Types}
+We support a variety of \emph{kinds} of types. There are the following kinds of types:
+\begin{enumerate}
+	\item Basic types, e.g. int, boolean
+	\item Structures
+	\item ML style unions
+	\item Functions
+	\item Containers, e.g. lists, tuples, maps and sets
+For example:
+\begin{lstlisting}
+registeredUsers : (string, User) map;
+\end{lstlisting}
+\end{enumerate}
+
+Following points are to be noted about all the types in the language:
+\begin{enumerate}
+	\item All basic types and containers are \emph{native types}. All other types are \emph{user defined types}.
+	\item All types are globally declared, whether native or user defined. That is, variables can be declared anywhere in the specification of all types.
+	\item Only containers are polymorphic. The varible declarations for such objects must substantiate at the time of declaration. For example:
+\begin{lstlisting}
+  registeredUsers : (string, User) map;
+\end{lstlisting}
+	\item Functions can't be declared independently. Rather, they are only added to support operations on container types, \\ e.g. \lstinline@requests.add( (loggedinUser, request_curfew.request) )@ to add an element to a map \lstinline@request@.
+	
+\end{enumerate}
+
+\subsection{Structures}
+A \lstinline@struct@ type declaration will lead to a entry in the type table which will map a type name to a declaration list.
+For example:
+\begin{lstlisting}
+struct Duration = {
+  startTime : int;
+  endTime : int
+}
+\end{lstlisting} 
+will create a type entry of the following form:
+\begin{center}
+	\begin{tabular}{l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l}
+		$Duration$ & 
+			\begin{tabular}{| l | l |}
+				\hline
+				\multicolumn{2}{| l |}{$struct$} \\
+				\hline
+				$startTime$ & $int$ \\
+				\hline
+				$endtime$ & $int$ \\
+				\hline
+			\end{tabular} \\
+	\end{tabular}
+\end{center}
+
+\subsection{Polymorphic Types}
+A polymorphic type can be thought of as a function ($type\ list \rightarrow type$) which takes a list of types as parameters and returns a type. The type entry of a polymorphic type will have the following form:
+\begin{center}
+	\begin{tabular}{l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l}
+		$pair$ &
+			\begin{tabular}{| c |}
+				\hline
+				$polymorphic(\alpha, \beta)$: \\
+				\hline
+				\begin{tabular}{| l | l |}
+					\multicolumn{2}{| l |}{$struct$} \\
+					\hline
+					$first$ & $\alpha$ \\
+					\hline
+					$second$ & $\beta$ \\
+					\hline
+				\end{tabular} \\
+				\hline
+			\end{tabular} \\
+	\end{tabular}
+\end{center}
+
+A polymorphic type encapsulates a type expression inside it. The inner type expression is allowed to be any non-polymorphic type expression where type variables may take the place of types. For instance, above, $fun(\alpha \rightarrow None)$ is a function type which takes a type $\alpha$ as input and returns an $int$ value.
+
+As of now, we do not allow creation of new polymorphic types.
+
+\subsubsection{Substantiation of Polymorphic Types}
+When a variable is declared as a polymorphic, it's really a \emph{substantiation} of a polymorphic type. By substantiation, we mean getting a concrete type from a polymorphic type by supplying the required type parameters. For example:
+
+\begin{lstlisting}
+p : (int, boolean) pair;
+\end{lstlisting}
+
+will create a type entry from the polymorphic pair type:
+\begin{center}
+	\begin{tabular}{l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l}
+		$pair1$ &
+			\begin{tabular}{| l | l |}
+				\hline
+				\multicolumn{2}{| l |}{$struct$} \\
+				\hline
+				$first$ & $int$ \\
+				\hline
+				$second$ & $boolean$ \\
+				\hline
+			\end{tabular} \\
+	\end{tabular}
+\end{center}
+
+and, in the symbol table, bind \lstinline@p@ to $pair1$.
+
+The semantic analyser must avoid duplicate substantiation by discovering structural equivalence between type declarations. For example, if another variable \lstinline@q@ is declared as:
+
+\begin{lstlisting}
+q : (int, boolean) pair;
+\end{lstlisting}
+
+the semantic analyser should figure out that it has already created an entry $pair1$ in the type table which is structurally equivalent to this type, and bind \lstinline@q@ to $pair1$ rather than creating a new entry in the type table. This mayn't be a correctness issue, but may avoid proliferation of type entries in the type table.
+
+\subsection{Containers}
+Containers are really structures with functions being fields in them. For example, the entry for map type in the global type table will be something like:
+\begin{center}
+	\begin{tabular}{l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l}
+		$map$ & \begin{tabular}{| l |}
+			\hline
+			$polymorphic(\alpha, \beta)$: \\
+			\hline
+			\begin{tabular}{| l | l |}
+				\multicolumn{2}{| l |}{$struct$} \\
+				\hline
+				$add$ & $fun(\alpha \rightarrow None)$ \\
+				\hline
+				$keys$ & $fun(None \rightarrow \alpha\ set)$ \\
+				\hline
+				$get$ & $fun(\alpha \rightarrow \beta)$ \\
+				\hline
+			\end{tabular} \\
+			\hline
+		\end{tabular} \\
+	\end{tabular}
+\end{center}
+
+In the above, $map$ has been declared as a polymorphic type, which encapsulates a structure with three functions ($add$, $keys$ and $get$). The function types have type variables as parameters, which bind to the formal parameters of the enclosing polymorphic type.
 \end{document}
