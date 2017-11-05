@@ -337,6 +337,7 @@ registeredUsers : (string, User) map;
 \end{lstlisting}
 \end{enumerate}
 
+
 Following points are to be noted about all the types in the language:
 \begin{enumerate}
 	\item All basic types and containers are \emph{native types}. All other types are \emph{user defined types}.
@@ -348,6 +349,9 @@ Following points are to be noted about all the types in the language:
 	\item Functions can't be declared independently. Rather, they are only added to support operations on container types, \\ e.g. \lstinline@requests.add( (loggedinUser, request_curfew.request) )@ to add an element to a map \lstinline@request@.
 	
 \end{enumerate}
+
+\subsection{Implementation of Types}
+As mentioned above, all types are globally visible. They are implemented as elements of a type table in the \lstinline@Statechart@ class. All basic types are added to this during initialisation. As of now, we maintain the polymorphic types in a separate table because we don't intend to allow arbitrary mutual recursion between polymorphic types and non polymorphic types.
 
 \subsection{Structures}
 A \lstinline@struct@ type declaration will lead to a entry in the type table which will map a type name to a declaration list.
@@ -373,6 +377,38 @@ will create a type entry of the following form:
 			\end{tabular} \\
 	\end{tabular}
 \end{center}
+
+The entry of a structure in the type table maps to a declaration list. All the type values appearing in this declaration list must map to already existing type entries in the type table which could be any -- as of now non-polymorphic -- types including structures themselves. 
+
+\begin{center}
+	\begin{tabular}{|l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l |}
+		\hline
+		$int$ & \hspace{3cm}\tikz[remember picture, overlay, outer sep=0pt]\node(a){}; \\
+		\hline
+		$Duration$ & 
+		\begin{tabular}{| l | c |}
+			\hline
+			\multicolumn{2}{| l |}{$struct$} \\
+			\hline
+			$startTime$ & $int$\tikz[remember picture, overlay, inner sep=3pt, outer sep=3pt, minimum width=5pt] \node(b){}; \\
+			\hline
+			$endtime$ & $int$\tikz[remember picture, overlay, inner sep=3pt, outer sep=3pt, minimum width=5pt] \node(c){}; \\
+			\hline
+		\end{tabular} \\
+		\hline
+	\end{tabular}
+\end{center}
+
+\tikz[remember picture, overlay] \draw[->, thick, bend right=40, out=270, in=-60] (b.east) to (a.east);
+
+\tikz[remember picture, overlay] \draw[->, thick, bend right=40, out=270, in=-60] (c.east) to (a.330);
+
+As of now, we don't allow forward references in the type table. We don't allow recursive types.
+
+\subsection{Functions}
+Functions map a list of input types to an output type. For example: $sum : fun(int \times int \rightarrow int)$ declares a function $sum$ which takes two $int$s and returns an $int$.
+
+As of now, we do not allow user defined function types. However, they are added to allow types like maps and lists with their properties declared as function types (see section~\ref{s:cont}).
 
 \subsection{Polymorphic Types}
 A polymorphic type can be thought of as a function ($type\ list \rightarrow type$) which takes a list of types as parameters and returns a type. The type entry of a polymorphic type will have the following form:
@@ -433,7 +469,7 @@ q : (int, boolean) pair;
 
 the semantic analyser should figure out that it has already created an entry $pair1$ in the type table which is structurally equivalent to this type, and bind \lstinline@q@ to $pair1$ rather than creating a new entry in the type table. This mayn't be a correctness issue, but may avoid proliferation of type entries in the type table.
 
-\subsection{Containers}
+\subsection{Containers} \label{s:cont}
 Containers are really structures with functions being fields in them. For example, the entry for map type in the global type table will be something like:
 \begin{center}
 	\begin{tabular}{l @{\hspace{0.5cm}$\mapsto$\hspace{0.5cm}} l}
@@ -457,4 +493,7 @@ Containers are really structures with functions being fields in them. For exampl
 \end{center}
 
 In the above, $map$ has been declared as a polymorphic type, which encapsulates a structure with three functions ($add$, $keys$ and $get$). The function types have type variables as parameters, which bind to the formal parameters of the enclosing polymorphic type.
+
+As of now, we do not allow user defined containers. The currently available container types are list, set, map, tuple etc. 
+
 \end{document}
