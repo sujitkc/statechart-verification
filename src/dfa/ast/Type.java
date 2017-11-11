@@ -7,4 +7,6 @@ public class Type {
   public Type(String name) {
     this.name = name;
   }
+
+  
 }

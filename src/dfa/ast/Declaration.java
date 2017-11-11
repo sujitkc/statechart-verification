@@ -3,10 +3,17 @@ package ast;
 public class Declaration {
   public final String vname;
   public final String typeName;
+  public   String hash="";
   private DeclarationList declarationList;
   private Type type;
 
-  public Declaration(String vname, String typeName) {
+  public Declaration(String vname, String hash, String typeName) {
+    this.vname           = vname;
+    this.typeName        = typeName;
+    this.hash            = hash;
+  }
+
+   public Declaration(String vname, String typeName) {
     this.vname           = vname;
     this.typeName        = typeName;
   }
@@ -24,7 +31,12 @@ public class Declaration {
   }
 
   public String toString() {
-    return this.vname + " : " + this.typeName + ";";
+    if(hash==""){
+      return this.vname + " : " + this.typeName + ";";
+    }
+    else{
+      return this.vname + " # : " + this.typeName + ";"; 
+    }
   }
 
   public void setType(Type type) {

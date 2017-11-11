@@ -7,6 +7,7 @@ public class Transition {
   private       Name       sourceName;
   private       Name       destinationName;
   public  final Expression guard;
+  public        String      trigger;
   public  final Statement  action;
   private       State      source;
   private       State      destination;
@@ -31,10 +32,11 @@ public class Transition {
 
   private Environment writeEnvironment = null;
 
-  public Transition(String name, Name src, Name dest, Expression guard, Statement action) {
+  public Transition(String name, Name src, Name dest, String trigger, Expression guard, Statement action) {
     this.name = name;
     this.sourceName = src;
     this.destinationName = dest;
+    this.trigger = trigger;
     this.guard = guard;
     this.action = action;
   }
@@ -109,6 +111,7 @@ public class Transition {
     String s = "\ntransition " + this.name + "{\n";
     s += "source : " + this.source.getFullName() + "\n";
     s += "destination : " + this.destination.getFullName() + "\n";
+    s += "trigger : " + this.trigger + "\n";
     s += "guard : " + this.guard + "\n";
     s += "action : " + this.action + "\n";
     s += "\n}\n";

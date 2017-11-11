@@ -7,14 +7,17 @@ import java.util.ListIterator;
 public class Statechart extends State {
 
   public final List<Type> types = new ArrayList<Type>();
+  public StructType struc;
 
   public Statechart(
       String            name,
+      StructType         struc,   
       List<State>       states,
       List<Transition>  transitions,
       DeclarationList declarations) throws Exception {
     super(name, states, transitions, declarations);
 
+    this.struc = struc;
     this.types.add(new BasicType("int"));
     this.types.add(new BasicType("boolean"));
 

@@ -34,6 +34,9 @@ non terminal ast.Name             name;
 // non terminal ast.Operator         OPER;
 non terminal List<ast.State>      states;
 non terminal List<ast.Transition> transitions;
+//non terminal typestmt, input_var;
+non terminal input_var;
+non terminal ast.StructType structure;
 
 non terminal ast.StatementList       statement_list;
 non terminal ast.Statement           statement;
@@ -43,6 +46,7 @@ non terminal ast.Expression          expr;
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 non terminal String OPER;
+non terminal idlist, events_list;
 
 terminal String IDENTIFIER;
 terminal Symbol
@@ -51,14 +55,15 @@ terminal Symbol
     ASSIGN, OP_MESSAGE,
     GOTO, DONE,                                      /* Control flow             */
     STATECHART, STATE, TRANSITION,                   /* Statechart related       */
-    SRC, DEST, GUARD, ACTION,                        /* Transition label related */
+    SRC, DEST,TRIGGER, GUARD, ACTION, STRUCT,         /* Transition label related */
     EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
     BELONGSTO,                                       /* Set theoretic            */
     VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER, /* Variables related        */
     AND, OR, NOT,                                    /* Logical operators        */
     INC, DEC,                                        /* Increment, decrement     */
     EQU, NEQ, GRE, GEQ, LES, LEQ,                    /* Relational operators     */
-    MIN, ADD, MUL, DIV, UMIN, MOD;                   /* Arithmetic operators     */
+    MIN, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
+    HASH, EVENTS;
 
 precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
 precedence left LBRACE, RBRACE, AND, OR;
@@ -86,7 +91,6 @@ OPER ::=
   | AND
   | OR
   | NOT
-  | EQU
   | GRE
   | LES
   | GEQ
@@ -104,14 +108,21 @@ OPER ::=
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
+      structure:struc
+      events_list:e_list
       decl_list:dlist
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, st, tr, dlist);
+      RESULT = new ast.Statechart(id, struc, st, tr, dlist);
     :}
   ;
-
+/*
+typestmt ::= 
+      IDENTIFIER:id1
+      | typestmt OR IDENTIFIER:id1
+  ;
+*/
 state ::= 
     STATE IDENTIFIER:id LBRACE
       decl_list:dlist
@@ -120,6 +131,10 @@ state ::=
     {:
       RESULT = new ast.State(id, st, tr, dlist);
     :}
+  ;
+
+input_var ::=
+    IDENTIFIER:id HASH COLON IDENTIFIER:tid SEMICOLON
   ;
 
 states ::=
@@ -133,15 +148,32 @@ states ::=
     :}
   ;
 
+structure ::=   
+    STRUCT IDENTIFIER:id LBRACE decl_list:dlist RBRACE
+    {:
+      RESULT = new ast.StructType(id,dlist);
+    :}
+  ;
+
+events_list ::= 
+    EVENTS LBRACE idlist RBRACE
+  ;
+
+idlist ::=
+      IDENTIFIER SEMICOLON
+      | idlist IDENTIFIER SEMICOLON
+  ;
+
 transition ::=
     TRANSITION IDENTIFIER:id LBRACE
       SRC  COLON name:src SEMICOLON
       DEST COLON name:des SEMICOLON
+      TRIGGER COLON IDENTIFIER:id1 SEMICOLON
       GUARD COLON expr:g SEMICOLON
-      ACTION COLON statement:a
+      ACTION COLON LBRACE statement:a RBRACE
     RBRACE
     {:
-      RESULT = new ast.Transition(id, src, des, g, a);
+      RESULT = new ast.Transition(id, src, des, id1, g, a);
     :}
   ;
 
@@ -249,6 +281,11 @@ decl ::=
     {:
       RESULT = new ast.Declaration(id, tid);
     :}
+    | IDENTIFIER:id HASH COLON IDENTIFIER:tid SEMICOLON // production rule for input variables
+     {:
+      RESULT = new ast.Declaration(id,"#",tid); 
+    :}
+
   ;
 
 /********** expressions for action language - end ******/

@@ -9,4 +9,14 @@ public class StructType extends Type {
     super(name);
     this.declarations = declarations;
   }
+
+	public String toString() {
+	String s = "\n";
+	s = "struct " + this.name + " " + "{ ";
+	s = s + declarations.toString();
+	s = s + " };";
+	return s;
+
+	}
+
 }
