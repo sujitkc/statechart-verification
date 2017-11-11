@@ -23,7 +23,8 @@ identifier = [A-Za-z][A-Za-z0-9]*
 
 
 %%
-
+"struct"         { /* System.out.println("struct");         */ return new Symbol(sym.STRUCT); }
+"events"           { /* System.out.println("events");         */ return new Symbol(sym.EVENTS);       }
 "List"           { /* System.out.println("List");         */ return new Symbol(sym.LIST);       }
 "init"           { /* System.out.println("init");         */ return new Symbol(sym.INIT);       }
 "empty"          { /* System.out.println("empty");        */ return new Symbol(sym.EMPTY);      }
@@ -39,11 +40,15 @@ identifier = [A-Za-z][A-Za-z0-9]*
 "transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION); }
 "source"         { /* System.out.println("source");       */ return new Symbol(sym.SRC);        }
 "destination"    { /* System.out.println("destination");  */ return new Symbol(sym.DEST);       }
+"trigger"    { /* System.out.println("trigger");  */ return new Symbol(sym.TRIGGER);       }
 "guard"          { /* System.out.println("guard");        */ return new Symbol(sym.GUARD);      }
 "action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION);     }
 "done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE);       }
 
 "+"				 {return new Symbol(sym.ADD);}
+"#"				 {return new Symbol(sym.HASH);}
+"|"				 {return new Symbol(sym.OR);}
+"="				 {return new Symbol(sym.EQU);}
 ":="             { /* System.out.println("assign");       */ return new Symbol(sym.ASSIGN);     }
 "["              { /* System.out.println("LPAR_SQ");      */ return new Symbol(sym.LPAR_SQ);    }
 "]"              { /* System.out.println("RPAR_SQ");      */ return new Symbol(sym.RPAR_SQ);    }
