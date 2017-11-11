@@ -1,0 +1,142 @@
+statechart curfew {
+
+  struct Duration {
+    startTime : a;
+    endTime : b;
+  }
+
+  events {
+    selectRegister;
+    selectLogin;
+  }
+
+  state registration {
+    userName : string;
+    password : string;
+    userType # : UserType;
+
+  }
+
+  state login {
+    username # : string;
+    password # : string; 
+  }
+
+
+  state adminDashboard {
+
+  }
+  state studentDashboard {
+
+    state initial {
+
+    }
+
+    state requestCurfew {
+      request # : Request;
+    }
+
+    state requestCoreCurfew {
+      request # : Request;
+    }
+
+    state requestVacation {
+      request # : Request;
+    }
+
+    state vacation {
+
+    }
+
+    transition initCurfew {
+      source : curfew.studentDashboard.initial;
+      destination : curfew.studentDashboard.requestCurfew;
+      trigger: curfewSelect;
+      guard: true;
+      action : { true := false; }
+    }
+
+    transition initCoreCurfew {
+      source : curfew.studentDashboard.initial;
+      destination : curfew.studentDashboard.requestCoreCurfew;
+
+      trigger: coreCurfewSelect;
+      guard: true;
+      action : { true := false; }
+    }
+
+    transition initVacation {
+      source : curfew.studentDashboard.initial;
+      destination : curfew.studentDashboard.vacation;
+
+      trigger: vacationSelect;
+      guard: true;
+      action : { true := false; }
+    }
+
+    transition curfewInitSuccess {
+      source : curfew.studentDashboard.requestCurfew;
+      destination : curfew.studentDashboard.initial;
+
+      trigger: curfewSubmit;
+      guard: true;
+      action : { true := false; }
+    }
+
+    transition coreCurfewInit {
+      source : curfew.studentDashboard.requestCoreCurfew;
+      destination : curfew.studentDashboard.initial;
+
+      trigger: coreCurfewSubmit;
+      guard: true;
+      action : { true := false; }
+    }
+
+    transition vacationInit {
+      source : curfew.studentDashboard.initial;
+      destination : curfew.login;
+
+      trigger: vacationSubmit;
+      guard: true;
+      action : { true := false; }
+    }    
+
+  }
+
+  transition initRegister {
+    source : curfew.studentDashboard.initial;
+    destination : curfew.login;
+
+    trigger: selectLogin;
+    guard: true;
+    action : { true := false; }
+  }  
+
+  transition studentDashboardInit {
+    source : curfew.studentDashboard;
+    destination : curfew.studentDashboard.initial;
+
+    trigger : studentLogout;
+    guard : true;
+    action: { loggedinUser := false; }
+  }
+
+  transition loginInitCancel {
+    source : curfew.login;
+    destination : curfew.studentDashboard.initial;
+
+    trigger : cancel;
+    guard : true;
+    action: { true := false; }
+  }
+
+  transition initRegister {
+    source : curfew.studentDashboard.initial;
+    destination : curfew.registration;
+
+    trigger: selectRegister;
+    guard: true;
+    action : { true := false; }
+  }
+
+}
