@@ -14,12 +14,25 @@ statechart curfew {
 
   type LogType = ENTRY | EXIT | VACATION;
 
+
   struct Duration = {
     startTime : int;
     endTime : int
   }
 
-  type Request = CURFEW of int | CORECURFEW of int * string | VACATION of Duration;
+  type RequestStatus = PENDING | APPROVED | REJECTED;
+
+  type RequestType =
+      CURFEW of int               // time (represented as integer)
+    | CORECURFEW int * string     // time (represented as integer), reason
+    | VACATION of Duration;       // duration
+
+  struct Request = {
+    requester : string;
+    team : string list;
+    requestType : RequestType;
+    status : RequestStatus;
+  }
 
   struct User = {
     password : string;
@@ -38,11 +51,15 @@ statechart curfew {
     curfew_select;
     core_curfew_select;
     vacation_select;
+    pr_select;
+    cr_select;
+    rr_select;
+    prsel_select;
   }
 
   registeredUsers : (string, User) map;
   loggedinUser : string;
-  requests : string * Request list;
+  requests : Request list;
 
 
   state init {
@@ -52,17 +69,118 @@ statechart curfew {
   state registration {
     userName : string;
     password : string;
-    userType * : UserType;
+    userType # : UserType;
 
   }
 
   state login {
-    username # : string; // * indicates input variable
+    username # : string; // # indicates input variable
     password # : string; 
   }
 
   state admin_dashboard {
+    state init {
 
+    }
+
+    state view_requests {
+      state pending_requests {
+        pr : string list;
+        prsel: string list;
+
+        entry {
+          pr := [r.requester for r in requests if r.status = PENDING]; // pr contains the requesters whose status is PENDING.
+        }
+
+        during {
+          [prsel_select] {
+            prsel = pr.shuffle().random_sublist(); // select a random subset of pr.
+          }
+
+          [prsel_approve] {
+            for( r in requests ) {
+              if(r.requester in prsel) {
+                r.status := APPROVED;
+              }
+            }
+            pr := [r.requester for r in requests if r.status = PENDING]; // pr contains requesters whose status is PENDING.
+            prsel := []; // unselect all
+          }
+ 
+          [prsel_reject] {
+            for( r in requests ) {
+              if(r.requester in prsel) {
+                r.status := REJECTED;
+              }
+            }
+            pr := [r.requester for r in requests if r.status = PENDING]; // pr contains requesters whose status is PENDING.
+            prsel := []; // unselect all
+          }
+       }
+      }
+
+      state closed_requests {
+
+      }
+
+      state rejected_requests {
+
+      }
+
+      transition pr_cr {
+        source : pending_requests;
+        destination : closed_requests;
+
+        trigger: cr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition pr_rr {
+        source : pending_requests;
+        destination : rejected_requests;
+
+        trigger: rr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition cr_pr {
+        source : closed_requests;
+        destination : pending_requests;
+
+        trigger: pr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition cr_rr {
+        source : closed_requests;
+        destination : rejected_requests;
+
+        trigger: rr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition rr_pr {
+        source : rejected_requests;
+        destination : pending_requests;
+
+        trigger: pr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition rr_cr {
+        source : rejected_requests;
+        destination : closed_requests;
+
+        trigger: cr_select;
+        guard: true;
+        action : {}
+      }
+    }
   }
 
   state student_dashboard {
@@ -119,7 +237,7 @@ statechart curfew {
       action : { requests.add( (loggedinUser, request_curfew.request) ); }
     }
 
-    transition core_curfew_init {
+    transition core_curfew_init_success {
       source : request_core_curfew;
       destination : init;
 
@@ -128,7 +246,7 @@ statechart curfew {
       action : { requests.add( (loggedinUser, request_core_curfew.request) ); }
     }
 
-    transition vacation_init {
+    transition vacation_init_success {
       source : init;
       destination : login;
 
