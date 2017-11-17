@@ -1,5 +1,13 @@
 statechart curfew {
 
+  type UserType = ADMIN | STUDENT;
+
+  type LogType = ENTRY | EXIT | VACATION;
+
+  type Request = CURFEW of harika | CORECURFEW of harika * harika | VACATION of Duration;
+
+  type Request = CURFEW of int | CORECURFEW of int * string | VACATION of Duration;
+
   struct Duration {
     startTime : a;
     endTime : b;
@@ -8,6 +16,15 @@ statechart curfew {
   events {
     selectRegister;
     selectLogin;
+    login;
+    register;
+    loginCancel;
+    curfewSubmit;
+    coreCurfewSubmit;
+    vacationSubmit;
+    curfewSelect;
+    coreCurfewSelect;
+    vacationSelect;
   }
 
   state registration {
@@ -49,11 +66,19 @@ statechart curfew {
     }
 
     transition initCurfew {
-      source : curfew.studentDashboard.initial;
+      source : curfew::studentDashboard::initial.a.b;
       destination : curfew.studentDashboard.requestCurfew;
       trigger: curfewSelect;
-      guard: true;
-      action : { true := false; }
+      guard:  login.username in registeredUsers.keys | 
+              login.username in registeredUsers.keys |
+              login.password = registeredUsers[login.username].password |
+              registeredUsers[login.username].usertype = ADMIN |
+              not login.password = registeredUsers[initial.username].password;
+      action : {  
+                  registeredUsers[registration.username] = User;
+                  password := registration.password;
+                  userType := registration.userType;
+                }
     }
 
     transition initCoreCurfew {
@@ -62,7 +87,7 @@ statechart curfew {
 
       trigger: coreCurfewSelect;
       guard: true;
-      action : { true := false; }
+      action : {;}
     }
 
     transition initVacation {
@@ -71,7 +96,7 @@ statechart curfew {
 
       trigger: vacationSelect;
       guard: true;
-      action : { true := false; }
+      action : {;}
     }
 
     transition curfewInitSuccess {
@@ -80,7 +105,7 @@ statechart curfew {
 
       trigger: curfewSubmit;
       guard: true;
-      action : { true := false; }
+      action : { requests.add( (loggedinUser,requestCurfew.request) ); }
     }
 
     transition coreCurfewInit {
@@ -89,7 +114,7 @@ statechart curfew {
 
       trigger: coreCurfewSubmit;
       guard: true;
-      action : { true := false; }
+      action : { requests.add( (loggedinUser, requestCoreCurfew.request) ); }
     }
 
     transition vacationInit {
@@ -98,7 +123,7 @@ statechart curfew {
 
       trigger: vacationSubmit;
       guard: true;
-      action : { true := false; }
+      action : { requests.add( (loggedinUser, vacationCurfew.request) ); }
     }    
 
   }
@@ -109,7 +134,7 @@ statechart curfew {
 
     trigger: selectLogin;
     guard: true;
-    action : { true := false; }
+    action : { ;}
   }  
 
   transition studentDashboardInit {
@@ -118,7 +143,7 @@ statechart curfew {
 
     trigger : studentLogout;
     guard : true;
-    action: { loggedinUser := false; }
+    action: { loggedinUser := login.username; }
   }
 
   transition loginInitCancel {
@@ -127,7 +152,7 @@ statechart curfew {
 
     trigger : cancel;
     guard : true;
-    action: { true := false; }
+    action: {loggedinUser := ''; }
   }
 
   transition initRegister {
@@ -136,7 +161,17 @@ statechart curfew {
 
     trigger: selectRegister;
     guard: true;
-    action : { true := false; }
+    action : { ;}
   }
 
+  transition registerInitSuccess {
+    source : curfew.registration;
+    destination : curfew.studentDashboard.initial;
+
+    trigger : register;
+    guard : not registration.username in registeredUsers.keys;
+    action: { ;}
+
+  }
+  
 }
