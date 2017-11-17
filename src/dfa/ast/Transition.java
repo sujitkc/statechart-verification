@@ -6,9 +6,9 @@ public class Transition {
   public  final String     name;
   private       Name       sourceName;
   private       Name       destinationName;
-  public  final Expression guard;
+  public  final GuardStmt guard;
   public        String      trigger;
-  public  final Statement  action;
+  public  final ActionStmt  action;
   private       State      source;
   private       State      destination;
 
@@ -32,7 +32,7 @@ public class Transition {
 
   private Environment writeEnvironment = null;
 
-  public Transition(String name, Name src, Name dest, String trigger, Expression guard, Statement action) {
+  public Transition(String name, Name src, Name dest, String trigger, GuardStmt guard, ActionStmt action) {
     this.name = name;
     this.sourceName = src;
     this.destinationName = dest;

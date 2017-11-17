@@ -10,7 +10,7 @@ import ast.Type;
 import ast.Environment;
 import ast.Name;
 import ast.Statement;
-import ast.Statement;
+import ast.ActionStmt;
 import ast.AssignmentStatement;
 import ast.StatementList;
 import ast.UnaryExpr;
@@ -182,6 +182,25 @@ public class Typechecker {
       this.typecheckStatementList(s, renv, wenv, rwenv, roenv, woenv);
     }
   }
+/*
+  private void typecheckActionStmt(
+    ActionStmt s,
+    Environment renv,
+    Environment wenv,
+    Environment rwenv,
+    Environment roenv,
+    Environment woenv) throws Exception {
+    if(s instanceof Statement) {
+      this.typecheckStatement((Statement)s, renv, wenv, rwenv, roenv, woenv);
+
+    }
+  }
+*/
+
+
+
+
+
 
   private void typecheckTransition(Transition transition) throws Exception {
     State lub = this.statechart.lub(transition.getSource(), transition.getDestination());
@@ -194,13 +213,14 @@ public class Typechecker {
         ". Should be placed in state " + lub.name + " but placed in state " +
         transition.getState().name + ".");
     }
-    this.typecheckGuard(transition.guard, transition.getRWEnvironment());
+/*    this.typecheckGuard(transition.guard, transition.getRWEnvironment());
     this.typecheckStatement(transition.action,
       transition.getReadEnvironment(),
       transition.getWriteEnvironment(),
       transition.getRWEnvironment(),
       transition.getReadOnlyEnvironment(),
       transition.getWriteOnlyEnvironment());
+*/
   }
 
   private void typecheckCode(State state) throws Exception {

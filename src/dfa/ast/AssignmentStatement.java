@@ -8,6 +8,10 @@ public class AssignmentStatement extends Statement {
     this.lhs = lhs;
     this.rhs = rhs;
   }
+  public AssignmentStatement(Name lhs) {
+    this.lhs = lhs;
+    this.rhs = null;
+  }
   public String toString() {
     return this.lhs.toString() + " = " + this.rhs.toString();
   }

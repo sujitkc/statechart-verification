@@ -47,10 +47,13 @@ non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 non terminal String OPER;
 non terminal idlist, events_list;
+non terminal BasicTypes, typedefinition,typestmt, actionarguments;
+non terminal ast.ActionStmt actionstmt;
+non terminal ast.GuardStmt guardstmt;
 
 terminal String IDENTIFIER;
 terminal Symbol
-    LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
+    LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ, LROUNDBRACE, RROUNDBRACE,    /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
     GOTO, DONE,                                      /* Control flow             */
@@ -58,12 +61,12 @@ terminal Symbol
     SRC, DEST,TRIGGER, GUARD, ACTION, STRUCT,         /* Transition label related */
     EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
     BELONGSTO,                                       /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER, /* Variables related        */
+    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, INT, NUMBER, /* Variables related        */
     AND, OR, NOT,                                    /* Logical operators        */
     INC, DEC,                                        /* Increment, decrement     */
     EQU, NEQ, GRE, GEQ, LES, LEQ,                    /* Relational operators     */
     MIN, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
-    HASH, EVENTS;
+    HASH, EVENTS, OF,STAR,IN,QUOTES;
 
 precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
 precedence left LBRACE, RBRACE, AND, OR;
@@ -81,6 +84,17 @@ name ::=
       RESULT = idlist;
       RESULT.add(id);
     :}
+  | name:idlist COLON COLON IDENTIFIER:id 
+    {:
+      RESULT = idlist;
+      RESULT.add(id);
+    :}
+/*  | name:idlist1 COLON COLON IDENTIFIER:id DOT name:idlist2 
+    {:
+      RESULT = idlist;
+      RESULT.add(id);
+    :}
+*/
   ;
 
 
@@ -104,10 +118,62 @@ OPER ::=
 
 ;
 
+BasicTypes ::= 
+    INT
+    | STRING
+  ;
+
+typedefinition ::=
+      TYPE IDENTIFIER:id EQU typestmt SEMICOLON
+      | typedefinition TYPE IDENTIFIER:id EQU typestmt SEMICOLON
+  ;
+
+typestmt ::=
+    IDENTIFIER:id1
+    | BasicTypes
+
+    | IDENTIFIER:id STAR BasicTypes
+    | BasicTypes STAR BasicTypes
+    | BasicTypes STAR IDENTIFIER:id 
+    
+    | IDENTIFIER:id1 OF IDENTIFIER:id2
+    | IDENTIFIER:id1 OF BasicTypes
+
+    | IDENTIFIER:id STAR IDENTIFIER:id1
+
+    | IDENTIFIER:id OF IDENTIFIER:id1 STAR IDENTIFIER:id2   
+    | IDENTIFIER:id OF IDENTIFIER:id1 STAR IDENTIFIER:id2 OF IDENTIFIER:id3  
+
+    | IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2   
+    | IDENTIFIER:id OF BasicTypes STAR BasicTypes   
+
+
+    | IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2 OF IDENTIFIER:id3  
+    | IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2 OF BasicTypes  
+
+
+    | typestmt OR IDENTIFIER:id2
+    | typestmt OR IDENTIFIER:id1 OF IDENTIFIER:id2
+    | typestmt OR IDENTIFIER:id STAR IDENTIFIER:id1
+    | typestmt OR IDENTIFIER:id OF IDENTIFIER:id1 STAR IDENTIFIER:id2
+    | typestmt OR IDENTIFIER:id OF IDENTIFIER:id1 STAR IDENTIFIER:id2 OF IDENTIFIER:id3
+
+    | typestmt OR BasicTypes
+    | typestmt OR IDENTIFIER:id STAR BasicTypes
+    | typestmt OR BasicTypes STAR BasicTypes
+    | typestmt OR BasicTypes STAR IDENTIFIER:id
+    | typestmt OR IDENTIFIER:id1 OF BasicTypes
+    | typestmt OR IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2
+    | typestmt OR IDENTIFIER:id OF BasicTypes STAR BasicTypes
+    | typestmt OR IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2 OF IDENTIFIER:id3
+    | typestmt OR IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2 OF BasicTypes
+
+  ;
 
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
+      typedefinition:td
       structure:struc
       events_list:e_list
       decl_list:dlist
@@ -117,12 +183,7 @@ statechart ::=
       RESULT = new ast.Statechart(id, struc, st, tr, dlist);
     :}
   ;
-/*
-typestmt ::= 
-      IDENTIFIER:id1
-      | typestmt OR IDENTIFIER:id1
-  ;
-*/
+
 state ::= 
     STATE IDENTIFIER:id LBRACE
       decl_list:dlist
@@ -169,13 +230,131 @@ transition ::=
       SRC  COLON name:src SEMICOLON
       DEST COLON name:des SEMICOLON
       TRIGGER COLON IDENTIFIER:id1 SEMICOLON
-      GUARD COLON expr:g SEMICOLON
-      ACTION COLON LBRACE statement:a RBRACE
+      GUARD COLON guardstmt:g SEMICOLON
+      ACTION COLON LBRACE actionstmt:a RBRACE
     RBRACE
     {:
       RESULT = new ast.Transition(id, src, des, id1, g, a);
     :}
   ;
+
+guardstmt ::=
+    name:n
+    {: 
+      ast.Name n1 = new ast.Name(n.toString());
+      RESULT = new ast.GuardStmt(n1);
+    :}
+
+    | name:n1 IN name:n2
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString()); 
+      RESULT = new ast.GuardStmt(n3,n4);  
+    :}
+    | NOT name:n1 IN name:n2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString()); 
+      RESULT = new ast.GuardStmt(n3,n4);  
+    :}
+    | guardstmt OPER:o name:n1 IN name:n2  
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,o,n4);  
+    :}
+    | guardstmt OPER:o NOT name:n1 IN name:n2  
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,o,n4);  
+    :}
+    | name:n1 EQU IDENTIFIER:id1 LPAR_SQ name:n2 RPAR_SQ DOT IDENTIFIER:id2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,n4,id1,id2);  
+    :}
+    | NOT name:n1 EQU IDENTIFIER:id1 LPAR_SQ name:n2 RPAR_SQ DOT IDENTIFIER:id2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,n4,id1,id2);  
+    :}
+    | guardstmt OPER:o name:n1 EQU IDENTIFIER:id1 LPAR_SQ name:n2 RPAR_SQ DOT IDENTIFIER:id2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,n4,id1,id2,o);  
+    :}
+    | guardstmt OPER:o NOT name:n1 EQU IDENTIFIER:id1 LPAR_SQ name:n2 RPAR_SQ DOT IDENTIFIER:id2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(n3,n4,id1,id2,o);  
+    :}
+
+    | IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ DOT IDENTIFIER:id2 EQU name:n2  
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(id1,n1,id2,n2);  
+    :}
+    | NOT IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ DOT IDENTIFIER:id2 EQU name:n2  
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(id1,n1,id2,n2);  
+    :}
+    | guardstmt OPER:o IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ DOT IDENTIFIER:id2 EQU name:n2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(id1,n1,id2,n2,o);  
+    :}
+    | guardstmt OPER:o NOT IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ DOT IDENTIFIER:id2 EQU name:n2 
+    {: 
+      ast.Name n3 = new ast.Name(n1.toString()); 
+      ast.Name n4 = new ast.Name(n2.toString());
+      RESULT = new ast.GuardStmt(id1,n1,id2,n2,o);  
+    :}
+
+  ;
+
+actionstmt ::=
+    statement:a 
+    {: 
+      RESULT = new ast.ActionStmt(a); 
+    :}
+    | IDENTIFIER:id DOT IDENTIFIER:id1 LROUNDBRACE LROUNDBRACE expr:e1 COMMA expr:e RROUNDBRACE RROUNDBRACE SEMICOLON {: 
+      RESULT = new ast.ActionStmt(id,id1,e1,e); 
+    :} 
+    | IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ EQU name:n2 SEMICOLON
+    {:
+      RESULT = new ast.ActionStmt(id1,n1,n2);
+    :}
+    | actionstmt IDENTIFIER:id1 LPAR_SQ name:n1 RPAR_SQ EQU name:n2 SEMICOLON
+    {:
+      RESULT = new ast.ActionStmt(id1,n1,n2);
+    :}
+    | SEMICOLON
+    | actionstmt IDENTIFIER:id DOT IDENTIFIER:id1 LROUNDBRACE LROUNDBRACE expr:e1 COMMA expr:e RROUNDBRACE RROUNDBRACE
+     SEMICOLON
+    {:
+      RESULT = new ast.ActionStmt(id,id1,e1,e);
+    :}
+    | actionstmt statement:a 
+    {: 
+      RESULT = new ast.ActionStmt(a); 
+    :}
+  ;
+
+/*
+actionarguments ::=
+    IDENTIFIER:id
+    | actionarguments COMMA IDENTIFIER
+  ; 
+*/
 
 transitions ::=
     transitions:tlist transition:t 
@@ -256,12 +435,15 @@ statement::=
     {:
       RESULT = new ast.AssignmentStatement(n, e);
     :}
-  | LBRACE
-      statement_list:sl
-    RBRACE
+  | LBRACE statement_list:sl RBRACE
     {:
       RESULT = sl;
     :}
+  | name:n ASSIGN QUOTES SEMICOLON
+    {:
+      RESULT = new ast.AssignmentStatement(n);
+    :}
+
   ;
 
 decl_list ::= decl_list:dlist decl:d

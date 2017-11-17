@@ -21,6 +21,25 @@ public class Name extends Expression{
     }
   }
 
+  public Name(List<String> name,List<String> name1) {
+    for(String id : name) {
+      this.name.add(id);
+    }
+    for(String id : name1) {
+      this.name.add(id);
+    }
+  }
+
+  public List<Name> combineLists(List<Name> l1,List<Name> l2){
+    ArrayList<ast.Name> merged = new ArrayList<ast.Name>();
+    for(Name n : l1) {
+      merged.add(n);
+    }
+    for(Name n : l2) {
+      merged.add(n);
+    }
+    return merged;
+  }
 
   public Declaration getDeclaration() {
     return this.declaration;
