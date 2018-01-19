@@ -256,7 +256,7 @@ statechart curfew {
     }
   }
 
-  transition init_register {
+  transition init_login {
     source : init;
     destination : login;
 

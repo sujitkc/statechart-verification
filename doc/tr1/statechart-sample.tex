@@ -1,0 +1,156 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{listings}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{marvosym}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tikz-uml}
+\usetikzlibrary{positioning,shapes,arrows}
+\usetikzlibrary{automata,positioning,shapes,backgrounds,fit}
+
+\author{Sujit Chakrabarti}
+\title{Statechart Sample}
+\date{}
+\begin{document}
+
+\tikzstyle{init} = [draw=black, thick, fill=black, circle]
+\tikzstyle{tr} = [rectangle,draw=black, very thin, dashed,align=left,font=\scriptsize, text ragged, minimum height=2em, minimum width=2em, inner sep=6pt, outer sep=3pt]
+\tikzset{obj/.style = {rectangle split, rounded corners,
+                      rectangle split parts=2, very thick,draw=black!50, top
+                      color=white,bottom color=black!20, align=center}}
+
+\tikzset{cobj/.style = {rectangle split, rounded corners,
+                      rectangle split parts=3, very thick,draw=black!50, top
+                      color=white,bottom color=black!10, align=center}}
+                      
+\begin{center}
+\begin{tikzpicture}
+\node[init](in) at (-4, 0) {};
+\node[obj](collegeHome)  at (0, 0) {\textbf{CollegeHome}};
+\node[obj](courseSelection) at (8,0) {\nodepart{one}\textbf{CourseSelection} \nodepart{two} \lstinline@selectedCourse@};
+
+\node[obj](subjectSelection) at (0,-8){\nodepart{one} \textbf{SubjectSelection} \nodepart{two} \lstinline@selectedSubject@};
+
+\node[obj](reportView) at (8, -8)
+  {  \nodepart{one} \textbf{ReportView}
+     \nodepart{two}
+     $subject, course$; \\
+     $reportList = $ \\
+     $marks \subseteq Marks\ \bullet$ \\
+     $subject \in Subjects \wedge $ \\
+     $course \in Courses$  \\     
+  };
+
+\draw[->](in) to (collegeHome);
+\draw[->](collegeHome) to node[tr, above]{$t_1$} (courseSelection);
+\draw[->](collegeHome) to node[tr, left]{$t_2$} (subjectSelection);
+\draw[->, bend right] (courseSelection) to node[tr, left]{$t_3$} (subjectSelection);
+\draw[->, bend right] (subjectSelection) to node[tr, above left] {
+    $t_5: submit$ \\
+    $selectedSubject \neq null$ / \\
+    $subject \gets selectedSubject$
+  } (courseSelection);
+\draw[->](courseSelection) to node[tr, right]{$t_4$} (reportView);
+\draw[->](subjectSelection) to node[tr, below]{$t_6$} (reportView);
+
+\end{tikzpicture}
+\end{center}
+
+\newcommand\Mstrut[1]{\rule{0pt}{#1cm}}
+\newpage                      
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+
+\node[cobj, minimum width = 20cm](bankHome) at (0, 0) {
+  \nodepart{one} \textbf{BankHome}
+  \nodepart{two} \lstinline@userID : string@
+  \nodepart{three} {\Mstrut{12}}
+};
+
+\node[obj](login) [above = 1cm of bankHome] {
+  \nodepart{one} \textbf{Login}
+  \nodepart[font=\scriptsize]{two} username, password : string \\ password = null
+};
+\node[obj](logout) [right = 1cm of login] {
+  \nodepart{one} \textbf{Logout}
+%  \nodepart[font=\scriptsize]{two} username, password : string \\ password = null
+};
+
+\draw[->](logout) to node[tr, above]{$t_{18}$} (login);
+\draw[->](login) to node[tr, left]{$t_1$} (bankHome);
+\draw[->](bankHome.60) to node[tr, right]{$t_{17}$} (logout);
+
+\node[cobj, minimum width = 10cm](billPayments) [above right = of bankHome.south west, xshift=3cm] {
+  \nodepart{one}\textbf{BillPayments}
+  \nodepart[font=\scriptsize]{two} billers : Account list, acc : Account, Init: billers = acc.billers
+  \nodepart{three}\textbf{\Mstrut{2}}
+};
+
+\node[obj](withBills) [above right = 1cm of billPayments.south west] {
+  \nodepart{one} \textbf{WithBills}
+  \nodepart[font=\scriptsize]{two} selectedBiller : Account \\ Init: selectedBiller = null 
+};
+\node[obj](paymentHistory) [right = 1cm of withBills] {
+  \nodepart{one} \textbf{PaymentHistory}
+  \nodepart[font=\scriptsize]{two} startDate, endDate : string 
+};
+\draw[transform canvas={yshift=0.2cm},->](withBills) --node[tr, above]{$t_5$}(paymentHistory);
+\draw[transform canvas={yshift=-0.2cm},->](paymentHistory) --node[tr, below]{$t_7$}(withBills);
+
+
+\node[cobj, minimum width = 6cm](myAccounts) [above left = of billPayments, xshift = 4cm] {
+  \nodepart{one}\textbf{MyAccount}
+  \nodepart{two}\textbf{MyAccount}
+  \nodepart{three}\textbf{\Mstrut{4}}
+};
+
+\draw[->](myAccounts.250) |- node[tr, below]{$t_4$} (billPayments);
+\draw[->](billPayments) |- node[tr, below, near end]{$t_8$} (myAccounts.320);
+
+\node[obj](accountSummary) [above right = of myAccounts.south west, xshift = 0.5cm, yshift = -0.5cm] {\textbf{AccountSummary}};
+\node[obj](accountDetails) [above = 1cm of accountSummary] {\textbf{AccountDetails}};
+\node[init](in1) [left = of accountDetails]{};
+
+\draw[->](accountDetails) to node[tr, right]{$t_2$}(accountSummary);
+\draw[->](in1) to (accountDetails);
+
+\node[obj](accountStatement)[right = of myAccounts]{
+  \nodepart{one} \textbf{AccountStatement}
+  \nodepart[font=\scriptsize]{two} viewList : Transaction list
+};
+
+\draw[->](accountSummary) -| node[tr, right, near end]{$t_3$} (accountStatement.200);
+\draw[->](paymentHistory) to node[tr, left]{$t_6$}(accountStatement.335);
+
+\node[cobj](transfers) [right = of accountStatement, minimum width = 5cm] {
+  \nodepart{one}\textbf{Transfers}
+  \nodepart{two}
+  \nodepart{three}\textbf{\Mstrut{4.5}}
+};
+
+\draw[transform canvas={yshift=2cm},->](myAccounts) --node[tr, above, near start]{$t_9$}(transfers);
+\draw[transform canvas={yshift=1cm},->](transfers) --node[tr, below, very near end]{$t_{10}$}(myAccounts);
+\draw[->](transfers.250) |- node[tr, below]{$t_{16}$} (billPayments);
+\draw[->](billPayments.30) |- node[tr, above]{$t_{15}$} (transfers.220);
+  
+\node[obj](paymentPage) [above right = 1cm of transfers.south west, xshift = 0.5cm] {
+  \nodepart{one} \textbf{PaymentPage}
+  \nodepart[font=\scriptsize]{two} amount: Number \\ receiver: Account
+};
+\node[obj](beneficiaryView) [above = 1cm of paymentPage] {\textbf{BeneficiaryView}};
+\node[init](in2) [above right = 0.2cm of paymentPage] {};
+
+\draw[->, bend left] (in2) to (beneficiaryView.330);
+\draw[->](beneficiaryView.200) |- node[tr, below, very near end]{$t_{11}$} (accountStatement.east);
+\draw[->](beneficiaryView) to node[tr, right]{$t_{12}$}(paymentPage);
+\draw[->, loop right](paymentPage) to node[tr, below, near end]{$t_{13}$}(paymentPage);
+\draw[->](withBills.south) -- ++ (0, -0.5cm) -| node[tr, right]{$t_{14}$}(paymentPage);
+  \end{tikzpicture}
+}
+\end{center}
+
+
+\end{document}
