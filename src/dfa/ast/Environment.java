@@ -16,6 +16,7 @@ public class Environment {
     return this.declarations;
   }
 
+  // function to lookup a name already exists in the declaration list
   public Environment getNextEnvironment() {
     return this.next;
   }
@@ -34,6 +35,7 @@ public class Environment {
       }
     }
   }
+
   /*
     Returns a deep copy of the environment, with env as the next 
     of the last environment.

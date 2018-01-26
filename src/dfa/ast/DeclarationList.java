@@ -11,6 +11,8 @@ public class DeclarationList extends ArrayList<Declaration>{
     return this.state;
   }
 
+  // function to lookup a name already exists in the declaration list
+
   public Declaration lookup(String name) {
     for(Declaration d : this) {
       if(d.vname.equals(name)) {
@@ -24,6 +26,7 @@ public class DeclarationList extends ArrayList<Declaration>{
     this.state = state;
   }
 
+// function to add a new declaraton in the declaration list
   public boolean add(Declaration dec) {
     for(Declaration d : this) {
       if(d.vname.equals(dec.vname)) {

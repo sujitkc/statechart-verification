@@ -21,11 +21,9 @@ parser code
   }
 :}
 
-/*
-non terminal event_definition,type_specifier,identifier_list,assignment_statement,arithmetic_expr,event_block,event_statement_list,event_dest_state,event_statement,guard_expression,action_statement,message_statement;
-non terminal namespace_identifier,string_type,number_type,user_type,expr_LHS,expr_RHS;
-non terminal cnfdnf_formula,relational_expr,logical_operator,relational_operator,trans_flow,trans_stmts;
-*/
+
+
+/*********** Declaraing terminals and non-terminals ****************/ 
 
 non terminal ast.Statechart       statechart;
 non terminal ast.State            state;
@@ -54,23 +52,26 @@ non terminal ast.GuardStmt guardstmt;
 terminal String IDENTIFIER;
 terminal Symbol
     LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ, LROUNDBRACE, RROUNDBRACE,    /* Brackets                 */
-    SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
+    SEMICOLON, COLON, COMMA, DOT,                                             /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
-    GOTO, DONE,                                      /* Control flow             */
-    STATECHART, STATE, TRANSITION,                   /* Statechart related       */
-    SRC, DEST,TRIGGER, GUARD, ACTION, STRUCT,         /* Transition label related */
-    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
-    BELONGSTO,                                       /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, INT, NUMBER, /* Variables related        */
-    AND, OR, NOT,                                    /* Logical operators        */
-    INC, DEC,                                        /* Increment, decrement     */
-    EQU, NEQ, GRE, GEQ, LES, LEQ,                    /* Relational operators     */
-    MIN, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
+    GOTO, DONE,                                                               /* Control flow             */
+    STATECHART, STATE, TRANSITION,                                            /* Statechart related       */
+    SRC, DEST,TRIGGER, GUARD, ACTION, STRUCT,                                 /* Transition label related */
+    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,                           /* Event related            */
+    BELONGSTO,                                                                /* Set theoretic            */
+    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, INT, NUMBER,                     /* Variables related        */
+    AND, OR, NOT,                                                             /* Logical operators        */
+    INC, DEC,                                                                 /* Increment, decrement     */
+    EQU, NEQ, GRE, GEQ, LES, LEQ,                                             /* Relational operators     */
+    MIN, ADD, MUL, DIV, UMIN, MOD,                                            /* Arithmetic operators     */
     HASH, EVENTS, OF,STAR,IN,QUOTES;
 
 precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
 precedence left LBRACE, RBRACE, AND, OR;
 precedence right DOT;
+
+
+/*********** production rules for the parser - begin ****************/
 
 start with statechart;
 
@@ -97,6 +98,7 @@ name ::=
 */
   ;
 
+/*********** List of all operations ****************/
 
 OPER ::= 
     ADD:a {:
@@ -118,10 +120,14 @@ OPER ::=
 
 ;
 
+/*********** List of all Data types ****************/
+
 BasicTypes ::= 
     INT
     | STRING
   ;
+
+/*********** rules for type language - begin ****************/
 
 typedefinition ::=
       TYPE IDENTIFIER:id EQU typestmt SEMICOLON
@@ -169,6 +175,9 @@ typestmt ::=
     | typestmt OR IDENTIFIER:id OF BasicTypes STAR IDENTIFIER:id2 OF BasicTypes
 
   ;
+
+/*********** rules for type language - end ****************/
+
 
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
@@ -225,6 +234,9 @@ idlist ::=
       | idlist IDENTIFIER SEMICOLON
   ;
 
+/*********** rules for transition language - begin ****************/
+
+
 transition ::=
     TRANSITION IDENTIFIER:id LBRACE
       SRC  COLON name:src SEMICOLON
@@ -237,6 +249,22 @@ transition ::=
       RESULT = new ast.Transition(id, src, des, id1, g, a);
     :}
   ;
+
+transitions ::=
+    transitions:tlist transition:t 
+    {:
+      RESULT = tlist;
+      RESULT.add(t);
+    :}
+  | {:
+        RESULT = new ArrayList<ast.Transition>();
+    :}
+  ;
+
+/*********** rules for transition language - end ****************/
+
+
+/*********** rules for guard language - begin ****************/
 
 guardstmt ::=
     name:n
@@ -321,6 +349,10 @@ guardstmt ::=
 
   ;
 
+/*********** rules for guard language - end ****************/
+
+/*********** rules for action language - begin ****************/
+
 actionstmt ::=
     statement:a 
     {: 
@@ -349,26 +381,10 @@ actionstmt ::=
     :}
   ;
 
-/*
-actionarguments ::=
-    IDENTIFIER:id
-    | actionarguments COMMA IDENTIFIER
-  ; 
-*/
+ /*********** rules for action language - end ****************/
 
-transitions ::=
-    transitions:tlist transition:t 
-    {:
-      RESULT = tlist;
-      RESULT.add(t);
-    :}
-  | {:
-        RESULT = new ArrayList<ast.Transition>();
-    :}
-  ;
-/*********** skeletal statechart structure - end *******/
+/*********** rules for expression language - begin ****************/
 
-/********** expressions for action language - begin ******/
 /*
 expr ::=
     name:n {:
@@ -446,6 +462,10 @@ statement::=
 
   ;
 
+/*********** rules for expression language - end ****************/
+
+ /*********** rules for declaration stmt language - begin ****************/
+ 
 decl_list ::= decl_list:dlist decl:d
     {:
       RESULT = dlist;
@@ -470,7 +490,11 @@ decl ::=
 
   ;
 
-/********** expressions for action language - end ******/
+   /*********** rules for declaration stmt language - end ****************/
+
+/*********** skeletal statechart structure - end *******/
+
+/*********** production rules for the parser - end ****************/
 
 
 
@@ -494,8 +518,7 @@ decl ::=
 
 
 
-
-
+/****************** Old code - Just for Reference ***************************/
 /*
 statement_list::=
 	statement SEMICOLON

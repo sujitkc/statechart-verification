@@ -30,6 +30,7 @@ public class Name extends Expression{
     }
   }
 
+//helper function to merge to sublists of names
   public List<Name> combineLists(List<Name> l1,List<Name> l2){
     ArrayList<ast.Name> merged = new ArrayList<ast.Name>();
     for(Name n : l1) {
