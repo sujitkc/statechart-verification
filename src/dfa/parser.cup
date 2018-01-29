@@ -42,9 +42,16 @@ non terminal ast.Expression          expr;
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 
+non terminal ast.BooleanConstant boolconst;
+
+non terminal String binop;
+// non terminal ast.Expression.Operator unaryop;
+
 terminal String IDENTIFIER;
+terminal Integer INTCONST;
+
 terminal Symbol
-    LBRACE, RBRACE, LPAR, RPAR, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
+    LBRACE, RBRACE, LPAREN, RPAREN, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
     GOTO, DONE,                                      /* Control flow             */
@@ -52,15 +59,20 @@ terminal Symbol
     SRC, DEST, GUARD, ACTION,                        /* Transition label related */
     EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
     BELONGSTO,                                       /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, CONSTANT, STRING, NUMBER, /* Variables related        */
+    VAR, IVAR, DVAR, MVAR, INT, STRING,  /* Variables related        */
     AND, OR, NOT,                                    /* Logical operators        */
     INC, DEC,                                        /* Increment, decrement     */
-    EQU, NEQ, GRE, GEQ, LES, LEQ,                    /* Relational operators     */
-    MIN, ADD, MUL, DIV, UMIN, MOD;                   /* Arithmetic operators     */
+    EQ, NE, GE, GT, LE, LT,                          /* Relational operators     */
+    SUB, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
+    TRUE, FALSE                                      /* Constants                */
+    ;
 
-precedence nonassoc LES, LEQ, EQU, NEQ, GRE, GEQ;
+precedence nonassoc LE, LT, EQ, NE, GE, GT;
 precedence left LBRACE, RBRACE, AND, OR;
-precedence right DOT;
+precedence left DOT;
+precedence left ADD, SUB;
+precedence left MUL, DIV;
+precedence left UMIN;
 
 start with statechart;
 
@@ -101,6 +113,11 @@ states ::=
     states:slist state:s 
     {:
       RESULT = slist;
+      for(ast.State st : slist) {
+        if(st.name.equals(s.name)) {
+          throw new Exception("Duplicate state name " + s.name);
+        }
+      }
       RESULT.add(s);
     :}
   | {:
@@ -124,6 +141,11 @@ transitions ::=
     transitions:tlist transition:t 
     {:
       RESULT = tlist;
+      for(ast.Transition tr : tlist) {
+        if(tr.name.equals(t.name)) {
+          throw new Exception("Duplicate transition name " + t.name);
+        }
+      }
       RESULT.add(t);
     :}
   | {:
@@ -137,7 +159,62 @@ expr ::=
     name:n {:
       RESULT = n;
     :}
+  | expr:e1 binop:op expr:e2
+    {:
+      RESULT = new ast.BinaryExpression(e1, e2, op);
+    :}
+  | boolconst:e
+    {:
+      RESULT = e;
+    :}
+  | INTCONST:n
+    {:
+      RESULT = new ast.IntegerConstant(n);
+    :}
+  | LPAREN expr:e RPAREN
+    {:
+      RESULT = e;
+    :} 
+/*
+  | unaryop:op expr:e
+    {:
+      RESULT = new UnaryExpression(e, op);
+    :}
+*/
   ;
+
+boolconst ::=
+    TRUE
+    {:
+      System.out.println("parsed boolconst: true");
+      RESULT = new ast.BooleanConstant(true);
+    :}
+  | FALSE
+    {:
+      RESULT = new ast.BooleanConstant(false);
+    :}
+  ;
+
+binop ::=
+    ADD  {: RESULT = "+"; :}
+  | MUL  {: RESULT = "*"; :}
+  | SUB  {: RESULT = "-"; :}
+  | DIV  {: RESULT = "/"; :}
+  | GE   {: RESULT = ">="; :}
+  | GT   {: RESULT = ">"; :}
+  | LE   {: RESULT = "<="; :}
+  | LT   {: RESULT = "<"; :}
+  | EQ   {: RESULT = "="; :}
+  | NE   {: RESULT = "!="; :}
+  | AND  {: RESULT = "&&"; :}
+  | OR   {: RESULT = "||"; :}
+  ;
+
+/*
+unaryop ::=
+    UMIN  {: RESULT = Expression.UMIN; };
+  | NOT  {: RESULT = Expression.NOT; };
+*/
 
 statement_list::=
     statement_list:sl statement:s 

@@ -13,6 +13,9 @@ import ast.Statement;
 import ast.Statement;
 import ast.AssignmentStatement;
 import ast.StatementList;
+import ast.BooleanConstant;
+import ast.IntegerConstant;
+import ast.BinaryExpression;
 
 public class Typechecker {
 
@@ -93,9 +96,76 @@ public class Typechecker {
     }
   }
 
+  private void typecheckBooleanConstant(BooleanConstant b) {
+    b.setType(this.statechart.lookupType("boolean"));
+  }
+
+  private void typecheckIntegerConstant(IntegerConstant b) {
+    b.setType(this.statechart.lookupType("int"));
+  }
+
+  private void typecheckBinaryExpression(BinaryExpression b, Environment env) throws Exception {
+    typecheckExpression(b.left, env);
+    typecheckExpression(b.right, env);
+    if(
+        b.operator.equals("+") ||
+        b.operator.equals("*") ||
+        b.operator.equals("-") ||
+        b.operator.equals("/") ) {
+
+      Type type = this.statechart.lookupType("int");
+      if(b.left.getType().equals(type) &&
+        b.right.getType().equals(type)) {
+        b.setType(type);
+      }
+      else {
+        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+      }
+   }
+    else if(
+        b.operator.equals(">=") ||
+        b.operator.equals(">") ||
+        b.operator.equals("<=") ||
+        b.operator.equals("<") ||
+        b.operator.equals("!=") ||
+        b.operator.equals("=") ) {
+
+      Type type = this.statechart.lookupType("int");
+      if(b.left.getType().equals(type) &&
+        b.right.getType().equals(type)) {
+        b.setType(this.statechart.lookupType("boolean"));
+      }
+      else {
+        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+      }
+    }
+    else if(
+        b.operator.equals("&&") ||
+        b.operator.equals("||") ) {
+
+      Type type = this.statechart.lookupType("boolean");
+      if(b.left.getType().equals(type) &&
+        b.right.getType().equals(type)) {
+        b.setType(type);
+      }
+      else {
+        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+      }
+    }
+  }
+
   private void typecheckExpression(Expression exp, Environment env) throws Exception {
-    if(exp instanceof ast.Name) {
+    if(exp instanceof Name) {
       typecheckName((Name)exp, env); 
+    }
+    else if(exp instanceof BooleanConstant) {
+      typecheckBooleanConstant((BooleanConstant)exp); 
+    }
+    else if(exp instanceof IntegerConstant) {
+      typecheckIntegerConstant((IntegerConstant)exp); 
+    }
+    else if(exp instanceof BinaryExpression) {
+      typecheckBinaryExpression((BinaryExpression)exp, env); 
     }
     else {
       throw new Exception("Typechecking failed for expression: " + exp.toString() +

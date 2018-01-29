@@ -9,6 +9,6 @@ public class AssignmentStatement extends Statement {
     this.rhs = rhs;
   }
   public String toString() {
-    return this.lhs.toString() + " = " + this.rhs.toString();
+    return this.lhs.toString() + " := " + this.rhs.toString();
   }
 }

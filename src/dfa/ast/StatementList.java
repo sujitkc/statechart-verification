@@ -24,4 +24,13 @@ public class StatementList extends Statement {
   public List<Statement> getStatements() {
     return this.statements;
   }
+
+  public String toString() {
+    String s = "\n{\n";
+    for(Statement st : this.statements) {
+      s += (st.toString() + '\n');
+    }
+    s += "}\n";
+    return s;
+  }
 }

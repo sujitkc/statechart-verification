@@ -32,11 +32,11 @@ public class Transition {
   private Environment writeEnvironment = null;
 
   public Transition(String name, Name src, Name dest, Expression guard, Statement action) {
-    this.name = name;
-    this.sourceName = src;
+    this.name            = name;
+    this.sourceName      = src;
     this.destinationName = dest;
-    this.guard = guard;
-    this.action = action;
+    this.guard           = guard;
+    this.action          = action;
   }
 
   public State getSource() {

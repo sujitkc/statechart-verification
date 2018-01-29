@@ -2,10 +2,11 @@ MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
 testcases=(
   s2
-  s3 # assignment type mismatch
-  s4 # misplaced transition
-  s5 # unknown state
-  s6 # non boolean guard
+  s3 # error - assignment type mismatch
+  s4 # error - misplaced transition
+  s5 # error - unknown state
+  s6 # error - non boolean guard
+  s7 # parenthesised expression, Binary expressions (logical, relational, arithmetic), boolean constant, integer constant, statement list
 );
 
 if [ $# = 1 ]; then
