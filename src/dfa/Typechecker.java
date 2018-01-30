@@ -16,6 +16,8 @@ import ast.StatementList;
 import ast.BooleanConstant;
 import ast.IntegerConstant;
 import ast.BinaryExpression;
+import ast.BasicType;
+import ast.Struct;
 
 public class Typechecker {
 
@@ -26,6 +28,7 @@ public class Typechecker {
   }
 
   public void typecheckDeclarations(State state) throws Exception {
+
     for(Declaration dec : state.declarations) {
       Type type = this.statechart.lookupType(dec.typeName);
       if(type == null) {
@@ -44,10 +47,45 @@ public class Typechecker {
   }
 
   public void typecheck() throws Exception {
+
+    this.typecheckTypeDeclarations();
     this.typecheckDeclarations();
     this.typecheckCode();
   }
 
+  private void typecheckTypeDeclarations() throws Exception {
+    for(int i = 0; i < this.statechart.types.size(); i++) {
+      Type td = this.statechart.types.get(i);
+      if(td instanceof BasicType) {
+      }
+      else if(td instanceof Struct) {
+        this.typecheckStruct((Struct)td, i);
+      }
+    }
+  }
+
+  private Type getKnownType(String tname, int i) {
+    for(int j = 0; j < i; j++) {
+      Type type = this.statechart.types.get(j);
+      if(type.name.equals(tname)) {
+        return type;
+      }
+    }
+    return null;
+  }
+
+  private void typecheckStruct(Struct struct, int i) throws Exception {
+    for(Declaration d : struct.declarations) {
+      Type type = this.getKnownType(d.typeName, i);
+      if(type == null) {
+        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown in " + struct.name);
+      }
+      else {
+        d.setType(type);
+      }
+    }
+  }
+ 
   private void typecheckDeclarations() throws Exception {
     this.typecheckDeclarations(this.statechart);
   }

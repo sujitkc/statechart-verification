@@ -1,5 +1,18 @@
+/* Complex specification */
 
 statechart sc {
+
+  // struct declaration
+  struct mystruct {
+    a : int;
+    b : boolean;
+  }
+
+  struct yourstruct {
+    a : int;
+    b : boolean;
+  }
+
   v : int;
   x : int;
   y : boolean;
@@ -9,7 +22,7 @@ statechart sc {
       x : int;
       v : boolean;
     }
-    state s12 {}
+    state s12 {} // empty state
 
     state s13 {}
 

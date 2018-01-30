@@ -16,11 +16,16 @@ import java.io.InputStream;
 %}
 
 LineTerminator = [\r|\n|\r\n]
+InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
 intconst = 0|[1-9][0-9]*
    
 identifier = [A-Za-z][A-Za-z0-9]*
+Comment = {TraditionalComment} | {EndOfLineComment}
 
+TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+// Comment can be the last line of the file, without line terminator.
+EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 
 %%
 
@@ -44,6 +49,8 @@ identifier = [A-Za-z][A-Za-z0-9]*
 "done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE);       }
 "true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE);       }
 "false"          { /* System.out.println("false");       */ return new Symbol(sym.FALSE);       }
+"struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT);       }
+
 
 "."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT);        }
 ":="             { /* System.out.println("assign");       */ return new Symbol(sym.ASSIGN);     }
@@ -82,5 +89,7 @@ identifier = [A-Za-z][A-Za-z0-9]*
                     return new Symbol(sym.INTCONST, n);
                  }
 {WhiteSpace}     { /* do nothing */}
+/* comments */
+{Comment}                      { /* ignore */ }
 
 [^]              { throw new Error("Illegal character <"+yytext()+">"); }

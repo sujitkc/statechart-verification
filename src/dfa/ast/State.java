@@ -8,7 +8,6 @@ public class State {
   public final String name;
   public final List<State> states;
   public final List<Transition> transitions;
-//  public final List<Declaration> declarations;
   public final DeclarationList declarations;
 
   protected Statechart statechart = null;
@@ -18,14 +17,14 @@ public class State {
 
   public State(
       String            name,
+      DeclarationList declarations,
       List<State>       states,
-      List<Transition>  transitions,
-      DeclarationList declarations) {
+      List<Transition>  transitions) {
 
     this.name         = name;
+    this.declarations = declarations;
     this.states       = states;
     this.transitions  = transitions;
-    this.declarations = declarations;
 
     for(State st : this.states) {
       st.setSuperstate(this);

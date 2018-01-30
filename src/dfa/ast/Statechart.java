@@ -10,13 +10,19 @@ public class Statechart extends State {
 
   public Statechart(
       String            name,
+      List<Struct>      structs,
+      DeclarationList   declarations,
       List<State>       states,
-      List<Transition>  transitions,
-      DeclarationList declarations) throws Exception {
-    super(name, states, transitions, declarations);
+      List<Transition>  transitions
+      ) throws Exception {
+    super(name, declarations, states, transitions);
 
     this.types.add(new BasicType("int"));
     this.types.add(new BasicType("boolean"));
+
+    for(Struct s : structs) {
+      this.types.add(s);
+    }
 
     this.statechart = null;
     for(State s : this.states) {
@@ -64,7 +70,11 @@ public class Statechart extends State {
   }
 
   public String toString() {
-    String s = "startchart " + this.name + " {";
+    String s = "startchart " + this.name + " {\n";
+
+    for(Type t : this.types) {
+      s += t.toString();
+    }
     s += this.declarations.toString(); 
     for(State st : this.states) {
       s += st.toString();

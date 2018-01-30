@@ -42,6 +42,9 @@ non terminal ast.Expression          expr;
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 
+non terminal List<ast.Struct> structs;
+non terminal ast.Struct       struct;
+
 non terminal ast.BooleanConstant boolconst;
 
 non terminal String binop;
@@ -64,7 +67,8 @@ terminal Symbol
     INC, DEC,                                        /* Increment, decrement     */
     EQ, NE, GE, GT, LE, LT,                          /* Relational operators     */
     SUB, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
-    TRUE, FALSE                                      /* Constants                */
+    TRUE, FALSE,                                      /* Constants                */
+    STRUCT
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -91,11 +95,37 @@ name ::=
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
+      structs:structlist
       decl_list:dlist
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, st, tr, dlist);
+      RESULT = new ast.Statechart(id, structlist, dlist, st, tr);
+    :}
+  ;
+
+struct ::=
+    STRUCT IDENTIFIER:id LBRACE
+      decl_list:dlist
+    RBRACE
+    {:
+      RESULT = new ast.Struct(id, dlist);
+    :}
+  ;
+
+structs ::=
+    structs:structlist struct:s 
+    {:
+      RESULT = structlist;
+      for(ast.Struct st : structlist) {
+        if(st.name.equals(s.name)) {
+          throw new Exception("Duplicate struct name " + s.name);
+        }
+      }
+      RESULT.add(s);
+    :}
+  | {:
+       RESULT = new ArrayList<ast.Struct>();
     :}
   ;
 
@@ -105,7 +135,7 @@ state ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, st, tr, dlist);
+      RESULT = new ast.State(id, dlist, st, tr);
     :}
   ;
 

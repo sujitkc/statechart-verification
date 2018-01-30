@@ -6,7 +6,6 @@ public class BooleanConstant extends Expression {
 
   public BooleanConstant(boolean value) {
     this.value = value;
-    this.type = new Type("Boolean");
   }
 
   public String toString() {
