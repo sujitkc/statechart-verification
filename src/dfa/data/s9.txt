@@ -1,0 +1,38 @@
+/* Complex specification */
+
+statechart sc {
+
+  x : int;
+  v : int;
+  
+  state s1 {}
+  state s2 {
+
+    state s11 {
+      x : int;
+      v : boolean;
+    }
+    state s12 {}
+
+    state s13 {}
+
+    transition t11 {
+      source : sc.s2.s11;
+      destination : sc.s2.s12;
+      guard : (true || false) && (x <= v);
+      action : while(x){ x := v + 1; x := v + 1;} // type error in while condition
+    }
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+      guard : true;
+      action :
+        if(x != v) {
+          x := v;
+        }
+        else {
+        }
+  }
+}

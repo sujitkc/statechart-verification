@@ -36,6 +36,9 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "int   "         { /* System.out.println("int");          */ return new Symbol(sym.INT);        }
 "type"           { /* System.out.println("type");         */ return new Symbol(sym.TYPE);       }
 "click"          { /* System.out.println("click");        */ return new Symbol(sym.CLICK);      }
+"while"          { /* System.out.println("while");        */ return new Symbol(sym.WHILE);      }
+"if"             { /* System.out.println("if");           */ return new Symbol(sym.IF);         }
+"else"           { /* System.out.println("else");         */ return new Symbol(sym.ELSE);       }
 "goto"           { /* System.out.println("goto");         */ return new Symbol(sym.GOTO);       }
 "defaultState"   { /* System.out.println("defaultState"); */ return new Symbol(sym.DEFAULT);    }
 "belongs_to"     { /* System.out.println("belongs_to");   */ return new Symbol(sym.BELONGSTO);  }
@@ -48,8 +51,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION);     }
 "done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE);       }
 "true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE);       }
-"false"          { /* System.out.println("false");       */ return new Symbol(sym.FALSE);       }
-"struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT);       }
+"false"          { /* System.out.println("false");        */ return new Symbol(sym.FALSE);      }
+"struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT);     }
 
 
 "."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT);        }

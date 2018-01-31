@@ -8,9 +8,10 @@ statechart sc {
     b : boolean;
   }
 
+  // user defined type based on earlier user defined type.
   struct yourstruct {
     a : int;
-    b : boolean;
+    b : mystruct;
   }
 
   v : int;

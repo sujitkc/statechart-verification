@@ -57,17 +57,17 @@ terminal Symbol
     LBRACE, RBRACE, LPAREN, RPAREN, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
-    GOTO, DONE,                                      /* Control flow             */
+    WHILE, GOTO, DONE, IF, ELSE,                     /* Control flow             */
     STATECHART, STATE, TRANSITION,                   /* Statechart related       */
     SRC, DEST, GUARD, ACTION,                        /* Transition label related */
     EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
     BELONGSTO,                                       /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, INT, STRING,  /* Variables related        */
+    VAR, IVAR, DVAR, MVAR, INT, STRING,              /* Variables related        */
     AND, OR, NOT,                                    /* Logical operators        */
     INC, DEC,                                        /* Increment, decrement     */
     EQ, NE, GE, GT, LE, LT,                          /* Relational operators     */
     SUB, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
-    TRUE, FALSE,                                      /* Constants                */
+    TRUE, FALSE,                                     /* Constants                */
     STRUCT
     ;
 
@@ -216,7 +216,6 @@ expr ::=
 boolconst ::=
     TRUE
     {:
-      System.out.println("parsed boolconst: true");
       RESULT = new ast.BooleanConstant(true);
     :}
   | FALSE
@@ -270,6 +269,14 @@ statement::=
     {:
       RESULT = sl;
     :}
+  | IF expr:e statement:s1 ELSE statement:s2
+    {:
+      RESULT = new ast.IfStatement(e, s1, s2);
+    :}
+  | WHILE expr:e statement:s
+    {:
+      RESULT = new ast.WhileStatement(e, s);
+    :}
   ;
 
 decl_list ::= decl_list:dlist decl:d
@@ -294,19 +301,6 @@ decl ::=
 /********** expressions for action language - end ******/
 
 /*
-statement_list::=
-	statement SEMICOLON
-	| statement_list statement SEMICOLON
-	| statement_list statement
-	;
-
-statement::=
-	declaration_statement
-	| COLON state_flowcontent
-	| init_KEYWORD COLON empty_KEYWORD {: System.out.println ("Empty Init statement is seen"); :}
-	| init_KEYWORD COLON assignment_statement {: System.out.println ("Init statement + assignment stmt is seen"); :}
-	| default_KEYWORD COLON IDENTIFIER:id {: System.out.println ("Default state is "+id); :}
-	;
 
 declaration_statement::=
 	IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON {}

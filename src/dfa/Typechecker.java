@@ -10,7 +10,8 @@ import ast.Type;
 import ast.Environment;
 import ast.Name;
 import ast.Statement;
-import ast.Statement;
+import ast.IfStatement;
+import ast.WhileStatement;
 import ast.AssignmentStatement;
 import ast.StatementList;
 import ast.BooleanConstant;
@@ -56,9 +57,7 @@ public class Typechecker {
   private void typecheckTypeDeclarations() throws Exception {
     for(int i = 0; i < this.statechart.types.size(); i++) {
       Type td = this.statechart.types.get(i);
-      if(td instanceof BasicType) {
-      }
-      else if(td instanceof Struct) {
+      if(td instanceof Struct) {
         this.typecheckStruct((Struct)td, i);
       }
     }
@@ -249,6 +248,39 @@ public class Typechecker {
     }
   }
 
+  private void typecheckIfStatement (
+      IfStatement is,
+      Environment renv,
+      Environment wenv,
+      Environment rwenv,
+      Environment roenv,
+      Environment woenv) throws Exception {
+
+    this.typecheckExpression(is.condition, renv);
+    this.typecheckStatement(is.then_body, renv, wenv, rwenv, roenv, woenv);
+    this.typecheckStatement(is.else_body, renv, wenv, rwenv, roenv, woenv);
+
+    if(!is.condition.getType().name.equals("boolean")) {
+      throw new Exception("Type checking failed in the if : condition '" + is.condition + "' didn't type check to a boolean.");
+    }
+  }
+
+  private void typecheckWhileStatement (
+      WhileStatement ws,
+      Environment renv,
+      Environment wenv,
+      Environment rwenv,
+      Environment roenv,
+      Environment woenv) throws Exception {
+
+    this.typecheckExpression(ws.condition, renv);
+    this.typecheckStatement(ws.body, renv, wenv, rwenv, roenv, woenv);
+
+    if(!ws.condition.getType().name.equals("boolean")) {
+      throw new Exception("Type checking failed in the while loop : condition '" + ws.condition + "' didn't type check to a boolean.");
+    }
+  }
+
   private void typecheckStatement(
     Statement s,
     Environment renv,
@@ -258,10 +290,15 @@ public class Typechecker {
     Environment woenv) throws Exception {
     if(s instanceof AssignmentStatement) {
       this.typecheckAssignmentStatement(s, renv, wenv, rwenv, roenv, woenv);
-
     }
     else if(s instanceof StatementList) {
       this.typecheckStatementList((StatementList)s, renv, wenv, rwenv, roenv, woenv);
+    }
+    else if(s instanceof IfStatement) {
+      this.typecheckIfStatement((IfStatement)s, renv, wenv, rwenv, roenv, woenv);
+    }
+    else if(s instanceof WhileStatement) {
+      this.typecheckWhileStatement((WhileStatement)s, renv, wenv, rwenv, roenv, woenv);
     }
   }
 
