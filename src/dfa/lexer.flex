@@ -30,18 +30,14 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 %%
 
 "List"           { /* System.out.println("List");         */ return new Symbol(sym.LIST);       }
-"init"           { /* System.out.println("init");         */ return new Symbol(sym.INIT);       }
-"empty"          { /* System.out.println("empty");        */ return new Symbol(sym.EMPTY);      }
+"entry"          { /* System.out.println("entry");        */ return new Symbol(sym.ENTRY);       }
 "String"         { /* System.out.println("String");       */ return new Symbol(sym.STRING);     }
 "int   "         { /* System.out.println("int");          */ return new Symbol(sym.INT);        }
-"type"           { /* System.out.println("type");         */ return new Symbol(sym.TYPE);       }
-"click"          { /* System.out.println("click");        */ return new Symbol(sym.CLICK);      }
 "while"          { /* System.out.println("while");        */ return new Symbol(sym.WHILE);      }
 "if"             { /* System.out.println("if");           */ return new Symbol(sym.IF);         }
 "else"           { /* System.out.println("else");         */ return new Symbol(sym.ELSE);       }
 "goto"           { /* System.out.println("goto");         */ return new Symbol(sym.GOTO);       }
-"defaultState"   { /* System.out.println("defaultState"); */ return new Symbol(sym.DEFAULT);    }
-"belongs_to"     { /* System.out.println("belongs_to");   */ return new Symbol(sym.BELONGSTO);  }
+"in"             { /* System.out.println("in");           */ return new Symbol(sym.IN);         }
 "statechart"     { /* System.out.println("statechart");   */ return new Symbol(sym.STATECHART); }
 "state"          { /* System.out.println("state");        */ return new Symbol(sym.STATE);      }
 "transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION); }
@@ -53,9 +49,12 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE);       }
 "false"          { /* System.out.println("false");        */ return new Symbol(sym.FALSE);      }
 "struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT);     }
+"type"           { /* System.out.println("type");         */ return new Symbol(sym.TYPE);       }
+"events"         { /* System.out.println("events");       */ return new Symbol(sym.EVENTS);     }
 
 
 "."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT);        }
+"#"              { /* System.out.println("HASH");         */ return new Symbol(sym.HASH);       }
 ":="             { /* System.out.println("assign");       */ return new Symbol(sym.ASSIGN);     }
 "["              { /* System.out.println("LPAR_SQ");      */ return new Symbol(sym.LPAR_SQ);    }
 "]"              { /* System.out.println("RPAR_SQ");      */ return new Symbol(sym.RPAR_SQ);    }

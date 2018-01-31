@@ -7,10 +7,12 @@ import java.util.ListIterator;
 public class Statechart extends State {
 
   public final List<Type> types = new ArrayList<Type>();
+  public final List<String> events;
 
   public Statechart(
       String            name,
       List<Struct>      structs,
+      List<String>      events,
       DeclarationList   declarations,
       List<State>       states,
       List<Transition>  transitions
@@ -23,6 +25,8 @@ public class Statechart extends State {
     for(Struct s : structs) {
       this.types.add(s);
     }
+
+    this.events = events;
 
     this.statechart = null;
     for(State s : this.states) {
@@ -75,6 +79,12 @@ public class Statechart extends State {
     for(Type t : this.types) {
       s += t.toString();
     }
+
+    s += "events {\n";
+    for(String event : this.events) {
+      s += "\t" + event + ";\n";
+    }
+    s += "}\n";
     s += this.declarations.toString(); 
     for(State st : this.states) {
       s += st.toString();

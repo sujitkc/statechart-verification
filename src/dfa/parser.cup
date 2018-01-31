@@ -21,12 +21,6 @@ parser code
   }
 :}
 
-/*
-non terminal event_definition,type_specifier,identifier_list,assignment_statement,arithmetic_expr,event_block,event_statement_list,event_dest_state,event_statement,guard_expression,action_statement,message_statement;
-non terminal namespace_identifier,string_type,number_type,user_type,expr_LHS,expr_RHS;
-non terminal cnfdnf_formula,relational_expr,logical_operator,relational_operator,trans_flow,trans_stmts;
-*/
-
 non terminal ast.Statechart       statechart;
 non terminal ast.State            state;
 non terminal ast.Transition       transition;
@@ -41,6 +35,8 @@ non terminal ast.Expression          expr;
 
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
+non terminal ast.Declaration     normal_decl;
+non terminal ast.Declaration     inp_decl;
 
 non terminal List<ast.Struct> structs;
 non terminal ast.Struct       struct;
@@ -48,6 +44,10 @@ non terminal ast.Struct       struct;
 non terminal ast.BooleanConstant boolconst;
 
 non terminal String binop;
+
+non terminal List<String> events;
+non terminal List<String> eventlist;
+
 // non terminal ast.Expression.Operator unaryop;
 
 terminal String IDENTIFIER;
@@ -55,20 +55,22 @@ terminal Integer INTCONST;
 
 terminal Symbol
     LBRACE, RBRACE, LPAREN, RPAREN, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
-    SEMICOLON, COLON, COMMA, DOT,                    /* Punctuations             */ 
+    SEMICOLON, COLON, COMMA, DOT, HASH,                  /* Punctuations             */ 
     ASSIGN, OP_MESSAGE,
-    WHILE, GOTO, DONE, IF, ELSE,                     /* Control flow             */
-    STATECHART, STATE, TRANSITION,                   /* Statechart related       */
-    SRC, DEST, GUARD, ACTION,                        /* Transition label related */
-    EMPTY, INIT, CLICK, LIST, DEFAULT, TYPE, EVENT,  /* Event related            */
-    BELONGSTO,                                       /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, INT, STRING,              /* Variables related        */
-    AND, OR, NOT,                                    /* Logical operators        */
-    INC, DEC,                                        /* Increment, decrement     */
-    EQ, NE, GE, GT, LE, LT,                          /* Relational operators     */
-    SUB, ADD, MUL, DIV, UMIN, MOD,                   /* Arithmetic operators     */
-    TRUE, FALSE,                                     /* Constants                */
-    STRUCT
+    WHILE, GOTO, DONE, IF, ELSE,                         /* Control flow             */
+    STATECHART, STATE, TRANSITION,                       /* Statechart related       */
+    ENTRY, EXIT,
+    SRC, DEST, GUARD, ACTION,                            /* Transition label related */
+    EVENTS,                                              /* Event related            */
+    LIST, TUPLE, SET,                                    /* Containers               */
+    IN,                                                  /* Set theoretic            */
+    VAR, IVAR, DVAR, MVAR, INT, STRING,                  /* Variables related        */
+    AND, OR, NOT,                                        /* Logical operators        */
+    INC, DEC,                                            /* Increment, decrement     */
+    EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
+    SUB, ADD, MUL, DIV, UMIN, MOD,                       /* Arithmetic operators     */
+    TRUE, FALSE,                                         /* Constants                */
+    STRUCT, TYPE
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -96,11 +98,12 @@ name ::=
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
       structs:structlist
+      eventlist:el
       decl_list:dlist
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, structlist, dlist, st, tr);
+      RESULT = new ast.Statechart(id, structlist, el, dlist, st, tr);
     :}
   ;
 
@@ -126,6 +129,35 @@ structs ::=
     :}
   | {:
        RESULT = new ArrayList<ast.Struct>();
+    :}
+  ;
+
+eventlist ::=
+    EVENTS LBRACE
+      events:el
+    RBRACE
+    {:
+      RESULT = el;
+    :}
+  |
+    {:
+      RESULT = new ArrayList<String>();
+    :}
+  ;
+
+events ::=
+    events:eventlist IDENTIFIER:e SEMICOLON
+    {:
+      RESULT = eventlist;
+      for(String event : eventlist) {
+        if(event.equals(e)) {
+          throw new Exception("Duplicate event" + e);
+        }
+      }
+      RESULT.add(e);
+    :}
+  | {:
+       RESULT = new ArrayList<String>();
     :}
   ;
 
@@ -292,69 +324,26 @@ decl_list ::= decl_list:dlist decl:d
   ;
 
 decl ::=
-     IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON
+     normal_decl:d
     {:
-      RESULT = new ast.Declaration(id, tid);
+      RESULT = d;
+    :}
+  | inp_decl:d
+    {:
+     RESULT = d;
     :}
   ;
 
-/********** expressions for action language - end ******/
+normal_decl ::=
+     IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON
+    {:
+      RESULT = new ast.Declaration(id, tid, false);
+    :}
+  ;
 
-/*
-
-declaration_statement::=
-	IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON {}
-	identifier_list COLON IDENTIFIER:id COMMA declaration_statement {: System.out.println ("Declaration statement is seen " + id); :}
-	| identifier_list COLON IDENTIFIER:id {: System.out.println ("Declaration statement is seen of User type"); :}
-	| identifier_list COLON STRING_KEYWORD {: System.out.println ("Declaration statement is seen of String type"); :}
-	| identifier_list COLON IDENTIFIER:id1 LIST_KEYWORD COMMA declaration_statement {: System.out.println ("List of User type: "+id1); :}
-	| identifier_list COLON IDENTIFIER:id1 LIST_KEYWORD {: System.out.println ("List of User type: "+id1); :}
-	;
-assignment_statement::= 
-	expr_LHS OP_ASSIGN expr_RHS {: System.out.println ("Assignment statement is seen"); :}
-	| expr_LHS OP_ASSIGN expr_RHS COMMA assignment_statement {: System.out.println ("Assignment statements is seen"); :}
-	;
-
-identifier_list::=
-	IDENTIFIER:id {: System.out.println ("Identifier : "+id); :}
-	|identifier_list COMMA IDENTIFIER:id {: System.out.println ("Identifier List : "+id); :}
-	;
-
-
-expr_RHS::=expr_LHS|arithmetic_expr|CONSTANT;
-event_definition::=
-	IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ cnfdnf_formula RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
-	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
-	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} trans_stmts 
-	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ cnfdnf_formula RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :}
-	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ action_statement DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :}
-	| IDENTIFIER:id OP_DOT CLICK_KEYWORD LPAR_SQ RPAR_SQ DONE_KEYWORD SEMICOLON {: System.out.println ("Event Declaration is seen : "+id); :} 
-
-	;
-cnfdnf_formula::= 
-		relational_expr
-		|relational_expr logical_operator cnfdnf_formula
-		| namespace_identifier logical_operator cnfdnf_formula
-		| namespace_identifier		
-		;
-
-relational_expr::=expr_RHS relational_operator expr_RHS;
-logical_operator::=AND|OR;
-relational_operator::=LES|LEQ|EQU|NEQ|GRE|GEQ|belongs_to_KEYWORD;
-expr_LHS::=IDENTIFIER|namespace_identifier;
-namespace_identifier::=IDENTIFIER:id OP_DOT IDENTIFIER:id2 {: System.out.println ("Name Space Identifier "+id +" " + id2); :}
-		| namespace_identifier OP_DOT IDENTIFIER:id1 {: System.out.println ("Name Space Identifier "+id1); :}
-		;
-action_statement::= 
-	assignment_statement {: System.out.println ("action statement is seen"); :}
-	;
-
-string_type::=IDENTIFIER:id COLON STRING_KEYWORD {: System.out.println ("String type: "+id); :} 
-	;
-number_type::=IDENTIFIER:id COLON NUMBER_KEYWORD {: System.out.println ("Number type: "+id); :} 
-	;
-user_type::=IDENTIFIER:id COLON IDENTIFIER:id1 LIST_KEYWORD {: System.out.println ("List of User type: "+id + "Type Name: " +id1); :} 
-	| IDENTIFIER:id COLON IDENTIFIER:id1 {: System.out.println ("User type: "+id + "Type Name: " +id1); :} 
-	;
-
-*/
+inp_decl ::=
+     IDENTIFIER:id HASH COLON IDENTIFIER:tid SEMICOLON
+    {:
+      RESULT = new ast.Declaration(id, tid, true);
+    :}
+  ;

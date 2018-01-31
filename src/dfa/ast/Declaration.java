@@ -4,11 +4,14 @@ public class Declaration {
   public final String vname;
   public final String typeName;
   private DeclarationList declarationList;
+  public final boolean input; // whether the declaration is input variable or not.
+
   private Type type;
 
-  public Declaration(String vname, String typeName) {
-    this.vname           = vname;
-    this.typeName        = typeName;
+  public Declaration(String vname, String typeName, boolean input) {
+    this.vname    = vname;
+    this.typeName = typeName;
+    this.input    = input;
   }
 
   public State getState() {
@@ -24,7 +27,12 @@ public class Declaration {
   }
 
   public String toString() {
-    return this.vname + " : " + this.typeName + ";";
+    String s = this.vname;
+    if(this.input) {
+      s += " #";
+    }
+    s += " : " + this.typeName + ";";
+    return s;
   }
 
   public void setType(Type type) {
