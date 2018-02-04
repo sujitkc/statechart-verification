@@ -10,6 +10,8 @@ testcases=(
   s8  # user defined type based on earlier user defined type.
   s9  # error - type error in while condition
   s10 # error - type error in if condition
+  s11 # input variables
+  s12 # error - duplicate names
 );
 
 if [ $# = 1 ]; then

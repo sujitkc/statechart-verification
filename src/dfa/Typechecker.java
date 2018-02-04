@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 import ast.Statechart;
 import ast.State;
@@ -51,7 +53,7 @@ public class Typechecker {
 
     this.typecheckTypeDeclarations();
     this.typecheckDeclarations();
-    this.typecheckCode();
+    this.typecheckState();
   }
 
   private void typecheckTypeDeclarations() throws Exception {
@@ -322,17 +324,46 @@ public class Typechecker {
       transition.getWriteOnlyEnvironment());
   }
 
-  private void typecheckCode(State state) throws Exception {
+  private void checkNameDuplication(State state) throws Exception {
+    Set<String> names = new HashSet<String>();
+    for(Declaration d : state.declarations) {
+      if(names.contains(d.vname)) {
+        throw new Exception("Duplicate name '" + d.vname + "' in state " + state.name);
+      }
+      else {
+        names.add(d.vname);
+      }
+    }
+    for(State s : state.states) {
+      if(names.contains(s.name)) {
+        throw new Exception("Duplicate name '" + s.name + "' in state " + state.name);
+      }
+      else {
+        names.add(s.name);
+      }
+    }
+    for(Transition t : state.transitions) {
+      if(names.contains(t.name)) {
+        throw new Exception("Duplicate name '" + t.name + "' in state " + state.name);
+      }
+      else {
+        names.add(t.name);
+      }
+    }
+  }
+
+  private void typecheckState(State state) throws Exception {
+    checkNameDuplication(state);
     for(Transition t : state.transitions) {
       this.typecheckTransition(t);
     }
 
     for(State s : state.states) {
-      this.typecheckCode(s);
+      this.typecheckState(s);
     }
   }
 
-  private void typecheckCode() throws Exception {
-    this.typecheckCode(this.statechart);
+  private void typecheckState() throws Exception {
+    this.typecheckState(this.statechart);
   }
 }
