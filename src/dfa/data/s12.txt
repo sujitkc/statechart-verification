@@ -1,0 +1,10 @@
+// duplicate names x
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  state x {
+  }
+}

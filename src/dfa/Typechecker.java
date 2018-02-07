@@ -7,6 +7,7 @@ import ast.Statechart;
 import ast.State;
 import ast.Transition;
 import ast.Declaration;
+import ast.DeclarationList;
 import ast.Expression;
 import ast.Type;
 import ast.Environment;
@@ -21,6 +22,7 @@ import ast.IntegerConstant;
 import ast.BinaryExpression;
 import ast.BasicType;
 import ast.Struct;
+import ast.FunctionDeclaration;
 
 public class Typechecker {
 
@@ -49,10 +51,41 @@ public class Typechecker {
     }
   }
 
+  public void typecheckFunctionDeclarations(Statechart statechart) throws Exception {
+
+    for(FunctionDeclaration fdec : statechart.functionDeclarations) {
+      Type type = this.statechart.lookupType(fdec.returnTypeName);
+      if(type == null) {
+        throw new Exception(
+          "Function Declaration '" + fdec.name + 
+          "' didn't typecheck : function return type '" +
+          fdec.returnTypeName + "' doesn't exist.");
+      }
+      else {
+        fdec.setReturnType(type);
+
+        DeclarationList args = fdec.getArgumentList();
+        for(Declaration dec : args) {
+          Type argtype = this.statechart.lookupType(dec.typeName);
+          if(argtype == null) {
+            throw new Exception(
+              "Argument type '" + dec.toString() + "' in function declaration '" + fdec.name +
+              "' didn't typecheck : argument type '" +
+              dec.typeName + "' doesn't exist.");
+          }
+          else {
+            dec.setType(argtype);
+          }
+        }       
+      }
+    }
+  }
+
   public void typecheck() throws Exception {
 
     this.typecheckTypeDeclarations();
     this.typecheckDeclarations();
+    this.typecheckFunctionDeclarations();
     this.typecheckState();
   }
 
@@ -89,6 +122,10 @@ public class Typechecker {
  
   private void typecheckDeclarations() throws Exception {
     this.typecheckDeclarations(this.statechart);
+  }
+ 
+  private void typecheckFunctionDeclarations() throws Exception {
+    this.typecheckFunctionDeclarations(this.statechart);
   }
 
   /*

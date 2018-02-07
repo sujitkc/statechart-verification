@@ -8,14 +8,16 @@ public class Statechart extends State {
 
   public final List<Type> types = new ArrayList<Type>();
   public final List<String> events;
+  public final List<FunctionDeclaration> functionDeclarations;
 
   public Statechart(
-      String            name,
-      List<Struct>      structs,
-      List<String>      events,
-      DeclarationList   declarations,
-      List<State>       states,
-      List<Transition>  transitions
+      String                    name,
+      List<Struct>              structs,
+      List<String>              events,
+      DeclarationList           declarations,
+      List<FunctionDeclaration> functionDeclarations,
+      List<State>               states,
+      List<Transition>          transitions
       ) throws Exception {
     super(name, declarations, states, transitions);
 
@@ -27,6 +29,7 @@ public class Statechart extends State {
     }
 
     this.events = events;
+    this.functionDeclarations = functionDeclarations;
 
     this.statechart = null;
     for(State s : this.states) {
@@ -85,7 +88,14 @@ public class Statechart extends State {
       s += "\t" + event + ";\n";
     }
     s += "}\n";
-    s += this.declarations.toString(); 
+
+    s += this.declarations.toString();
+
+    s += "functions {\n";
+    for(FunctionDeclaration fdec : this.functionDeclarations) {
+      s += fdec.toString() + ";\n";
+    }
+    s += "}\n";
     for(State st : this.states) {
       s += st.toString();
     }

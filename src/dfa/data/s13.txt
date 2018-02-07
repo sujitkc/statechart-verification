@@ -1,0 +1,16 @@
+// function declaration
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  functions {
+    f() : int;
+    g(a : int) : int;
+    h(a : int, b : boolean) : int;
+  }
+  
+  state s {
+  }
+}

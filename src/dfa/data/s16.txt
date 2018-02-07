@@ -1,0 +1,16 @@
+// error : function declaration unknown argument type
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  functions {
+    f() : int;
+    g(a : int) : int;
+    h(a : float, b : boolean) : int;
+  }
+  
+  state s {
+  }
+}

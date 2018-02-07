@@ -30,13 +30,18 @@ non terminal List<ast.Transition> transitions;
 
 non terminal ast.StatementList       statement_list;
 non terminal ast.Statement           statement;
-non terminal ast.AssignmentStatement assignment_statement;
 non terminal ast.Expression          expr;
 
 non terminal ast.DeclarationList decl_list;
 non terminal ast.Declaration     decl;
 non terminal ast.Declaration     normal_decl;
 non terminal ast.Declaration     inp_decl;
+
+non terminal ast.DeclarationList arg_list;
+non terminal ast.DeclarationList non_empty_arg_list;
+non terminal ast.FunctionDeclaration funcdecl;
+non terminal List<ast.FunctionDeclaration> funcdecls;
+non terminal List<ast.FunctionDeclaration> funcs;
 
 non terminal List<ast.Struct> structs;
 non terminal ast.Struct       struct;
@@ -70,7 +75,8 @@ terminal Symbol
     EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
     SUB, ADD, MUL, DIV, UMIN, MOD,                       /* Arithmetic operators     */
     TRUE, FALSE,                                         /* Constants                */
-    STRUCT, TYPE
+    STRUCT, TYPE,                                        /* User defined types       */
+    FUNCTIONS                                            /* Functions                */
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -100,10 +106,11 @@ statechart ::=
       structs:structlist
       eventlist:el
       decl_list:dlist
+      funcdecls:fdecls
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, structlist, el, dlist, st, tr);
+      RESULT = new ast.Statechart(id, structlist, el, dlist, fdecls, st, tr);
     :}
   ;
 
@@ -158,6 +165,70 @@ events ::=
     :}
   | {:
        RESULT = new ArrayList<String>();
+    :}
+  ;
+
+funcdecl ::=
+  IDENTIFIER:fname LPAREN arg_list:args RPAREN COLON IDENTIFIER:tname SEMICOLON
+  {:
+    RESULT = new ast.FunctionDeclaration(fname, tname, args);
+  :}
+  ;
+
+arg_list ::=
+    non_empty_arg_list:args
+  {:
+    RESULT = args;
+  :}
+  | 
+  {:
+    RESULT = new ast.DeclarationList();
+  :}
+  ;
+
+non_empty_arg_list ::=
+    non_empty_arg_list:args COMMA normal_decl:arg
+  {:
+    RESULT = args;
+    if(!RESULT.add(arg)) {
+      throw new Exception("Duplication argument name '" + arg.vname + "' function argument list.");
+    }
+  :}
+  | normal_decl:arg
+  {:
+    RESULT = new ast.DeclarationList();
+    RESULT.add(arg);
+  :}
+  ;
+
+funcdecls ::=
+    FUNCTIONS LBRACE
+      funcs:fs    
+    RBRACE
+  {:
+    RESULT = fs;
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.FunctionDeclaration>();
+  :}
+  ;
+
+funcs ::=
+    funcs:decs funcdecl:dec
+  {:
+    RESULT = decs;
+    for(ast.FunctionDeclaration f : decs) {
+      if(f.name.equals(dec.name)) {
+        throw new Exception("Duplicate function name " + dec.name);
+      }
+    }
+
+    RESULT.add(dec);
+  :}
+  |
+    {:
+      RESULT = new ArrayList<ast.FunctionDeclaration>();
     :}
   ;
 
@@ -324,18 +395,18 @@ decl_list ::= decl_list:dlist decl:d
   ;
 
 decl ::=
-     normal_decl:d
+     normal_decl:d SEMICOLON
     {:
       RESULT = d;
     :}
-  | inp_decl:d
+  | inp_decl:d SEMICOLON
     {:
      RESULT = d;
     :}
   ;
 
 normal_decl ::=
-     IDENTIFIER:id COLON IDENTIFIER:tid SEMICOLON
+     IDENTIFIER:id COLON IDENTIFIER:tid
     {:
       RESULT = new ast.Declaration(id, tid, false);
     :}

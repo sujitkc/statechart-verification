@@ -1,0 +1,16 @@
+// error : function declaration unknown return type
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  functions {
+    f() : int;
+    g(a : int) : int;
+    h(a : int, b : boolean) : float;
+  }
+  
+  state s {
+  }
+}

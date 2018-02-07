@@ -12,6 +12,10 @@ testcases=(
   s10 # error - type error in if condition
   s11 # input variables
   s12 # error - duplicate names
+  s13 # function declaration
+  s14 # error - duplicate names in function declaration
+  s15 # error - function declaration unknown return type
+  s16 # error - function declaration unknown argument type
 );
 
 if [ $# = 1 ]; then
