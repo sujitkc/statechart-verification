@@ -1,0 +1,29 @@
+/* Error - Function call: undeclared function */
+
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  functions {
+    f() : int;
+    g(a : int) : int;
+    h(a : int, b : boolean) : int;
+  }
+
+  state s1 {
+    state s11 {
+      x : int;
+      v : boolean;
+    }
+    state s12 {} // empty state
+
+    transition t11 {
+      source : sc.s1.s11;
+      destination : sc.s1.s12;
+      guard : (true || false) && (x <= v);
+      action : unknown();
+    }
+  }
+}

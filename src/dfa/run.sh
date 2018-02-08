@@ -16,6 +16,12 @@ testcases=(
   s14 # error - duplicate names in function declaration
   s15 # error - function declaration unknown return type
   s16 # error - function declaration unknown argument type
+  s17 # error - 
+  s18 # error - Error - Function call: undeclared function 
+  s19 # error - Error - Function call: incorrect number of arguments 
+  s20 # error - Error - Function call: incorrect number of arguments 
+  s21 # error - Error - Function call: argument type mismatch 
+  s22 # error - Error - Function call: argument type mismatch 
 );
 
 if [ $# = 1 ]; then

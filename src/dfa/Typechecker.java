@@ -16,6 +16,7 @@ import ast.Statement;
 import ast.IfStatement;
 import ast.WhileStatement;
 import ast.AssignmentStatement;
+import ast.ExpressionStatement;
 import ast.StatementList;
 import ast.BooleanConstant;
 import ast.IntegerConstant;
@@ -23,6 +24,7 @@ import ast.BinaryExpression;
 import ast.BasicType;
 import ast.Struct;
 import ast.FunctionDeclaration;
+import ast.FunctionCall;
 
 public class Typechecker {
 
@@ -230,6 +232,42 @@ public class Typechecker {
     }
   }
 
+  private void typecheckFunctionCall(FunctionCall funcCall, Environment env) throws Exception {
+    /*
+      typecheck the function name.
+      If there's no function declaration of that name: raise error.
+      Else:
+        for each argument expression arg:
+          type check arg.
+          If the type of arg doesn't match the type of the corresponding formal parameter, then raise error.
+          Else OK.
+    */
+
+    FunctionDeclaration fdec = this.statechart.lookupFunctionDeclaration(funcCall.name);
+    if(fdec == null) {
+      throw new Exception("function call didn't typecheck: function by name "+ funcCall.name + " not found.");
+    }
+    DeclarationList parameterList = fdec.getArgumentList();
+    if(parameterList.size() != funcCall.argumentList.size()) {
+      throw new Exception("function call " + funcCall.name + " didn't typecheck: incorrect number of arguments. " +
+        parameterList.size() + " expected; " +
+        funcCall.argumentList.size() + " provided.");
+      
+    }
+    for(int i = 0; i < funcCall.argumentList.size(); i++) {
+      Expression arg = funcCall.argumentList.get(i);
+      this.typecheckExpression(arg, env);
+      Type targ = arg.getType();
+      Declaration param = parameterList.get(i);
+      if(param.getType().equals(targ) == false) {
+        throw new Exception("function call didn't typecheck: arguments " +
+           arg + " has type " + arg.getType() + ". " +
+           param.getType().name + " expected.");
+      }
+    }
+    funcCall.setType(fdec.getReturnType());
+  }
+
   private void typecheckExpression(Expression exp, Environment env) throws Exception {
     if(exp instanceof Name) {
       typecheckName((Name)exp, env); 
@@ -242,6 +280,9 @@ public class Typechecker {
     }
     else if(exp instanceof BinaryExpression) {
       typecheckBinaryExpression((BinaryExpression)exp, env); 
+    }
+    else if(exp instanceof FunctionCall) {
+      typecheckFunctionCall((FunctionCall)exp, env);
     }
     else {
       throw new Exception("Typechecking failed for expression: " + exp.toString() +
@@ -320,6 +361,17 @@ public class Typechecker {
     }
   }
 
+  private void typecheckExpressionStatement (
+      ExpressionStatement es,
+      Environment renv,
+      Environment wenv,
+      Environment rwenv,
+      Environment roenv,
+      Environment woenv) throws Exception {
+
+    this.typecheckExpression(es.expression, renv);
+  }
+
   private void typecheckStatement(
     Statement s,
     Environment renv,
@@ -339,6 +391,14 @@ public class Typechecker {
     else if(s instanceof WhileStatement) {
       this.typecheckWhileStatement((WhileStatement)s, renv, wenv, rwenv, roenv, woenv);
     }
+    else if(s instanceof ExpressionStatement) {
+      this.typecheckExpressionStatement((ExpressionStatement)s, renv, wenv, rwenv, roenv, woenv);
+    }
+    else {
+      throw new Exception("statement '" + s + "' didn't typecheck: Unknown statement type.");
+
+    }
+
   }
 
   private void typecheckTransition(Transition transition) throws Exception {

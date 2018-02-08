@@ -37,11 +37,15 @@ non terminal ast.Declaration     decl;
 non terminal ast.Declaration     normal_decl;
 non terminal ast.Declaration     inp_decl;
 
-non terminal ast.DeclarationList arg_list;
-non terminal ast.DeclarationList non_empty_arg_list;
+non terminal ast.DeclarationList param_list;
+non terminal ast.DeclarationList non_empty_param_list;
 non terminal ast.FunctionDeclaration funcdecl;
 non terminal List<ast.FunctionDeclaration> funcdecls;
 non terminal List<ast.FunctionDeclaration> funcs;
+
+non terminal List<ast.Expression> arg_list;
+non terminal List<ast.Expression> non_empty_arg_list;
+non terminal ast.FunctionCall func_call;
 
 non terminal List<ast.Struct> structs;
 non terminal ast.Struct       struct;
@@ -59,23 +63,18 @@ terminal String IDENTIFIER;
 terminal Integer INTCONST;
 
 terminal Symbol
-    LBRACE, RBRACE, LPAREN, RPAREN, LPAR_SQ,RPAR_SQ,     /* Brackets                 */
+    LBRACE, RBRACE, LPAREN, RPAREN,                      /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT, HASH,                  /* Punctuations             */ 
-    ASSIGN, OP_MESSAGE,
-    WHILE, GOTO, DONE, IF, ELSE,                         /* Control flow             */
+    ASSIGN,
+    WHILE, IF, ELSE,                                     /* Control flow             */
     STATECHART, STATE, TRANSITION,                       /* Statechart related       */
-    ENTRY, EXIT,
     SRC, DEST, GUARD, ACTION,                            /* Transition label related */
     EVENTS,                                              /* Event related            */
-    LIST, TUPLE, SET,                                    /* Containers               */
-    IN,                                                  /* Set theoretic            */
-    VAR, IVAR, DVAR, MVAR, INT, STRING,                  /* Variables related        */
-    AND, OR, NOT,                                        /* Logical operators        */
-    INC, DEC,                                            /* Increment, decrement     */
+    AND, OR,                                             /* Logical operators        */
     EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
-    SUB, ADD, MUL, DIV, UMIN, MOD,                       /* Arithmetic operators     */
+    SUB, ADD, MUL, DIV,                       /* Arithmetic operators     */
     TRUE, FALSE,                                         /* Constants                */
-    STRUCT, TYPE,                                        /* User defined types       */
+    STRUCT,                                         /* User defined types       */
     FUNCTIONS                                            /* Functions                */
     ;
 
@@ -84,7 +83,7 @@ precedence left LBRACE, RBRACE, AND, OR;
 precedence left DOT;
 precedence left ADD, SUB;
 precedence left MUL, DIV;
-precedence left UMIN;
+precedence left LPAREN, RPAREN;
 
 start with statechart;
 
@@ -169,16 +168,16 @@ events ::=
   ;
 
 funcdecl ::=
-  IDENTIFIER:fname LPAREN arg_list:args RPAREN COLON IDENTIFIER:tname SEMICOLON
+  IDENTIFIER:fname LPAREN param_list:params RPAREN COLON IDENTIFIER:tname SEMICOLON
   {:
-    RESULT = new ast.FunctionDeclaration(fname, tname, args);
+    RESULT = new ast.FunctionDeclaration(fname, tname, params);
   :}
   ;
 
-arg_list ::=
-    non_empty_arg_list:args
+param_list ::=
+    non_empty_param_list:params
   {:
-    RESULT = args;
+    RESULT = params;
   :}
   | 
   {:
@@ -186,18 +185,18 @@ arg_list ::=
   :}
   ;
 
-non_empty_arg_list ::=
-    non_empty_arg_list:args COMMA normal_decl:arg
+non_empty_param_list ::=
+    non_empty_param_list:params COMMA normal_decl:param
   {:
-    RESULT = args;
-    if(!RESULT.add(arg)) {
-      throw new Exception("Duplication argument name '" + arg.vname + "' function argument list.");
+    RESULT = params;
+    if(!RESULT.add(param)) {
+      throw new Exception("Duplication parameter name '" + param.vname + "' function parameter list.");
     }
   :}
-  | normal_decl:arg
+  | normal_decl:param
   {:
     RESULT = new ast.DeclarationList();
-    RESULT.add(arg);
+    RESULT.add(param);
   :}
   ;
 
@@ -307,13 +306,48 @@ expr ::=
   | LPAREN expr:e RPAREN
     {:
       RESULT = e;
-    :} 
+    :}
+  | func_call:e
+    {:
+      RESULT = e;
+    :}
 /*
   | unaryop:op expr:e
     {:
       RESULT = new UnaryExpression(e, op);
     :}
 */
+  ;
+
+func_call ::=
+    IDENTIFIER:f LPAREN arg_list:alist RPAREN
+  {:
+    RESULT = new ast.FunctionCall(f, alist);
+  :}
+  ;
+
+arg_list ::=
+    non_empty_arg_list:args
+  {:
+    RESULT = args;
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.Expression>();
+  :}
+  ;
+
+non_empty_arg_list ::=
+    non_empty_arg_list:args COMMA expr:arg
+  {:
+    RESULT = args;
+    RESULT.add(arg);
+  :}
+  | expr:arg
+  {:
+    RESULT = new ArrayList<ast.Expression>();
+    RESULT.add(arg);
+  :}
   ;
 
 boolconst ::=
@@ -361,7 +395,10 @@ statement_list::=
   ;
 
 statement::=
-    expr SEMICOLON
+    expr:e SEMICOLON
+    {:
+      RESULT = new ast.ExpressionStatement(e);
+    :}
   | name:n ASSIGN expr:e SEMICOLON
     {:
       RESULT = new ast.AssignmentStatement(n, e);
