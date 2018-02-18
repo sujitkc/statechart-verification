@@ -134,7 +134,6 @@ public class Typechecker {
   private Declaration getDeclarationInState(ListIterator<String> nameIterator, State state) {
     if(nameIterator.hasNext()) {
       String singleName = nameIterator.next(); // name of state
-      System.out.println("single name = " + singleName);
       if(!nameIterator.hasNext()) {
         return null;
       }
@@ -187,7 +186,6 @@ public class Typechecker {
   }
 
   private void typecheckName(Name name, Environment env) throws Exception {
-    System.out.println("typecheckName called for " + name);
     Declaration dec = null;
     Type type = null;
     if(name.name.size() > 0) {
@@ -232,7 +230,6 @@ public class Typechecker {
           T is any type.
      */
       type = this.getTypeOfName(nameIterator, dec.getType());
-      System.out.println(type);
     }
     else {
       throw new Exception("Empty variable name.");

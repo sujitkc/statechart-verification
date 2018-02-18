@@ -15,14 +15,11 @@ statechart sc {
       destination : sc.s1.s12;
         guard : y;
         action : sc.s1.x; // fully qualified name expression in nested state.
-        
-  }
-
+    }
   }
   
   state s2 {
     x : int;
-  
   }
   
   transition t1 {
@@ -30,6 +27,5 @@ statechart sc {
     destination : sc.s2;
       guard : y;
       action : sc.s2.x; // error : fully qualified name expression but not in scope
-        
   }
 }

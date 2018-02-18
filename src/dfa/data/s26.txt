@@ -1,0 +1,20 @@
+/* Name in expression */
+statechart sc {
+
+  v : int;
+  y : boolean;
+  
+  state s1 {
+  }
+  
+  state s2 {
+    x : int;
+  }
+  
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+      guard : y;
+      action : sc.vv; // error : fully qualified name expression not declared.
+  }
+}
