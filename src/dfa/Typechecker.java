@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ListIterator;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
@@ -130,48 +131,115 @@ public class Typechecker {
     this.typecheckFunctionDeclarations(this.statechart);
   }
 
-  /*
-      Sets the type of the name object to appropriate type if the following work out:
-       - If name is a identifier, it will be looked up in the local environment env. If
-         a declaration is found, the same will be used to define the type of name.
-       - If name is a fully qualified name (e.g. a.b.c), its state is found (by name a.b),
-         If this state state is an ancestor of the state st of env, then we look up for name
-         in the declaration list of state. If found, the same will be used to define the type
-         of name.
-  */
-  private void typecheckName(Name name, Environment env) throws Exception {
-    Declaration dec = null;
-    if(name.name.size() > 1) {
-      String lastName = name.name.get(name.name.size() - 1);
-      List<String> stateName = new ArrayList<String>(name.name.subList(0, name.name.size() - 1));
-      State state = this.statechart.nameToState(new Name(stateName));
-      if(state != null) {
-        State st = env.getDeclarations().getState();
-        if(st.equals(state) || state.isAncestor(st)) {
-          dec = state.declarations.lookup(lastName);
+  private Declaration getDeclarationInState(ListIterator<String> nameIterator, State state) {
+    if(nameIterator.hasNext()) {
+      String singleName = nameIterator.next(); // name of state
+      System.out.println("single name = " + singleName);
+      if(!nameIterator.hasNext()) {
+        return null;
+      }
+      
+      String nextName = nameIterator.next(); // iterator.peek - step 1
+      nameIterator.previous(); // iterator.peek - step 2
+
+      State s = state.findSubstateByName(nextName);
+      if(s != null) {
+        return this.getDeclarationInState(nameIterator, s);
+      }
+      else {
+        return state.declarations.lookup(nextName);
+      }
+    }
+    else {
+      return null; // error : empty name
+    }
+  }
+
+  private Type getTypeOfName(ListIterator<String> nameIterator, Type type) {
+    if(nameIterator.hasNext()) {
+      String singleName = nameIterator.next();
+      if(nameIterator.hasNext()) {
+        if(type instanceof Struct) {
+          Struct structType = (Struct)type;
+          String nextName = nameIterator.next();
+          nameIterator.previous();
+          Declaration d = structType.declarations.lookup(nextName);
+          if(d != null) {
+            return this.getTypeOfName(nameIterator, d.getType());
+          }
+          else {
+            // error: no field of the given name in the struct type
+            return null;
+          }
         }
         else {
-          throw new Exception("Undefined variable " + name.toString() + "; contents of state " + stateName + " are not visible in this context.");
+          // error: name has more fields but the current type is not a struct.
+          return null;
         }
       }
       else {
-        throw new Exception("Undefined variable " + name.toString() + "; no state by name " + stateName + " found.");
+        return type;
       }
     }
-    else if(name.name.size() == 1) {
-      dec = env.lookup(name.name.get(0));
+    else {
+      return null;
+    }
+  }
+
+  private void typecheckName(Name name, Environment env) throws Exception {
+    System.out.println("typecheckName called for " + name);
+    Declaration dec = null;
+    Type type = null;
+    if(name.name.size() > 0) {
+      ListIterator<String> nameIterator = name.name.listIterator();
+      if(name.name.get(0).equals(this.statechart.name)) {
+       /*
+        Form of the name: sc.s1.s2.....sn.v.f1.f2.....fm.
+        Here,
+          sc: statechart
+          s1 belongs to states(sc)
+          for 1 <= i < n - 1, s_i = state(s_(i+1))
+          v:T belongs to vars(sn).
+       */
+        dec = this.getDeclarationInState(nameIterator, this.statechart);
+      }
+      else { // Not fully qualified variable name.
+      /*
+      Form of the name: v.f1.f2.....fm.
+      Here,
+        v:T belongs to env.
+      */
+
+       dec = env.lookup(name.name.get(0));
+      }
+      if(dec == null) {
+        throw new Exception("Name " + name + " didn't type check. Couldn't locate a variable with matching description.");
+      }
+      List<Declaration> decs = env.getAllDeclarations();
+      if(!decs.contains(dec)) {
+        throw new Exception("name didn't type check. The name exists but is not in scope.");
+      }
+      /*
+      Here,
+        if m != 0 then
+          T is struct type
+          f_1:T_1 belongs to fields(T) where T_1 is a struct type
+          f_2:T_2 belongs to fields(T_1) where T_2 is a struct type
+              ...       ...       ...
+              ...       ...       ...
+          f_m:T_m belongs to fields(T_(m-1)) where T_m is any arbitrary type.
+        else
+          T is any type.
+     */
+      type = this.getTypeOfName(nameIterator, dec.getType());
+      System.out.println(type);
     }
     else {
       throw new Exception("Empty variable name.");
     }
 
-    if(dec == null) {
-      throw new Exception("Undefined variable " + name.toString() + " looked in : " + env);
-    }
-    else {
-      name.setDeclaration(dec);
-      name.setType(dec.getType());
-    }
+    name.setDeclaration(dec);
+    name.setType(type);
   }
 
   private void typecheckBooleanConstant(BooleanConstant b) {
@@ -270,19 +338,19 @@ public class Typechecker {
 
   private void typecheckExpression(Expression exp, Environment env) throws Exception {
     if(exp instanceof Name) {
-      typecheckName((Name)exp, env); 
+      this.typecheckName((Name)exp, env); 
     }
     else if(exp instanceof BooleanConstant) {
-      typecheckBooleanConstant((BooleanConstant)exp); 
+      this.typecheckBooleanConstant((BooleanConstant)exp); 
     }
     else if(exp instanceof IntegerConstant) {
-      typecheckIntegerConstant((IntegerConstant)exp); 
+      this.typecheckIntegerConstant((IntegerConstant)exp); 
     }
     else if(exp instanceof BinaryExpression) {
-      typecheckBinaryExpression((BinaryExpression)exp, env); 
+      this.typecheckBinaryExpression((BinaryExpression)exp, env); 
     }
     else if(exp instanceof FunctionCall) {
-      typecheckFunctionCall((FunctionCall)exp, env);
+      this.typecheckFunctionCall((FunctionCall)exp, env);
     }
     else {
       throw new Exception("Typechecking failed for expression: " + exp.toString() +

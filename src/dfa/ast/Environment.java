@@ -34,6 +34,38 @@ public class Environment {
       }
     }
   }
+
+  public List<Declaration> lookupAll(String name) {
+
+    List<Declaration> decs = null;
+    if(this.next != null) {
+      decs = this.next.lookupAll(name);
+    }
+    else {
+      decs = new ArrayList<Declaration>();
+    }
+    Declaration dec = this.declarations.lookup(name);
+    if(dec != null) {
+      decs.add(0, dec);
+    }
+    return decs;
+  }
+
+  public List<Declaration> getAllDeclarations() {
+
+    List<Declaration> decs = null;
+    if(this.next != null) {
+      decs = this.next.getAllDeclarations();
+    }
+    else {
+      decs = new ArrayList<Declaration>();
+    }
+    for(Declaration dec : this.declarations) {
+      decs.add(0, dec);
+    }
+    return decs;
+  }
+
   /*
     Returns a deep copy of the environment, with env as the next 
     of the last environment.

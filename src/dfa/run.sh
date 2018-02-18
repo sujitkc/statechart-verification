@@ -21,7 +21,10 @@ testcases=(
   s19 # error - Error - Function call: incorrect number of arguments 
   s20 # error - Error - Function call: incorrect number of arguments 
   s21 # error - Error - Function call: argument type mismatch 
-  s22 # error - Error - Function call: argument type mismatch 
+  s22 # error - Error - Function call: argument type mismatch
+  s23 # Name in expression
+  s24 # Name in expression - all correct usages
+  s25 # error -fully qualified name expression but not in scope 
 );
 
 if [ $# = 1 ]; then

@@ -1,0 +1,19 @@
+/* Name in expression */
+statechart sc {
+
+  v : int;
+  y : boolean;
+  
+  state s1 {
+  }
+  
+  state s2 {}
+  
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+      guard : y;
+      action : v; // simple name expression
+        
+  }
+}

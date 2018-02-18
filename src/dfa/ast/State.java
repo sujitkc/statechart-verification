@@ -97,6 +97,15 @@ public class State {
     return this.superstate;
   }
 
+  public State findSubstateByName(String name) {
+    for(State s : this.states) {
+      if(s.name.equals(name)) {
+        return s;
+      }
+    }
+    return null;
+  }
+
   // returns the list of all superstates (this excluded), starting with the
   // top-level statechart.
   public List<State> getAllSuperstates() {

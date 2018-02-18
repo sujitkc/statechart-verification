@@ -20,23 +20,30 @@ public class Analyser {
   private final Typechecker typechecker;
 
   public static void main(String[] args) {
+    Statechart statechart = null;
     try {
       Parser parser = new Parser(new Lexer(new FileReader(args[0])));    
       Symbol result = parser.parse();
-      Statechart statechart = (Statechart)result.value;
+      statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");
       System.out.println(statechart.toString());
       System.out.println("Printing parsed Statechart ... done!");
-      (new Analyser(statechart)).analyse();
-      System.out.println("Printing analysed Statechart ...");
-      System.out.println(statechart);
-      System.out.println("Printing analysed Statechart ... done!");
     }
     catch(FileNotFoundException e) {
       System.out.println("Couldn't open file '" + args[0] + "'"); 
     }
     catch(Exception e) {
       System.out.println("Couldn't parse '" + args[0] + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+    try {
+      (new Analyser(statechart)).analyse();
+      System.out.println("Printing analysed Statechart ...");
+      System.out.println(statechart);
+      System.out.println("Printing analysed Statechart ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
   }
