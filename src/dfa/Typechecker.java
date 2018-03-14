@@ -11,6 +11,7 @@ import ast.Declaration;
 import ast.DeclarationList;
 import ast.Expression;
 import ast.Type;
+import ast.TypeName;
 import ast.Environment;
 import ast.Name;
 import ast.Statement;
@@ -34,30 +35,45 @@ public class Typechecker {
   public Typechecker(Statechart statechart) {
     this.statechart = statechart;
   }
+/*
+  private void typecheckVariableDeclaration(Declaration d, List<String> typeParameterNames) throws Exception {
+    Type ty = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
+    if(ty == null) {
+      throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
+    }
+    List<Type> typeargs = new ArrayList<Type>();
+    for(TypeName tname : d.typeName.typeArgumentNames) {
+      typeargs.add(tname.type);
+    }
+    Type type = d.typeName.type.substantiate(typeargs);
+    d.setType(type);  
+  }
+*/
 
-  public void typecheckDeclarations(State state) throws Exception {
-
+  private void typecheckVariableDeclarations(State state) throws Exception {
+    List<String> noTypeParameterNames = new ArrayList<String>();
     for(Declaration dec : state.declarations) {
-      Type type = this.statechart.lookupType(dec.typeName);
+      this.typecheckDeclaration(dec, noTypeParameterNames, this.statechart.types.size());
+
+/*
+      Type type = this.lookupType(dec.typeName);
       if(type == null) {
         throw new Exception(
           "Declaration '" + dec.toString() + "' in state '" + state.name +
           "' didn't typecheck : declaration type '" +
           dec.typeName + "' doesn't exist.");
       }
-      else {
-        dec.setType(type);
-      }
+*/
     }
     for(State st : state.states) {
-      typecheckDeclarations(st);
+      this.typecheckVariableDeclarations(st);
     }
   }
 
-  public void typecheckFunctionDeclarations(Statechart statechart) throws Exception {
+  private void typecheckFunctionDeclarations(Statechart statechart) throws Exception {
 
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
-      Type type = this.statechart.lookupType(fdec.returnTypeName);
+      Type type = this.lookupType(fdec.returnTypeName);
       if(type == null) {
         throw new Exception(
           "Function Declaration '" + fdec.name + 
@@ -69,16 +85,18 @@ public class Typechecker {
 
         DeclarationList args = fdec.getArgumentList();
         for(Declaration dec : args) {
-          Type argtype = this.statechart.lookupType(dec.typeName);
+          Type argtype = this.lookupType(dec.typeName);
           if(argtype == null) {
             throw new Exception(
               "Argument type '" + dec.toString() + "' in function declaration '" + fdec.name +
               "' didn't typecheck : argument type '" +
               dec.typeName + "' doesn't exist.");
           }
+/*
           else {
             dec.setType(argtype);
           }
+*/
         }       
       }
     }
@@ -87,7 +105,7 @@ public class Typechecker {
   public void typecheck() throws Exception {
 
     this.typecheckTypeDeclarations();
-    this.typecheckDeclarations();
+    this.typecheckVariableDeclarations();
     this.typecheckFunctionDeclarations();
     this.typecheckState();
   }
@@ -101,30 +119,82 @@ public class Typechecker {
     }
   }
 
-  private Type getKnownType(String tname, int i) {
+  /*
+  This function tells if there is declared a type of name 
+    'tname' before the i-th type declaration.
+  This function is meant to be called only during the
+    typechecking of Type declarations.
+  */ 
+  private Type getKnownType(TypeName tname, int i) {
     for(int j = 0; j < i; j++) {
       Type type = this.statechart.types.get(j);
-      if(type.name.equals(tname)) {
+      if(type.name.equals(tname.name) && type.typeParameterNames.size() == tname.typeArgumentNames.size()) {
         return type;
       }
     }
     return null;
   }
 
+  /*
+    Looks up in the statechart type table for the presence of a type to which typeName
+    conforms, and returns a type corresponding to typeName.
+  */
+  public Type lookupType(TypeName typeName, List<String> typeParameterNames, int i) throws Exception {
+    Type type = null;
+    if(typeParameterNames.contains(typeName.name)) {
+      if(typeName.typeArgumentNames.size() != 0) {
+        throw new Exception("Type lookup failed: type name '" + typeName.name +
+          "' matches a type parameter (hence, should be a type variable), " +
+          "however it has type arguments."); 
+      }
+      type = new ast.TypeVariable(typeName.name, typeParameterNames.indexOf(typeName.name));
+    }
+    else {
+      type = this.getKnownType(typeName, i).copy();
+      if(type == null) {
+        throw new Exception("lookupType failed : Type name " + typeName + " not found.");
+      }
+      List<Type> typelist = new ArrayList<Type>();
+      for(TypeName targ : typeName.typeArgumentNames) {
+        System.out.println("here");
+        Type ty = null;
+        if(typeParameterNames.contains(targ.name)) {
+          ty = new ast.TypeVariable(targ.name, typeParameterNames.indexOf(targ.name));
+        }
+        else {
+          ty = this.lookupType(targ, typeParameterNames, i);
+          if(ty == null) {
+            throw new Exception("lookupType failed : Type argument " + targ + " not found.");
+          }
+        }
+        typelist.add(ty);
+      }
+      type.typeArguments = typelist;
+    }
+    typeName.type = type;
+    return type.substantiate(type.typeArguments);
+  }
+
+  // Overloading lookupType to work with non-polymorphic types with no type parameters.
+  public Type lookupType(TypeName typeName) throws Exception {
+    return this.lookupType(typeName, new ArrayList<String>(), this.statechart.types.size());
+  }
+
+  private void typecheckDeclaration(Declaration d, List<String> typeParameterNames, int i) throws Exception {
+      Type type = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
+      if(type == null) {
+        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
+      }
+  }
+
   private void typecheckStruct(Struct struct, int i) throws Exception {
     for(Declaration d : struct.declarations) {
-      Type type = this.getKnownType(d.typeName, i);
-      if(type == null) {
-        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown in " + struct.name);
-      }
-      else {
-        d.setType(type);
-      }
+      this.typecheckDeclaration(d, struct.typeParameterNames, i);
     }
   }
  
-  private void typecheckDeclarations() throws Exception {
-    this.typecheckDeclarations(this.statechart);
+  private void typecheckVariableDeclarations() throws Exception {
+    this.typecheckVariableDeclarations(this.statechart);
   }
  
   private void typecheckFunctionDeclarations() throws Exception {
@@ -211,6 +281,7 @@ public class Typechecker {
        dec = env.lookup(name.name.get(0));
       }
       if(dec == null) {
+        System.out.println(env);
         throw new Exception("Name " + name + " didn't type check. Couldn't locate a variable with matching description.");
       }
       List<Declaration> decs = env.getAllDeclarations();
@@ -239,12 +310,12 @@ public class Typechecker {
     name.setType(type);
   }
 
-  private void typecheckBooleanConstant(BooleanConstant b) {
-    b.setType(this.statechart.lookupType("boolean"));
+  private void typecheckBooleanConstant(BooleanConstant b) throws Exception {
+    b.setType(this.lookupType(new TypeName("boolean")));
   }
 
-  private void typecheckIntegerConstant(IntegerConstant b) {
-    b.setType(this.statechart.lookupType("int"));
+  private void typecheckIntegerConstant(IntegerConstant b) throws Exception {
+    b.setType(this.lookupType(new TypeName("int")));
   }
 
   private void typecheckBinaryExpression(BinaryExpression b, Environment env) throws Exception {
@@ -256,13 +327,13 @@ public class Typechecker {
         b.operator.equals("-") ||
         b.operator.equals("/") ) {
 
-      Type type = this.statechart.lookupType("int");
+      Type type = this.lookupType(new TypeName("int"));
       if(b.left.getType().equals(type) &&
         b.right.getType().equals(type)) {
         b.setType(type);
       }
       else {
-        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+        throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
       }
    }
     else if(
@@ -273,10 +344,10 @@ public class Typechecker {
         b.operator.equals("!=") ||
         b.operator.equals("=") ) {
 
-      Type type = this.statechart.lookupType("int");
+      Type type = this.lookupType(new TypeName("int"));
       if(b.left.getType().equals(type) &&
         b.right.getType().equals(type)) {
-        b.setType(this.statechart.lookupType("boolean"));
+        b.setType(this.lookupType(new TypeName("boolean")));
       }
       else {
         throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
@@ -286,7 +357,7 @@ public class Typechecker {
         b.operator.equals("&&") ||
         b.operator.equals("||") ) {
 
-      Type type = this.statechart.lookupType("boolean");
+      Type type = this.lookupType(new TypeName("boolean"));
       if(b.left.getType().equals(type) &&
         b.right.getType().equals(type)) {
         b.setType(type);
@@ -386,7 +457,7 @@ public class Typechecker {
       AssignmentStatement as = (AssignmentStatement)s;
 
     this.typecheckName(as.lhs, wenv);
-    this.typecheckExpression(as.rhs, rwenv);
+    this.typecheckExpression(as.rhs, renv);
 
     if(!as.lhs.getType().equals(as.rhs.getType())) {
       throw new Exception("assignment lhs and rhs types don't match.");
@@ -477,7 +548,7 @@ public class Typechecker {
         ". Should be placed in state " + lub.name + " but placed in state " +
         transition.getState().name + ".");
     }
-    this.typecheckGuard(transition.guard, transition.getRWEnvironment());
+    this.typecheckGuard(transition.guard, transition.getReadEnvironment());
     this.typecheckStatement(transition.action,
       transition.getReadEnvironment(),
       transition.getWriteEnvironment(),

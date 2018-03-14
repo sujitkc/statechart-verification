@@ -29,7 +29,7 @@ public class Name extends Expression {
       s += "." + this.name.get(i);
     }
     if(this.type != null) {  
-      s += " : " + this.type.name;
+      s += " : " + this.type;
     }
     else {
       s += " : not-assigned";

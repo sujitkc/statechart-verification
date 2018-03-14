@@ -1,27 +1,21 @@
-Add more productions to the parser for:
-- various types of expressions
-- Type declarations
-- Events
-
-Add corresponding classes in the ast package.
-
-Add typechecking rules for individual expression types etc.
-
 Add to state:
-- entry, during and exit code blocks
-- formals declarations (to accept values from incoming transitions)
+- entry and exit code blocks
 
-Type declarations for struct, list, set etc.
+Add local variable declaration in statement blocks.
 
-Input variable
-Trigger clause on transitions
-Struct type declaration
-Union type declaration
+11.03.2018
+----------
+Currently doing:
+Implementation of polymorphic type.
+Substantiation of structures is not working properly.
+getKnownType function is suspect. To me, it should be returning a copy and
+ not just the type itself.
+Am trying out by implementing copy method in all Type sub-classes.
 
-Event declaration
+Another issue is that during lookup, the type parameters of inner structures
+should be replaced with type variables as per the outer structure's type 
+variables. See data/s29.txt for example.
+ 
 
-Native types:
-  map
-  list
 
 

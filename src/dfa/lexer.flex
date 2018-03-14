@@ -49,7 +49,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE, yyline, yycolumn, null);       }
 "false"          { /* System.out.println("false");        */ return new Symbol(sym.FALSE, yyline, yycolumn, null);      }
 "struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT, yyline, yycolumn, null);     }
-//"type"           { /* System.out.println("type");         */ return new Symbol(sym.TYPE, yyline, yycolumn, null);       }
+"types"          { /* System.out.println("types"); */        return new Symbol(sym.TYPES, yyline, yycolumn, null);      }
+"type"           { /* System.out.println("type"); */         return new Symbol(sym.TYPE, yyline, yycolumn, null);       }
 "events"         { /* System.out.println("events");       */ return new Symbol(sym.EVENTS, yyline, yycolumn, null);     }
 "functions"      { /* System.out.println("functions");    */ return new Symbol(sym.FUNCTIONS, yyline, yycolumn, null);  }
 
@@ -72,6 +73,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "-"              { /* System.out.println("SUB");          */ return new Symbol(sym.SUB, yyline, yycolumn, null);        }
 "*"              { /* System.out.println("MUL");          */ return new Symbol(sym.MUL, yyline, yycolumn, null);        }
 "/"              { /* System.out.println("DIV");          */ return new Symbol(sym.DIV, yyline, yycolumn, null);        }
+"<|"             { /* System.out.println("LTRI");         */ return new Symbol(sym.LTRI, yyline, yycolumn, null);       }
+"|>"             { /* System.out.println("RTRI");         */ return new Symbol(sym.RTRI, yyline, yycolumn, null);       }
 ">"              { /* System.out.println("GT");           */ return new Symbol(sym.GT, yyline, yycolumn, null);         }
 ">="             { /* System.out.println("GE");           */ return new Symbol(sym.GE, yyline, yycolumn, null);         }
 "<"              { /* System.out.println("LT");           */ return new Symbol(sym.LT, yyline, yycolumn, null);         }

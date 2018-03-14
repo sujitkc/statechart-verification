@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 
-import ast.*;
 
 action code
 {:
@@ -28,17 +27,17 @@ non terminal ast.Name             name;
 non terminal List<ast.State>      states;
 non terminal List<ast.Transition> transitions;
 
-non terminal ast.StatementList       statement_list;
-non terminal ast.Statement           statement;
-non terminal ast.Expression          expr;
+non terminal ast.StatementList    statement_list;
+non terminal ast.Statement        statement;
+non terminal ast.Expression       expr;
 
-non terminal ast.DeclarationList decl_list;
-non terminal ast.Declaration     decl;
-non terminal ast.Declaration     normal_decl;
-non terminal ast.Declaration     inp_decl;
+non terminal ast.DeclarationList  decl_list;
+non terminal ast.Declaration      decl;
+non terminal ast.Declaration      normal_decl;
+non terminal ast.Declaration      inp_decl;
 
-non terminal ast.DeclarationList param_list;
-non terminal ast.DeclarationList non_empty_param_list;
+non terminal ast.DeclarationList  param_list;
+non terminal ast.DeclarationList  non_empty_param_list;
 non terminal ast.FunctionDeclaration funcdecl;
 non terminal List<ast.FunctionDeclaration> funcdecls;
 non terminal List<ast.FunctionDeclaration> funcs;
@@ -57,13 +56,23 @@ non terminal String binop;
 non terminal List<String> events;
 non terminal List<String> eventlist;
 
+non terminal List<ast.Type> typelist;
+non terminal List<ast.Type> typedecls;
+non terminal ast.Type typedecl;
+non terminal ast.Type polytypedecl;
+non terminal List<String> tparams;
+non terminal List<String> ne_tparams;
+
+non terminal ast.TypeName typename;
+non terminal List<ast.TypeName> typenames;
+
 // non terminal ast.Expression.Operator unaryop;
 
 terminal String IDENTIFIER;
 terminal Integer INTCONST;
 
 terminal Symbol
-    LBRACE, RBRACE, LPAREN, RPAREN,                      /* Brackets                 */
+    LBRACE, RBRACE, LPAREN, RPAREN, LTRI, RTRI,          /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT, HASH,                  /* Punctuations             */ 
     ASSIGN,
     WHILE, IF, ELSE,                                     /* Control flow             */
@@ -72,9 +81,9 @@ terminal Symbol
     EVENTS,                                              /* Event related            */
     AND, OR,                                             /* Logical operators        */
     EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
-    SUB, ADD, MUL, DIV,                       /* Arithmetic operators     */
+    SUB, ADD, MUL, DIV,                                  /* Arithmetic operators     */
     TRUE, FALSE,                                         /* Constants                */
-    STRUCT,                                         /* User defined types       */
+    STRUCT, TYPES, TYPE,                                 /* User defined types       */
     FUNCTIONS                                            /* Functions                */
     ;
 
@@ -102,39 +111,98 @@ name ::=
 /*********** skeletal statechart structure - begin *******/
 statechart ::= 
     STATECHART IDENTIFIER:id LBRACE
-      structs:structlist
+      typelist : tlist
       eventlist:el
       decl_list:dlist
       funcdecls:fdecls
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, structlist, el, dlist, fdecls, st, tr);
+      RESULT = new ast.Statechart(id, tlist, el, dlist, fdecls, st, tr);
     :}
   ;
 
+typelist ::=
+    TYPES LBRACE typedecls:decls RBRACE
+  {:
+    RESULT = decls;    
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.Type>();
+  :}
+  ;
+
+typedecls ::=
+    typedecls:decls typedecl:decl
+    {:
+      RESULT = decls;
+      RESULT.add(decl);
+    :}
+  | {:
+      RESULT = new ArrayList<ast.Type>();
+    :}
+  ;
+
+
+typedecl ::=
+    polytypedecl:decls
+  {:
+    RESULT = decls;
+  :}
+  | struct : str
+  {:
+    RESULT = str;
+  :}
+  ;
+
+polytypedecl ::=
+    TYPE IDENTIFIER:tname LTRI tparams:params RTRI SEMICOLON
+  {:
+    RESULT = new ast.BasicType(tname, params);
+  :}
+  ;
+
+tparams ::=
+    ne_tparams:params
+  {:
+    RESULT = params;
+  :}
+  | 
+  {:
+    RESULT = new ArrayList<String>();
+  :}
+  ;
+
+ne_tparams ::=
+    ne_tparams:params COMMA IDENTIFIER:param
+  {:
+    RESULT = params;
+    RESULT.add(param);
+  :}
+  | IDENTIFIER:param
+  {:
+    RESULT = new ArrayList<String>();
+    RESULT.add(param);
+  :}
+  ;
+
 struct ::=
+    /* non-polymorphic struct */
     STRUCT IDENTIFIER:id LBRACE
       decl_list:dlist
     RBRACE
     {:
-      RESULT = new ast.Struct(id, dlist);
+      RESULT = new ast.Struct(id, dlist, new ArrayList<String>());
     :}
-  ;
 
-structs ::=
-    structs:structlist struct:s 
+  |
+    /* polymorphic struct */
+    STRUCT LTRI tparams:params RTRI IDENTIFIER:id LBRACE
+      decl_list:dlist
+    RBRACE
     {:
-      RESULT = structlist;
-      for(ast.Struct st : structlist) {
-        if(st.name.equals(s.name)) {
-          throw new Exception("Duplicate struct name " + s.name);
-        }
-      }
-      RESULT.add(s);
-    :}
-  | {:
-       RESULT = new ArrayList<ast.Struct>();
+      RESULT = new ast.Struct(id, dlist, params);
     :}
   ;
 
@@ -168,7 +236,7 @@ events ::=
   ;
 
 funcdecl ::=
-  IDENTIFIER:fname LPAREN param_list:params RPAREN COLON IDENTIFIER:tname SEMICOLON
+  IDENTIFIER:fname LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
   {:
     RESULT = new ast.FunctionDeclaration(fname, tname, params);
   :}
@@ -432,26 +500,50 @@ decl_list ::= decl_list:dlist decl:d
   ;
 
 decl ::=
-     normal_decl:d SEMICOLON
+      IDENTIFIER:id COLON typename:tid SEMICOLON
     {:
-      RESULT = d;
+      RESULT = new ast.Declaration(id, tid, false);
     :}
-  | inp_decl:d SEMICOLON
+  |   IDENTIFIER:id HASH COLON typename:tid SEMICOLON
     {:
-     RESULT = d;
+      RESULT = new ast.Declaration(id, tid, true);
     :}
   ;
-
+/*
 normal_decl ::=
-     IDENTIFIER:id COLON IDENTIFIER:tid
+     IDENTIFIER:id COLON typename:tid
     {:
       RESULT = new ast.Declaration(id, tid, false);
     :}
   ;
 
 inp_decl ::=
-     IDENTIFIER:id HASH COLON IDENTIFIER:tid SEMICOLON
+     IDENTIFIER:id HASH COLON typename:tid SEMICOLON
     {:
       RESULT = new ast.Declaration(id, tid, true);
+    :}
+  ;
+*/
+typename ::=
+      IDENTIFIER:tid
+    {:
+      RESULT = new ast.TypeName(tid);
+    :}
+  |   IDENTIFIER:tid LTRI typenames:targs RTRI
+    {:
+      RESULT = new ast.TypeName(tid, targs);
+    :}
+  ;
+
+typenames ::=
+      typenames:tns COMMA typename:tn
+    {:
+      RESULT = tns;
+      RESULT.add(tn);
+    :}
+  |  typename:tn
+    {:
+      RESULT = new ArrayList<ast.TypeName>();
+      RESULT.add(tn);
     :}
   ;

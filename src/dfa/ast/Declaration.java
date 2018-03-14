@@ -2,13 +2,12 @@ package ast;
 
 public class Declaration {
   public final String vname;
-  public final String typeName;
+  public final TypeName typeName;
   private DeclarationList declarationList;
   public final boolean input; // whether the declaration is input variable or not.
+  public Type type; // to be set only when the Declaration is being substantiated.
 
-  private Type type;
-
-  public Declaration(String vname, String typeName, boolean input) {
+  public Declaration(String vname, TypeName typeName, boolean input) {
     this.vname    = vname;
     this.typeName = typeName;
     this.input    = input;
@@ -23,7 +22,7 @@ public class Declaration {
   }
 
   public Type getType() {
-    return this.type;
+    return this.typeName.type;
   }
 
   public String toString() {
@@ -31,7 +30,7 @@ public class Declaration {
     if(this.input) {
       s += " #";
     }
-    s += " : " + this.typeName + ";";
+    s += " : " + this.typeName + " : " + this.type + ";";
     return s;
   }
 

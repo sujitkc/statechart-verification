@@ -35,6 +35,7 @@ public class Analyser {
     catch(Exception e) {
       System.out.println("Couldn't parse '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
+      System.exit(1);
     }
     try {
       (new Analyser(statechart)).analyse();

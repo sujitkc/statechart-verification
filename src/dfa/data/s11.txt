@@ -3,18 +3,19 @@
 
 statechart sc {
 
-  // struct declaration
-  struct mystruct {
-    a : int;
-    b : boolean;
-  }
+  types {
+    // struct declaration
+    struct mystruct {
+      a : int;
+      b : boolean;
+    }
 
-  // user defined type based on earlier user defined type.
-  struct yourstruct {
-    a : int;
-    b : mystruct;
+    // user defined type based on earlier user defined type.
+    struct yourstruct {
+      a : int;
+      b : mystruct;
+    }
   }
-
   // events
   events {
     e1;

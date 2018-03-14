@@ -8,8 +8,8 @@ statechart sc {
   }
 
   transition t1 {
-    source      : s1;
-    destination : s2;
+    source      : sc.s1;
+    destination : sc.s2;
     guard       : x ;
     action      : x := y;
   }

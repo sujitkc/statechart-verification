@@ -2,12 +2,12 @@ package ast;
 
 public class FunctionDeclaration {
   public final String name;
-  public final String returnTypeName;
+  public final TypeName returnTypeName;
   private DeclarationList argumentList;
 
   private Type returnType;
 
-  public FunctionDeclaration(String name, String returnTypeName, DeclarationList argumentList) {
+  public FunctionDeclaration(String name, TypeName returnTypeName, DeclarationList argumentList) {
     this.name           = name;
     this.returnTypeName = returnTypeName;
     this.argumentList   = argumentList;

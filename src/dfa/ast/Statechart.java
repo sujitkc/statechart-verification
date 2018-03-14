@@ -12,7 +12,8 @@ public class Statechart extends State {
 
   public Statechart(
       String                    name,
-      List<Struct>              structs,
+      List<Type>                moreTypes,
+//      List<Struct>              structs,
       List<String>              events,
       DeclarationList           declarations,
       List<FunctionDeclaration> functionDeclarations,
@@ -24,8 +25,8 @@ public class Statechart extends State {
     this.types.add(new BasicType("int"));
     this.types.add(new BasicType("boolean"));
 
-    for(Struct s : structs) {
-      this.types.add(s);
+    for(Type t : moreTypes) {
+      this.types.add(t);
     }
 
     this.events = events;
@@ -60,15 +61,6 @@ public class Statechart extends State {
     return cca;
   }
 
-  public Type lookupType(String typeName) {
-    for(Type type : this.types) {
-      if(type.name.equals(typeName)) {
-        return type;
-      }
-    }
-    return null;
-  }
-
   public FunctionDeclaration lookupFunctionDeclaration(String fName) {
     for(FunctionDeclaration fdec : this.functionDeclarations) {
       if(fdec.name.equals(fName)) {
@@ -88,9 +80,11 @@ public class Statechart extends State {
   public String toString() {
     String s = "startchart " + this.name + " {\n";
 
+    s += "types {\n";
     for(Type t : this.types) {
       s += t.toString();
     }
+    s += "}\n";
 
     s += "events {\n";
     for(String event : this.events) {

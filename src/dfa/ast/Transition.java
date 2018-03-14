@@ -60,7 +60,7 @@ public class Transition {
 
   public Environment getWriteOnlyEnvironment() throws Exception {
     if(this.writeOnlyEnvironment == null) {
-      this.writeOnlyEnvironment = this.destination.getEnvironment(); // Incorrect; needs to be fixed.
+      this.writeOnlyEnvironment = this.destination.getEnvironment().copyExclusive(this.state.getEnvironment()); // Incorrect; needs to be fixed.
     }
     return this.writeOnlyEnvironment;
   }

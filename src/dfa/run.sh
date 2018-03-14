@@ -7,7 +7,7 @@ testcases=(
   s5  # error - unknown state
   s6  # error - non boolean guard
   s7  # parenthesised expression, Binary expressions (logical, relational, arithmetic), boolean constant, integer constant, statement list
-  s8  # user defined type based on earlier user defined type.
+  s8  # user defined type (struct) based on earlier user defined type.
   s9  # error - type error in while condition
   s10 # error - type error in if condition
   s11 # input variables
