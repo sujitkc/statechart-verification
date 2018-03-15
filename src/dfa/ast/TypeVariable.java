@@ -15,7 +15,10 @@ public class TypeVariable extends Type {
   }
 
   public Type substantiate(List<Type> typeArguments) throws Exception {
-    throw new Exception("Substantiate failed. Trying to substantiate a type variable. Not allowed.");
+    if(this.index >= typeArguments.size()) {
+      throw new Exception("Type variable substantiate failed. Not enough arguments provided for " + this.toString());
+    }
+    return typeArguments.get(this.index);
   }
 
   public Type copy() {

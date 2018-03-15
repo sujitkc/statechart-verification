@@ -17,14 +17,11 @@ public class Struct extends Type {
   }
   
   public Type substantiate(List<Type> typeArguments) throws Exception {
-    System.out.println("Substantiating struct " + this + " with type arguments ");
-    for(Type t : typeArguments) {
-      System.out.println(t.toString());
-    }
+
     DeclarationList decs = new DeclarationList();
     for(Declaration olddecl : this.declarations) {
       String vname = olddecl.vname;
-      Type oldtype = olddecl.typeName.type;
+      Type oldtype = olddecl.type;
       Type newtype = null;
       if(oldtype instanceof TypeVariable) {
         TypeVariable typevar = (TypeVariable)oldtype;
@@ -38,7 +35,6 @@ public class Struct extends Type {
       decs.add(newdecl);
     }
     Struct s = new Struct(this.name, decs);
-    System.out.println("Substantiated struct = " + s);
     return s;
   }
 

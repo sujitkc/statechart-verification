@@ -25,7 +25,7 @@ statechart sc {
     // polymorphic struct with nested polymorphic field
     struct<| A, B |> S2 { 
       a : A;
-      b : map<| int, B |>; // one level of nesting
+      b : map<| int, A |>; // one level of nesting
       c : map<| int, list<| B |> |>; // two level of nesting
       d : S1<| B, A |>;
     }
@@ -43,7 +43,8 @@ statechart sc {
   
   state s1 {
     x : boolean;
-    str1 : S2<| int, boolean |>;
+    str1 : S1<| boolean, int |>;
+    str2 : S2<| int, boolean |>;
   }
 
   state s2 {
@@ -58,8 +59,12 @@ statechart sc {
       y := x;
       str1.a;
       str1.b;
-      str1.c;
-      str1.d;
+      str2.a;
+      str2.b;
+      str2.c;
+      str2.d;
+      str2.d.a;
+      str2.d.b;
     }
   }
 }

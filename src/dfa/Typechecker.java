@@ -35,35 +35,11 @@ public class Typechecker {
   public Typechecker(Statechart statechart) {
     this.statechart = statechart;
   }
-/*
-  private void typecheckVariableDeclaration(Declaration d, List<String> typeParameterNames) throws Exception {
-    Type ty = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
-    if(ty == null) {
-      throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
-    }
-    List<Type> typeargs = new ArrayList<Type>();
-    for(TypeName tname : d.typeName.typeArgumentNames) {
-      typeargs.add(tname.type);
-    }
-    Type type = d.typeName.type.substantiate(typeargs);
-    d.setType(type);  
-  }
-*/
 
   private void typecheckVariableDeclarations(State state) throws Exception {
     List<String> noTypeParameterNames = new ArrayList<String>();
     for(Declaration dec : state.declarations) {
       this.typecheckDeclaration(dec, noTypeParameterNames, this.statechart.types.size());
-
-/*
-      Type type = this.lookupType(dec.typeName);
-      if(type == null) {
-        throw new Exception(
-          "Declaration '" + dec.toString() + "' in state '" + state.name +
-          "' didn't typecheck : declaration type '" +
-          dec.typeName + "' doesn't exist.");
-      }
-*/
     }
     for(State st : state.states) {
       this.typecheckVariableDeclarations(st);
@@ -92,11 +68,6 @@ public class Typechecker {
               "' didn't typecheck : argument type '" +
               dec.typeName + "' doesn't exist.");
           }
-/*
-          else {
-            dec.setType(argtype);
-          }
-*/
         }       
       }
     }
@@ -156,7 +127,6 @@ public class Typechecker {
       }
       List<Type> typelist = new ArrayList<Type>();
       for(TypeName targ : typeName.typeArgumentNames) {
-        System.out.println("here");
         Type ty = null;
         if(typeParameterNames.contains(targ.name)) {
           ty = new ast.TypeVariable(targ.name, typeParameterNames.indexOf(targ.name));
@@ -172,7 +142,7 @@ public class Typechecker {
       type.typeArguments = typelist;
     }
     typeName.type = type;
-    return type.substantiate(type.typeArguments);
+    return type;
   }
 
   // Overloading lookupType to work with non-polymorphic types with no type parameters.
@@ -185,11 +155,31 @@ public class Typechecker {
       if(type == null) {
         throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
       }
+      if(type.typeArguments.size() > 0) {
+        d.setType(type.substantiate(type.typeArguments));
+      }
+      else {
+        d.setType(type);
+      }
   }
+
+  private void typecheckFieldDeclaration(Declaration d, List<String> typeParameterNames, int i) throws Exception {
+      Type type = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
+      if(type == null) {
+        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
+      }
+      if(type.typeArguments.size() > 0) {
+        d.setType(type.substantiate(type.typeArguments));
+      }
+      else {
+        d.setType(type);
+      }
+  }
+
 
   private void typecheckStruct(Struct struct, int i) throws Exception {
     for(Declaration d : struct.declarations) {
-      this.typecheckDeclaration(d, struct.typeParameterNames, i);
+      this.typecheckFieldDeclaration(d, struct.typeParameterNames, i);
     }
   }
  
@@ -209,7 +199,7 @@ public class Typechecker {
       }
       
       String nextName = nameIterator.next(); // iterator.peek - step 1
-      nameIterator.previous(); // iterator.peek - step 2
+      nameIterator.previous();               // iterator.peek - step 2
 
       State s = state.findSubstateByName(nextName);
       if(s != null) {
@@ -230,8 +220,8 @@ public class Typechecker {
       if(nameIterator.hasNext()) {
         if(type instanceof Struct) {
           Struct structType = (Struct)type;
-          String nextName = nameIterator.next();
-          nameIterator.previous();
+          String nextName = nameIterator.next(); // iterator.peek - step 1
+          nameIterator.previous();               // iterator.peek - step 2
           Declaration d = structType.declarations.lookup(nextName);
           if(d != null) {
             return this.getTypeOfName(nameIterator, d.getType());
@@ -278,16 +268,18 @@ public class Typechecker {
         v:T belongs to env.
       */
 
-       dec = env.lookup(name.name.get(0));
+        dec = env.lookup(name.name.get(0));
       }
       if(dec == null) {
         System.out.println(env);
         throw new Exception("Name " + name + " didn't type check. Couldn't locate a variable with matching description.");
       }
+/*
       List<Declaration> decs = env.getAllDeclarations();
       if(!decs.contains(dec)) {
         throw new Exception("name didn't type check. The name exists but is not in scope.");
       }
+*/
       /*
       Here,
         if m != 0 then

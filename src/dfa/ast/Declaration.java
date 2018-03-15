@@ -22,7 +22,7 @@ public class Declaration {
   }
 
   public Type getType() {
-    return this.typeName.type;
+    return this.type;
   }
 
   public String toString() {

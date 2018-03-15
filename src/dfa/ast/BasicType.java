@@ -15,10 +15,6 @@ public class BasicType extends Type {
   
   public Type substantiate(List<Type> typeArguments) throws Exception {
 
-    System.out.println("Substantiating " + this + "(" + this.typeArguments.size() + ") with type arguments:");
-    for(Type targ : typeArguments) {
-      System.out.println("targ : " + targ);
-    }
     BasicType bt = new BasicType(this.name, this.typeParameterNames);
     for(Type oldtype : this.typeArguments) {
       Type newtype = null;
@@ -31,7 +27,6 @@ public class BasicType extends Type {
       }
       bt.typeArguments.add(newtype);
     }
-    System.out.println("Substantiated type = " + bt);
     return bt;
   }
 
