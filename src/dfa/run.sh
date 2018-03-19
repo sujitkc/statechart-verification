@@ -16,12 +16,14 @@ testcases=(
   s14 # error - duplicate names in function declaration
   s15 # error - function declaration unknown return type
   s16 # error - function declaration unknown argument type
-  s17 # error - 
+  s17 # Function call 
   s18 # error - Error - Function call: undeclared function 
   s19 # error - Error - Function call: incorrect number of arguments 
   s20 # error - Error - Function call: incorrect number of arguments 
   s21 # error - Error - Function call: argument type mismatch 
   s22 # error - Error - Function call: argument type mismatch
+  s34 # function call as argument to function call.
+  s35 # error - function call as argument to function call. Incorrect return type  
   s23 # Name in expression
   s24 # Name in expression - all correct usages
   s25 # error -fully qualified name expression but not in scope 

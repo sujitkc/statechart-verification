@@ -1,0 +1,49 @@
+/* error : inexistent struct field -- polymorphic struct */
+
+statechart sc {
+
+  types {
+
+    struct<| C, D |> S1 { // polymorphic struct.
+      a : C;
+      b : D;
+    }
+
+    // polymorphic struct with nested polymorphic field
+    struct<| A, B |> S2 { 
+      a : A;
+      b : map<| int, A |>; // one level of nesting
+      c : map<| int, list<| B |> |>; // two level of nesting
+      d : S1<| B, A |>;
+    }
+  }
+  
+  events {
+  }
+
+  y : boolean;  
+
+  functions {
+  
+  }
+  
+  
+  state s1 {
+    x : boolean;
+    str1 : S1<| boolean, int |>;
+    str2 : S2<| int, boolean |>;
+  }
+
+  state s2 {
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    guard       : x ;
+    action      : 
+    {
+      str2.e; // error - inexistent struct field.
+    }
+  }
+}

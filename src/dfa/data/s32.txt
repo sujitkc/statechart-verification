@@ -1,0 +1,64 @@
+/* error : reference to a field of a non-struct type */
+
+statechart sc {
+
+  types {
+    type t1<| |>; // no type parameters
+    type list<| a |>; // with one type parameter
+    type map<| a, b |>; // with multiple type parameters
+
+    // struct declaration
+    struct mystruct {
+      a : int;
+      b : boolean;
+    }
+
+    // user defined type based on earlier user defined type.
+    struct yourstruct {
+      a : int;
+      b : mystruct;
+    }
+
+    struct<| C, D |> S1 { // polymorphic struct.
+      a : C;
+      b : D;
+    }
+
+    // polymorphic struct with nested polymorphic field
+    struct<| A, B |> S2 { 
+      a : A;
+      b : map<| int, A |>; // one level of nesting
+      c : map<| int, list<| B |> |>; // two level of nesting
+      d : S1<| B, A |>;
+    }
+  }
+  
+  events {
+  }
+
+  y : boolean;  
+
+  functions {
+  
+  }
+  
+  
+  state s1 {
+    x : boolean;
+    str1 : S1<| boolean, int |>;
+    str2 : S2<| int, boolean |>;
+  }
+
+  state s2 {
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    guard       : x ;
+    action      : 
+    {
+      y := x.a; // error - x is not a struct.
+    }
+  }
+}

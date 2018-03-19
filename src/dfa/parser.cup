@@ -41,6 +41,7 @@ non terminal ast.DeclarationList  non_empty_param_list;
 non terminal ast.FunctionDeclaration funcdecl;
 non terminal List<ast.FunctionDeclaration> funcdecls;
 non terminal List<ast.FunctionDeclaration> funcs;
+non terminal ast.FunctionName func_name;
 
 non terminal List<ast.Expression> arg_list;
 non terminal List<ast.Expression> non_empty_arg_list;
@@ -236,9 +237,13 @@ events ::=
   ;
 
 funcdecl ::=
-  IDENTIFIER:fname LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
+    IDENTIFIER:fname LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
   {:
     RESULT = new ast.FunctionDeclaration(fname, tname, params);
+  :}
+  | IDENTIFIER:fname LTRI tparams:typars RTRI LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
+  {:
+    RESULT = new ast.FunctionDeclaration(fname, typars, tname, params);
   :}
   ;
 
@@ -388,10 +393,22 @@ expr ::=
   ;
 
 func_call ::=
-    IDENTIFIER:f LPAREN arg_list:alist RPAREN
+    func_name:f LPAREN arg_list:alist RPAREN
   {:
     RESULT = new ast.FunctionCall(f, alist);
   :}
+  ;
+
+func_name ::=
+    IDENTIFIER:tid LTRI typenames:targs RTRI
+    {:
+      RESULT = new ast.FunctionName(tid, targs);
+    :}
+  | IDENTIFIER:tid LTRI RTRI
+    {:
+      RESULT = new ast.FunctionName(tid, new ArrayList<ast.TypeName>());
+    :}
+
   ;
 
 arg_list ::=
@@ -500,16 +517,16 @@ decl_list ::= decl_list:dlist decl:d
   ;
 
 decl ::=
-      IDENTIFIER:id COLON typename:tid SEMICOLON
+      normal_decl:d SEMICOLON
     {:
-      RESULT = new ast.Declaration(id, tid, false);
+      RESULT = d;
     :}
-  |   IDENTIFIER:id HASH COLON typename:tid SEMICOLON
+  |   inp_decl:d SEMICOLON
     {:
-      RESULT = new ast.Declaration(id, tid, true);
+      RESULT = d;
     :}
   ;
-/*
+
 normal_decl ::=
      IDENTIFIER:id COLON typename:tid
     {:
@@ -523,7 +540,7 @@ inp_decl ::=
       RESULT = new ast.Declaration(id, tid, true);
     :}
   ;
-*/
+
 typename ::=
       IDENTIFIER:tid
     {:

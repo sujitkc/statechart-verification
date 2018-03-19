@@ -2,17 +2,19 @@
 
 statechart sc {
 
-  // struct declaration
-  struct mystruct {
-    a : int;
-    b : boolean;
-  }
+  types {
+    // struct declaration
+    struct mystruct {
+      a : int;
+      b : boolean;
+    }
 
-  struct yourstruct {
-    a : int;
-    b : boolean;
+    struct yourstruct {
+      a : int;
+      b : boolean;
+    }
   }
-
+  
   v : int;
   x : int;
   y : boolean;
@@ -20,7 +22,7 @@ statechart sc {
   state s1 {
     state s11 {
       x : int;
-      v : boolean;
+      v : int;
     }
     state s12 {} // empty state
 
@@ -52,7 +54,7 @@ statechart sc {
 
     state s11 {
       x : int;
-      v : boolean;
+      v : int;
     }
     state s12 {}
 

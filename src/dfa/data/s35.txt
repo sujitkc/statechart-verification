@@ -1,4 +1,4 @@
-/* Function call */
+/* Error - Function call: function call as argument with wrong return type */
 
 statechart sc {
 
@@ -10,6 +10,7 @@ statechart sc {
     f() : int;
     g(a : int) : int;
     h(a : int, b : boolean) : int;
+    foo() : boolean;
   }
 
   state s1 {
@@ -39,7 +40,7 @@ statechart sc {
           x := v;
         }
         else {
-          x := g(v);
+          x := g(foo()); // error - return type of foo doesn't match the expected type of argument.
         }
   }
 }

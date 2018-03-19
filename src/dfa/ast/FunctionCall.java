@@ -3,11 +3,12 @@ package ast;
 import java.util.List;
 
 public class FunctionCall extends Expression {
-  public final String name;
+  public final FunctionName name;
   public List<Expression> argumentList;
+  public FunctionDeclaration function; // to be set only when the function call is being substantiated.
 
-  public FunctionCall(String name, List<Expression> argumentList) {
-    this.name     = name;
+  public FunctionCall(FunctionName name, List<Expression> argumentList) {
+    this.name         = name;
     this.argumentList = argumentList;
   }
 
@@ -16,10 +17,10 @@ public class FunctionCall extends Expression {
   }
 
   public String toString() {
-    String s = this.name + "(";
+    String s = this.name.toString() + "(";
     for(Expression arg : this.argumentList) {
       s += arg.toString() + ", ";
     }
-    return s + ")";
+    return s + ") : " + this.type;
   }
 }

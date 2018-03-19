@@ -61,15 +61,6 @@ public class Statechart extends State {
     return cca;
   }
 
-  public FunctionDeclaration lookupFunctionDeclaration(String fName) {
-    for(FunctionDeclaration fdec : this.functionDeclarations) {
-      if(fdec.name.equals(fName)) {
-        return fdec;
-      }
-    }
-    return null;
-  }
-
   public State nameToState(Name name) {
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);

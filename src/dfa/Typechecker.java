@@ -27,6 +27,7 @@ import ast.BasicType;
 import ast.Struct;
 import ast.FunctionDeclaration;
 import ast.FunctionCall;
+import ast.FunctionName;
 
 public class Typechecker {
 
@@ -49,27 +50,33 @@ public class Typechecker {
   private void typecheckFunctionDeclarations(Statechart statechart) throws Exception {
 
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
-      Type type = this.lookupType(fdec.returnTypeName);
-      if(type == null) {
+      Type type = null;
+      try {
+        type = this.lookupType(fdec.returnTypeName, fdec.typeParameterNames, this.statechart.types.size());
+      }
+      catch(Exception e) {
         throw new Exception(
           "Function Declaration '" + fdec.name + 
           "' didn't typecheck : function return type '" +
           fdec.returnTypeName + "' doesn't exist.");
       }
-      else {
-        fdec.setReturnType(type);
+      if(type == null) {
+        throw new Exception("Function declaration " + fdec.name + " didn't type check : Return type " + fdec.returnTypeName + " not found.");
+      }      
+      fdec.setReturnType(type);
 
-        DeclarationList args = fdec.getArgumentList();
-        for(Declaration dec : args) {
-          Type argtype = this.lookupType(dec.typeName);
-          if(argtype == null) {
-            throw new Exception(
-              "Argument type '" + dec.toString() + "' in function declaration '" + fdec.name +
-              "' didn't typecheck : argument type '" +
-              dec.typeName + "' doesn't exist.");
-          }
-        }       
-      }
+      DeclarationList args = fdec.getParameterList();
+      for(Declaration dec : args) {
+        try {
+          this.typecheckDeclaration(dec, fdec.typeParameterNames, this.statechart.types.size());
+        }
+        catch(Exception e) {
+          throw new Exception(
+            "Argument type '" + dec.toString() + "' in function declaration '" + fdec.name +
+            "' didn't typecheck : argument type '" +
+            dec.typeName + "' doesn't exist.");
+        }
+      }       
     }
   }
 
@@ -163,23 +170,9 @@ public class Typechecker {
       }
   }
 
-  private void typecheckFieldDeclaration(Declaration d, List<String> typeParameterNames, int i) throws Exception {
-      Type type = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
-      if(type == null) {
-        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
-      }
-      if(type.typeArguments.size() > 0) {
-        d.setType(type.substantiate(type.typeArguments));
-      }
-      else {
-        d.setType(type);
-      }
-  }
-
-
   private void typecheckStruct(Struct struct, int i) throws Exception {
     for(Declaration d : struct.declarations) {
-      this.typecheckFieldDeclaration(d, struct.typeParameterNames, i);
+      this.typecheckDeclaration(d, struct.typeParameterNames, i);
     }
   }
  
@@ -214,7 +207,7 @@ public class Typechecker {
     }
   }
 
-  private Type getTypeOfName(ListIterator<String> nameIterator, Type type) {
+  private Type getTypeOfName(ListIterator<String> nameIterator, Type type) throws Exception {
     if(nameIterator.hasNext()) {
       String singleName = nameIterator.next();
       if(nameIterator.hasNext()) {
@@ -227,20 +220,18 @@ public class Typechecker {
             return this.getTypeOfName(nameIterator, d.getType());
           }
           else {
-            // error: no field of the given name in the struct type
-            return null;
+            throw new Exception("no field " + nextName + " in the struct type.");
           }
         }
         else {
-          // error: name has more fields but the current type is not a struct.
-          return null;
+          throw new Exception("name has more fields but the current type " + singleName + " is not a struct.");
         }
       }
       else {
         return type;
       }
     }
-    else {
+    else { // should be unreachable, but needed by the compiler.
       return null;
     }
   }
@@ -274,12 +265,7 @@ public class Typechecker {
         System.out.println(env);
         throw new Exception("Name " + name + " didn't type check. Couldn't locate a variable with matching description.");
       }
-/*
-      List<Declaration> decs = env.getAllDeclarations();
-      if(!decs.contains(dec)) {
-        throw new Exception("name didn't type check. The name exists but is not in scope.");
-      }
-*/
+
       /*
       Here,
         if m != 0 then
@@ -360,40 +346,97 @@ public class Typechecker {
     }
   }
 
+  /*
+  This function tells if there is declared a function of name 
+    'fname'.
+  This function is meant to be called only during the
+    typechecking of Function calls.
+  */ 
+  private FunctionDeclaration getKnownFunction(FunctionName fname) {
+    for(int j = 0; j < this.statechart.functionDeclarations.size(); j++) {
+      FunctionDeclaration function = this.statechart.functionDeclarations.get(j);
+      if(
+          function.name.equals(fname.name) &&
+          function.typeParameterNames.size() == fname.typeArgumentNames.size()) {
+        return function;
+      }
+    }
+    return null;
+  }
+
+  public FunctionDeclaration lookupFunctionName(FunctionName fName) throws Exception {
+    FunctionDeclaration func = null;
+
+    func = this.getKnownFunction(fName);
+    if(func == null) {
+      throw new Exception("lookupFunctionName failed : Function name " + fName + " not found.");
+    }
+    func = func.copy();
+    List<Type> typelist = new ArrayList<Type>();
+    for(TypeName targ : fName.typeArgumentNames) {
+      Type ty = null;
+      ty = this.lookupType(targ);
+      if(ty == null) {
+        throw new Exception("lookupType failed : Type argument " + targ + " not found.");
+      }
+      typelist.add(ty);
+    }
+    func.typeArguments = typelist;
+    fName.type = func;
+    return func;
+  }
+
   private void typecheckFunctionCall(FunctionCall funcCall, Environment env) throws Exception {
     /*
       typecheck the function name.
       If there's no function declaration of that name: raise error.
+      If argument list size (in function call) and parameter list
+        size (in function declaration) are not equal, raise error.
       Else:
         for each argument expression arg:
           type check arg.
-          If the type of arg doesn't match the type of the corresponding formal parameter, then raise error.
+          If the type of arg doesn't match the type of the
+            corresponding formal parameter, then raise error.
           Else OK.
     */
 
-    FunctionDeclaration fdec = this.statechart.lookupFunctionDeclaration(funcCall.name);
+    FunctionDeclaration fdec =
+      this.lookupFunctionName(funcCall.name);
     if(fdec == null) {
-      throw new Exception("function call didn't typecheck: function by name "+ funcCall.name + " not found.");
+      throw new Exception(
+        "function call didn't typecheck: function by name " +
+        funcCall.name + " not found.");
     }
-    DeclarationList parameterList = fdec.getArgumentList();
+    DeclarationList parameterList = fdec.getParameterList();
     if(parameterList.size() != funcCall.argumentList.size()) {
-      throw new Exception("function call " + funcCall.name + " didn't typecheck: incorrect number of arguments. " +
+      throw new Exception("function call " + funcCall.name +
+        " didn't typecheck: incorrect number of arguments. " +
         parameterList.size() + " expected; " +
         funcCall.argumentList.size() + " provided.");
-      
+    }
+
+    Type returnType = null;
+    if(fdec.typeArguments.size() > 0) {
+      funcCall.function = fdec.substantiate(fdec.typeArguments);
+      returnType = fdec.getReturnType().substantiate(fdec.typeArguments);
+    }
+    else {
+      funcCall.function = fdec;
+      returnType = fdec.getReturnType();
     }
     for(int i = 0; i < funcCall.argumentList.size(); i++) {
       Expression arg = funcCall.argumentList.get(i);
       this.typecheckExpression(arg, env);
       Type targ = arg.getType();
-      Declaration param = parameterList.get(i);
-      if(param.getType().equals(targ) == false) {
-        throw new Exception("function call didn't typecheck: arguments " +
-           arg + " has type " + arg.getType() + ". " +
-           param.getType().name + " expected.");
+      Type paramtype = funcCall.function.getParameterList().get(i).type.substantiate(fdec.typeArguments);
+      if(paramtype.equals(targ) == false) {
+        throw new Exception(
+          "function call didn't typecheck: arguments " +
+          arg + " has type " + arg.getType() + ". " +
+          paramtype.name + " expected.");
       }
     }
-    funcCall.setType(fdec.getReturnType());
+    funcCall.setType(returnType);
   }
 
   private void typecheckExpression(Expression exp, Environment env) throws Exception {
@@ -452,7 +495,8 @@ public class Typechecker {
     this.typecheckExpression(as.rhs, renv);
 
     if(!as.lhs.getType().equals(as.rhs.getType())) {
-      throw new Exception("assignment lhs and rhs types don't match.");
+      throw new Exception("In assignment " + as + " lhs: " + as.lhs.getType() +
+        " and rhs type " + as.rhs.getType() + " don't match.");
     }
   }
 

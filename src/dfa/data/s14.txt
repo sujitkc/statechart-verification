@@ -6,8 +6,8 @@ statechart sc {
   y : boolean;
 
   functions {
-    f() : int;
-    f(a : int) : int;
+    g() : int;
+    g(a : int) : int;
     h(a : int, b : boolean) : int;
   }
   

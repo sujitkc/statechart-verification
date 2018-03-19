@@ -3,19 +3,13 @@ Add to state:
 
 Add local variable declaration in statement blocks.
 
-11.03.2018
-----------
-Currently doing:
-Implementation of polymorphic type.
-Substantiation of structures is not working properly.
-getKnownType function is suspect. To me, it should be returning a copy and
- not just the type itself.
-Am trying out by implementing copy method in all Type sub-classes.
+Fix earlier test cases to deal with 'types' clause and polymorphic types.
 
-Another issue is that during lookup, the type parameters of inner structures
-should be replaced with type variables as per the outer structure's type 
-variables. See data/s29.txt for example.
- 
+Add negative test cases for polymorphic data types.
+
+Polymorphic function declaration
+
+Polymorphic function call 
 
 
 
