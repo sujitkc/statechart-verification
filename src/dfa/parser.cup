@@ -408,7 +408,6 @@ func_name ::=
     {:
       RESULT = new ast.FunctionName(tid, new ArrayList<ast.TypeName>());
     :}
-
   ;
 
 arg_list ::=

@@ -352,24 +352,28 @@ public class Typechecker {
   This function is meant to be called only during the
     typechecking of Function calls.
   */ 
-  private FunctionDeclaration getKnownFunction(FunctionName fname) {
+  private FunctionDeclaration getKnownFunction(FunctionName fname) throws Exception {
     for(int j = 0; j < this.statechart.functionDeclarations.size(); j++) {
       FunctionDeclaration function = this.statechart.functionDeclarations.get(j);
-      if(
-          function.name.equals(fname.name) &&
-          function.typeParameterNames.size() == fname.typeArgumentNames.size()) {
-        return function;
+      if(function.name.equals(fname.name)) {
+        if(function.typeParameterNames.size() == fname.typeArgumentNames.size()) {
+          return function;
+        }
+        else {
+          throw new Exception("Wrong number of type arguments");
+        }
       }
     }
-    return null;
+    throw new Exception("Function not found");
   }
 
   public FunctionDeclaration lookupFunctionName(FunctionName fName) throws Exception {
     FunctionDeclaration func = null;
-
-    func = this.getKnownFunction(fName);
-    if(func == null) {
-      throw new Exception("lookupFunctionName failed : Function name " + fName + " not found.");
+    try {
+      func = this.getKnownFunction(fName);
+    }
+    catch(Exception e) {
+      throw new Exception("lookupFunctionName failed : " + fName +  " " + e.getMessage());
     }
     func = func.copy();
     List<Type> typelist = new ArrayList<Type>();

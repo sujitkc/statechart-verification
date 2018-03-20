@@ -3,13 +3,10 @@ Add to state:
 
 Add local variable declaration in statement blocks.
 
-Fix earlier test cases to deal with 'types' clause and polymorphic types.
-
 Add negative test cases for polymorphic data types.
 
-Polymorphic function declaration
+Fix earlier test cases with function calls to add "<|" and "|>".
 
-Polymorphic function call 
-
+string type and string constants
 
 

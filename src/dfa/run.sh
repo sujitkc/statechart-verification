@@ -27,6 +27,18 @@ testcases=(
   s23 # Name in expression
   s24 # Name in expression - all correct usages
   s25 # error -fully qualified name expression but not in scope 
+  s26
+  s27
+  s28
+  s29
+  s30
+  s31
+  s32
+  s33
+  s34
+  s35
+  s36
+
 );
 
 if [ $# = 1 ]; then
