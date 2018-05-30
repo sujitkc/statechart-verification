@@ -25,6 +25,7 @@ public class Statechart extends State {
 
     this.types.add(new BasicType("int"));
     this.types.add(new BasicType("boolean"));
+    this.types.add(new BasicType("string"));
 
     for(Type t : moreTypes) {
       this.types.add(t);
@@ -84,7 +85,14 @@ public class Statechart extends State {
     }
     s += "}\n";
 
-    s += this.declarations.toString();
+    if(this.declarations != null) {
+      for(Declaration d : this.declarations) {
+        s += d.toString() + "\n";
+      }
+    }
+  
+    s += "\nentry : " + this.entry + "\n"; 
+    s += "\nexit : " + this.exit + "\n";
 
     s += "functions {\n";
     for(FunctionDeclaration fdec : this.functionDeclarations) {

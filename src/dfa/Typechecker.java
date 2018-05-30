@@ -22,6 +22,7 @@ import ast.ExpressionStatement;
 import ast.StatementList;
 import ast.BooleanConstant;
 import ast.IntegerConstant;
+import ast.StringLiteral;
 import ast.BinaryExpression;
 import ast.BasicType;
 import ast.Struct;
@@ -288,12 +289,16 @@ public class Typechecker {
     name.setType(type);
   }
 
-  private void typecheckBooleanConstant(BooleanConstant b) throws Exception {
-    b.setType(this.lookupType(new TypeName("boolean")));
+  private void typecheckBooleanConstant(BooleanConstant e) throws Exception {
+    e.setType(this.lookupType(new TypeName("boolean")));
   }
 
-  private void typecheckIntegerConstant(IntegerConstant b) throws Exception {
-    b.setType(this.lookupType(new TypeName("int")));
+  private void typecheckIntegerConstant(IntegerConstant e) throws Exception {
+    e.setType(this.lookupType(new TypeName("int")));
+  }
+
+  private void typecheckStringLiteral(StringLiteral e) throws Exception {
+    e.setType(this.lookupType(new TypeName("string")));
   }
 
   private void typecheckBinaryExpression(BinaryExpression b, Environment env) throws Exception {
@@ -452,6 +457,9 @@ public class Typechecker {
     }
     else if(exp instanceof IntegerConstant) {
       this.typecheckIntegerConstant((IntegerConstant)exp); 
+    }
+    else if(exp instanceof StringLiteral) {
+      this.typecheckStringLiteral((StringLiteral)exp); 
     }
     else if(exp instanceof BinaryExpression) {
       this.typecheckBinaryExpression((BinaryExpression)exp, env); 

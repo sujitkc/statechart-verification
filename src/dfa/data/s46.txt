@@ -1,0 +1,16 @@
+/* String literal
+  error - type mismatch
+*/
+
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  
+  entry : x := 1;
+  exit : v := "Hello world!"; // string literal
+  functions {
+  }
+}

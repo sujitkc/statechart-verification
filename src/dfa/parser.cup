@@ -14,6 +14,7 @@ action code
 :}
 parser code 
 {:
+  public static String strliteral = "";
 
   public void syntax_error(Symbol s){
     System.out.println("compiler has detected a syntax error at line " + s.left 
@@ -73,6 +74,7 @@ non terminal ast.Statement exit_clause;
 
 terminal String IDENTIFIER;
 terminal Integer INTCONST;
+terminal String STRLITERAL;
 
 terminal Symbol
     LBRACE, RBRACE, LPAREN, RPAREN, LTRI, RTRI,          /* Brackets                 */
@@ -407,7 +409,11 @@ expr ::=
     {:
       RESULT = new ast.IntegerConstant(n);
     :}
-  | LPAREN expr:e RPAREN
+   | STRLITERAL:s
+    {:
+      RESULT = new ast.StringLiteral(s);
+    :}
+ | LPAREN expr:e RPAREN
     {:
       RESULT = e;
     :}

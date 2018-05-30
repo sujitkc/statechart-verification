@@ -1,0 +1,14 @@
+/* String literal */
+
+statechart sc {
+
+  v : string;
+  x : int;
+  y : boolean;
+
+  
+  entry : x := 1;
+  exit : v := "Hello world!"; // string literal
+  functions {
+  }
+}
