@@ -29,15 +29,12 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 
 %%
 
-//"List"           { /* System.out.println("List");         */ return new Symbol(sym.LIST, yyline, yycolumn, null);       }
-//"entry"          { /* System.out.println("entry");        */ return new Symbol(sym.ENTRY, yyline, yycolumn, null);       }
+"entry"          { /* System.out.println("entry");        */ return new Symbol(sym.ENTRY, yyline, yycolumn, null);       }
+"exit"           { /* System.out.println("exit");        */ return new Symbol(sym.EXIT, yyline, yycolumn, null);       }
 //"String"         { /* System.out.println("String");       */ return new Symbol(sym.STRING, yyline, yycolumn, null);     }
-//"int   "         { /* System.out.println("int");          */ return new Symbol(sym.INT, yyline, yycolumn, null);        }
 "while"          { /* System.out.println("while");        */ return new Symbol(sym.WHILE, yyline, yycolumn, null);      }
 "if"             { /* System.out.println("if");           */ return new Symbol(sym.IF, yyline, yycolumn, null);         }
 "else"           { /* System.out.println("else");         */ return new Symbol(sym.ELSE, yyline, yycolumn, null);       }
-//"goto"           { /* System.out.println("goto");         */ return new Symbol(sym.GOTO, yyline, yycolumn, null);       }
-//"in"             { /* System.out.println("in");           */ return new Symbol(sym.IN, yyline, yycolumn, null);         }
 "statechart"     { /* System.out.println("statechart");   */ return new Symbol(sym.STATECHART, yyline, yycolumn, null); }
 "state"          { /* System.out.println("state");        */ return new Symbol(sym.STATE, yyline, yycolumn, null);      }
 "transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION, yyline, yycolumn, null); }
@@ -45,7 +42,6 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 "destination"    { /* System.out.println("destination");  */ return new Symbol(sym.DEST, yyline, yycolumn, null);       }
 "guard"          { /* System.out.println("guard");        */ return new Symbol(sym.GUARD, yyline, yycolumn, null);      }
 "action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION, yyline, yycolumn, null);     }
-//"done"           { /* System.out.println("done");         */ return new Symbol(sym.DONE, yyline, yycolumn, null);       }
 "true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE, yyline, yycolumn, null);       }
 "false"          { /* System.out.println("false");        */ return new Symbol(sym.FALSE, yyline, yycolumn, null);      }
 "struct"         { /* System.out.println("struct");       */ return new Symbol(sym.STRUCT, yyline, yycolumn, null);     }

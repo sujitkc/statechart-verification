@@ -13,14 +13,15 @@ public class Statechart extends State {
   public Statechart(
       String                    name,
       List<Type>                moreTypes,
-//      List<Struct>              structs,
       List<String>              events,
       DeclarationList           declarations,
+      Statement                 entry,
+      Statement                 exit,
       List<FunctionDeclaration> functionDeclarations,
       List<State>               states,
       List<Transition>          transitions
       ) throws Exception {
-    super(name, declarations, states, transitions);
+    super(name, declarations, entry, exit, states, transitions);
 
     this.types.add(new BasicType("int"));
     this.types.add(new BasicType("boolean"));

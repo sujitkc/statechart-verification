@@ -14,6 +14,7 @@ action code
 :}
 parser code 
 {:
+
   public void syntax_error(Symbol s){
     System.out.println("compiler has detected a syntax error at line " + s.left 
       + " column " + s.right+"Symbol <"+s.toString()+">");
@@ -67,7 +68,8 @@ non terminal List<String> ne_tparams;
 non terminal ast.TypeName typename;
 non terminal List<ast.TypeName> typenames;
 
-// non terminal ast.Expression.Operator unaryop;
+non terminal ast.Statement entry_clause;
+non terminal ast.Statement exit_clause;
 
 terminal String IDENTIFIER;
 terminal Integer INTCONST;
@@ -79,6 +81,7 @@ terminal Symbol
     WHILE, IF, ELSE,                                     /* Control flow             */
     STATECHART, STATE, TRANSITION,                       /* Statechart related       */
     SRC, DEST, GUARD, ACTION,                            /* Transition label related */
+    ENTRY, EXIT,                                         /* State local code         */
     EVENTS,                                              /* Event related            */
     AND, OR,                                             /* Logical operators        */
     EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
@@ -115,11 +118,13 @@ statechart ::=
       typelist : tlist
       eventlist:el
       decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
       funcdecls:fdecls
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, tlist, el, dlist, fdecls, st, tr);
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr);
     :}
   ;
 
@@ -307,12 +312,38 @@ funcs ::=
 state ::= 
     STATE IDENTIFIER:id LBRACE
       decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, st, tr);
+      RESULT = new ast.State(id, dlist, en, ex, st, tr);
+    :}
+
+  ;
+
+entry_clause ::=
+    ENTRY COLON statement:a
+    {:
+      RESULT = a;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
     :}
   ;
+
+exit_clause ::=
+    EXIT COLON statement:a
+    {:
+      RESULT = a;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
+    :}
+  ;
+
 
 states ::=
     states:slist state:s 

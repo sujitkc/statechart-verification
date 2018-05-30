@@ -9,6 +9,8 @@ public class State {
   public final List<State> states;
   public final List<Transition> transitions;
   public final DeclarationList declarations;
+  public final Statement entry;
+  public final Statement exit;
 
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -17,12 +19,16 @@ public class State {
 
   public State(
       String            name,
-      DeclarationList declarations,
+      DeclarationList   declarations,
+      Statement         entry,
+      Statement         exit,
       List<State>       states,
       List<Transition>  transitions) {
 
     this.name         = name;
     this.declarations = declarations;
+    this.entry        = entry;
+    this.exit         = exit;
     this.states       = states;
     this.transitions  = transitions;
 
@@ -44,6 +50,7 @@ public class State {
       return this.superstate.getFullName() + "." + this.name;
     }
   }
+
   /* 
     Takes a fully-qualified name and returns a State which has this
     name. Returns null if such a State is not found.
@@ -126,7 +133,8 @@ public class State {
   public Environment getEnvironment() {
     if(this.environment == null) { 
       if(this.superstate != null) {
-        this.environment = new Environment(this.declarations, this.superstate.getEnvironment());
+        this.environment = new Environment(this.declarations,
+          this.superstate.getEnvironment());
       }
       else {
         this.environment = new Environment(this.declarations, null);
@@ -143,7 +151,10 @@ public class State {
         s += d.toString() + "\n";
       }
     }
-   
+  
+    s += "\nentry : " + this.entry + "\n"; 
+    s += "\nexit : " + this.exit + "\n";
+ 
     if(this.states != null) {
       for(State st : this.states) {
         s += st.toString();

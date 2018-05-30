@@ -15,23 +15,27 @@ public class Transition {
   private       Statechart statechart;
 
   
-  // Variables declared in readEnvironment aren't allowed to be used as l-values, e.g.
-  // LHS of an assignment
+  // Variables declared in readEnvironment aren't allowed to be used as
+  // l-values, e.g. LHS of an assignment
   private Environment readOnlyEnvironment = null;
 
-  // Variables declared in rwEnvironment can be used anywhere, both as r-values as well as
-  // l-values.
+  // Variables declared in rwEnvironment can be used anywhere, both as r-values
+  // as well as l-values.
   private Environment rwEnvironment = null;
 
-  // Variables declared in writeOnlyEnvironment can be used only as l-values, e.g. LHS of 
-  // assignments. Their values shouldn't be used anywhere.
+  // Variables declared in writeOnlyEnvironment can be used only as l-values,
+  // e.g. LHS of assignments. Their values shouldn't be used anywhere.
   private Environment writeOnlyEnvironment = null;
 
   private Environment readEnvironment = null;
 
   private Environment writeEnvironment = null;
 
-  public Transition(String name, Name src, Name dest, Expression guard, Statement action) {
+  public Transition(String name,
+      Name src,
+      Name dest,
+      Expression guard,
+      Statement action) {
     this.name            = name;
     this.sourceName      = src;
     this.destinationName = dest;
@@ -53,14 +57,16 @@ public class Transition {
 
   public Environment getReadOnlyEnvironment() throws Exception {
     if(this.readOnlyEnvironment == null) {
-      this.readOnlyEnvironment = this.source.getEnvironment().copyExclusive(this.state.getEnvironment());
+      this.readOnlyEnvironment = this.source.getEnvironment()
+        .copyExclusive(this.state.getEnvironment());
     }
     return this.readOnlyEnvironment;
   }
 
   public Environment getWriteOnlyEnvironment() throws Exception {
     if(this.writeOnlyEnvironment == null) {
-      this.writeOnlyEnvironment = this.destination.getEnvironment().copyExclusive(this.state.getEnvironment()); // Incorrect; needs to be fixed.
+      this.writeOnlyEnvironment = this.destination.getEnvironment()
+        .copyExclusive(this.state.getEnvironment());
     }
     return this.writeOnlyEnvironment;
   }
@@ -81,7 +87,8 @@ public class Transition {
 
   public Environment getWriteEnvironment() throws Exception {
     if(this.writeEnvironment == null) {
-      this.writeEnvironment = this.getWriteOnlyEnvironment().copyInclusive(this.state.getEnvironment());
+      this.writeEnvironment = this.getWriteOnlyEnvironment()
+        .copyInclusive(this.state.getEnvironment());
     }
     return this.writeEnvironment;
   }
@@ -89,11 +96,15 @@ public class Transition {
   public void setSourceDestinationStates() throws Exception {
     this.source = this.statechart.nameToState(this.sourceName);
     if(this.source == null) {
-      throw new Exception("Transition.setSourceDestinationStates : couldn't find state by name '" + this.sourceName + "'.");
+      throw new Exception(
+        "Transition.setSourceDestinationStates : couldn't find state by name '"
+        + this.sourceName + "'.");
     }
     this.destination = this.statechart.nameToState(this.destinationName);
     if(this.destination == null) {
-      throw new Exception("Transition.setSourceDestinationStates : couldn't find state by name '" + this.destinationName + "'.");
+      throw new Exception(
+        "Transition.setSourceDestinationStates : couldn't find state by name '"
+        + this.destinationName + "'.");
     }
   }
 

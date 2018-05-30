@@ -1,0 +1,69 @@
+/* Entry and exit blocks 
+Error - incompatible types in assignment */
+
+statechart sc {
+
+  v : int;
+  x : int;
+  y : boolean;
+
+  
+  entry : x := 1;
+  exit : x := 2;
+
+  functions {
+    f<| A |>() : A;
+    g<| A |>(a : int) : A; // Polymorphic function declaration - one type parameter
+    h<| A, B |>(a : A, b : B) : B; // Polymorphic function declaration - multiple type parameters
+  }
+
+  state s1 {
+  
+    entry : x := 1 + 1;
+    exit : { 
+      v := y; // incompatible type in assignment
+      y := true;
+    }
+      
+    state s11 {
+      x : int;
+      v : int;
+  
+    entry : x := 1;
+    exit : x := 2;
+    }
+    state s12 {
+      
+    entry : x := 1;
+    exit : x := 2;
+
+    }
+
+    transition t11 {
+      source : sc.s1.s11;
+      destination : sc.s1.s12;
+      guard : (true || false) && (x <= v);
+      action : f<| int |>();
+    }
+  }
+
+  state s2 {
+  
+    entry : x := 1;
+    exit : x := 2;
+
+  }
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+      guard : y;
+      action :
+        if(x != v) {
+          x := v;
+          h<| int, boolean |>(x, y);
+        }
+        else {
+          x := g<| int |>(v);
+        }
+  }
+}

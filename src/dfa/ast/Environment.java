@@ -7,6 +7,8 @@ public class Environment {
   private DeclarationList declarations;
   private Environment next;
 
+  public static final Environment emptyEnvironment = new Environment(new DeclarationList(), null);
+
   public Environment(DeclarationList declarations, Environment next) {
     this.declarations = declarations;
     this.next = next;

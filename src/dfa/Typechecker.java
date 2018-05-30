@@ -627,6 +627,12 @@ public class Typechecker {
 
   private void typecheckState(State state) throws Exception {
     checkNameDuplication(state);
+
+    Environment env = state.getEnvironment();
+    Environment emptyEnv = Environment.emptyEnvironment;
+    typecheckStatement(state.entry, env, env, env, emptyEnv, emptyEnv);
+    typecheckStatement(state.exit, env, env, env, emptyEnv, emptyEnv);
+
     for(Transition t : state.transitions) {
       this.typecheckTransition(t);
     }
