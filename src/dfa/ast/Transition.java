@@ -6,6 +6,7 @@ public class Transition {
   public  final String     name;
   private       Name       sourceName;
   private       Name       destinationName;
+  public  final String     trigger;
   public  final Expression guard;
   public  final Statement  action;
   private       State      source;
@@ -34,11 +35,13 @@ public class Transition {
   public Transition(String name,
       Name src,
       Name dest,
+      String trigger,
       Expression guard,
       Statement action) {
     this.name            = name;
     this.sourceName      = src;
     this.destinationName = dest;
+    this.trigger         = trigger;
     this.guard           = guard;
     this.action          = action;
   }

@@ -29,7 +29,7 @@ statechart sc {
   state s1 {
     state s11 {
       x : int;
-      v : boolean;
+      v : int;
     }
     state s12 {} // empty state
 
@@ -61,7 +61,7 @@ statechart sc {
 
     state s11 {
       x : int;
-      v : boolean;
+      v : int;
     }
     state s12 {}
 

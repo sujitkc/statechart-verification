@@ -318,22 +318,28 @@ public class Typechecker {
       else {
         throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
       }
-   }
+    }
     else if(
         b.operator.equals(">=") ||
-        b.operator.equals(">") ||
+        b.operator.equals(">")  ||
         b.operator.equals("<=") ||
-        b.operator.equals("<") ||
+        b.operator.equals("<")  ||
         b.operator.equals("!=") ||
         b.operator.equals("=") ) {
 
-      Type type = this.lookupType(new TypeName("int"));
-      if(b.left.getType().equals(type) &&
-        b.right.getType().equals(type)) {
-        b.setType(this.lookupType(new TypeName("boolean")));
+      TypeName[] allowedTypes = { new TypeName("int"), new TypeName("string") };
+      boolean type_set = false; 
+      for(TypeName tname : allowedTypes) {
+        Type type = this.lookupType(tname);
+        if(b.left.getType().equals(type) &&
+          b.right.getType().equals(type)) {
+          b.setType(this.lookupType(new TypeName("boolean")));
+          type_set = true;
+          break;
+        }
       }
-      else {
-        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+      if(type_set == false) {
+        throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
       }
     }
     else if(
@@ -346,7 +352,7 @@ public class Typechecker {
         b.setType(type);
       }
       else {
-        throw new Exception("typecheckBinaryExpression failed: operant type mismatch between " + b.left + " and " + b.right);
+        throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
       }
     }
   }
@@ -473,6 +479,13 @@ public class Typechecker {
     }
   }
 
+  private void typecheckTrigger(String trigger) throws Exception {
+    if(this.statechart.events.contains(trigger) == false) {
+      throw new Exception("Typechecking failed for trigger : " + trigger +
+        " not found.");
+    }
+  }
+
   private void typecheckGuard(Expression guard, Environment env) throws Exception {
     this.typecheckExpression(guard, env);
     if(guard.getType().name != "boolean") {
@@ -596,6 +609,7 @@ public class Typechecker {
         ". Should be placed in state " + lub.name + " but placed in state " +
         transition.getState().name + ".");
     }
+    this.typecheckTrigger(transition.trigger);
     this.typecheckGuard(transition.guard, transition.getReadEnvironment());
     this.typecheckStatement(transition.action,
       transition.getReadEnvironment(),

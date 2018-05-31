@@ -1,0 +1,123 @@
+statechart Student {
+
+
+  types {
+    type t1<| |>; // no type parameters
+    type list<| a |>; // with one type parameter
+    type map<| a, b |>; // with multiple type parameters
+  }
+
+  events {
+    eLogin;
+    eLogout;
+    eSetRoom;
+    eViewDetails;
+    eDoneSetting;
+    eDoneViewing;
+  }
+
+  students : map<| int, string |>;
+
+  rooms : map<| int, int |>;
+
+
+  entry : {}
+  exit  : {}
+
+  functions {
+    put_map<| A, B |>(amap : map<| A, B |>, k : A, v : B) : map<| A, B |>;
+    get_map<| A, B |>(amap : map<| A, B |>, k : A) : B;
+  }
+
+  state LoggedOut {
+    user #     : int;
+    password # : string;  
+  }
+
+  state LoggedIn {
+
+    loggedinUser : int;
+
+    entry : {}
+    exit  : {}
+
+    state Dashboard {
+
+    }
+
+    state SetRoom {
+      room # : int;
+
+      entry : {}
+      exit  : { put_map <| int, int |>(rooms, loggedinUser, room); }
+    }
+
+    state ViewDetails {
+      student : int;
+      room    : int;
+
+      entry : {
+        student := loggedinUser;
+        room    := get_map <| int, int |>(rooms, loggedinUser);
+          // possible access to undefined value: It is possible for this call 
+          // to get_map to fail if there is no entry in 
+          // rooms (map<| int, int |>) with key = loggedinUser.
+      }
+      exit : {}
+    }
+
+    transition tsetroom {
+      source      : Student.LoggedIn.Dashboard;
+      destination : Student.LoggedIn.SetRoom;
+      trigger     : eSetRoom;
+      guard       : true;
+      action      : {}
+    }
+
+
+    transition tviewdetails {
+      source      : Student.LoggedIn.Dashboard;
+      destination : Student.LoggedIn.ViewDetails;
+      trigger     : eViewDetails;
+      guard       : true;
+      action      : {}
+    }
+
+
+    transition tsetroom_done {
+      source      : Student.LoggedIn.SetRoom;
+      destination : Student.LoggedIn.Dashboard;
+      trigger     : eDoneSetting;
+      guard       : true;
+      action      : {}
+    }
+
+
+    transition tviewdetails_done {
+      source      : Student.LoggedIn.ViewDetails;
+      destination : Student.LoggedIn.Dashboard;
+      trigger     : eDoneViewing;
+      guard       : true;
+      action      : {}
+    }
+  }
+
+  transition tlogin {
+    source      : Student.LoggedOut;
+    destination : Student.LoggedIn;
+    trigger     : eLogin;
+    guard       : get_map <| int, string |>(students, Student.LoggedOut.user) = Student.LoggedOut.password;
+    action      : Student.LoggedIn.loggedinUser := Student.LoggedOut.user;
+  }
+
+  transition tlogout {
+    source      : Student.LoggedIn;
+    destination : Student.LoggedOut;
+    trigger     : eLogout;
+    guard       : true;
+    action      : { 
+      Student.LoggedOut.user = 0;
+      Student.LoggedOut.password = "";
+    }
+  }
+}

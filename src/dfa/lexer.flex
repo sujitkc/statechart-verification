@@ -20,9 +20,9 @@ import java.io.InputStream;
 LineTerminator = [\r|\n|\r\n]
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
-intconst = 0|[1-9][0-9]*
+intconst = [+\-]?0|[1-9][0-9]*
    
-identifier = [A-Za-z][A-Za-z0-9]*
+identifier = [A-Za-z]([_]?[A-Za-z0-9])*
 Comment = {TraditionalComment} | {EndOfLineComment}
 
 TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
@@ -42,6 +42,7 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 <YYINITIAL>"transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION, yyline, yycolumn, null); }
 <YYINITIAL>"source"         { /* System.out.println("source");       */ return new Symbol(sym.SRC, yyline, yycolumn, null);        }
 <YYINITIAL>"destination"    { /* System.out.println("destination");  */ return new Symbol(sym.DEST, yyline, yycolumn, null);       }
+<YYINITIAL>"trigger"        { /* System.out.println("trigger");        */ return new Symbol(sym.TRIGGER, yyline, yycolumn, null);      }
 <YYINITIAL>"guard"          { /* System.out.println("guard");        */ return new Symbol(sym.GUARD, yyline, yycolumn, null);      }
 <YYINITIAL>"action"         { /* System.out.println("action");       */ return new Symbol(sym.ACTION, yyline, yycolumn, null);     }
 <YYINITIAL>"true"           { /* System.out.println("true");         */ return new Symbol(sym.TRUE, yyline, yycolumn, null);       }

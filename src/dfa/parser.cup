@@ -58,6 +58,7 @@ non terminal String binop;
 
 non terminal List<String> events;
 non terminal List<String> eventlist;
+non terminal String trigger;
 
 non terminal List<ast.Type> typelist;
 non terminal List<ast.Type> typedecls;
@@ -82,7 +83,7 @@ terminal Symbol
     ASSIGN,
     WHILE, IF, ELSE,                                     /* Control flow             */
     STATECHART, STATE, TRANSITION,                       /* Statechart related       */
-    SRC, DEST, GUARD, ACTION,                            /* Transition label related */
+    SRC, DEST, TRIGGER, GUARD, ACTION,                   /* Transition label related */
     ENTRY, EXIT,                                         /* State local code         */
     EVENTS,                                              /* Event related            */
     AND, OR,                                             /* Logical operators        */
@@ -367,11 +368,23 @@ transition ::=
     TRANSITION IDENTIFIER:id LBRACE
       SRC  COLON name:src SEMICOLON
       DEST COLON name:des SEMICOLON
+      trigger:t
       GUARD COLON expr:g SEMICOLON
       ACTION COLON statement:a
     RBRACE
     {:
-      RESULT = new ast.Transition(id, src, des, g, a);
+      RESULT = new ast.Transition(id, src, des, t, g, a);
+    :}
+  ;
+
+trigger ::=
+    TRIGGER COLON IDENTIFIER:e SEMICOLON
+    {:
+      RESULT = e;
+    :}
+  |
+    {:
+      RESULT = "eNone";
     :}
   ;
 
@@ -571,7 +584,7 @@ normal_decl ::=
   ;
 
 inp_decl ::=
-     IDENTIFIER:id HASH COLON typename:tid SEMICOLON
+     IDENTIFIER:id HASH COLON typename:tid
     {:
       RESULT = new ast.Declaration(id, tid, true);
     :}
