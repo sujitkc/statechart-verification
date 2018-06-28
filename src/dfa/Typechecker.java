@@ -41,19 +41,22 @@ public class Typechecker {
   private void typecheckVariableDeclarations(State state) throws Exception {
     List<String> noTypeParameterNames = new ArrayList<String>();
     for(Declaration dec : state.declarations) {
-      this.typecheckDeclaration(dec, noTypeParameterNames, this.statechart.types.size());
+      this.typecheckDeclaration(dec, noTypeParameterNames,
+        this.statechart.types.size());
     }
     for(State st : state.states) {
       this.typecheckVariableDeclarations(st);
     }
   }
 
-  private void typecheckFunctionDeclarations(Statechart statechart) throws Exception {
+  private void typecheckFunctionDeclarations(
+      Statechart statechart) throws Exception {
 
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
       Type type = null;
       try {
-        type = this.lookupType(fdec.returnTypeName, fdec.typeParameterNames, this.statechart.types.size());
+        type = this.lookupType(fdec.returnTypeName, fdec.typeParameterNames,
+          this.statechart.types.size());
       }
       catch(Exception e) {
         throw new Exception(
@@ -62,19 +65,22 @@ public class Typechecker {
           fdec.returnTypeName + "' doesn't exist.");
       }
       if(type == null) {
-        throw new Exception("Function declaration " + fdec.name + " didn't type check : Return type " + fdec.returnTypeName + " not found.");
+        throw new Exception("Function declaration " + fdec.name +
+          " didn't type check : Return type " + fdec.returnTypeName +
+          " not found.");
       }      
       fdec.setReturnType(type);
 
       DeclarationList args = fdec.getParameterList();
       for(Declaration dec : args) {
         try {
-          this.typecheckDeclaration(dec, fdec.typeParameterNames, this.statechart.types.size());
+          this.typecheckDeclaration(dec, fdec.typeParameterNames,
+            this.statechart.types.size());
         }
         catch(Exception e) {
           throw new Exception(
-            "Argument type '" + dec.toString() + "' in function declaration '" + fdec.name +
-            "' didn't typecheck : argument type '" +
+            "Argument type '" + dec.toString() + "' in function declaration '"
+            + fdec.name + "' didn't typecheck : argument type '" +
             dec.typeName + "' doesn't exist.");
         }
       }       
@@ -107,7 +113,8 @@ public class Typechecker {
   private Type getKnownType(TypeName tname, int i) {
     for(int j = 0; j < i; j++) {
       Type type = this.statechart.types.get(j);
-      if(type.name.equals(tname.name) && type.typeParameterNames.size() == tname.typeArgumentNames.size()) {
+      if(type.name.equals(tname.name) && type.typeParameterNames.size()
+          == tname.typeArgumentNames.size()) {
         return type;
       }
     }
@@ -115,10 +122,12 @@ public class Typechecker {
   }
 
   /*
-    Looks up in the statechart type table for the presence of a type to which typeName
-    conforms, and returns a type corresponding to typeName.
+    Looks up in the statechart type table for the presence of a type to which
+    typeName conforms, and returns a type corresponding to typeName.
   */
-  public Type lookupType(TypeName typeName, List<String> typeParameterNames, int i) throws Exception {
+  public Type lookupType(
+      TypeName typeName,
+      List<String> typeParameterNames, int i) throws Exception {
     Type type = null;
     if(typeParameterNames.contains(typeName.name)) {
       if(typeName.typeArgumentNames.size() != 0) {
@@ -126,23 +135,27 @@ public class Typechecker {
           "' matches a type parameter (hence, should be a type variable), " +
           "however it has type arguments."); 
       }
-      type = new ast.TypeVariable(typeName.name, typeParameterNames.indexOf(typeName.name));
+      type = new ast.TypeVariable(typeName.name,
+        typeParameterNames.indexOf(typeName.name));
     }
     else {
       type = this.getKnownType(typeName, i).copy();
       if(type == null) {
-        throw new Exception("lookupType failed : Type name " + typeName + " not found.");
+        throw new Exception("lookupType failed : Type name " + typeName +
+          " not found.");
       }
       List<Type> typelist = new ArrayList<Type>();
       for(TypeName targ : typeName.typeArgumentNames) {
         Type ty = null;
         if(typeParameterNames.contains(targ.name)) {
-          ty = new ast.TypeVariable(targ.name, typeParameterNames.indexOf(targ.name));
+          ty = new ast.TypeVariable(
+            targ.name, typeParameterNames.indexOf(targ.name));
         }
         else {
           ty = this.lookupType(targ, typeParameterNames, i);
           if(ty == null) {
-            throw new Exception("lookupType failed : Type argument " + targ + " not found.");
+            throw new Exception("lookupType failed : Type argument " + targ +
+              " not found.");
           }
         }
         typelist.add(ty);
@@ -153,22 +166,27 @@ public class Typechecker {
     return type;
   }
 
-  // Overloading lookupType to work with non-polymorphic types with no type parameters.
+  // Overloading lookupType to work with non-polymorphic types
+  // with no type parameters.
   public Type lookupType(TypeName typeName) throws Exception {
-    return this.lookupType(typeName, new ArrayList<String>(), this.statechart.types.size());
+    return this.lookupType(typeName, new ArrayList<String>(),
+      this.statechart.types.size());
   }
 
-  private void typecheckDeclaration(Declaration d, List<String> typeParameterNames, int i) throws Exception {
-      Type type = this.lookupType(d.typeName, typeParameterNames, this.statechart.types.size());
-      if(type == null) {
-        throw new Exception("Struct typecheck error : type '" + d.typeName + "' unknown.");
-      }
-      if(type.typeArguments.size() > 0) {
-        d.setType(type.substantiate(type.typeArguments));
-      }
-      else {
-        d.setType(type);
-      }
+  private void typecheckDeclaration(
+      Declaration d, List<String> typeParameterNames, int i) throws Exception {
+    Type type = this.lookupType(
+      d.typeName, typeParameterNames, this.statechart.types.size());
+    if(type == null) {
+      throw new Exception("Struct typecheck error : type '" + d.typeName +
+        "' unknown.");
+    }
+    if(type.typeArguments.size() > 0) {
+      d.setType(type.substantiate(type.typeArguments));
+    }
+    else {
+      d.setType(type);
+    }
   }
 
   private void typecheckStruct(Struct struct, int i) throws Exception {
@@ -185,7 +203,8 @@ public class Typechecker {
     this.typecheckFunctionDeclarations(this.statechart);
   }
 
-  private Declaration getDeclarationInState(ListIterator<String> nameIterator, State state) {
+  private Declaration getDeclarationInState(
+      ListIterator<String> nameIterator, State state) {
     if(nameIterator.hasNext()) {
       String singleName = nameIterator.next(); // name of state
       if(!nameIterator.hasNext()) {
@@ -208,7 +227,9 @@ public class Typechecker {
     }
   }
 
-  private Type getTypeOfName(ListIterator<String> nameIterator, Type type) throws Exception {
+  private Type getTypeOfName(
+      ListIterator<String> nameIterator,
+      Type type) throws Exception {
     if(nameIterator.hasNext()) {
       String singleName = nameIterator.next();
       if(nameIterator.hasNext()) {
@@ -221,11 +242,13 @@ public class Typechecker {
             return this.getTypeOfName(nameIterator, d.getType());
           }
           else {
-            throw new Exception("no field " + nextName + " in the struct type.");
+            throw new Exception("no field " + nextName +
+            " in the struct type.");
           }
         }
         else {
-          throw new Exception("name has more fields but the current type " + singleName + " is not a struct.");
+          throw new Exception("name has more fields but the current type "
+          + singleName + " is not a struct.");
         }
       }
       else {
@@ -264,7 +287,9 @@ public class Typechecker {
       }
       if(dec == null) {
         System.out.println(env);
-        throw new Exception("Name " + name + " didn't type check. Couldn't locate a variable with matching description.");
+        throw new Exception("Name " + name + 
+        " didn't type check. Couldn't locate a variable with matching" +
+        " description.");
       }
 
       /*
@@ -301,7 +326,9 @@ public class Typechecker {
     e.setType(this.lookupType(new TypeName("string")));
   }
 
-  private void typecheckBinaryExpression(BinaryExpression b, Environment env) throws Exception {
+  private void typecheckBinaryExpression(
+      BinaryExpression b,
+      Environment env) throws Exception {
     typecheckExpression(b.left, env);
     typecheckExpression(b.right, env);
     if(
@@ -316,7 +343,9 @@ public class Typechecker {
         b.setType(type);
       }
       else {
-        throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
+        throw new Exception(
+          "typecheckBinaryExpression failed: operand type mismatch between "
+          + b.left + " and " + b.right);
       }
     }
     else if(
@@ -339,7 +368,9 @@ public class Typechecker {
         }
       }
       if(type_set == false) {
-        throw new Exception("typecheckBinaryExpression failed: operand type mismatch between " + b.left + " and " + b.right);
+        throw new Exception(
+          "typecheckBinaryExpression failed: operand type mismatch between "
+          + b.left + " and " + b.right);
       }
     }
     else if(

@@ -1,12 +1,5 @@
-Add to state:
-- entry and exit code blocks
-
 Add local variable declaration in statement blocks.
-
-Add negative test cases for polymorphic data types.
 
 Fix earlier test cases with function calls to add "<|" and "|>".
 
-string type and string constants
-
-
+minus(-) sign for integers.
