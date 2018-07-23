@@ -13,8 +13,11 @@ import ast.State;
 import ast.Statechart;
 import ast.Environment;
 import ast.Declaration;
+import ast.Statement;
+import ast.StatementList;
 
 import flt.Flatten;
+import cfg.*;
 
 public class Analyser {
 
@@ -36,6 +39,18 @@ public class Analyser {
       System.out.println("Printing flat Statechart ...");
       System.out.println(flat.toString());
       System.out.println("Printing flat Statechart ... done!\n\n");
+
+      CFGassist c1=new CFGassist();
+      StatementList sl=c1.CFGAST(flat);
+      System.out.println("Printing CFG AST...");
+      System.out.println(flat.toString());
+      System.out.println("Printing CFG AST ... done!\n\n");
+
+      CFG c2=new CFG(sl);
+      CFGNode cn=c2.CFGcreator();
+      System.out.println("Printing CFG ...");
+      System.out.println(cn.toString());
+      System.out.println("Printing CFG ... done!\n\n");
     }
     catch(FileNotFoundException e) {
       System.out.println("Couldn't open file '" + args[0] + "'");

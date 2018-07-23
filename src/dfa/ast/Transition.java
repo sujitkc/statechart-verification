@@ -15,7 +15,7 @@ public class Transition {
   private       State      state;
   private       Statechart statechart;
 
-  
+
   // Variables declared in readEnvironment aren't allowed to be used as
   // l-values, e.g. LHS of an assignment
   private Environment readOnlyEnvironment = null;
@@ -46,11 +46,15 @@ public class Transition {
     this.action          = action;
   }
 
-  public State getSource() {
+  public State getSource() throws NullPointerException {
     return this.source;
   }
 
-  public State getDestination() {
+  public Name getSourceName(){
+    return this.sourceName;
+  }
+
+  public State getDestination() throws NullPointerException {
     return this.destination;
   }
 

@@ -11,7 +11,17 @@ public class IfStatement extends Statement {
     this.else_body = else_body;
   }
 
+  public IfStatement(Expression condition, Statement then_body){
+    this.condition = condition;
+    this.then_body = then_body;
+    this.else_body = null;
+  }
+
   public String toString() {
-    return "\nif(" + this.condition + ")" + this.then_body + "\nelse\n" + this.else_body;
+    if(this.else_body==null)
+      return "\nif(" + this.condition + ")" + this.then_body + "\n";
+    else
+      return "\nif(" + this.condition + ")" + this.then_body + "\nelse\n" + this.else_body;
+
   }
 }

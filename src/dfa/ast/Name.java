@@ -32,7 +32,7 @@ public class Name extends Expression {
       s += " : " + this.type;
     }
     else {
-      s += " : not-assigned";
+      //s += " : not-assigned";
     }
     return s;
   }

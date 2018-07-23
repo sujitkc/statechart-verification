@@ -67,6 +67,11 @@ public class Statechart extends State {
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
     }
+    for (State s : this.states){
+      if(s.name.equals(name.name.get(0))){
+        return s.nameToState(name, 0);
+      }
+    }
     return null;
   }
 

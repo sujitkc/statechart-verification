@@ -21,7 +21,7 @@ public class StatementList extends Statement {
     this.statements.add(i, s);
   }
 
-  public List<Statement> getStatements() {
+  public List<Statement>getStatements() {
     return this.statements;
   }
 
