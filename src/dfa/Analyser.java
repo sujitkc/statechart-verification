@@ -14,6 +14,8 @@ import ast.Statechart;
 import ast.Environment;
 import ast.Declaration;
 
+import flt.Flatten;
+
 public class Analyser {
 
   private final Statechart statechart;
@@ -22,18 +24,24 @@ public class Analyser {
   public static void main(String[] args) {
     Statechart statechart = null;
     try {
-      Parser parser = new Parser(new Lexer(new FileReader(args[0])));    
+      Parser parser = new Parser(new Lexer(new FileReader(args[0])));
       Symbol result = parser.parse();
       statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");
       System.out.println(statechart.toString());
       System.out.println("Printing parsed Statechart ... done!");
+
+      Flatten f=new Flatten();
+      Statechart flat=f.flatten(statechart);
+      System.out.println("Printing flat Statechart ...");
+      System.out.println(flat.toString());
+      System.out.println("Printing flat Statechart ... done!\n\n");
     }
     catch(FileNotFoundException e) {
-      System.out.println("Couldn't open file '" + args[0] + "'"); 
+      System.out.println("Couldn't open file '" + args[0] + "'");
     }
     catch(Exception e) {
-      System.out.println("Couldn't parse '" + args[0] + "' : " + e.getMessage()); 
+      System.out.println("Couldn't parse '" + args[0] + "' : " + e.getMessage());
       e.printStackTrace();
       System.exit(1);
     }
@@ -44,7 +52,7 @@ public class Analyser {
       System.out.println("Printing analysed Statechart ... done!");
     }
     catch(Exception e) {
-      System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
+      System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage());
       e.printStackTrace();
     }
   }
