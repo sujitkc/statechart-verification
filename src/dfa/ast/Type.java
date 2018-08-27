@@ -42,5 +42,4 @@ public abstract class Type {
   }
 
   public abstract Type copy();
-
 }

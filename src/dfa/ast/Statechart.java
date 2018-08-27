@@ -23,12 +23,12 @@ public class Statechart extends State {
       ) throws Exception {
     super(name, declarations, entry, exit, states, transitions);
 
-    this.types.add(new BasicType("int"));
-    this.types.add(new BasicType("boolean"));
-    this.types.add(new BasicType("string"));
+    this.addType(new BasicType("int"));
+    this.addType(new BasicType("boolean"));
+    this.addType(new BasicType("string"));
 
     for(Type t : moreTypes) {
-      this.types.add(t);
+      this.addType(t);
     }
 
     this.events = events;
@@ -44,6 +44,12 @@ public class Statechart extends State {
     }
 
     this.initialiseTransitions();
+  }
+
+  private void addType(Type t) {
+    if((this.types.contains(t)) == false) {
+      this.types.add(t);
+    }
   }
 
   public State lub(State s1, State s2) {
