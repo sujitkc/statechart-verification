@@ -18,7 +18,7 @@ public class Declaration {
   }
 
   public String getFullVName() {
-    return this.getState().getFullName() + this.vname;
+    return this.getState().getFullName() + '.' + this.vname;
   }
 
   public Type getType() {

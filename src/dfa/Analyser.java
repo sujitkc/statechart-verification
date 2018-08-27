@@ -14,6 +14,8 @@ import ast.Statechart;
 import ast.Environment;
 import ast.Declaration;
 
+import flatten.Flattener;
+
 public class Analyser {
 
   private final Statechart statechart;
@@ -45,6 +47,19 @@ public class Analyser {
     }
     catch(Exception e) {
       System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
+    Statechart flattenedSC = null;
+    try {
+      Flattener flattener = new Flattener();
+      flattenedSC = flattener.translate(statechart);
+      System.out.println("Printing flattened Statechart ...");
+      System.out.println(flattenedSC);
+      System.out.println("Printing flattened Statechart ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
   }

@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Transition {
   public  final String     name;
-  private       Name       sourceName;
-  private       Name       destinationName;
+  public  final Name       sourceName;
+  public  final Name       destinationName;
   public  final String     trigger;
   public  final Expression guard;
   public  final Statement  action;
