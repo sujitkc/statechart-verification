@@ -62,6 +62,18 @@ public class Analyser {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
+    try {
+      (new Analyser(flattenedSC)).analyse();
+      System.out.println("Printing analysed flattened Statechart ...");
+      System.out.println(flattenedSC);
+      System.out.println("Printing analysed flattened Statechart ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
+
   }
 
   public Analyser(Statechart statechart) {

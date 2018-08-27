@@ -215,13 +215,9 @@ class Globaliser implements Translator {
   }
 
   private Name globaliseName(Name e) throws Exception {
-    System.out.println("Globalising name = " + e);
     Declaration declaration = e.getDeclaration();
-    System.out.println("Declaration = " + declaration);
     String fullVName = declaration.getFullVName();
-    System.out.println("full variable name = " + fullVName);
     Declaration globalisedName = this.globalDeclarations.get(declaration);
-    System.out.println("globalised name = " + globalisedName);
     return new Name(globalisedName.vname);
   }
 
