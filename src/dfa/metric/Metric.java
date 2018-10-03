@@ -46,6 +46,11 @@ public class Metric {
         transitions.add(transition);
       }
     }
+    System.out.println("t_IN(" + state.name + "):");
+    for(Transition transition : transitions) {
+      System.out.print("\t" + transition.name + " ");
+    }
+    System.out.println("");
     return transitions;
   }
 

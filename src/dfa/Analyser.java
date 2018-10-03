@@ -90,7 +90,7 @@ public class Analyser {
 
 
     Map<String, Integer> Rscope = new HashMap<String, Integer>();
-    Metric.Wscope(statechart, Rscope, allTransitions);
+    Metric.Rscope(statechart, Rscope, allTransitions);
     System.out.println("\n\nRscope -- Begin");
     for(String vname : Rscope.keySet()) {
       System.out.println(vname + " : " + Rscope.get(vname));
