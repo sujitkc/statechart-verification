@@ -18,7 +18,6 @@ public class Name extends Expression {
     }
   }
 
-
   public Declaration getDeclaration() {
     return this.declaration;
   }

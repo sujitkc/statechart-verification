@@ -1,34 +1,12 @@
+package analyse;
+
 import java.util.List;
 import java.util.ListIterator;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 
-import ast.Statechart;
-import ast.State;
-import ast.Transition;
-import ast.Declaration;
-import ast.DeclarationList;
-import ast.Expression;
-import ast.Type;
-import ast.TypeName;
-import ast.Environment;
-import ast.Name;
-import ast.Statement;
-import ast.IfStatement;
-import ast.WhileStatement;
-import ast.AssignmentStatement;
-import ast.ExpressionStatement;
-import ast.StatementList;
-import ast.BooleanConstant;
-import ast.IntegerConstant;
-import ast.StringLiteral;
-import ast.BinaryExpression;
-import ast.BasicType;
-import ast.Struct;
-import ast.FunctionDeclaration;
-import ast.FunctionCall;
-import ast.FunctionName;
+import ast.*;
 
 public class Typechecker {
 

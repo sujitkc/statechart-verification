@@ -1,3 +1,5 @@
+package analyse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -6,15 +8,22 @@ import java.io.FileReader;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 import java_cup.runtime.Symbol;
 
 import ast.State;
 import ast.Statechart;
+import ast.Transition;
 import ast.Environment;
 import ast.Declaration;
+import ast.Name;
 
 import flatten.Flattener;
+import metric.Metric;
 
 public class Analyser {
 
@@ -50,6 +59,46 @@ public class Analyser {
       e.printStackTrace();
     }
 
+    System.out.println("statechart has " + Metric.getNumberOfStates(statechart) + " states.");
+    System.out.println("statechart has " + Metric.getNumberOfTransitions(statechart) + " transitions.");
+
+    Map<String, Integer> scope_S = new HashMap<String, Integer>();
+    Metric.scope_S(statechart, scope_S);
+    System.out.println("\n\nScope_S -- Begin");
+    for(String vname : scope_S.keySet()) {
+      System.out.println(vname + " : " + scope_S.get(vname));
+    }
+    System.out.println("Scope_S -- End\n\n");
+
+    Map<String, Integer> scope_T = new HashMap<String, Integer>();
+    Metric.scope_T(statechart, scope_T);
+    System.out.println("\n\nScope_T -- Begin");
+    for(String vname : scope_T.keySet()) {
+      System.out.println(vname + " : " + scope_T.get(vname));
+    }
+    System.out.println("Scope_T -- End\n\n");
+
+    Map<String, Integer> Wscope = new HashMap<String, Integer>();
+    Set<Transition> allTransitions = new HashSet<Transition>();
+    Metric.allTransitions(statechart, allTransitions);
+    Metric.Wscope(statechart, Wscope, allTransitions);
+    System.out.println("\n\nWscope -- Begin");
+    for(String vname : Wscope.keySet()) {
+      System.out.println(vname + " : " + Wscope.get(vname));
+    }
+    System.out.println("Wscope -- End\n\n");
+
+
+    Map<String, Integer> Rscope = new HashMap<String, Integer>();
+    Metric.Wscope(statechart, Rscope, allTransitions);
+    System.out.println("\n\nRscope -- Begin");
+    for(String vname : Rscope.keySet()) {
+      System.out.println(vname + " : " + Rscope.get(vname));
+    }
+    System.out.println("Rscope -- End\n\n");
+
+
+/*
     Statechart flattenedSC = null;
     try {
       Flattener flattener = new Flattener();
@@ -62,18 +111,7 @@ public class Analyser {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
-    try {
-      (new Analyser(flattenedSC)).analyse();
-      System.out.println("Printing analysed flattened Statechart ...");
-      System.out.println(flattenedSC);
-      System.out.println("Printing analysed flattened Statechart ... done!");
-    }
-    catch(Exception e) {
-      System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
-      e.printStackTrace();
-    }
-
-
+*/
   }
 
   public Analyser(Statechart statechart) {

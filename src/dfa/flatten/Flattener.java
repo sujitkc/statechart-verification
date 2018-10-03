@@ -1,34 +1,67 @@
 package flatten;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.HashMap;
 import ast.*;
+import analyse.Typechecker;
 
-interface Translator {
-  Statechart translate(Statechart S) throws Exception;
+abstract class Translator {
+  abstract Statechart translate(Statechart S) throws Exception;
+
+  protected static Set<State> getAllAtomicDescendents(State state) {
+    Set<State> atomicDescendents = new HashSet<State>();
+    if(state.states.size() == 0) {
+      atomicDescendents.add(state);
+    }
+    for(State s : state.states) {
+      for(State ad : Translator.getAllAtomicDescendents(s)) {
+        atomicDescendents.add(ad);
+      }
+    }
+    return atomicDescendents;
+  }
+
+  protected static State getAtomicInitialDescendent(State state) {
+    if(state.states.size() == 0) {
+      return state;
+    }
+    return Translator.getAtomicInitialDescendent(state.states.get(0));
+  }
+
+  protected static String underscoreFullName(String name) {
+    String underscoredName = "";
+
+    for(char c : name.toCharArray()) {
+      if(c == '.') {
+        underscoredName += "_";
+      }
+      else {
+        underscoredName += c;
+      }
+    }
+    return underscoredName;
+  }
+
 }
 
-public class Flattener implements Translator {
-  private Translator globaliser = new Globaliser();
-  private Translator xt1        = new XT1();
-  private Translator xt2        = new XT2();
-  private Translator xt3        = new XT3();
+public class Flattener extends Translator {
+  private Translator globaliser                = new Globaliser();
+  private Translator transitionAtomiser        = new TransitionAtomiser();
 
   public Statechart translate(Statechart S) throws Exception {
     return 
-      this.xt3.translate(
-      this.xt2.translate(
-      this.xt1.translate(
+      this.transitionAtomiser.translate(
       this.globaliser.translate(S)
-      )
-      )
     );
   }
 }
 
-class Globaliser implements Translator {
+class Globaliser extends Translator {
 
   Map<Declaration, Declaration> globalDeclarations = new HashMap<Declaration, Declaration>();
   public Statechart translate(Statechart S) throws Exception {
@@ -39,7 +72,7 @@ class Globaliser implements Translator {
 
   private void makeGlobalDeclarations(State state) {
     for(Declaration dec : state.declarations) {
-      String underscoredName = this.underscoreFullName(dec.getFullVName());
+      String underscoredName = Translator.underscoreFullName(dec.getFullVName());
       while(this.globalDeclarations.get(underscoredName) != null) {
         underscoredName += "1";
       }
@@ -68,7 +101,7 @@ class Globaliser implements Translator {
       newTransitions.add(this.globaliseTransition(t));
     }
 
-    return new Statechart(
+    Statechart flattenedSC = new Statechart(
       statechart.name,
       statechart.types,
       statechart.events,
@@ -79,8 +112,13 @@ class Globaliser implements Translator {
       newStates,
       newTransitions
     );
-  }
+    (new Typechecker(flattenedSC)).typecheck();
+    System.out.println("Printing analysed flattened Statechart ...");
+    System.out.println(flattenedSC);
+    System.out.println("Printing analysed flattened Statechart ... done!");
 
+    return flattenedSC;
+  }
 
   private State globaliseState(State state) throws Exception {
     List<State> newStates = new ArrayList<State>();
@@ -240,39 +278,130 @@ class Globaliser implements Translator {
     }
     return newStatementList;
   }
-
-  private String underscoreFullName(String name) {
-    String underscoredName = "";
-
-    for(char c : name.toCharArray()) {
-      if(c == '.') {
-        underscoredName += "_";
-      }
-      else {
-        underscoredName += c;
-      }
-    }
-    return underscoredName;
-  }
 }
 
 // Translator for transitions with non-atomic sources
-class XT1 implements Translator {
-  public Statechart translate(Statechart S) {
-    return S;
+class TransitionAtomiser extends Translator {
+  public Statechart translate(Statechart S) throws Exception {
+    return this.translateStatechart(S);
   }
-}
 
-// Translator for transitions with non-atomic destination
-class XT2 implements Translator {
-  public Statechart translate(Statechart S) {
-    return S;
+  // returns a list of all ancestors of substate all the way upto and excluding
+  // superstate. The highest level superstate is the first in the list.
+  private List<State> getAllAncestorsExcluding(State substate, State superstate) {
+    if(substate.getSuperstate() == superstate) {
+      List<State> ancestors = new ArrayList<State>();
+      ancestors.add(substate);
+      return ancestors;
+    }
+    List<State> ancestors = this.getAllAncestorsExcluding(substate.getSuperstate(), superstate);
+    ancestors.add(substate);
+    return ancestors;
   }
-}
 
-// Translator for for transitions with atomic source and destination.
-class XT3 implements Translator {
-  public Statechart translate(Statechart S) {
-    return S;
+  private List<State> getAllAncestorsIncluding(State substate, State superstate) {
+    return this.getAllAncestorsExcluding(substate, superstate.getSuperstate());
+  }
+
+  private Statement getExitStatements(State source, State superstate) {
+    List<State> ancestors = this.getAllAncestorsExcluding(source, superstate);
+    StatementList exitStatements = new StatementList();
+    ListIterator<State> li = ancestors.listIterator(ancestors.size());
+    State s;
+    while(li.hasPrevious()) {
+      s = li.previous();
+      exitStatements.add(s.exit);
+    }
+    return exitStatements;
+  }
+
+  private Statement getEntryStatements(State destination, State superstate) {
+    List<State> ancestors = this.getAllAncestorsExcluding(destination, superstate);
+    StatementList entryStatements = new StatementList();
+    for(State ancestor : ancestors) {
+      entryStatements.add(ancestor.entry);
+    }
+    return entryStatements;
+  }
+
+  private Name getFullStateName(State state) {
+    List<State> sourceAncestors = this.getAllAncestorsExcluding(state, null);
+    List<String> sourceNames = new ArrayList<String>();
+    for(State sourceAncestor : sourceAncestors) {
+      sourceNames.add(sourceAncestor.name);
+    }
+    return new Name(sourceNames);
+  }
+
+  private List<Transition> translateTransitions(State state) {
+    List<Transition> newTransitions = new ArrayList<Transition>();
+    for(Transition t : state.transitions) {
+      Set<State> atomicSources = Translator.getAllAtomicDescendents(t.getSource());
+      State atomicDestination = Translator.getAtomicInitialDescendent(t.getDestination());
+      Statement entryStatements = this.getEntryStatements(atomicDestination, state);
+      Name destinationName = this.getFullStateName(atomicDestination);
+      for(State src : atomicSources) {
+        Statement exitStatements = this.getExitStatements(src, state);
+        StatementList action = new StatementList();
+        action.add(exitStatements);
+        action.add(t.action);
+        action.add(entryStatements);
+
+
+        newTransitions.add(
+          new Transition(
+            t.name + '_' + Translator.underscoreFullName(src.getFullName())
+              + '_' + Translator.underscoreFullName(atomicDestination.getFullName()),
+            this.getFullStateName(src),
+            destinationName,
+            t.trigger,
+            t.guard,
+            action
+          )
+        );
+      }
+    }
+    return newTransitions;
+  }
+
+  private Statechart translateStatechart(Statechart statechart) throws Exception {
+    List<State> newStates = new ArrayList<State>();
+    for(State s : statechart.states) {
+      newStates.add(this.translateState(s));
+    }
+    List<Transition> newTransitions = this.translateTransitions(statechart);
+    Statechart newStatechart = new Statechart(
+      statechart.name,
+      statechart.types,
+      statechart.events,
+      statechart.declarations,
+      new StatementList(),
+      new StatementList(),
+      statechart.functionDeclarations,
+      newStates,
+      newTransitions
+    );
+    (new Typechecker(newStatechart)).typecheck();
+    System.out.println("Printing analysed XT1 Statechart ...");
+    System.out.println(newStatechart);
+    System.out.println("Printing analysed XT1 Statechart ... done!");
+
+    return newStatechart;
+  }
+
+  private State translateState(State state) throws Exception {
+    List<State> newStates = new ArrayList<State>();
+    for(State s : state.states) {
+      newStates.add(this.translateState(s));
+    }
+    List<Transition> newTransitions = this.translateTransitions(state);
+    return new State(
+      state.name,
+      new DeclarationList(),
+      new StatementList(),
+      new StatementList(),
+      newStates,
+      newTransitions
+    );
   }
 }

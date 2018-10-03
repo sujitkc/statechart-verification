@@ -1,3 +1,5 @@
+package analyse;
+
 import java_cup.runtime.Symbol;
 import java.io.FileInputStream;
 import java.io.InputStream;

@@ -42,12 +42,12 @@ testcases=(
 );
 
 if [ $# = 1 ]; then
-  java -cp ${MYCLASSPATH} Analyser $1
+  java -cp ${MYCLASSPATH} analyse.Analyser $1
 fi
 if [ $# = 0 ]; then
   for t in ${testcases[@]}
   do
     echo "Analysing data/${t}.txt"
-    java -cp ${MYCLASSPATH} Analyser "data/${t}.txt"
+    java -cp ${MYCLASSPATH} analyse.Analyser "data/${t}.txt"
   done
 fi

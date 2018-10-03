@@ -1,3 +1,5 @@
+package analyse;
+
 import java_cup.runtime.*;
 import java_cup.*;
 import java.io.File;
