@@ -1,0 +1,917 @@
+statechart Curfew { 
+
+  types { 
+
+    type RequestStatus<| |>; 
+
+    type RequestType<| |>; 
+    
+    type Date<| |>; 
+
+    type Time<| |>; //Non Curfew Time, 10pm to 12am, 12am to 3am, 3am to 6 am
+    //type UserType<| |>; going to become integer admin=0, student=1 
+
+    type File<| |>;
+    
+    type LogType<| |>; 
+
+    type t1<| |>; // no type parameters 
+
+    type list<| a |>; // with one type parameter 
+
+    type map<| a, b |>; // with multiple type parameters 
+
+    struct Duration { 
+
+    startTime : int; 
+
+    endTime : int; 
+
+    } 
+
+  struct User { 
+ 
+    username : string;  //rollno 
+
+    password : string; 
+
+    userType : int; 
+
+  } 
+
+  struct Request { 
+  
+    TicketID: int; 
+
+    creation_date : Date;
+	
+    requester : User; 
+
+    team : list<|User|>; 
+
+    requestType : RequestType; //CURFEW=0 | CORECURFEW=1 | VACATION=2 
+
+    status : int; //PENDING=0 | APPROVED=1 | CLOSED=2 | REJECTED=3 | CANCELLED=4
+
+    proof: File;
+    
+    reason : string;
+    } 
+} 
+
+   events { 
+
+    eLogin; 
+
+    eLogout; 
+
+    eSetRoom; 
+
+    eViewDetails; 
+
+    eDoneSetting; 
+
+    eDoneViewing; 
+
+    eRegister; 
+
+    select_register; 
+
+    pr_select; 
+
+    cr_select; 
+
+    rr_select; 
+	
+	ar_select;
+
+    prsel_select; 
+
+    prsel_approve; 
+
+    prsel_reject; 
+
+    curfew_submit; 
+
+    LateIn_submit; 
+
+    vacation_submit;  
+
+    LateIn_select; 
+
+    vacation_select; 
+    
+    add_student_submit;
+
+    pr_askproof;
+    
+    submitProof;
+    
+    upload_proof;
+    
+    viewMyRequests;
+  } 
+
+  students : map<| string, User |>; 
+
+  userType :int; // admin=0, student=1 
+
+  rooms : map<| int, int |>; 
+
+  registeredUsers : map<|string, User|>; 
+
+  requests : list<|Request|>; 
+
+  nulluser:User; 
+  
+  nulllist :list<|Request|>;
+  
+  nullRequest : Request;
+
+  entry : {} 
+
+  exit  : {} 
+
+functions { 
+
+    put_map<| A, B |>(amap : map<| A, B |>, k : A, v : B) : map<| A, B |>; 
+
+    get_map_key_by_val<|A, B, C|>(amap : map<| A, B |>,v:B):C;
+
+    get_map<| A, B |>(amap : map<| A, B |>, k : A) : B; 
+       
+    get_sublist<|A,B|>(alist : list<|A|>, query : B) : list<|A|>; 
+
+    push_list<|A,B|>(alist : list<|A|>, n : B) : list<|A|>; 
+
+    get_random_sublist<|A|>(alist:list<|A|>):list<|A|>; 
+
+    approve_request_list<||>(rlist:list<|Request|>):boolean; 
+
+    reject_request_list<||>(rlist:list<|Request|>):boolean; 
+
+    sendMail<|Request|>(req:Request):boolean;
+    
+    askDocumentProof<|Request|>(rlist:list<|Request|>):boolean;
+	
+    uploadDocumentProof<|Request,File|>(r:Request,f:File):boolean;
+    
+    getCurrentDate<||>():Date;
+  } 
+
+  state LoggedOut { 
+
+    user     : User; 
+    username # : string;
+    password # : string;
+    exit:{
+         user:=get_map <| string, User |>(students, Curfew.LoggedOut.username);
+	//	user=get_map<|string,User|>(username,students);
+	}	
+
+  } 
+
+   state registration { 
+
+    user : User; 
+
+    userName #: string; 
+
+    password#: string; 
+
+    usertype#:int; 
+
+    exit:{ 
+
+     user.username=userName; 
+
+     user.userType=usertype; 
+
+     user.password=password; 
+	 
+	 //put_map<|User,map<|string, User|>|>(user,registeredUsers);
+
+    } 
+
+  } 
+
+  state LoggedIn { 
+
+    loggedinUser : User; 
+
+    loggedinUsertype : int; 
+
+    entry : {} 
+
+    exit  : {} 
+
+state AdminDashboard{   
+
+    state Dashboard { 
+    } 
+
+    state SetRoom { 
+
+      room # : int; 
+
+      entry : {} 
+
+      exit  : { put_map <| int, int |>(rooms, get_map_key_by_val<|string,User,int|>(students,loggedinUser), room); } 
+
+    } 
+
+    state ViewDetails { 
+
+      student : int; 
+
+      room    : int; 
+
+      entry : { 
+
+        student := get_map_key_by_val<|string,User,int|>(students, loggedinUser); 
+
+        room    := get_map <| int, int |>(rooms, get_map_key_by_val<|string,User,int|>(students,loggedinUser)); 
+
+          // possible access to undefined value: It is possible for this call  
+
+          // to get_map to fail if there is no entry in  
+
+          // rooms (map<| int, int |>) with key = loggedinUser. 
+
+      } 
+
+      exit : {} 
+
+    } 
+
+    state view_requests { 
+	
+	ticketid :int;
+
+	
+     state pending_requests { 
+
+        pr :  list<|Request|>; 
+
+        prsel: list<|Request|>; 
+
+		pending_flag:int; //there is no notion of constant - so variable is used here, to call get_sublist(Request,Int)
+
+    entry: {      
+
+		pending_flag:=0; 
+
+		pr:=get_sublist<|Request,int|> (requests,pending_flag); 
+
+		
+        //pr := [r.requester for r in requests if r.status = PENDING]; // pr contains the requesters whose status is PENDING. 
+
+        } 
+
+     } 
+
+      state closed_requests { 
+
+         cr: list<|Request|>; 
+
+		 closed_flag:int; //there is no notion of constant - so variable is used here, to call get_sublist(Request,Int)
+
+     entry:{ 
+
+        closed_flag:=1; 
+
+        cr:=get_sublist<|Request,int|> (requests,closed_flag); 
+
+        } 
+
+      } 
+      state approved_requests { 
+
+         cr: list<|Request|>; 
+
+		 approved_flag:int; //there is no notion of constant - so variable is used here, to call get_sublist(Request,Int)
+
+     entry:{ 
+
+        approved_flag:=2; 
+
+        cr:=get_sublist<|Request,int|> (requests,approved_flag); 
+
+        } 
+
+      }
+    state rejected_requests { 
+
+     rr: list<|Request|>; 
+
+     rejected_flag:int; //there is no notion of constant - so variable is used here, to call get_sublist(Request,Int)
+
+     entry:{ 
+
+        rejected_flag:=3; 
+
+        rr:=get_sublist<|Request,int|> (requests,rejected_flag); 
+
+     } 
+
+    } 
+    
+    transition pr_proof_pr{
+    
+    source:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    destination:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    trigger:pr_askproof; 
+
+    guard:prsel!=nulllist; 
+    
+    action:{
+               // for each p in prsel p.status:=
+		askDocumentProof<|Request|>(prsel);
+    }
+
+    }
+
+    transition pr_select_pr{ 
+
+    source:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    destination:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    trigger:prsel_select; 
+
+    guard:true; 
+
+    action:{ 
+
+        Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.prsel:=get_random_sublist<|Request|>(Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.pr); 
+
+    } 
+
+      } 
+
+    transition pr_approve_pr{ 
+
+    source:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    destination:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    trigger:prsel_approve; 
+
+    guard:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.prsel!=nulllist; 
+
+    action:{ 
+
+        approve_request_list<||>(Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.prsel); 
+
+        Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.pr:=get_sublist<|Request,int|> (requests,Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.pending_flag); 
+
+    } 
+
+      } 
+
+      transition pr_reject_pr{ 
+
+        source:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    destination:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+    trigger:prsel_reject; 
+
+    guard:Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.prsel!=nulllist; 
+
+    action:{ 
+
+        reject_request_list<||>(Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.prsel); 
+
+        Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.pr:=get_sublist<|Request,int|> (requests,Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests.pending_flag); 
+
+    } 
+
+      } 
+
+      transition pr_cr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.closed_requests; 
+
+        trigger: cr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+
+      transition pr_rr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.rejected_requests; 
+
+        trigger: rr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+
+      transition cr_pr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.closed_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+        trigger: pr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+
+      transition cr_rr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.closed_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.rejected_requests; 
+
+        trigger: rr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+
+      transition rr_pr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.rejected_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+        trigger: pr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+
+      transition rr_cr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.rejected_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.closed_requests; 
+
+        trigger: cr_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+	  
+	  transition ar_cr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.approved_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.closed_requests; 
+
+        trigger: ar_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+	  transition ar_rr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.approved_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.rejected_requests; 
+
+        trigger: ar_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+	  transition ar_pr { 
+
+        source : Curfew.LoggedIn.AdminDashboard.view_requests.approved_requests; 
+
+        destination : Curfew.LoggedIn.AdminDashboard.view_requests.pending_requests; 
+
+        trigger: ar_select; 
+
+        guard: true; 
+
+        action : {} 
+
+      } 
+	  
+
+    } 
+
+    transition tsetroom { 
+
+      source      : Curfew.LoggedIn.AdminDashboard.Dashboard; 
+
+      destination : Curfew.LoggedIn.AdminDashboard.SetRoom; 
+
+      trigger     : eSetRoom; 
+
+      guard       : Curfew.LoggedIn.loggedinUsertype=1; 
+
+      action      : {} 
+
+    } 
+
+    transition tviewdetails { 
+
+      source      : Curfew.LoggedIn.AdminDashboard.Dashboard; 
+
+      destination : Curfew.LoggedIn.AdminDashboard.ViewDetails; 
+
+      trigger     : eViewDetails; 
+
+      guard       : Curfew.LoggedIn.loggedinUsertype=1; 
+
+      action      : {} 
+
+    } 
+
+    transition tsetroom_done { 
+
+      source      : Curfew.LoggedIn.AdminDashboard.SetRoom; 
+
+      destination : Curfew.LoggedIn.AdminDashboard.Dashboard; 
+
+      trigger     : eDoneSetting; 
+
+      guard       : true; 
+
+      action      : {} 
+
+    } 
+
+    transition tviewdetails_done { 
+
+      source      : Curfew.LoggedIn.AdminDashboard.ViewDetails; 
+
+      destination : Curfew.LoggedIn.AdminDashboard.Dashboard; 
+
+      trigger     : eDoneViewing; 
+
+      guard       : true; 
+
+      action      : {} 
+
+    } 
+
+  } 
+
+  state student_dashboard { 
+ 
+    state init {
+    } 
+    state view_my_requests
+    {
+
+    myrequests:list<|Request|>;
+    
+    selectedRequest# : Request;
+    
+    entry:{
+    
+    myrequests:=get_sublist<|Request,int|>(requests, get_map_key_by_val<|string, User,int|>(students,Curfew.LoggedIn.loggedinUser));
+   
+    }
+    
+    }
+    state upload_curfew_proof{
+    
+    sReq:Request;
+    
+    document#:File;
+    
+    }
+    state request_curfew { 
+
+      request : Request; 
+     
+      teamlist # :list<|User|>; 
+      student#: User;
+      reason #:string; 
+      type_of_request#:RequestType; 
+
+       
+      entry:{ 
+
+      request.requester:=Curfew.LoggedIn.loggedinUser; 
+        
+      } 
+
+      exit:{ 
+      
+      request.requestType:=type_of_request;
+	  
+	  request.reason:=reason;
+	  
+	  request.creation_date:= getCurrentDate<||>();
+      
+      push_list<|Request,Request|>(requests,request); 
+
+      }
+    state request_LateIn { 
+
+      inTime #: Time;
+
+      curfewLateIn_flag:RequestType; 
+
+      entry:{ 
+ 
+      type_of_request:=curfewLateIn_flag; 
+
+      } 
+
+    } 
+
+    state request_LateOut { 
+
+      outTime #: Time;      
+
+      curfewLateOut_flag:RequestType; 
+
+      entry:{ 
+ 
+      type_of_request:=curfewLateOut_flag; 
+
+      } 
+
+    } 
+
+    state request_vacation { 
+
+          inTime #: Time;
+
+          outTime #: Time;    
+
+          inDate# : Date;
+	  
+          outDate# : Date;
+
+          vacation_flag:RequestType; 
+
+      entry:{ 
+
+	     type_of_request:=vacation_flag; 
+
+      } 
+  }      
+
+} 
+    transition init_view_my_requests{
+    
+    source: Curfew.LoggedIn.student_dashboard.init;
+    
+    destination: Curfew.LoggedIn.student_dashboard.view_my_requests;
+    
+    trigger: viewMyRequests;
+    
+    guard: true;
+    
+    action:{}
+    }
+
+    transition view_my_requests_upload_curfew_proof{
+    
+    source: Curfew.LoggedIn.student_dashboard.view_my_requests;
+    
+    destination: Curfew.LoggedIn.student_dashboard.upload_curfew_proof;
+    
+    trigger: upload_proof;
+    
+    guard: selectedRequest!=nullRequest;
+    
+    action:{
+	
+	sReq:=selectedRequest;
+        
+	//sReq.proof:=document;
+    }
+    
+    }
+    transition init_LateIn { 
+
+      source : Curfew.LoggedIn.student_dashboard.init; 
+
+      destination : Curfew.LoggedIn.student_dashboard.request_curfew.request_LateIn; 
+
+      trigger: LateIn_select; 
+
+      guard: true; 
+
+      action : {} 
+
+    } 
+
+    transition init_vacation { 
+
+      source : Curfew.LoggedIn.student_dashboard.init; 
+
+      destination : Curfew.LoggedIn.student_dashboard.request_curfew.request_vacation; 
+
+      trigger: vacation_select; 
+
+      guard: true; 
+
+      action : {} 
+
+    } 
+
+    transition curfew_init_success { 
+
+      source : Curfew.LoggedIn.student_dashboard.request_curfew; 
+
+      destination : Curfew.LoggedIn.student_dashboard.init; 
+
+      trigger: curfew_submit; 
+
+      guard: true; 
+
+      action : {  
+
+      push_list<|Request,Request|>(requests,request);  
+      sendMail<|Request|>(request);
+     // requests.add( (loggedinUser, request_curfew.request)); 
+
+      } 
+
+    } 
+
+    transition LateIn_init_success { 
+
+      source : Curfew.LoggedIn.student_dashboard.request_curfew.request_LateIn; 
+
+      destination : Curfew.LoggedIn.student_dashboard.init; 
+
+      trigger: LateIn_submit; 
+
+      guard: true; 
+
+      action : { push_list<|Request,Request|>(requests,request);
+      sendMail<|Request|>(request);
+      } 
+
+    } 
+
+    transition vacation_init_success { 
+
+      source : Curfew.LoggedIn.student_dashboard.request_curfew.request_vacation; 
+
+      destination : Curfew.LoggedIn.student_dashboard.init; 
+
+      trigger: vacation_submit; 
+
+      guard: true; 
+
+      action : { push_list<|Request,Request|>(requests,request);
+      sendMail<|Request|>(request);
+      } 
+
+    } 
+    transition request_curfew_add_student{
+    
+      source : Curfew.LoggedIn.student_dashboard.request_curfew; 
+
+      destination : Curfew.LoggedIn.student_dashboard.request_curfew;
+
+      trigger: add_student_submit; 
+
+      guard: true; 
+
+      action : { push_list<|User,User|>(teamlist,student);  } 
+    
+    }
+
+  } 
+
+} 
+
+  transition tlogin_admin { 
+
+    source      : Curfew.LoggedOut; 
+
+    destination : Curfew.LoggedIn.AdminDashboard; 
+
+    trigger     : eLogin; 
+
+    guard       : (Curfew.LoggedOut.user.password = Curfew.LoggedOut.password) && (Curfew.LoggedIn.loggedinUser.userType=0);
+
+    action      : { 
+ 
+    Curfew.LoggedIn.loggedinUser := Curfew.LoggedOut.user; 
+
+    Curfew.LoggedIn.loggedinUser := get_map <| string, User |>(registeredUsers,Curfew.LoggedOut.password); 
+
+    Curfew.LoggedIn.loggedinUsertype:=Curfew.LoggedIn.loggedinUser.userType; 
+
+    } 
+
+  } 
+
+transition tlogin_student { 
+
+    source      : Curfew.LoggedOut; 
+
+    destination : Curfew.LoggedIn.student_dashboard; 
+
+    trigger     : eLogin; 
+
+    guard       : (Curfew.LoggedOut.user.password = Curfew.LoggedOut.password) && (Curfew.LoggedIn.loggedinUser.userType=1);
+    
+	action      : { 
+
+    Curfew.LoggedIn.loggedinUser := Curfew.LoggedOut.user; 
+
+    Curfew.LoggedIn.loggedinUser := get_map <| string, User |>(registeredUsers,Curfew.LoggedOut.password); 
+
+    Curfew.LoggedIn.loggedinUsertype:=Curfew.LoggedIn.loggedinUser.userType; 
+
+    } 
+
+  } 
+
+  transition tlogout { 
+
+    source      : Curfew.LoggedIn; 
+
+    destination : Curfew.LoggedOut; 
+
+    trigger     : eLogout; 
+
+    guard       : true; 
+
+    action      : {  
+
+      Curfew.LoggedOut.user = nulluser; 
+
+      Curfew.LoggedOut.password = ""; 
+
+    } 
+
+  } 
+
+    transition register_success { 
+
+    source : Curfew.registration; 
+
+    destination : Curfew.LoggedOut; 
+
+    trigger : eRegister; 
+
+    guard   : get_map <| string, User |>(registeredUsers,Curfew.registration.userName)=nulluser ; 
+
+   action: { 
+
+      put_map <| string, User |>(registeredUsers,Curfew.registration.userName,Curfew.registration.user); 
+
+    } 
+
+  } 
+
+  transition register_failure { 
+
+    source : Curfew.registration; 
+
+    destination : Curfew.LoggedOut; 
+
+    trigger : eRegister; 
+
+    guard   : get_map <| string, User |>(registeredUsers,Curfew.registration.userName)!=nulluser ; 
+
+    action      : { } 
+
+  } 
+
+  transition loggedout_register { 
+
+    source : Curfew.LoggedOut; 
+
+    destination : Curfew.registration; 
+
+    trigger: select_register; 
+
+    guard: true; 
+
+    action : {} 
+
+  } 
+
+}  
