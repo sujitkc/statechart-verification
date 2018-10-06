@@ -1,6 +1,6 @@
 package ast;
 
-import java.util.List;
+import java.util.*;
 
 public class Transition {
   public  final String     name;
@@ -15,7 +15,9 @@ public class Transition {
   private       State      state;
   private       Statechart statechart;
 
-  
+  public List<String> readVariables;
+  public List<String> writeVariables;
+ 
   // Variables declared in readEnvironment aren't allowed to be used as
   // l-values, e.g. LHS of an assignment
   private Environment readOnlyEnvironment = null;
@@ -44,6 +46,9 @@ public class Transition {
     this.trigger         = trigger;
     this.guard           = guard;
     this.action          = action;
+    this.readVariables = new ArrayList<String>();
+    this.writeVariables = new ArrayList<String>();
+    
   }
 
   public State getSource() {
@@ -127,5 +132,17 @@ public class Transition {
     s += "action : " + this.action + "\n";
     s += "\n}\n";
     return s;
+  }
+  public void setReadVariable(String v){
+	this.readVariables.add(v);
+  }
+  public void setReadVariable(List<String> v){
+	this.readVariables.addAll(v);
+  }
+  public void setWriteVariable(String v){
+	this.writeVariables.add(v);
+  }
+  public void setWriteVariable(List<String> v){
+	this.writeVariables.addAll(v);
   }
 }

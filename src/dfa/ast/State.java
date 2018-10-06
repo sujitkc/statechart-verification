@@ -176,6 +176,9 @@ public class State {
   public void setReadVariable(String v){
 	this.readVariables.add(v);
   }
+  public void setReadVariable(List<String> v){
+	this.readVariables.addAll(v);
+  }
   public void setWriteVariable(String v){
 	this.writeVariables.add(v);
   }

@@ -78,13 +78,25 @@ public class Analyser {
 	//System.out.println(s.entry.getClass().getName());
 	StatementList sentry=(StatementList)s.entry;
 	for(Statement stmt : sentry.getStatements()){
-	AssignmentStatement as=(AssignmentStatement)(stmt);
-	s.setWriteVariable((as.getLHS()).getName());
+	if(stmt instanceof ast.AssignmentStatement)
+		{
+		AssignmentStatement as=(AssignmentStatement)(stmt);
+		s.setWriteVariable((as.getLHS()).getName());
+		}
+	else if(stmt instanceof ast.ExpressionStatement){
+		
+		}
 	}
 	StatementList sexit=(StatementList)s.exit;
 	for(Statement stmt : sexit.getStatements()){
-	AssignmentStatement as=(AssignmentStatement)(stmt);
-	s.setWriteVariable((as.getLHS()).getName());
+	if(stmt instanceof ast.AssignmentStatement)
+		{
+		AssignmentStatement as=(AssignmentStatement)(stmt);
+		s.setWriteVariable((as.getLHS()).getName());
+		}
+	else if(stmt instanceof ast.ExpressionStatement){
+		
+		}
 	}
 	System.out.println(s.writeVariables);
 	
@@ -92,7 +104,33 @@ public class Analyser {
     
     System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
-	//System.out.println("**"+t.name);
+	StatementList taction;
+	if(t.action instanceof ast.AssignmentStatement){
+		AssignmentStatement as=(AssignmentStatement)t.action;
+		t.setWriteVariable((as.getLHS()).getName());
+	}
+	else if (t.action instanceof ast.ExpressionStatement){
+		//ExpressionStatement es=(ExpressionStatement)t.action;
+		//t.setWriteVariable((es.getLHS()).getName());
+	}
+	else 
+	{
+		taction=(StatementList)t.action;
+		for(Statement stmt : taction.getStatements()){
+		if(stmt instanceof ast.AssignmentStatement){
+			AssignmentStatement as;
+			as=(AssignmentStatement)stmt;
+			t.setWriteVariable((as.getLHS()).getName());
+		}
+		else if(stmt instanceof ast.ExpressionStatement){
+			ExpressionStatement as;
+			as=(ExpressionStatement)stmt;
+			// Not yet complete
+			//System.out.println("Expression statement: "+as);
+			//t.setWriteVariable((as.getLHS()).getName());
+			}
+		}
+	}
     }
     
     Map<String, Integer> scope_S = new HashMap<String, Integer>();
