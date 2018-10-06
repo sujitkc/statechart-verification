@@ -37,7 +37,7 @@ public class Declaration {
   public void setType(Type type) {
     this.type = type;
   }
-
+  
   public void setDeclarationList(DeclarationList declarationList) {
     this.declarationList = declarationList;
   }

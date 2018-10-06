@@ -167,11 +167,22 @@ public class Metric {
 
     return numberOfStates;
   }
-  public static Set<State> getAllStates(State state) {
-    Set<State> totalstates=new HashSet<State>();
+  public static int getNumberOfCompositeStates(State state) {
+    
+    int numberOfCompositeStates=0;
+    //if(state.getNumberOfStates()>0) 
+
+    for(State s : state.states) {
+      if(Metric.getNumberOfStates(s)>0) numberOfCompositeStates += 1;
+    }
+
+    return numberOfCompositeStates;
+  }
+  public static Set<State> getAllStates(State state, Set<State> totalstates) {
+    //Set<State> totalstates=new HashSet<State>();
     for(State s : state.states) {
       totalstates.add(s);
-      //numberOfStates += Metric.getNumberOfStates(s);
+      Metric.getAllStates(s,totalstates);
     }
     return totalstates;
   }

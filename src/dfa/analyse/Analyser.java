@@ -21,7 +21,7 @@ import ast.Transition;
 import ast.Environment;
 import ast.Declaration;
 import ast.Name;
-
+import ast.*;
 import flatten.Flattener;
 import metric.Metric;
 
@@ -50,9 +50,9 @@ public class Analyser {
     }
     try {
       (new Analyser(statechart)).analyse();
-      System.out.println("Printing analysed Statechart ...");
-      System.out.println(statechart);
-      System.out.println("Printing analysed Statechart ... done!");
+      //System.out.println("Printing analysed Statechart ...");
+      //System.out.println(statechart);
+      //System.out.println("Printing analysed Statechart ... done!");
     }
     catch(Exception e) {
       System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
@@ -60,18 +60,39 @@ public class Analyser {
     }
 
     System.out.println("statechart has " + Metric.getNumberOfStates(statechart) + " states.");
+    System.out.println("statechart has " + Metric.getNumberOfCompositeStates(statechart) + " composite states.");
+    
     System.out.println("statechart has " + Metric.getNumberOfTransitions(statechart) + " transitions.");
     Set<State> totalStateRegions=new HashSet<State>();
-    totalStateRegions=Metric.getAllStates(statechart);
+    totalStateRegions.add(statechart);
+    Metric.getAllStates(statechart,totalStateRegions);
     Set<Transition> totalTransitionRegions=new HashSet<Transition>();
     totalTransitionRegions=Metric.getAllTransitions(statechart);
     System.out.println("Printing all states");
     for(State s : totalStateRegions){
 	System.out.println("**"+s.getFullName());
+	for(Declaration d:s.declarations)
+	{
+	if(d.input) s.setWriteVariable(d.vname);
+	}
+	//System.out.println(s.entry.getClass().getName());
+	StatementList sentry=(StatementList)s.entry;
+	for(Statement stmt : sentry.getStatements()){
+	AssignmentStatement as=(AssignmentStatement)(stmt);
+	s.setWriteVariable((as.getLHS()).getName());
+	}
+	StatementList sexit=(StatementList)s.exit;
+	for(Statement stmt : sexit.getStatements()){
+	AssignmentStatement as=(AssignmentStatement)(stmt);
+	s.setWriteVariable((as.getLHS()).getName());
+	}
+	System.out.println(s.writeVariables);
+	
     }
+    
     System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
-	System.out.println("**"+t.toString());
+	//System.out.println("**"+t.name);
     }
     
     Map<String, Integer> scope_S = new HashMap<String, Integer>();

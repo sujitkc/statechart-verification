@@ -1,7 +1,6 @@
 package ast;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class State {
 
@@ -11,7 +10,9 @@ public class State {
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
-
+  public List<String> readVariables;
+  public List<String> writeVariables;
+  
   protected Statechart statechart = null;
   protected State superstate = null;
   protected Environment environment = null;
@@ -39,6 +40,9 @@ public class State {
       t.setState(this);
     }
     this.declarations.setState(this);
+    this.readVariables=new ArrayList<String>();
+    this.writeVariables=new ArrayList<String>();
+    
   }
 
 
@@ -168,5 +172,14 @@ public class State {
     }
     s += "}\n";
     return s;    
+  }
+  public void setReadVariable(String v){
+	this.readVariables.add(v);
+  }
+  public void setWriteVariable(String v){
+	this.writeVariables.add(v);
+  }
+  public void setWriteVariable(List<String> v){
+	this.writeVariables.addAll(v);
   }
 }

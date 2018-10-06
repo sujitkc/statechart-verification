@@ -17,7 +17,7 @@ public class Name extends Expression {
       this.name.add(id);
     }
   }
-
+ 
   public Declaration getDeclaration() {
     return this.declaration;
   }
@@ -46,5 +46,8 @@ public class Name extends Expression {
 
   public void setDeclaration(Declaration declaration) {
     this.declaration = declaration;
+  }
+  public List<String> getName(){
+	return this.name;
   }
 }

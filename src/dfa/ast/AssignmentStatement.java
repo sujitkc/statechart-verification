@@ -8,6 +8,12 @@ public class AssignmentStatement extends Statement {
     this.lhs = lhs;
     this.rhs = rhs;
   }
+  public Name getLHS(){
+	return this.lhs;
+  }
+  public Expression getRHS(){
+	return this.rhs;
+  }
   public String toString() {
     return (this.lhs.toString() + " := " + this.rhs.toString() + ";\n");
   }
