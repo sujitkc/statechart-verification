@@ -1,5 +1,5 @@
 package ast;
-
+import java.util.*;
 public abstract class Expression {
 /*
   public enum Operator {
@@ -29,5 +29,8 @@ public abstract class Expression {
 
   public void setType(Type type) {
     this.type = type;
+  }
+  public List<Expression> getVariables(){
+	return null;
   }
 }

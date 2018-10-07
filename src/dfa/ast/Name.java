@@ -50,4 +50,7 @@ public class Name extends Expression {
   public List<String> getName(){
 	return this.name;
   }
+  public List<String> getVariablesNames(){
+	return this.name;
+  }
 }

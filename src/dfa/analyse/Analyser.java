@@ -70,7 +70,6 @@ public class Analyser {
     totalTransitionRegions=Metric.getAllTransitions(statechart);
     System.out.println("Printing all states");
     for(State s : totalStateRegions){
-	System.out.println("**"+s.getFullName());
 	for(Declaration d:s.declarations)
 	{
 	if(d.input) s.setWriteVariable(d.vname);
@@ -82,6 +81,13 @@ public class Analyser {
 		{
 		AssignmentStatement as=(AssignmentStatement)(stmt);
 		s.setWriteVariable((as.getLHS()).getName());
+		if(as.getRHS() instanceof ast.FunctionCall){
+			s.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				s.setWriteVariable((as.getRHS()).getVariables().get(0));
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			s.setReadVariable((as.getRHS()).getVariables());
 		}
 	else if(stmt instanceof ast.ExpressionStatement){
 		
@@ -93,13 +99,23 @@ public class Analyser {
 		{
 		AssignmentStatement as=(AssignmentStatement)(stmt);
 		s.setWriteVariable((as.getLHS()).getName());
+		if(as.getRHS() instanceof ast.FunctionCall){
+			s.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				s.setWriteVariable((as.getRHS()).getVariables().get(0));
+			
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			s.setReadVariable((as.getRHS()).getVariables());
+		
 		}
 	else if(stmt instanceof ast.ExpressionStatement){
 		
 		}
 	}
-	System.out.println(s.writeVariables);
-	
+	System.out.println("**"+s.getFullName());
+	System.out.println("Actual write variables: "+ s.writeVariables);
+	System.out.println("Actual read variables: "+ s.readVariables);
     }
     
     System.out.println("Printing all transitions");
@@ -107,7 +123,15 @@ public class Analyser {
 	StatementList taction;
 	if(t.action instanceof ast.AssignmentStatement){
 		AssignmentStatement as=(AssignmentStatement)t.action;
-		t.setWriteVariable((as.getLHS()).getName());
+		t.setWriteVariable((as.getLHS()));
+		if(as.getRHS() instanceof ast.FunctionCall){
+			t.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				t.setWriteVariable((as.getRHS()).getVariables().get(0));
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			t.setReadVariable((as.getRHS()).getVariables());
+		
 	}
 	else if (t.action instanceof ast.ExpressionStatement){
 		//ExpressionStatement es=(ExpressionStatement)t.action;
@@ -121,6 +145,15 @@ public class Analyser {
 			AssignmentStatement as;
 			as=(AssignmentStatement)stmt;
 			t.setWriteVariable((as.getLHS()).getName());
+			if(as.getRHS() instanceof ast.FunctionCall){
+			t.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				t.setWriteVariable((as.getRHS()).getVariables().get(0));
+			
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			t.setReadVariable((as.getRHS()).getVariables());
+		
 		}
 		else if(stmt instanceof ast.ExpressionStatement){
 			ExpressionStatement as;
@@ -131,7 +164,13 @@ public class Analyser {
 			}
 		}
 	}
-    }
+	System.out.println("Analysing guards");
+	Expression tguard=t.guard;
+	if(t.guard instanceof ast.BinaryExpression)
+		System.out.println(((BinaryExpression)t.guard).getVariables());
+   }
+    
+    
     
     Map<String, Integer> scope_S = new HashMap<String, Integer>();
     Metric.scope_S(statechart, scope_S);

@@ -133,16 +133,34 @@ public class Transition {
     s += "\n}\n";
     return s;
   }
-  public void setReadVariable(String v){
-	this.readVariables.add(v);
+    public void setReadVariable(Object v){
+    if(v!=null){
+	if(v instanceof Expression && !readVariables.contains(v.toString()))
+		this.readVariables.add(v.toString());
+	else if(v instanceof String && !readVariables.contains(v))
+		this.readVariables.add(v.toString());
+	else this.readVariables.add(v.toString());
+	}
   }
-  public void setReadVariable(List<String> v){
-	this.readVariables.addAll(v);
+  public void setReadVariable(List<Object> vlist){
+	for(Object v:vlist){
+		if(v!=null) setReadVariable(v);
+	}
   }
-  public void setWriteVariable(String v){
-	this.writeVariables.add(v);
+   public void setWriteVariable(Object v){
+   if(v!=null){
+	if(v instanceof Expression && !writeVariables.contains(v.toString()))
+		this.writeVariables.add(v.toString());
+	if(v instanceof String && !writeVariables.contains(v))
+		this.writeVariables.add(v.toString());
+	else this.writeVariables.add(v.toString());
+	}
   }
-  public void setWriteVariable(List<String> v){
-	this.writeVariables.addAll(v);
+   
+  public void setWriteVariable(List<Object> vlist){
+	for(Object v:vlist){
+		if(v!=null) setWriteVariable(v);
+	}
   }
+
 }
