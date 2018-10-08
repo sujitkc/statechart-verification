@@ -11,6 +11,10 @@ public class BinaryExpression extends Expression {
     this.left     = left;
     this.right    = right;
     this.operator = operator;
+	// There can be FunctionCall within BinaryExpression 
+	//or BinaryExpression inside FunctionCall
+	//if Functioncall - recursively identify all variables
+	//if BinaryExpression - recursively identify all variables
     variables=new ArrayList<Expression>();
     if(left instanceof IntegerConstant || left instanceof StringLiteral || left instanceof BooleanConstant){}
 	else if(left instanceof FunctionCall){
