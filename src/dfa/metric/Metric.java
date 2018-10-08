@@ -128,7 +128,9 @@ public class Metric {
         return random.nextInt((max - min) + 1) + min;
     }
    public static int ActualRscope( String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
-  		int readCount=0;
+  		//for a given variable, identify the regions(state/transition) in which it is read.
+		
+		int readCount=0;
 		//System.out.print("\n===============\nRead :");
 		for(State s:totalStateRegions){
 			if(s.readVariables.contains(var)) 
@@ -147,7 +149,8 @@ public class Metric {
 		return readCount;
   }
      public static int ActualWscope(String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
-   
+		//for a given variable, identify the regions(state/transition) in which it is written.
+		
 		int writeCount=0;
 		//System.out.print("\n===============\nWrite :");
 		for(State s:totalStateRegions){

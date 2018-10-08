@@ -10,8 +10,8 @@ public class State {
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
-  public List<Object> readVariables;
-  public List<Object> writeVariables;
+  public List<Object> readVariables; //variables read in entry/exit of state
+  public List<Object> writeVariables; //variables write in entry/exit of state
   
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -174,8 +174,8 @@ public class State {
     return s;    
   }
   public void setReadVariable(Object v){
-	//System.out.println("Adding read variable :"+v.getClass());
-	if(v instanceof java.util.ArrayList){
+  //needs cleanup of similar code
+	if(v instanceof java.util.ArrayList){ // v is ArrayList of Name or Declaration
 			for(Object vobj:(ArrayList)v){
 				
 				Declaration d;
@@ -185,7 +185,7 @@ public class State {
 				if(!this.readVariables.contains(d.getFullVName())) this.readVariables.add(d.getFullVName());
 				}
 		}
-	else if(v!=null){
+	else if(v!=null){  //v is Name or Declaration
 		Declaration d;
 		if(v instanceof Name)
 			d=((Name)v).getDeclaration();
@@ -193,23 +193,12 @@ public class State {
 			d=(Declaration)v;
 		this.readVariables.add(d.getFullVName());
 	}
-	/*if(v!=null){
-	if(v instanceof Expression && !readVariables.contains(v))
-		this.readVariables.add(v);
-	else if(v instanceof String && !readVariables.contains(v))
-		this.readVariables.add(v);
-	else this.readVariables.add(v);
-	}*/
+	
   }
- /* public void setReadVariable(ArrayList<Object> vlist){
-	System.out.println("*&*&*&*&*&*&*&*&*&*&&*&*&*&*&**&*&*&*&*&*&*&*&**&*&*&");
-    this.readVariables.addAll(vlist);
-	/*for(Object v:vlist){
-		if(v!=null) setReadVariable(v);
-	}
-  }*/
+ 
    public void setWriteVariable(Object v){
-	if(v instanceof java.util.ArrayList){
+   //needs cleanup of similar code
+	if(v instanceof java.util.ArrayList){   // v is ArrayList of Name or Declaration
 			for(Object vobj:(ArrayList)v){
 				Declaration d;
 				if(vobj instanceof Name)
@@ -218,29 +207,16 @@ public class State {
 				if(!this.writeVariables.contains(d.getFullVName())) this.writeVariables.add(d.getFullVName());
 				}
 		}
-	else if(v!=null){
+	else if(v!=null){  //v is Name or Declaration
 		Declaration d;
 				if(v instanceof Name)
 				d=((Name)v).getDeclaration();
 				else d=(Declaration)v;
 		this.writeVariables.add(d.getFullVName());
 	}
-	/*if(v!=null){
-	if(v instanceof Expression && !writeVariables.contains(v))
-		this.writeVariables.add(v);
-	else if(v instanceof String && !writeVariables.contains(v))
-		this.writeVariables.add(v);
-	else this.writeVariables.add(v);
-	}*/
+	
   }
    
-  /*public void setWriteVariable(List<Object> vlist){
-    this.readVariables.addAll(vlist);
-
-	/*for(Object v:vlist){
-		if(v!=null) setWriteVariable(v);
-	}
-	
-  }*/
+  
  
 }

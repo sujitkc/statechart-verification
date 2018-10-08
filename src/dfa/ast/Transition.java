@@ -15,8 +15,8 @@ public class Transition {
   private       State      state;
   private       Statechart statechart;
 
-  public List<Object> readVariables;
-  public List<Object> writeVariables;
+  public List<Object> readVariables; //variables read in transition
+  public List<Object> writeVariables; //variables write in transition
  
   // Variables declared in readEnvironment aren't allowed to be used as
   // l-values, e.g. LHS of an assignment
@@ -134,6 +134,7 @@ public class Transition {
     return s;
   }
     public void setReadVariable(Object v){
+	//needs cleanup of similar code
 	if(v instanceof java.util.ArrayList){
 			for(Object vobj:(ArrayList)v){
 				Declaration d;
@@ -150,20 +151,10 @@ public class Transition {
 				else d=(Declaration)v;
 		this.readVariables.add(d.getFullVName());
 	}
-    /*if(v!=null){
-	if(v instanceof Expression && !readVariables.contains(v.toString()))
-		this.readVariables.add(v.toString());
-	else if(v instanceof String && !readVariables.contains(v))
-		this.readVariables.add(v.toString());
-	else this.readVariables.add(v.toString());
-	}*/
+   
   }
-/*  public void setReadVariable(List<Object> vlist){
-	for(Object v:vlist){
-		if(v!=null) setReadVariable(v);
-	}
-  }*/
    public void setWriteVariable(Object v){
+   //needs cleanup of similar code
    if(v instanceof java.util.ArrayList){
 			for(Object vobj:(ArrayList)v){
 			
@@ -181,19 +172,8 @@ public class Transition {
 				else d=(Declaration)v;
 		this.writeVariables.add(d.getFullVName());
 	}
-   /*if(v!=null){
-	if(v instanceof Expression && !writeVariables.contains(v.toString()))
-		this.writeVariables.add(v.toString());
-	if(v instanceof String && !writeVariables.contains(v))
-		this.writeVariables.add(v.toString());
-	else this.writeVariables.add(v.toString());
-	}*/
+   
   }
    
- /* public void setWriteVariable(List<Object> vlist){
-	for(Object v:vlist){
-		if(v!=null) setWriteVariable(v);
-	}
-  }*/
 
 }
