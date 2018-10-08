@@ -175,13 +175,11 @@ public class Analyser {
 	
     for(String vname : Rscope.keySet()) {
 	
-	  RscopeActual.put(vname,Metric.ActualRscope(vname,totalStateRegions,totalTransitionRegions)); //Calculate Actual Rscope for each variable
-      System.out.println(vname + " : " + RscopeActual.get(vname) +" / "+Rscope.get(vname));
-    
-	  RscopeTotal+=Rscope.get(vname);
-      ActualRscopeTotal+=RscopeActual.get(vname); //StaBL read score
-	  
-      RStablscopescore+=(float)RscopeActual.get(vname)/(float)Rscope.get(vname); //Nr/NrTotal
+	RscopeActual.put(vname,Metric.ActualRscope(vname,totalStateRegions,totalTransitionRegions)); //Calculate Actual Rscope for each variable
+	System.out.println(vname + " : " + RscopeActual.get(vname) +" / "+Rscope.get(vname));
+	RscopeTotal+=Rscope.get(vname);
+	ActualRscopeTotal+=RscopeActual.get(vname); //StaBL read score  
+	RStablscopescore+=(float)RscopeActual.get(vname)/(float)Rscope.get(vname); //Nr/NrTotal
 	 
     }
     RStateChartscopescore=ActualRscopeTotal/RscopeTotal; //Statechart read score

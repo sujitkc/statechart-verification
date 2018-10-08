@@ -131,42 +131,42 @@ public class Metric {
   		//for a given variable, identify the regions(state/transition) in which it is read.
 		
 		int readCount=0;
-		//System.out.print("\n===============\nRead :");
+		System.out.print("\n===============\nRead :");
 		for(State s:totalStateRegions){
 			if(s.readVariables.contains(var)) 
 				{
-					//System.out.print(s.getFullName()+"; ");
+					System.out.print(s.getFullName()+"; ");
 					readCount++;
 				}
 		}
 		for(Transition t:totalTransitionRegions){
 			if(t.readVariables.contains(var)) {
-			//System.out.print(t.name+"; ");
+			System.out.print(t.name+"; ");
 			readCount++;
 			}
 		}
-		//System.out.println();
+		System.out.println();
 		return readCount;
   }
      public static int ActualWscope(String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
 		//for a given variable, identify the regions(state/transition) in which it is written.
 		
 		int writeCount=0;
-		//System.out.print("\n===============\nWrite :");
+		System.out.print("\n===============\nWrite :");
 		for(State s:totalStateRegions){
 			if(s.writeVariables.contains(var)) 
 				{
-					//System.out.print(s.getFullName()+"; ");
+					System.out.print(s.getFullName()+"; ");
 					writeCount++;
 				}
 		}
 		for(Transition t:totalTransitionRegions){
 			if(t.writeVariables.contains(var)) {
-			//System.out.println(t.name+"; ");
+			System.out.println(t.name+"; ");
 			writeCount++;
 			}
 		}
-		//System.out.println();
+		System.out.println();
 		return writeCount;
   }
   public static int getNumberOfStates(State state) {
