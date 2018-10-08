@@ -12,10 +12,22 @@ public class BinaryExpression extends Expression {
     this.right    = right;
     this.operator = operator;
     variables=new ArrayList<Expression>();
-    if(left instanceof IntegerConstant || left instanceof StringLiteral){}
+    if(left instanceof IntegerConstant || left instanceof StringLiteral || left instanceof BooleanConstant){}
+	else if(left instanceof FunctionCall){
+		variables.addAll(((FunctionCall)left).getVariables());
+	}
+	else if(left instanceof BinaryExpression){
+		variables.addAll(((BinaryExpression)left).getVariables());
+	}
     else variables.add(left);
-    if(right instanceof IntegerConstant || right instanceof StringLiteral){}
-    else variables.add(right);
+    if(right instanceof IntegerConstant || right instanceof StringLiteral || right instanceof BooleanConstant){}
+    else if(right instanceof FunctionCall){
+		variables.addAll(((FunctionCall)right).getVariables());
+	}
+	else if(right instanceof BinaryExpression){
+		variables.addAll(((BinaryExpression)right).getVariables());
+	}
+	else variables.add(right);
     
   }
 

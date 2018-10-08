@@ -264,8 +264,6 @@ state AdminDashboard{
 		pr:=get_sublist<|Request,int|> (requests,pending_flag); 
 
 		
-        //pr := [r.requester for r in requests if r.status = PENDING]; // pr contains the requesters whose status is PENDING. 
-
         } 
 
      } 

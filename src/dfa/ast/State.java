@@ -10,8 +10,8 @@ public class State {
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
-  public List<String> readVariables;
-  public List<String> writeVariables;
+  public List<Object> readVariables;
+  public List<Object> writeVariables;
   
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -40,8 +40,8 @@ public class State {
       t.setState(this);
     }
     this.declarations.setState(this);
-    this.readVariables=new ArrayList<String>();
-    this.writeVariables=new ArrayList<String>();
+    this.readVariables=new ArrayList<Object>();
+    this.writeVariables=new ArrayList<Object>();
     
   }
 
@@ -174,34 +174,73 @@ public class State {
     return s;    
   }
   public void setReadVariable(Object v){
-	if(v!=null){
-	if(v instanceof Expression && !readVariables.contains(v.toString()))
-		this.readVariables.add(v.toString());
-	else if(v instanceof String && !readVariables.contains(v))
-		this.readVariables.add(v.toString());
-	else this.readVariables.add(v.toString());
+	//System.out.println("Adding read variable :"+v.getClass());
+	if(v instanceof java.util.ArrayList){
+			for(Object vobj:(ArrayList)v){
+				
+				Declaration d;
+				if(vobj instanceof Name)
+				d=((Name)vobj).getDeclaration();
+				else d=(Declaration)vobj;
+				if(!this.readVariables.contains(d.getFullVName())) this.readVariables.add(d.getFullVName());
+				}
+		}
+	else if(v!=null){
+		Declaration d;
+		if(v instanceof Name)
+			d=((Name)v).getDeclaration();
+		else 
+			d=(Declaration)v;
+		this.readVariables.add(d.getFullVName());
 	}
+	/*if(v!=null){
+	if(v instanceof Expression && !readVariables.contains(v))
+		this.readVariables.add(v);
+	else if(v instanceof String && !readVariables.contains(v))
+		this.readVariables.add(v);
+	else this.readVariables.add(v);
+	}*/
   }
-  public void setReadVariable(List<Object> vlist){
-	for(Object v:vlist){
+ /* public void setReadVariable(ArrayList<Object> vlist){
+	System.out.println("*&*&*&*&*&*&*&*&*&*&&*&*&*&*&**&*&*&*&*&*&*&*&**&*&*&");
+    this.readVariables.addAll(vlist);
+	/*for(Object v:vlist){
 		if(v!=null) setReadVariable(v);
 	}
-  }
+  }*/
    public void setWriteVariable(Object v){
-	if(v!=null){
-	if(v instanceof Expression && !writeVariables.contains(v.toString()))
-		this.writeVariables.add(v.toString());
-	else if(v instanceof String && !writeVariables.contains(v))
-		this.writeVariables.add(v.toString());
-	else this.writeVariables.add(v.toString());
+	if(v instanceof java.util.ArrayList){
+			for(Object vobj:(ArrayList)v){
+				Declaration d;
+				if(vobj instanceof Name)
+				d=((Name)vobj).getDeclaration();
+				else d=(Declaration)vobj;
+				if(!this.writeVariables.contains(d.getFullVName())) this.writeVariables.add(d.getFullVName());
+				}
+		}
+	else if(v!=null){
+		Declaration d;
+				if(v instanceof Name)
+				d=((Name)v).getDeclaration();
+				else d=(Declaration)v;
+		this.writeVariables.add(d.getFullVName());
 	}
+	/*if(v!=null){
+	if(v instanceof Expression && !writeVariables.contains(v))
+		this.writeVariables.add(v);
+	else if(v instanceof String && !writeVariables.contains(v))
+		this.writeVariables.add(v);
+	else this.writeVariables.add(v);
+	}*/
   }
    
-  public void setWriteVariable(List<Object> vlist){
-	for(Object v:vlist){
+  /*public void setWriteVariable(List<Object> vlist){
+    this.readVariables.addAll(vlist);
+
+	/*for(Object v:vlist){
 		if(v!=null) setWriteVariable(v);
 	}
-	System.out.println(vlist.toString());
-  }
+	
+  }*/
  
 }

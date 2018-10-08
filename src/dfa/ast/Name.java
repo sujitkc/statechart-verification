@@ -7,6 +7,7 @@ public class Name extends Expression {
 
   public final List<String> name = new ArrayList<String>();
   private Declaration declaration;
+  public List<Expression> variables;
 
   public Name(String id) {
     this.name.add(id);
@@ -50,7 +51,9 @@ public class Name extends Expression {
   public List<String> getName(){
 	return this.name;
   }
-  public List<String> getVariablesNames(){
-	return this.name;
+  public List<Expression> getVariables(){
+	variables=new ArrayList<Expression>();
+	variables.add(this);
+	return variables;
   }
 }

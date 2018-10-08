@@ -72,102 +72,26 @@ public class Analyser {
     for(State s : totalStateRegions){
 	for(Declaration d:s.declarations)
 	{
-	if(d.input) s.setWriteVariable(d.vname);
+	if(d.input) s.setWriteVariable(d);
 	}
-	//System.out.println(s.entry.getClass().getName());
-	StatementList sentry=(StatementList)s.entry;
-	for(Statement stmt : sentry.getStatements()){
-	if(stmt instanceof ast.AssignmentStatement)
-		{
-		AssignmentStatement as=(AssignmentStatement)(stmt);
-		s.setWriteVariable((as.getLHS()).getName());
-		if(as.getRHS() instanceof ast.FunctionCall){
-			s.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				s.setWriteVariable((as.getRHS()).getVariables().get(0));
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
-			s.setReadVariable((as.getRHS()).getVariables());
-		}
-	else if(stmt instanceof ast.ExpressionStatement){
-		
-		}
-	}
-	StatementList sexit=(StatementList)s.exit;
-	for(Statement stmt : sexit.getStatements()){
-	if(stmt instanceof ast.AssignmentStatement)
-		{
-		AssignmentStatement as=(AssignmentStatement)(stmt);
-		s.setWriteVariable((as.getLHS()).getName());
-		if(as.getRHS() instanceof ast.FunctionCall){
-			s.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				s.setWriteVariable((as.getRHS()).getVariables().get(0));
-			
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
-			s.setReadVariable((as.getRHS()).getVariables());
-		
-		}
-	else if(stmt instanceof ast.ExpressionStatement){
-		
-		}
-	}
+	analyseStatements((StatementList)s.entry,s);
+	analyseStatements((StatementList)s.exit,s);
 	System.out.println("**"+s.getFullName());
 	System.out.println("Actual write variables: "+ s.writeVariables);
 	System.out.println("Actual read variables: "+ s.readVariables);
     }
     
-    System.out.println("Printing all transitions");
+    //System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
-	StatementList taction;
-	if(t.action instanceof ast.AssignmentStatement){
-		AssignmentStatement as=(AssignmentStatement)t.action;
-		t.setWriteVariable((as.getLHS()));
-		if(as.getRHS() instanceof ast.FunctionCall){
-			t.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				t.setWriteVariable((as.getRHS()).getVariables().get(0));
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
-			t.setReadVariable((as.getRHS()).getVariables());
-		
-	}
-	else if (t.action instanceof ast.ExpressionStatement){
-		//ExpressionStatement es=(ExpressionStatement)t.action;
-		//t.setWriteVariable((es.getLHS()).getName());
-	}
-	else 
-	{
-		taction=(StatementList)t.action;
-		for(Statement stmt : taction.getStatements()){
-		if(stmt instanceof ast.AssignmentStatement){
-			AssignmentStatement as;
-			as=(AssignmentStatement)stmt;
-			t.setWriteVariable((as.getLHS()).getName());
-			if(as.getRHS() instanceof ast.FunctionCall){
-			t.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				t.setWriteVariable((as.getRHS()).getVariables().get(0));
-			
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
-			t.setReadVariable((as.getRHS()).getVariables());
-		
-		}
-		else if(stmt instanceof ast.ExpressionStatement){
-			ExpressionStatement as;
-			as=(ExpressionStatement)stmt;
-			// Not yet complete
-			//System.out.println("Expression statement: "+as);
-			//t.setWriteVariable((as.getLHS()).getName());
-			}
-		}
-	}
-	System.out.println("Analysing guards");
-	Expression tguard=t.guard;
+	analyseStatements(t);
+	System.out.println(t.guard);
 	if(t.guard instanceof ast.BinaryExpression)
-		System.out.println(((BinaryExpression)t.guard).getVariables());
+		t.setReadVariable(((BinaryExpression)t.guard).getVariables());
+	else if(t.guard instanceof ast.FunctionCall)
+		t.setReadVariable(((FunctionCall)t.guard).getVariables());
+	System.out.println("**Transition : "+t.name);
+	System.out.println("Actual write variables: "+ t.writeVariables);
+	System.out.println("Actual read variables: "+ t.readVariables);
    }
     
     
@@ -195,44 +119,54 @@ public class Analyser {
     
     
     Metric.Wscope(statechart, Wscope, allTransitions);
-    Metric.ActualWscope(statechart, WscopeActual, allTransitions);
+	
+   // Metric.ActualWscope(statechart, WscopeActual, allTransitions);
     
     float WscopeTotal=0;
     float ActualWscopeTotal=0;
-    float WStablscopescore=0;
-    double WStateChartscopescore=0;
+    double WStablscopescore=0.000000f;
+    double WStateChartscopescore=0.0000000f;
     System.out.println("\n\nWscopeActual -- Begin");
     for(String vname : Wscope.keySet()) {
-      System.out.println(vname + " : " + WscopeActual.get(vname));
+      WscopeActual.put(vname,Metric.ActualWscope(vname,totalStateRegions,totalTransitionRegions));
+	  System.out.println(vname + " : " + WscopeActual.get(vname) +" / "+Wscope.get(vname));
       WscopeTotal+=Wscope.get(vname);
       ActualWscopeTotal+=WscopeActual.get(vname);
-      WStablscopescore+=WscopeActual.get(vname)/Wscope.get(vname);
+      WStablscopescore+=(float)WscopeActual.get(vname)/(float)Wscope.get(vname);
     }
     WStateChartscopescore=ActualWscopeTotal/WscopeTotal;
-    System.out.println("Wscope Total is "+WscopeTotal+" ActualWscope total is "+ActualWscopeTotal +" and scope score is Stabl:" + WStablscopescore + " Statechart : "+WStateChartscopescore+" -- End\n\n");
+    System.out.println("Wscope Total is "+WscopeTotal+"\nActualWscope total is "+ActualWscopeTotal +" \nWrite scope score is Stabl:" + WStablscopescore + " Statechart : "+WStateChartscopescore+"\n\n");
 
 
     Map<String, Integer> Rscope = new HashMap<String, Integer>();
     Map<String, Integer> RscopeActual = new HashMap<String, Integer>();
     Metric.Rscope(statechart, Rscope, allTransitions);
-    Metric.ActualRscope(statechart, RscopeActual, allTransitions);
-    float RscopeTotal=0;
-    float ActualRscopeTotal=0;
-    float RStablscopescore=0;
-    float RStateChartscopescore=0.000000f;
+	
+    //Metric.ActualRscope(statechart, RscopeActual, allTransitions);
+	
+    float RscopeTotal=0.00000f;
+    float ActualRscopeTotal=0.0000f;
+    double RStablscopescore=0.00000f;
+    double RStateChartscopescore=0.000000f;
     System.out.println("\n\nRscopeActual -- Begin");
+	
     for(String vname : Rscope.keySet()) {
-      System.out.println(vname + " : " + RscopeActual.get(vname));
-      RscopeTotal+=Rscope.get(vname);
+	
+	  RscopeActual.put(vname,Metric.ActualRscope(vname,totalStateRegions,totalTransitionRegions));
+      System.out.println(vname + " : " + RscopeActual.get(vname) +" / "+Rscope.get(vname));
+    
+	  RscopeTotal+=Rscope.get(vname);
       ActualRscopeTotal+=RscopeActual.get(vname);
-      RStablscopescore+=RscopeActual.get(vname)/Rscope.get(vname);
+	  
+      RStablscopescore+=(float)RscopeActual.get(vname)/(float)Rscope.get(vname);
+	 
     }
     RStateChartscopescore=ActualRscopeTotal/RscopeTotal;
-    System.out.println("Rscope Total is "+RscopeTotal+" ActualRscope total is "+ActualRscopeTotal +" and scope score is Stabl: " + RStablscopescore + " Statechart : "+String.format("%.5f", RStateChartscopescore)+" -- End\n\n");
+    System.out.println("Rscope Total is "+RscopeTotal+"\nActualRscope total is "+ActualRscopeTotal +"\nRead scope score is Stabl: " + RStablscopescore + " Statechart : "+ RStateChartscopescore+"\n \n\n");
     System.out.println("Total Score of specification :");
+	
     System.out.println("StaBL :"+ (WStablscopescore+RStablscopescore));
     System.out.println("Statechart :"+ (WStateChartscopescore+RStateChartscopescore));
-    System.out.println(Metric.randomNumberInRange(0,5));
 /*
     Statechart flattenedSC = null;
     try {
@@ -248,7 +182,93 @@ public class Analyser {
     }
 */
   }
+  
+  
+  public static void analyseStatements(StatementList stmtlist,State s){
+  for(Statement stmt : stmtlist.getStatements()){
+	if(stmt instanceof ast.AssignmentStatement)
+		{
+		AssignmentStatement as=(AssignmentStatement)(stmt);
+		s.setWriteVariable(as.getLHS());
+		if(as.getRHS() instanceof ast.FunctionCall){
+			s.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				s.setWriteVariable((as.getRHS()).getVariables().get(0));
+		}
+		else if(as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name){
+			s.setReadVariable((as.getRHS()).getVariables());
+		}
+		else s.setReadVariable((as.getRHS()).getVariables());
+		}
+	else if(stmt instanceof ast.ExpressionStatement){
+			Expression e=(Expression)((ExpressionStatement)stmt).expression;
+			//UnaryExpression ue=(UnaryExpression)((ExpressionStatement)stmt).expression;
+			if( e instanceof ast.UnaryExpression){
+			UnaryExpression ue=(UnaryExpression)((ExpressionStatement)stmt).expression;
+			s.setReadVariable(ue.getVariables());
+			s.setWriteVariable(ue.getVariables());
+			}
+			//FunctionCall fc=(FunctionCall)((ExpressionStatement)stmt).expression;
+			else if(e instanceof ast.FunctionCall){
+			FunctionCall fc=(FunctionCall)((ExpressionStatement)stmt).expression;
+			s.setReadVariable(fc.getVariables());
+			if(fc.name.name.startsWith("put"))
+				s.setWriteVariable(fc.getVariables().get(0));
+				}
+		}
+	}
+  
+  }
+  
+  public static void analyseStatements(Transition t){
+  	if(t.action instanceof ast.AssignmentStatement){
+		AssignmentStatement as=(AssignmentStatement)t.action;
+		t.setWriteVariable((as.getLHS()));
+		if(as.getRHS() instanceof ast.FunctionCall){
+			t.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				t.setWriteVariable((as.getRHS()).getVariables().get(0));
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			t.setReadVariable((as.getRHS()).getVariables());
+		
+	}
+	else if (t.action instanceof ast.ExpressionStatement){
+		//ExpressionStatement es=(ExpressionStatement)t.action;
+		//t.setWriteVariable((es.getLHS()).getName());
+	}
+	else 
+	{
+		StatementList taction=(StatementList)t.action;
+		for(Statement stmt : taction.getStatements()){
+		if(stmt instanceof ast.AssignmentStatement){
+			AssignmentStatement as;
+			as=(AssignmentStatement)stmt;
+			t.setWriteVariable(as.getLHS());
+			if(as.getRHS() instanceof ast.FunctionCall){
+			t.setReadVariable((as.getRHS()).getVariables());
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
+				t.setWriteVariable((as.getRHS()).getVariables().get(0));
+			
+		}
+		if( as.getRHS() instanceof ast.UnaryExpression || as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name)
+			t.setReadVariable((as.getRHS()).getVariables());
+		
+		}
+		else if(stmt instanceof ast.ExpressionStatement){
+			ExpressionStatement as;
+			as=(ExpressionStatement)stmt;
+			// Not yet complete
+			//System.out.println("Expression statement: "+as);
+			//t.setWriteVariable((as.getLHS()).getName());
+			}
+		}
+	}
+	
 
+  
+  }
+  
   public Analyser(Statechart statechart) {
     this.statechart = statechart;
     this.typechecker = new Typechecker(statechart);

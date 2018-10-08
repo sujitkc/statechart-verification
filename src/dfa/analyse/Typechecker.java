@@ -117,7 +117,10 @@ public class Typechecker {
         typeParameterNames.indexOf(typeName.name));
     }
     else {
+	  
       type = this.getKnownType(typeName, i).copy();
+	  
+	  
       if(type == null) {
         throw new Exception("lookupType failed : Type name " + typeName +
           " not found.");
@@ -168,6 +171,7 @@ public class Typechecker {
   }
 
   private void typecheckStruct(Struct struct, int i) throws Exception {
+ 
     for(Declaration d : struct.declarations) {
       this.typecheckDeclaration(d, struct.typeParameterNames, i);
     }

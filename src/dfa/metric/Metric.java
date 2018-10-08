@@ -76,7 +76,11 @@ public class Metric {
   }
 
   public static void Wscope(State state, Map<String, Integer> scope, Set<Transition> allTransitions) {
+  
     DeclarationList declarations = state.declarations;
+	for(Declaration declaration : declarations){
+		scope.put(declaration.getFullVName(), Metric.getNumberOfStates(state) + Metric.getNumberOfTransitions(state));
+	}
     int numberOfStates = Metric.getNumberOfStates(state);
     int numberOfTransitions = Metric.getNumberOfTransitions(state);
     
@@ -94,27 +98,13 @@ public class Metric {
     //  Metric.scope_T(s, scope);
     //}   
   }
-    public static void ActualWscope(State state, Map<String, Integer> scope, Set<Transition> allTransitions) {
-    DeclarationList declarations = state.declarations;
-    int numberOfStates = Metric.getNumberOfStates(state);
-    int numberOfTransitions = Metric.getNumberOfTransitions(state);
-    
-    for(State s : state.states) {
-    Set<Transition> t_IN = Metric.t_IN(s, allTransitions);
-    for(Declaration declaration : s.declarations) {
-      scope.put(declaration.getFullVName(),randomNumberInRange(0, Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_IN.size()));
-      int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_IN.size();
-     // System.out.println("I calculated this for " + declaration.getFullVName()+":"+m +" and state size is "+s.states.size());
-      
-    }
-    if(s.states.size()>1) Metric.Wscope(s,scope,allTransitions);
-    }
-    //for(State s : state.states) {
-    //  Metric.scope_T(s, scope);
-    //}   
-  }
+ 
   public static void Rscope(State state, Map<String, Integer> scope, Set<Transition> allTransitions) {
     DeclarationList declarations = state.declarations;
+	
+	for(Declaration declaration : declarations){
+		scope.put(declaration.getFullVName(), Metric.getNumberOfStates(state) + Metric.getNumberOfTransitions(state));
+	}
     int numberOfStates = Metric.getNumberOfStates(state);
     int numberOfTransitions = Metric.getNumberOfTransitions(state);
     for(State s : state.states) {
@@ -137,25 +127,44 @@ public class Metric {
         Random random = new Random();
         return random.nextInt((max - min) + 1) + min;
     }
-   public static void ActualRscope(State state, Map<String, Integer> scope, Set<Transition> allTransitions) {
-    DeclarationList declarations = state.declarations;
-    int numberOfStates = Metric.getNumberOfStates(state);
-    int numberOfTransitions = Metric.getNumberOfTransitions(state);
-    for(State s : state.states) {
-    
-    Set<Transition> t_OUT = Metric.t_OUT(s, allTransitions);
-    for(Declaration declaration : s.declarations) {
-      scope.put(declaration.getFullVName(), randomNumberInRange(0,Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_OUT.size()));
-      int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_OUT.size();
-      //System.out.println("I calculated this for " + declaration.getFullVName()+":"+m +" and state size is "+s.states.size());
-    
-    }
-    
-    if(s.states.size()>1) Metric.Rscope(s,scope,allTransitions);
-    }
-    //for(State s : state.states) {
-    //  Metric.scope_T(s, scope);
-    //}   
+   public static int ActualRscope( String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
+  		int readCount=0;
+		//System.out.print("\n===============\nRead :");
+		for(State s:totalStateRegions){
+			if(s.readVariables.contains(var)) 
+				{
+					//System.out.print(s.getFullName()+"; ");
+					readCount++;
+				}
+		}
+		for(Transition t:totalTransitionRegions){
+			if(t.readVariables.contains(var)) {
+			//System.out.print(t.name+"; ");
+			readCount++;
+			}
+		}
+		//System.out.println();
+		return readCount;
+  }
+     public static int ActualWscope(String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
+   
+		int writeCount=0;
+		//System.out.print("\n===============\nWrite :");
+		for(State s:totalStateRegions){
+			if(s.writeVariables.contains(var)) 
+				{
+					//System.out.print(s.getFullName()+"; ");
+					writeCount++;
+				}
+		}
+		for(Transition t:totalTransitionRegions){
+			if(t.writeVariables.contains(var)) {
+			//System.out.println(t.name+"; ");
+			writeCount++;
+			}
+		}
+		//System.out.println();
+		return writeCount;
   }
   public static int getNumberOfStates(State state) {
     
