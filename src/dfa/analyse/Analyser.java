@@ -84,7 +84,7 @@ public class Analyser {
     //System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
 	analyseStatements(t);
-	System.out.println(t.guard);
+	
 	if(t.guard instanceof ast.BinaryExpression)
 		t.setReadVariable(((BinaryExpression)t.guard).getVariables());
 	else if(t.guard instanceof ast.FunctionCall)
