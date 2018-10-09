@@ -179,15 +179,15 @@ public class Metric {
 		return writeCount;
   }
   public static void printRWVariables(){
-  String str="Variable & Actual Rscope & Actual Wscope\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
+  String str="Variable & Actual Rscope  & Actual Wscope\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
   int i=1;
-  System.out.println("Rscope");
+  System.out.println("Rscope Actual");
 	for(String vname : ActualRScopeVariables.keySet()) {
       System.out.println(vname + " : " + ActualRScopeVariables.get(vname));
 	  str+=(i++)+" & "+vname+" & "+ ActualRScopeVariables.get(vname) +" & "+ ActualWScopeVariables.get(vname) +" \\\\ " + System.lineSeparator() +"\\hline"+ System.lineSeparator();
 	  
     }
-  System.out.println("Wscope");
+  System.out.println("Wscope Actual");
 	for(String vname : ActualWScopeVariables.keySet()) {
       System.out.println(vname + " : " + ActualWScopeVariables.get(vname));
     }
