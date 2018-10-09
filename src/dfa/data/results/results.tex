@@ -11,20 +11,21 @@
 \newcolumntype{C}{>{\centering\arraybackslash}p}
 \usepackage{longtable,array,ragged2e}
 \newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
+\usepackage[margin=0.02in]{geometry}
 
 \begin{document}
 
 \begin{landscape}
 \begingroup
-\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\setlength{\tabcolsep}{5pt} % Default value: 6pt
 
-\renewcommand{\arraystretch}{2} % Default value: 1
-        \begin{longtable}{
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{longtable}{
 @{}|
->{\raggedright}p{.5cm} |
->{\raggedright\arraybackslash}p{6cm}|
->{\raggedright\arraybackslash}p{7cm}@{}|
->{\raggedright\arraybackslash}p{7cm}|
+>{\raggedright}p{.35cm} |
+>{\raggedright\arraybackslash}p{8.25cm}|
+>{\raggedright\arraybackslash}p{8.5cm}@{}|
+>{\raggedright\arraybackslash}p{8.25cm}|
 p{6.5cm}|
 @{}}
            \hline
@@ -46,26 +47,20 @@ p{6.5cm}|
 \hline
 8 & Student. LoggedOut. password & [tlogin] & [Student. LoggedOut] \\ 
 \hline
-
 \caption{Actual R and W scope for Curfew1.txt}
-
 \end{longtable}
-
 \endgroup
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
 \begingroup
-\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\setlength{\tabcolsep}{5pt} % Default value: 6pt
 
-\renewcommand{\arraystretch}{2} % Default value: 1
+\renewcommand{\arraystretch}{1.5} % Default value: 1
         \begin{longtable}{
 @{}|
->{\raggedright}p{.5cm} |
->{\raggedright\arraybackslash}p{6cm}|
->{\raggedright\arraybackslash}p{7cm}@{}|
->{\raggedright\arraybackslash}p{7cm}|
+>{\raggedright}p{.35cm} |
+>{\raggedright\arraybackslash}p{8.25cm}|
+>{\raggedright\arraybackslash}p{8.25cm}@{}|
+>{\raggedright\arraybackslash}p{8.25cm}|
 p{6.5cm}|
 @{}}
 \hline
@@ -175,19 +170,19 @@ p{6.5cm}|
 
 \endgroup
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
+
 
 %\begin{adjustbox}{width={1.5\textwidth},totalheight={\textheight},keepaspectratio}
 \begingroup
-\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\setlength{\tabcolsep}{5pt} % Default value: 6pt
 
-\renewcommand{\arraystretch}{2} % Default value: 1
+\renewcommand{\arraystretch}{1.5} % Default value: 1
         \begin{longtable}{
 @{}|
->{\raggedright}p{.5cm} |
->{\raggedright\arraybackslash}p{6cm}|
->{\raggedright\arraybackslash}p{7cm}@{}|
->{\raggedright\arraybackslash}p{7cm}|
+>{\raggedright}p{.35cm} |
+>{\raggedright\arraybackslash}p{8.25cm}|
+>{\raggedright\arraybackslash}p{8.25cm}@{}|
+>{\raggedright\arraybackslash}p{8.25cm}|
 p{6.5cm}|
 @{}}
         

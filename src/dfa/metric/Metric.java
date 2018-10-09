@@ -179,7 +179,7 @@ public class Metric {
 		return writeCount;
   }
   public static void printRWVariables(){
-  String str="Variable & Actual Rscope  & Actual Wscope\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
+  String str="\\textbf{Sno} & \\textbf{Variable} & \\textbf{Actual Rscope}  & \\textbf{Actual Wscope}\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
   int i=1;
   System.out.println("Rscope Actual");
 	for(String vname : ActualRScopeVariables.keySet()) {

@@ -1,4 +1,4 @@
-Variable & Actual Rscope & Actual Wscope\\
+\textbf{Sno} & \textbf{Variable} & \textbf{Actual Rscope}  & \textbf{Actual Wscope}\\
 \hline
 1 & Curfew.registration.userName & [register_success, register_failure] & [Curfew.registration] \\ 
 \hline
