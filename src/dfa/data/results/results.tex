@@ -1,0 +1,410 @@
+\documentclass[12pt]{article}
+
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{adjustbox}      
+\usepackage{lscape}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{multirow,rotating,array,booktabs,siunitx,blindtext}
+\newcolumntype{C}{>{\centering\arraybackslash}p}
+\usepackage{longtable,array,ragged2e}
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
+
+\begin{document}
+
+\begin{landscape}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+
+\renewcommand{\arraystretch}{2} % Default value: 1
+        \begin{longtable}{
+@{}|
+>{\raggedright}p{.5cm} |
+>{\raggedright\arraybackslash}p{6cm}|
+>{\raggedright\arraybackslash}p{7cm}@{}|
+>{\raggedright\arraybackslash}p{7cm}|
+p{6.5cm}|
+@{}}
+           \hline
+  \textbf{Sno} &       \textbf{Variable} & \textbf{Actual Rscope} & \textbf{Actual Wscope}\\
+\hline
+1 & Student. LoggedIn. SetRoom. room & [Student. LoggedIn. SetRoom] & [Student. LoggedIn. SetRoom] \\ 
+\hline
+2 & Student. LoggedOut. user & [tlogin] & [Student. LoggedOut] \\ 
+\hline
+3 & Student. LoggedIn. ViewDetails. room & [] & [Student. LoggedIn. ViewDetails] \\ 
+\hline
+4 & Student. LoggedIn. loggedinUser & [Student. LoggedIn. SetRoom, Student. LoggedIn. ViewDetails] & [tlogin] \\ 
+\hline
+5 & Student. LoggedIn. ViewDetails. student & [] & [Student. LoggedIn. ViewDetails] \\ 
+\hline
+6 & Student. rooms & [Student. LoggedIn. SetRoom, Student. LoggedIn. ViewDetails] & [Student. LoggedIn. SetRoom] \\ 
+\hline
+7 & Student. students & [tlogin] & [] \\ 
+\hline
+8 & Student. LoggedOut. password & [tlogin] & [Student. LoggedOut] \\ 
+\hline
+
+\caption{Actual R and W scope for Curfew1.txt}
+
+\end{longtable}
+
+\endgroup
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+
+\renewcommand{\arraystretch}{2} % Default value: 1
+        \begin{longtable}{
+@{}|
+>{\raggedright}p{.5cm} |
+>{\raggedright\arraybackslash}p{6cm}|
+>{\raggedright\arraybackslash}p{7cm}@{}|
+>{\raggedright\arraybackslash}p{7cm}|
+p{6.5cm}|
+@{}}
+\hline
+  \textbf{Sno} &       \textbf{Variable} & \textbf{Actual Rscope} & \textbf{Actual Wscope}\\
+
+\hline
+1 & Curfew. registration. userName & [register-success, register-failure] & [Curfew. registration] \\ 
+\hline
+2 & Curfew. LoggedIn. AdminDashboard. SetRoom. room & [Curfew. LoggedIn. AdminDashboard. SetRoom] & [Curfew. LoggedIn. AdminDashboard. SetRoom] \\ 
+\hline
+3 & Curfew. LoggedIn. student-dashboard. view-my-requests. myrequests & [] & [Curfew. LoggedIn. student-dashboard. view-my-requests] \\ 
+\hline
+4 & Curfew. LoggedIn. student-dashboard. request-curfew. request-LateOut. outTime & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-LateOut] \\ 
+\hline
+5 & Curfew. registration. usertype & [] & [Curfew. registration] \\ 
+\hline
+6 & Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests. prsel & [pr-approve-pr, pr-proof-pr, pr-reject-pr] & [pr-select-pr] \\ 
+\hline
+7 & Curfew. LoggedIn. student-dashboard. request-curfew. request-LateOut. curfewLateOut-flag & [Curfew. LoggedIn. student-dashboard. request-curfew. request-LateOut] & [] \\ 
+\hline
+8 & Curfew. LoggedIn. AdminDashboard. view-requests. ticketid & [] & [] \\ 
+\hline
+9 & Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests. cr & [] & [Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests] \\ 
+\hline
+10 & Curfew. nulluser & [register-success, register-failure] & [] \\ 
+\hline
+11 & Curfew. LoggedIn. student-dashboard. request-curfew. type-of-request & [Curfew. LoggedIn. student-dashboard. request-curfew] & [Curfew. LoggedIn. student-dashboard. request-curfew, Curfew. LoggedIn. student-dashboard. request-curfew. request-LateIn, Curfew. LoggedIn. student-dashboard. request-curfew. request-LateOut, Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] \\ 
+\hline
+12 & Curfew. LoggedOut. password & [tlogin-student, tlogin-admin] & [Curfew. LoggedOut] \\ 
+\hline
+13 & Curfew. rooms & [Curfew. LoggedIn. AdminDashboard. ViewDetails, Curfew. LoggedIn. AdminDashboard. SetRoom] & [Curfew. LoggedIn. AdminDashboard. SetRoom] \\ 
+\hline
+14 & Curfew. nullRequest & [view-my-requests-upload-curfew-proof] & [] \\ 
+\hline
+15 & Curfew. LoggedIn. student-dashboard. request-curfew. student & [] & [Curfew. LoggedIn. student-dashboard. request-curfew] \\ 
+\hline
+16 & Curfew. LoggedIn. loggedinUser & [Curfew. LoggedIn. AdminDashboard. ViewDetails, Curfew. LoggedIn. AdminDashboard. SetRoom, Curfew. LoggedIn. student-dashboard. view-my-requests, Curfew. LoggedIn. student-dashboard. request-curfew, tlogin-student, tlogin-admin] & [tlogin-student, tlogin-admin] \\ 
+\hline
+17 & Curfew. LoggedIn. loggedinUsertype & [tsetroom, tviewdetails] & [tlogin-student, tlogin-admin] \\ 
+\hline
+18 & Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests. rr & [] & [Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests] \\ 
+\hline
+19 & Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests. pending-flag & [Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests, pr-approve-pr, pr-reject-pr] & [Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests] \\ 
+\hline
+20 & Curfew. registration. user & [] & [] \\ 
+\hline
+21 & Curfew. LoggedIn. AdminDashboard. ViewDetails. room & [] & [Curfew. LoggedIn. AdminDashboard. ViewDetails] \\ 
+\hline
+22 & Curfew. LoggedIn. student-dashboard. request-curfew. reason & [Curfew. LoggedIn. student-dashboard. request-curfew] & [Curfew. LoggedIn. student-dashboard. request-curfew] \\ 
+\hline
+23 & Curfew. requests & [Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests, Curfew. LoggedIn. student-dashboard. view-my-requests, Curfew. LoggedIn. student-dashboard. request-curfew, Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests, Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests, Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests, pr-approve-pr, pr-reject-pr] & [] \\ 
+\hline
+24 & Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests. closed-flag & [Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests] & [Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests] \\ 
+\hline
+25 & Curfew. LoggedIn. student-dashboard. request-curfew. teamlist & [] & [Curfew. LoggedIn. student-dashboard. request-curfew] \\ 
+\hline
+26 & Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests. pr & [pr-select-pr] & [Curfew. LoggedIn. AdminDashboard. view-requests. pending-requests, pr-approve-pr, pr-reject-pr] \\ 
+\hline
+27 & Curfew. LoggedOut. user & [tlogin-student, tlogin-admin] & [Curfew. LoggedOut] \\ 
+\hline
+28 & Curfew. nulllist & [pr-approve-pr, pr-proof-pr, pr-reject-pr] & [] \\ 
+\hline
+29 & Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation. inDate & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] \\ 
+\hline
+30 & Curfew. students & [Curfew. LoggedIn. AdminDashboard. ViewDetails, Curfew. LoggedIn. AdminDashboard. SetRoom, Curfew. LoggedIn. student-dashboard. view-my-requests, Curfew. LoggedOut] & [] \\ 
+\hline
+31 & Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation. vacation-flag & [Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] & [] \\ 
+\hline
+32 & Curfew. userType & [] & [] \\ 
+\hline
+33 & Curfew. LoggedIn. AdminDashboard. ViewDetails. student & [] & [Curfew. LoggedIn. AdminDashboard. ViewDetails] \\ 
+\hline
+34 & Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation. outDate & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] \\ 
+\hline
+35 & Curfew. LoggedOut. username & [Curfew. LoggedOut] & [Curfew. LoggedOut] \\ 
+\hline
+36 & Curfew. LoggedIn. student-dashboard. upload-curfew-proof. sReq & [] & [view-my-requests-upload-curfew-proof] \\ 
+\hline
+37 & Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation. outTime & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] \\ 
+\hline
+38 & Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests. rejected-flag & [Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests] & [Curfew. LoggedIn. AdminDashboard. view-requests. rejected-requests] \\ 
+\hline
+39 & Curfew. LoggedIn. student-dashboard. view-my-requests. selectedRequest & [view-my-requests-upload-curfew-proof] & [Curfew. LoggedIn. student-dashboard. view-my-requests] \\ 
+\hline
+40 & Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests. cr & [] & [Curfew. LoggedIn. AdminDashboard. view-requests. closed-requests] \\ 
+\hline
+41 & Curfew. registeredUsers & [register-success, tlogin-student, tlogin-admin, register-failure] & [] \\ 
+\hline
+42 & Curfew. registration. password & [] & [Curfew. registration] \\ 
+\hline
+43 & Curfew. LoggedIn. student-dashboard. request-curfew. request-LateIn. inTime & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-LateIn] \\ 
+\hline
+44 & Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests. approved-flag & [Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests] & [Curfew. LoggedIn. AdminDashboard. view-requests. approved-requests] \\ 
+\hline
+45 & Curfew. LoggedIn. student-dashboard. upload-curfew-proof. document & [] & [Curfew. LoggedIn. student-dashboard. upload-curfew-proof] \\ 
+\hline
+46 & Curfew. LoggedIn. student-dashboard. request-curfew. request & [Curfew. LoggedIn. student-dashboard. request-curfew] & [Curfew. LoggedIn. student-dashboard. request-curfew] \\ 
+\hline
+47 & Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation. inTime & [] & [Curfew. LoggedIn. student-dashboard. request-curfew. request-vacation] \\ 
+\hline
+48 & Curfew. LoggedIn. student-dashboard. request-curfew. request-LateIn. curfewLateIn-flag & [Curfew. LoggedIn. student-dashboard. request-curfew. request-LateIn] & [] \\ 
+\hline
+
+\caption{Actual R and W scope for Curfewfull.txt}
+
+\end{longtable}
+
+\endgroup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+%\begin{adjustbox}{width={1.5\textwidth},totalheight={\textheight},keepaspectratio}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+
+\renewcommand{\arraystretch}{2} % Default value: 1
+        \begin{longtable}{
+@{}|
+>{\raggedright}p{.5cm} |
+>{\raggedright\arraybackslash}p{6cm}|
+>{\raggedright\arraybackslash}p{7cm}@{}|
+>{\raggedright\arraybackslash}p{7cm}|
+p{6.5cm}|
+@{}}
+        
+        
+        %{|l|P{7cm}|P{7cm}|P{6cm}|}
+           \hline
+ \textbf{sno} &         \textbf{Variable} & \textbf{Actual Rscope} & \textbf{Actual Wscope}\\
+\hline
+1 & hms. admintype & [LoggedOut-LoggedIn-AdminModule] & [hms] \\ 
+\hline
+2 & hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints. compliantPriority & [] & [hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints] \\ 
+\hline
+3 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. deadline1 & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+4 & hms. LoggedIn. StudentModule. ScheduleHouseKeeping. EnterVacation. inTime & [] & [] \\ 
+\hline
+5 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. roomno & [] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment] \\ 
+\hline
+6 & hms. LoggedIn. AdminModule. HostelManagement. RoomAddition. no & [RoomAddition-RoomAddition] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAddition] \\ 
+\hline
+7 & hms. centraladmintype & [LoggedOut-LoggedIn-CentralAdminModule] & [hms] \\ 
+\hline
+8 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. student & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment, RoomAllotment-RoomAllotment] & [StudentSelection-RoomSelection] \\ 
+\hline
+9 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. StudentSelection. selectedStudent & [StudentSelection-RoomSelection] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. StudentSelection] \\ 
+\hline
+10 & hms. departments & [DepartmentAddition-Done] & [DepartmentAddition-Done] \\ 
+\hline
+11 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition. rno & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] \\ 
+\hline
+12 & hms. LoggedIn. AdminModule. StudentManagement. SendGroupMessages. message & [SendGroupMessagesDone] & [hms. LoggedIn. AdminModule. StudentManagement. SendGroupMessages] \\ 
+\hline
+13 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. deadline3 & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+14 & hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByName. name & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByName] & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByName] \\ 
+\hline
+15 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. wing & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment, RoomAllotment-RoomAllotment] & [RoomSelection-StudentSelection] \\ 
+\hline
+16 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. deadline2 & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+17 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. emailID & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+18 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. usertype & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+19 & hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints. key & [hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints] & [hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints] \\ 
+\hline
+20 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. room & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment, RoomAllotment-RoomAllotment] & [RoomSelection-StudentSelection] \\ 
+\hline
+21 & hms. LoggedIn. AdminModule. StudentManagement. SendGroupMessages. studList & [SendGroupMessagesDone] & [StudentSearch-SendGroupMessages] \\ 
+\hline
+22 & hms. LoggedIn. AdminModule. UserManagement. ViewUsers. selectedUser & [] & [EnableUserDone, DisableUserDone] \\ 
+\hline
+23 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. rollno & [] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment] \\ 
+\hline
+24 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. newpolicy & [CreateEscalationPolicy-Done] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+25 & hms. LoggedIn. AdminModule. StudentManagement. FineStudents. reason & [FineStudentsDone] & [hms. LoggedIn. AdminModule. StudentManagement. FineStudents] \\ 
+\hline
+26 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. firstOfficer & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+27 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. WardenAddition. buildingIncharge & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. WardenAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. WardenAddition] \\ 
+\hline
+28 & hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints. problemStartDate & [] & [hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints] \\ 
+\hline
+29 & hms. complaints & [hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints] & [] \\ 
+\hline
+30 & hms. complaintResolved & [hms. LoggedIn. AdminModule. ComplaintManagement. ResolveComplaints] & [hms] \\ 
+\hline
+31 & hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. ComplaintDetail. sComplaint & [] & [SearchComplaints-ComplaintsDetail] \\ 
+\hline
+32 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition. stud & [StudentAdditionDone] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition, StudentAdditionDone] \\ 
+\hline
+33 & hms. complaintAssigned & [] & [hms] \\ 
+\hline
+34 & hms. LoggedIn. AdminModule. StudentManagement. FineStudents. fineID & [FineStudentsDone] & [] \\ 
+\hline
+35 & hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints. complaintDescription & [] & [hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints] \\ 
+\hline
+36 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. RoomSelection. selectedRoom & [RoomSelection-StudentSelection] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. RoomSelection] \\ 
+\hline
+37 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. contactno & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+38 & hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. selectedStudent & [StudentSearch-FineStudents, StudentSearch-SendGroupMessages] & [Search-SearchByName, Search-SearchByRollNo] \\ 
+\hline
+39 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition. department & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] \\ 
+\hline
+40 & hms. LoggedIn. AdminModule. HostelManagement. WingAddition. newwing & [WingAddition-WingAddition] & [hms. LoggedIn. AdminModule. HostelManagement. WingAddition] \\ 
+\hline
+41 & hms. complaintLaunched & [] & [hms] \\ 
+\hline
+42 & hms. workertype & [LoggedOut-LoggedIn-WorkerModule] & [] \\ 
+\hline
+43 & hms. LoggedIn. loggedInUser & [MarkAttendance-Done] & [LoggedOut-LoggedIn-StudentModule, LoggedOut-LoggedIn-AdminModule, MarkAttendance-Done, LoggedOut-LoggedIn-EscalationModule, LoggedOut-LoggedIn-CentralAdminModule, LoggedOut-LoggedIn-WorkerModule] \\ 
+\hline
+44 & hms. wardens & [WardenAdditionDone] & [WardenAdditionDone] \\ 
+\hline
+45 & hms. LoggedIn. AdminModule. HostelManagement. RoomAddition. newRoom & [RoomAddition-RoomAddition] & [RoomAddition-RoomAddition] \\ 
+\hline
+46 & hms. LoggedIn. AdminModule. HostelManagement. RoomAddition. occupancy & [RoomAddition-RoomAddition] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAddition] \\ 
+\hline
+47 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. newuser & [WardenAdditionDone, StudentAdditionDone] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+48 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. username & [hms. LoggedIn. AdminModule. UserManagement. UserAddition, WardenAdditionDone, StudentAdditionDone] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+49 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. thirdOfficer & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+50 & hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. RoomSelection. selectedWing & [RoomSelection-StudentSelection] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAllotment. RoomSelection] \\ 
+\hline
+51 & hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints. selectedComplaint & [SearchComplaints-ComplaintsDetail] & [hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints] \\ 
+\hline
+52 & hms. complaintAcknowledged & [] & [hms] \\ 
+\hline
+53 & hms. registeredUsers & [hms. LoggedOut, WardenAdditionDone, EnableUserDone, DisableUserDone, StudentAdditionDone] & [WardenAdditionDone, StudentAdditionDone] \\ 
+\hline
+54 & hms. LoggedIn. StudentModule. ScheduleHouseKeeping. EnterVacation. outTime & [] & [] \\ 
+\hline
+55 & hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints. c & [] & [hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints, ComplaintsView-ForwardComplaints] \\ 
+\hline
+56 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. secondOfficer & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+57 & hms. LoggedIn. AdminModule. ComplaintManagement. ComplaintsView. selectedComplaint & [ComplaintsView-ResolveComplaints, ComplaintsView-ForwardComplaints] & [hms. LoggedIn. AdminModule. ComplaintManagement. ComplaintsView] \\ 
+\hline
+58 & hms. complaintForwarded & [hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints] & [hms] \\ 
+\hline
+59 & hms. LoggedOut. enteredUser & [LoggedOut-LoggedIn-StudentModule, LoggedOut-LoggedIn-AdminModule, LoggedOut-LoggedIn-EscalationModule, LoggedOut-LoggedIn-CentralAdminModule, LoggedOut-LoggedIn-WorkerModule] & [hms. LoggedOut, LoggedIn-LoggedOut] \\ 
+\hline
+60 & hms. LoggedIn. AdminModule. HostelManagement. CloseRoom. selectedWing & [CloseRoom-CloseRoom] & [CloseRoom-CloseRoom] \\ 
+\hline
+61 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. thirdOfficer & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+62 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. password & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+63 & hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition. newDepartment & [DepartmentAddition-Done] & [DepartmentAddition-Done] \\ 
+\hline
+64 & hms. LoggedOut. pass & [LoggedOut-LoggedIn-StudentModule, LoggedOut-LoggedIn-AdminModule, LoggedOut-LoggedIn-EscalationModule, LoggedOut-LoggedIn-CentralAdminModule, LoggedOut-LoggedIn-WorkerModule] & [hms. LoggedOut, LoggedIn-LoggedOut] \\ 
+\hline
+65 & hms. LoggedIn. AdminModule. HostelManagement. WingAddition. name & [hms. LoggedIn. AdminModule. HostelManagement. WingAddition, WingAddition-WingAddition] & [hms. LoggedIn. AdminModule. HostelManagement. WingAddition] \\ 
+\hline
+66 & hms. LoggedIn. AdminModule. HostelManagement. CloseRoom. wing-name & [CloseRoom-CloseRoom] & [hms. LoggedIn. AdminModule. HostelManagement. CloseRoom] \\ 
+\hline
+67 & hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition. departmentName & [DepartmentAddition-Done] & [hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition] \\ 
+\hline
+68 & hms. studenttype & [LoggedOut-LoggedIn-StudentModule] & [hms] \\ 
+\hline
+69 & hms. LoggedIn. AdminModule. StudentManagement. FineStudents. newFine & [FineStudentsDone] & [FineStudentsDone] \\ 
+\hline
+70 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. WardenAddition. w & [WardenAdditionDone] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. WardenAddition, WardenAdditionDone] \\ 
+\hline
+71 & hms. LoggedIn. AdminModule. StudentManagement. FineStudents. amount & [FineStudentsDone] & [hms. LoggedIn. AdminModule. StudentManagement. FineStudents] \\ 
+\hline
+72 & hms. LoggedIn. AdminModule. UserManagement. ViewUsers. username & [EnableUserDone, DisableUserDone, UserDeletionDone] & [hms. LoggedIn. AdminModule. UserManagement. ViewUsers] \\ 
+\hline
+73 & hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition. contactno & [DepartmentAddition-Done] & [hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition] \\ 
+\hline
+74 & hms. wings & [CloseRoom-CloseRoom, WingAddition-WingAddition] & [WingAddition-WingAddition] \\ 
+\hline
+75 & hms. LoggedOut. uname & [hms. LoggedOut] & [hms. LoggedOut, LoggedIn-LoggedOut] \\ 
+\hline
+76 & hms. LoggedIn. AdminModule. HostelManagement. CloseRoom. roomno & [CloseRoom-CloseRoom] & [hms. LoggedIn. AdminModule. HostelManagement. CloseRoom] \\ 
+\hline
+77 & hms. LoggedIn. AdminModule. HostelManagement. CloseRoom. selectedRoom & [] & [CloseRoom-CloseRoom] \\ 
+\hline
+78 & hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. key & [Search-SearchByName, Search-SearchByRollNo] & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByName, hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByRollNo] \\ 
+\hline
+79 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition. batchOfJoining & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition. StudentAddition] \\ 
+\hline
+80 & hms. LoggedIn. AdminModule. UserManagement. UserAddition. confirmpassword & [] & [hms. LoggedIn. AdminModule. UserManagement. UserAddition] \\ 
+\hline
+81 & hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints. complaintArea & [] & [hms. LoggedIn. StudentModule. ComplaintModule. MakeComplaints] \\ 
+\hline
+82 & hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy. secondOfficer & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. CreateEscalationPolicy] \\ 
+\hline
+83 & hms. complaintRejected & [] & [hms] \\ 
+\hline
+84 & hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints. toDepartment & [hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints, ForwardComplaints-ComplaintView] & [hms. LoggedIn. AdminModule. ComplaintManagement. ForwardComplaints] \\ 
+\hline
+85 & hms. students & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByName, hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByRollNo, Search-SearchByName, StudentAdditionDone, Search-SearchByRollNo] & [StudentAdditionDone] \\ 
+\hline
+86 & hms. LoggedIn. AdminModule. WorkerManagement. WorkersView. departmentid & [] & [hms. LoggedIn. AdminModule. WorkerManagement. WorkersView] \\ 
+\hline
+87 & hms. complaintReviewedandPropogated & [] & [hms] \\ 
+\hline
+88 & hms. LoggedIn. AdminModule. WorkerManagement. WorkersView. workerList & [] & [] \\ 
+\hline
+89 & hms. centreheadtype & [LoggedOut-LoggedIn-EscalationModule] & [hms] \\ 
+\hline
+90 & hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByRollNo. no & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByRollNo] & [hms. LoggedIn. AdminModule. StudentManagement. StudentSearch. SearchByRollNo] \\ 
+\hline
+91 & hms. LoggedIn. AdminModule. StudentManagement. FineStudents. stud & [FineStudentsDone] & [StudentSearch-FineStudents, FineStudentsDone] \\ 
+\hline
+92 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. firstOfficer & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+93 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. deadline1 & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+94 & hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition. departmentHead & [DepartmentAddition-Done] & [hms. LoggedIn. AdminModule. WorkerManagement. DepartmentAddition] \\ 
+\hline
+95 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. deadline2 & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+96 & hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy. deadline3 & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy] \\ 
+\hline
+97 & hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints. complaintList & [] & [hms. LoggedIn. CentralAdminModule. ViewEscalatedComplaints. SearchComplaints] \\ 
+\hline
+98 & hms. LoggedIn. AdminModule. ComplaintManagement. ResolveComplaints. c & [] & [hms. LoggedIn. AdminModule. ComplaintManagement. ResolveComplaints, ComplaintsView-ResolveComplaints] \\ 
+\hline
+99 & hms. LoggedIn. AdminModule. HostelManagement. RoomAddition. selectedWing & [RoomAddition-RoomAddition] & [hms. LoggedIn. AdminModule. HostelManagement. RoomAddition, RoomAddition-RoomAddition] \\ 
+\hline
+100 & hms. policy & [Dashboard-EnableEscalationPolicy, Dashboard-CreateEscalationPolicy, Dashboard-DisableEscalationPolicy, Dashboard-ChangeEscalationPolicy, CreateEscalationPolicy-Done] & [hms. LoggedIn. CentralAdminModule. ChangeEscalationPolicy, CreateEscalationPolicy-Done] \\ 
+\hline
+ 
+\caption{Actual R and W scope for hmsnew.txt}
+
+\end{longtable}
+\endgroup
+
+
+%\end{adjustbox}
+%\caption{Actual R and W scope for Curfew1.txt}
+%\end{table}
+\end{landscape}
+\end{document}
