@@ -5,9 +5,11 @@ import java.util.Set;
 import java.util.HashSet;
 import ast.*;
 import java.util.*;
+import java.io.*;
 
 public class Metric {
-
+	 static Map<String, List<String>> ActualRScopeVariables = new HashMap<String, List<String>>();
+	 static Map<String, List<String>> ActualWScopeVariables = new HashMap<String, List<String>>();
   public static void scope_S(State state, Map<String, Integer> scope) {
     DeclarationList declarations = state.declarations;
     int numberOfStates = Metric.getNumberOfStates(state);
@@ -129,45 +131,74 @@ public class Metric {
     }
    public static int ActualRscope( String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
   		//for a given variable, identify the regions(state/transition) in which it is read.
-		
+		List<String> varlist =new ArrayList<String>();
 		int readCount=0;
-		System.out.print("\n===============\nRead :");
+		//System.out.print("\n===============\nRead :");
 		for(State s:totalStateRegions){
 			if(s.readVariables.contains(var)) 
 				{
-					System.out.print(s.getFullName()+"; ");
+					//System.out.print(s.getFullName()+"; ");
+					varlist.add(s.getFullName());
 					readCount++;
 				}
 		}
 		for(Transition t:totalTransitionRegions){
 			if(t.readVariables.contains(var)) {
-			System.out.print(t.name+"; ");
+				//System.out.print(t.name+"; ");
+				varlist.add(t.name);
 			readCount++;
 			}
 		}
-		System.out.println();
+		//System.out.println();
+		ActualRScopeVariables.put(var,varlist);
 		return readCount;
   }
      public static int ActualWscope(String var,Set<State> totalStateRegions,Set<Transition> totalTransitionRegions) {
 		//for a given variable, identify the regions(state/transition) in which it is written.
-		
+		List<String> varlist =new ArrayList<String>();
 		int writeCount=0;
-		System.out.print("\n===============\nWrite :");
+		//System.out.print("\n===============\nWrite :");
 		for(State s:totalStateRegions){
 			if(s.writeVariables.contains(var)) 
 				{
-					System.out.print(s.getFullName()+"; ");
+					//System.out.print(s.getFullName()+"; ");
+					varlist.add(s.getFullName());
 					writeCount++;
 				}
 		}
 		for(Transition t:totalTransitionRegions){
 			if(t.writeVariables.contains(var)) {
-			System.out.println(t.name+"; ");
+			//System.out.println(t.name+"; ");
+			varlist.add(t.name);
+			
 			writeCount++;
 			}
 		}
-		System.out.println();
+		//System.out.println();
+		ActualWScopeVariables.put(var,varlist);
 		return writeCount;
+  }
+  public static void printRWVariables(){
+  String str="Variable & Actual Rscope & Actual Wscope\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
+  int i=1;
+  System.out.println("Rscope");
+	for(String vname : ActualRScopeVariables.keySet()) {
+      System.out.println(vname + " : " + ActualRScopeVariables.get(vname));
+	  str+=(i++)+" & "+vname+" & "+ ActualRScopeVariables.get(vname) +" & "+ ActualWScopeVariables.get(vname) +" \\\\ " + System.lineSeparator() +"\\hline"+ System.lineSeparator();
+	  
+    }
+  System.out.println("Wscope");
+	for(String vname : ActualWScopeVariables.keySet()) {
+      System.out.println(vname + " : " + ActualWScopeVariables.get(vname));
+    }
+	writeToFile(str);
+  }
+  public static void writeToFile(String str){
+	try{
+	java.io.FileWriter fw=new FileWriter("output.txt");
+	fw.write(str);
+	fw.close();
+	}catch(Exception e){}
   }
   public static int getNumberOfStates(State state) {
     

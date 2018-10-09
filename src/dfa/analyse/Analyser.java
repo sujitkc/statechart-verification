@@ -188,6 +188,7 @@ public class Analyser {
 	
     System.out.println("StaBL :"+ (WStablscopescore+RStablscopescore));
     System.out.println("Statechart :"+ (WStateChartscopescore+RStateChartscopescore));
+	Metric.printRWVariables();
 /*
     Statechart flattenedSC = null;
     try {
