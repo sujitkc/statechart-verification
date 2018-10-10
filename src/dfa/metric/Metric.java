@@ -87,15 +87,17 @@ public class Metric {
     int numberOfTransitions = Metric.getNumberOfTransitions(state);
     
     for(State s : state.states) {
+		
     Set<Transition> t_IN = Metric.t_IN(s, allTransitions);
     for(Declaration declaration : s.declarations) {
       scope.put(declaration.getFullVName(), Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_IN.size());
-      int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_IN.size();
-     // System.out.println("I calculated this for " + declaration.getFullVName()+":"+m +" and state size is "+s.states.size());
+      //int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_IN.size();
+      //System.out.println("I calculated this for " + declaration.getFullVName()+":"+m +" and state size is "+s.states.size());
       
     }
-    if(s.states.size()>1) Metric.Wscope(s,scope,allTransitions);
+    if(s.states.size()>0) Metric.Wscope(s,scope,allTransitions);
     }
+	
     //for(State s : state.states) {
     //  Metric.scope_T(s, scope);
     //}   
@@ -114,12 +116,12 @@ public class Metric {
     Set<Transition> t_OUT = Metric.t_OUT(s, allTransitions);
     for(Declaration declaration : s.declarations) {
       scope.put(declaration.getFullVName(),  Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_OUT.size());
-      int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_OUT.size();
+      //int m= Metric.getNumberOfStates(s) + Metric.getNumberOfTransitions(s) + t_OUT.size();
       //System.out.println("I calculated this for " + declaration.getFullVName()+":"+m +" and state size is "+s.states.size());
     
     }
     
-    if(s.states.size()>1) Metric.Rscope(s,scope,allTransitions);
+    if(s.states.size()>0) Metric.Rscope(s,scope,allTransitions);
     }
     //for(State s : state.states) {
     //  Metric.scope_T(s, scope);
@@ -181,15 +183,20 @@ public class Metric {
   public static void printRWVariables(){
   String str="\\textbf{Sno} & \\textbf{Variable} & \\textbf{Actual Rscope}  & \\textbf{Actual Wscope}\\\\" + System.lineSeparator()+"\\hline"+ System.lineSeparator();
   int i=1;
-  System.out.println("Rscope Actual");
+  //System.out.println("Rscope Actual");
+    
+
 	for(String vname : ActualRScopeVariables.keySet()) {
-      System.out.println(vname + " : " + ActualRScopeVariables.get(vname));
-	  str+=(i++)+" & "+vname+" & "+ ActualRScopeVariables.get(vname) +" & "+ ActualWScopeVariables.get(vname) +" \\\\ " + System.lineSeparator() +"\\hline"+ System.lineSeparator();
-	  
+      //System.out.println(vname + " : " + ActualRScopeVariables.get(vname));
+	  //for latex
+	  //str+=(i++)+" & "+vname+" & "+ ActualRScopeVariables.get(vname) +" & "+ ActualWScopeVariables.get(vname) +" \\\\ " + System.lineSeparator() +"\\hline"+ System.lineSeparator();
+	  //for csv
+	  str+=(i++)+" & "+vname+" & "+ ActualRScopeVariables.get(vname) +" & "+ ActualWScopeVariables.get(vname)  + System.lineSeparator();
+	   
     }
-  System.out.println("Wscope Actual");
+  //System.out.println("Wscope Actual");
 	for(String vname : ActualWScopeVariables.keySet()) {
-      System.out.println(vname + " : " + ActualWScopeVariables.get(vname));
+      //System.out.println(vname + " : " + ActualWScopeVariables.get(vname));
     }
 	writeToFile(str);
   }

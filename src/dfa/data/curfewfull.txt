@@ -142,7 +142,7 @@ functions {
        
     get_sublist<|A,B|>(alist : list<|A|>, query : B) : list<|A|>; 
 
-    push_list<|A,B|>(alist : list<|A|>, n : B) : list<|A|>; 
+    put_list<|A,B|>(alist : list<|A|>, n : B) : list<|A|>; 
 
     get_random_sublist<|A|>(alist:list<|A|>):list<|A|>; 
 
@@ -183,11 +183,11 @@ functions {
 
     exit:{ 
 
-     user.username=userName; 
+     user.username:=userName; 
 
-     user.userType=usertype; 
+     user.userType:=usertype; 
 
-     user.password=password; 
+     user.password:=password; 
 	 
 	 //put_map<|User,map<|string, User|>|>(user,registeredUsers);
 
@@ -623,7 +623,7 @@ state AdminDashboard{
 	  
 	  request.creation_date:= getCurrentDate<||>();
       
-      push_list<|Request,Request|>(requests,request); 
+      put_list<|Request,Request|>(requests,request); 
 
       }
     state request_LateIn { 
@@ -745,7 +745,7 @@ state AdminDashboard{
 
       action : {  
 
-      push_list<|Request,Request|>(requests,request);  
+      put_list<|Request,Request|>(requests,request);  
       sendMail<|Request|>(request);
      // requests.add( (loggedinUser, request_curfew.request)); 
 
@@ -763,7 +763,7 @@ state AdminDashboard{
 
       guard: true; 
 
-      action : { push_list<|Request,Request|>(requests,request);
+      action : { put_list<|Request,Request|>(requests,request);
       sendMail<|Request|>(request);
       } 
 
@@ -779,7 +779,7 @@ state AdminDashboard{
 
       guard: true; 
 
-      action : { push_list<|Request,Request|>(requests,request);
+      action : { put_list<|Request,Request|>(requests,request);
       sendMail<|Request|>(request);
       } 
 
@@ -794,7 +794,7 @@ state AdminDashboard{
 
       guard: true; 
 
-      action : { push_list<|User,User|>(teamlist,student);  } 
+      action : { put_list<|User,User|>(teamlist,student);  } 
     
     }
 
@@ -858,9 +858,9 @@ transition tlogin_student {
 
     action      : {  
 
-      Curfew.LoggedOut.user = nulluser; 
+      Curfew.LoggedOut.user := nulluser; 
 
-      Curfew.LoggedOut.password = ""; 
+      Curfew.LoggedOut.password := ""; 
 
     } 
 

@@ -2,7 +2,7 @@ package ast;
 
 import java.util.*;
 
-public class Transition {
+public class Transition extends Region{
   public  final String     name;
   public  final Name       sourceName;
   public  final Name       destinationName;
@@ -15,8 +15,8 @@ public class Transition {
   private       State      state;
   private       Statechart statechart;
 
-  public List<Object> readVariables; //variables read in transition
-  public List<Object> writeVariables; //variables write in transition
+  //public List<Object> readVariables; //variables read in transition
+  //public List<Object> writeVariables; //variables write in transition
  
   // Variables declared in readEnvironment aren't allowed to be used as
   // l-values, e.g. LHS of an assignment
@@ -133,47 +133,5 @@ public class Transition {
     s += "\n}\n";
     return s;
   }
-    public void setReadVariable(Object v){
-	//needs cleanup of similar code
-	if(v instanceof java.util.ArrayList){
-			for(Object vobj:(ArrayList)v){
-				Declaration d;
-				if(vobj instanceof Name)
-				d=((Name)vobj).getDeclaration();
-				else d=(Declaration)vobj;
-				if(!this.readVariables.contains(d.getFullVName())) this.readVariables.add(d.getFullVName());
-				}
-		}
-	else if(v!=null){
-				Declaration d;
-				if(v instanceof Name)
-				d=((Name)v).getDeclaration();
-				else d=(Declaration)v;
-		this.readVariables.add(d.getFullVName());
-	}
-   
-  }
-   public void setWriteVariable(Object v){
-   //needs cleanup of similar code
-   if(v instanceof java.util.ArrayList){
-			for(Object vobj:(ArrayList)v){
-			
-				Declaration d;
-				if(vobj instanceof Name)
-				d=((Name)vobj).getDeclaration();
-				else d=(Declaration)vobj;
-				if(!this.writeVariables.contains(d.getFullVName())) this.writeVariables.add(d.getFullVName());
-				}
-		}
-	else if(v!=null){
-		Declaration d;
-				if(v instanceof Name)
-				d=((Name)v).getDeclaration();
-				else d=(Declaration)v;
-		this.writeVariables.add(d.getFullVName());
-	}
-   
-  }
-   
 
 }

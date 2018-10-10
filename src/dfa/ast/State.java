@@ -2,7 +2,7 @@ package ast;
 
 import java.util.*;
 
-public class State {
+public class State extends Region{
 
   public final String name;
   public final List<State> states;
@@ -10,8 +10,8 @@ public class State {
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
-  public List<Object> readVariables; //variables read in entry/exit of state
-  public List<Object> writeVariables; //variables write in entry/exit of state
+  //public List<Object> readVariables; //variables read in entry/exit of state
+  //public List<Object> writeVariables; //variables write in entry/exit of state
   
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -173,50 +173,7 @@ public class State {
     s += "}\n";
     return s;    
   }
-  public void setReadVariable(Object v){
-  //needs cleanup of similar code
-	if(v instanceof java.util.ArrayList){ // v is ArrayList of Name or Declaration
-			for(Object vobj:(ArrayList)v){
-				
-				Declaration d;
-				if(vobj instanceof Name)
-				d=((Name)vobj).getDeclaration();
-				else d=(Declaration)vobj;
-				if(!this.readVariables.contains(d.getFullVName())) this.readVariables.add(d.getFullVName());
-				}
-		}
-	else if(v!=null){  //v is Name or Declaration
-		Declaration d;
-		if(v instanceof Name)
-			d=((Name)v).getDeclaration();
-		else 
-			d=(Declaration)v;
-		this.readVariables.add(d.getFullVName());
-	}
-	
-  }
  
-   public void setWriteVariable(Object v){
-   //needs cleanup of similar code
-	if(v instanceof java.util.ArrayList){   // v is ArrayList of Name or Declaration
-			for(Object vobj:(ArrayList)v){
-				Declaration d;
-				if(vobj instanceof Name)
-				d=((Name)vobj).getDeclaration();
-				else d=(Declaration)vobj;
-				if(!this.writeVariables.contains(d.getFullVName())) this.writeVariables.add(d.getFullVName());
-				}
-		}
-	else if(v!=null){  //v is Name or Declaration
-		Declaration d;
-				if(v instanceof Name)
-				d=((Name)v).getDeclaration();
-				else d=(Declaration)v;
-		this.writeVariables.add(d.getFullVName());
-	}
-	
-  }
-   
   
  
 }

@@ -101,9 +101,9 @@ public class Analyser {
 		}
 	analyseStatements((StatementList)s.entry,s); //analyse statements in state.entry
 	analyseStatements((StatementList)s.exit,s);  //analyse statements in state.exit
-	System.out.println("**"+s.getFullName());
-	System.out.println("Actual write variables: "+ s.writeVariables); //Printing all variables written inside the state
-	System.out.println("Actual read variables: "+ s.readVariables);	  //Printing all variables read inside the state
+	//System.out.println("**"+s.getFullName());
+	//System.out.println("Actual write variables: "+ s.writeVariables); //Printing all variables written inside the state
+	//System.out.println("Actual read variables: "+ s.readVariables);	  //Printing all variables read inside the state
     }
     
     //System.out.println("Printing all transitions");
@@ -115,9 +115,9 @@ public class Analyser {
 	else if(t.guard instanceof ast.FunctionCall)
 		t.setReadVariable(((FunctionCall)t.guard).getVariables());
 	//end - analysing guard
-	System.out.println("**Transition : "+t.name);
-	System.out.println("Actual write variables: "+ t.writeVariables);
-	System.out.println("Actual read variables: "+ t.readVariables);
+	//System.out.println("**Transition : "+t.name);
+	//System.out.println("Actual write variables: "+ t.writeVariables);
+	//System.out.println("Actual read variables: "+ t.readVariables);
    }
     
     
@@ -210,28 +210,19 @@ public class Analyser {
   for(Statement stmt : stmtlist.getStatements()){ //for each statement in state.entry or state.exit
 	if(stmt instanceof ast.AssignmentStatement)   //if statmenet is AssignmentStatement
 		{
-		AssignmentStatement as=(AssignmentStatement)(stmt); 
+		/*AssignmentStatement as=(AssignmentStatement)(stmt); 
 		s.setWriteVariable(as.getLHS());          //add LHS of statement to writeVariables
 		if(as.getRHS() instanceof ast.FunctionCall){     //RHS - Functioncall
 			s.setReadVariable((as.getRHS()).getVariables());         //add all parameters to ReadVariable
 			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))  //Library funtion put_list/put_map
 				s.setWriteVariable((as.getRHS()).getVariables().get(0)); //first parameter - RW, other parameters - R
 		}
-		else s.setReadVariable((as.getRHS()).getVariables());
+		else s.setReadVariable((as.getRHS()).getVariables());*/
+		analyseAssignmentStatement(stmt,s);
 		}
 	else if(stmt instanceof ast.ExpressionStatement){
 			Expression e=(Expression)((ExpressionStatement)stmt).expression;
-			if( e instanceof ast.UnaryExpression){ //if its UnaryExpression it is Written and Read
-			UnaryExpression ue=(UnaryExpression)((ExpressionStatement)stmt).expression;
-			s.setReadVariable(ue.getVariables());
-			s.setWriteVariable(ue.getVariables());
-			}
-			else if(e instanceof ast.FunctionCall){ //if its FunctionCall - first parameter(read and write), all other parameters(read) 
-			FunctionCall fc=(FunctionCall)((ExpressionStatement)stmt).expression;
-			s.setReadVariable(fc.getVariables());
-			if(fc.name.name.startsWith("put"))
-				s.setWriteVariable(fc.getVariables().get(0));
-			}
+			analyseExpression(e,s);
 		}
 	}
   
@@ -240,76 +231,79 @@ public class Analyser {
   public static void analyseStatements(Transition t){
   //as Transition does not return StatementList always - it returns different type of statements
   //Should cleanup this code
+  //System.out.println(t.name + " : " +t.action.getClass());
   	if(t.action instanceof ast.AssignmentStatement){
-		AssignmentStatement as=(AssignmentStatement)t.action;
-		t.setWriteVariable((as.getLHS()));
-		if(as.getRHS() instanceof ast.FunctionCall){
-			t.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				t.setWriteVariable((as.getRHS()).getVariables().get(0));
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression){
-			t.setReadVariable((as.getRHS()).getVariables());
-			t.setWriteVariable((as.getRHS()).getVariables());
-		}
-		if( as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name){
-			t.setReadVariable((as.getRHS()).getVariables());
-		}
-		
+		analyseAssignmentStatement(t.action,t);
 	}
-	else if (t.action instanceof ast.ExpressionStatement){
-		//ExpressionStatement es=(ExpressionStatement)t.action;
-		//t.setWriteVariable((es.getLHS()).getName());
-			Statement stmt=t.action;
+	else if (t.action instanceof ast.ExpressionStatement){	
 			Expression e=(Expression)((ExpressionStatement)t.action).expression;
-			if( e instanceof ast.UnaryExpression){ //if its UnaryExpression it is Written and Read
-			UnaryExpression ue=(UnaryExpression)((ExpressionStatement)stmt).expression;
-			t.setReadVariable(ue.getVariables());
-			t.setWriteVariable(ue.getVariables());
-			}
-			else if(e instanceof ast.FunctionCall){ //if its FunctionCall - first parameter(read and write), all other parameters(read) 
-			FunctionCall fc=(FunctionCall)((ExpressionStatement)stmt).expression;
-			t.setReadVariable(fc.getVariables());
-			if(fc.name.name.startsWith("put"))
-				t.setWriteVariable(fc.getVariables().get(0));
-			}
+			analyseExpression(e,t);
 	}
 	else 
 	{
 		StatementList taction=(StatementList)t.action;
 		for(Statement stmt : taction.getStatements()){
 		if(stmt instanceof ast.AssignmentStatement){
-			AssignmentStatement as;
-			as=(AssignmentStatement)stmt;
-			t.setWriteVariable(as.getLHS());
-			if(as.getRHS() instanceof ast.FunctionCall){
-			t.setReadVariable((as.getRHS()).getVariables());
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))
-				t.setWriteVariable((as.getRHS()).getVariables().get(0));
-			
-		}
-		if( as.getRHS() instanceof ast.UnaryExpression){
-			t.setReadVariable((as.getRHS()).getVariables());
-			t.setWriteVariable((as.getRHS()).getVariables());
-		}
-		if( as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name){
-			t.setReadVariable((as.getRHS()).getVariables());
-		}
+			analyseAssignmentStatement(stmt,t);
 		}
 		else if(stmt instanceof ast.ExpressionStatement){
-			ExpressionStatement as;
-			as=(ExpressionStatement)stmt;
-			// Not yet complete
-			//System.out.println("Expression statement: "+as);
-			//t.setWriteVariable((as.getLHS()).getName());
+				Expression e=(Expression)((ExpressionStatement)stmt).expression;
+				analyseExpression(e,t);
 			}
+		else if(stmt instanceof ast.IfStatement){
+			System.out.println("If statement type :" +stmt.getClass());
+			Expression e=(Expression)((IfStatement)stmt).condition;
+			analyseExpression(e,t);
+			
+		}
+		else if(stmt instanceof ast.WhileStatement){
+			System.out.println("while statement type :" +((WhileStatement)stmt).body.getClass());
+			Expression e=(Expression)((WhileStatement)stmt).condition;
+			analyseExpression(e,t);
+		}
+		
 		}
 	}
 	
 
   
   }
-  
+  public static void analyseAssignmentStatement(Statement stmt,Region t){
+			AssignmentStatement as=(AssignmentStatement)stmt;
+			
+			t.setWriteVariable(as.getLHS()); //add LHS of statement to writeVariables
+			analyseExpression(as.getRHS(),t);
+			/*if(as.getRHS() instanceof ast.FunctionCall){ //RHS - Functioncall
+			t.setReadVariable((as.getRHS()).getVariables()); //add all parameters to ReadVariable
+			if(((FunctionCall)as.getRHS()).name.name.startsWith("put")) //Library funtion put_list/put_map then
+				t.setWriteVariable((as.getRHS()).getVariables().get(0)); //first parameter - W, other parameters - R
+			}
+			if( as.getRHS() instanceof ast.UnaryExpression){
+			t.setReadVariable((as.getRHS()).getVariables());
+			t.setWriteVariable((as.getRHS()).getVariables());
+			}
+			if( as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name){
+			t.setReadVariable((as.getRHS()).getVariables());
+			}*/
+  }
+  public static void analyseExpression(Expression e,Region t){
+			
+			
+			if( e instanceof ast.UnaryExpression){ //if its UnaryExpression it is Written and Read
+					UnaryExpression ue=(UnaryExpression)e;
+					t.setReadVariable(ue.getVariables());
+					t.setWriteVariable(ue.getVariables());
+			}
+			else if(e instanceof ast.FunctionCall){ //if its FunctionCall - first parameter(read and write), all other parameters(read) 
+					FunctionCall fc=(FunctionCall)e;
+					t.setReadVariable(fc.getVariables());
+					if(fc.name.name.startsWith("put"))
+						t.setWriteVariable(fc.getVariables().get(0));
+			}
+			else if( e instanceof ast.BinaryExpression || e instanceof ast.Name){
+					t.setReadVariable(e.getVariables());
+			}
+  }
   public Analyser(Statechart statechart) {
     this.statechart = statechart;
     this.typechecker = new Typechecker(statechart);

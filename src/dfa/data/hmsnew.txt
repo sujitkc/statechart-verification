@@ -277,7 +277,7 @@ statechart hms{
 					username#:string;
 					selectedUser:User;
 					entry:{
-						selectedUser=get_map<|string, User|>(registeredUsers,username);
+						selectedUser:=get_map<|string, User|>(registeredUsers,username);
 					}
 				}
 				transition UserDeletionDone{ //specified
@@ -936,14 +936,14 @@ statechart hms{
 				destination:hms.LoggedIn.CentralAdminModule.EnableEscalationPolicy;
 				trigger:eEnableEscalationPolicy;
 				guard:isNull<|EscalationPolicy|>(policy)!=false && policy.enabled=false;
-				action:{policy.enabled=true;}
+				action:{policy.enabled:=true;}
 			}
 			transition Dashboard_DisableEscalationPolicy{ //specified
 				source:hms.LoggedIn.CentralAdminModule.Dashboard;
 				destination:hms.LoggedIn.CentralAdminModule.DisableEscalationPolicy;
 				trigger:eDisableEscalationPolicy;
 				guard:isNull<|EscalationPolicy|>(policy)!=false && policy.enabled=true;
-				action:{policy.enabled=false;}
+				action:{policy.enabled:=false;}
 			}
 
 			transition Dashboard_ViewEscalatedComplaints{ //specified
