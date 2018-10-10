@@ -69,7 +69,7 @@ public class Analyser {
 	* 1. Identify all state regions
 	**** 1.1 For each state region
 	*********1.1.1 add Input variables to writescope
-	*********1.1.2 take the statementList in state.entry/exit
+	*********1.1.2 take the statementList in state.entry/exit/t.action
 	***************identify all the LHS variables and add them to writescope
 	***************identify all RHS variables and add them to read scope
 	*********************** RHS variables can be BinaryStatement,Function Calls, constants, Name - handle each of them accordingly
@@ -99,8 +99,8 @@ public class Analyser {
 		{
 			if(d.input) s.setWriteVariable(d); //1.1.1 add Input variables to writescope - all variables added are of Object/Declaration type
 		}
-	analyseStatements((StatementList)s.entry,s); //analyse statements in state.entry
-	analyseStatements((StatementList)s.exit,s);  //analyse statements in state.exit
+	analyseStatementsForRegion((StatementList)s.entry,s); //analyse statements in state.entry
+	analyseStatementsForRegion((StatementList)s.exit,s);  //analyse statements in state.exit
 	//System.out.println("**"+s.getFullName());
 	//System.out.println("Actual write variables: "+ s.writeVariables); //Printing all variables written inside the state
 	//System.out.println("Actual read variables: "+ s.readVariables);	  //Printing all variables read inside the state
@@ -108,7 +108,7 @@ public class Analyser {
     
     //System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
-	analyseStatements(t); //analyses the action statement
+	analyseStatementsForRegion(t.action,t); //analyses the action statement
 	//begin - analysing the guard
 	if(t.guard instanceof ast.BinaryExpression)
 		t.setReadVariable(((BinaryExpression)t.guard).getVariables());
@@ -206,61 +206,37 @@ public class Analyser {
   }
   
   
-  public static void analyseStatements(StatementList stmtlist,State s){
-  for(Statement stmt : stmtlist.getStatements()){ //for each statement in state.entry or state.exit
-	if(stmt instanceof ast.AssignmentStatement)   //if statmenet is AssignmentStatement
-		{
-		/*AssignmentStatement as=(AssignmentStatement)(stmt); 
-		s.setWriteVariable(as.getLHS());          //add LHS of statement to writeVariables
-		if(as.getRHS() instanceof ast.FunctionCall){     //RHS - Functioncall
-			s.setReadVariable((as.getRHS()).getVariables());         //add all parameters to ReadVariable
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put"))  //Library funtion put_list/put_map
-				s.setWriteVariable((as.getRHS()).getVariables().get(0)); //first parameter - RW, other parameters - R
-		}
-		else s.setReadVariable((as.getRHS()).getVariables());*/
-		analyseAssignmentStatement(stmt,s);
-		}
-	else if(stmt instanceof ast.ExpressionStatement){
+ 
+  public static void analyseStatementsForRegion(Statement stmt, Region t){
+  	if(stmt instanceof ast.AssignmentStatement){
+		//analyseAssignmentStatement(stmt,t);
+			AssignmentStatement as=(AssignmentStatement)stmt;
+			t.setWriteVariable(as.getLHS()); //add LHS of statement to writeVariables
+			analyseExpression(as.getRHS(),t);
+	}
+	else if (stmt instanceof ast.ExpressionStatement){	
 			Expression e=(Expression)((ExpressionStatement)stmt).expression;
-			analyseExpression(e,s);
-		}
-	}
-  
-  }
-  
-  public static void analyseStatements(Transition t){
-  //as Transition does not return StatementList always - it returns different type of statements
-  //Should cleanup this code
-  //System.out.println(t.name + " : " +t.action.getClass());
-  	if(t.action instanceof ast.AssignmentStatement){
-		analyseAssignmentStatement(t.action,t);
-	}
-	else if (t.action instanceof ast.ExpressionStatement){	
-			Expression e=(Expression)((ExpressionStatement)t.action).expression;
 			analyseExpression(e,t);
 	}
-	else 
-	{
-		StatementList taction=(StatementList)t.action;
-		for(Statement stmt : taction.getStatements()){
-		if(stmt instanceof ast.AssignmentStatement){
-			analyseAssignmentStatement(stmt,t);
-		}
-		else if(stmt instanceof ast.ExpressionStatement){
-				Expression e=(Expression)((ExpressionStatement)stmt).expression;
-				analyseExpression(e,t);
-			}
-		else if(stmt instanceof ast.IfStatement){
-			System.out.println("If statement type :" +stmt.getClass());
+	else if(stmt instanceof ast.IfStatement){
+			//System.out.println("If statement type :" +stmt.getClass());
 			Expression e=(Expression)((IfStatement)stmt).condition;
 			analyseExpression(e,t);
+			analyseStatementsForRegion(((IfStatement)stmt).then_body,t);
+			analyseStatementsForRegion(((IfStatement)stmt).else_body,t);
 			
 		}
-		else if(stmt instanceof ast.WhileStatement){
-			System.out.println("while statement type :" +((WhileStatement)stmt).body.getClass());
+	else if(stmt instanceof ast.WhileStatement){
+			//System.out.println("while statement type :" +((WhileStatement)stmt).body.getClass());
 			Expression e=(Expression)((WhileStatement)stmt).condition;
 			analyseExpression(e,t);
+			analyseStatementsForRegion(((WhileStatement)stmt).body,t);
 		}
+	else if(stmt instanceof ast.StatementList)
+	{
+		StatementList stmtlist=(StatementList)stmt;
+		for(Statement st : stmtlist.getStatements()){
+			analyseStatementsForRegion(st,t);
 		
 		}
 	}
@@ -268,25 +244,7 @@ public class Analyser {
 
   
   }
-  public static void analyseAssignmentStatement(Statement stmt,Region t){
-			AssignmentStatement as=(AssignmentStatement)stmt;
-			
-			t.setWriteVariable(as.getLHS()); //add LHS of statement to writeVariables
-			analyseExpression(as.getRHS(),t);
-			/*if(as.getRHS() instanceof ast.FunctionCall){ //RHS - Functioncall
-			t.setReadVariable((as.getRHS()).getVariables()); //add all parameters to ReadVariable
-			if(((FunctionCall)as.getRHS()).name.name.startsWith("put")) //Library funtion put_list/put_map then
-				t.setWriteVariable((as.getRHS()).getVariables().get(0)); //first parameter - W, other parameters - R
-			}
-			if( as.getRHS() instanceof ast.UnaryExpression){
-			t.setReadVariable((as.getRHS()).getVariables());
-			t.setWriteVariable((as.getRHS()).getVariables());
-			}
-			if( as.getRHS() instanceof ast.BinaryExpression || as.getRHS() instanceof ast.Name){
-			t.setReadVariable((as.getRHS()).getVariables());
-			}*/
-  }
-  public static void analyseExpression(Expression e,Region t){
+   public static void analyseExpression(Expression e,Region t){
 			
 			
 			if( e instanceof ast.UnaryExpression){ //if its UnaryExpression it is Written and Read
