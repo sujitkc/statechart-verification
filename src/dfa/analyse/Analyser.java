@@ -108,13 +108,9 @@ public class Analyser {
     
     //System.out.println("Printing all transitions");
     for(Transition t : totalTransitionRegions){
-	analyseStatementsForRegion(t.action,t); //analyses the action statement
-	//begin - analysing the guard
-	if(t.guard instanceof ast.BinaryExpression)
-		t.setReadVariable(((BinaryExpression)t.guard).getVariables());
-	else if(t.guard instanceof ast.FunctionCall)
-		t.setReadVariable(((FunctionCall)t.guard).getVariables());
-	//end - analysing guard
+		analyseStatementsForRegion(t.action,t); //analyses the action statement
+		analyseExpression(t.guard,t); // analyse guard Expression
+	
 	//System.out.println("**Transition : "+t.name);
 	//System.out.println("Actual write variables: "+ t.writeVariables);
 	//System.out.println("Actual read variables: "+ t.readVariables);

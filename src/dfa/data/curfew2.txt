@@ -19,7 +19,7 @@ statechart Student {
   students : map<| int, string |>;
 
   rooms : map<| int, int |>;
-
+  flag:int;
 
   entry : {}
   exit  : {}
@@ -64,7 +64,11 @@ statechart Student {
           // rooms (map<| int, int |>) with key = loggedinUser.
 		
       }
-      exit : {}
+      exit : {
+					
+	  
+	  
+	  }
     }
 
     transition tsetroom {
@@ -82,10 +86,11 @@ statechart Student {
       trigger     : eViewDetails;
       guard       : true;
       action      : {
-			while(true) {
+			if((loggedinUser=0) && (flag=0)) {
 			student:=2;
 			student:=3;
-		}
+			flag:=1;
+		}else{}
 		
 	  }
     }
@@ -123,8 +128,8 @@ statechart Student {
     trigger     : eLogout;
     guard       : true;
     action      : { 
-      Student.LoggedOut.user = 0;
-      Student.LoggedOut.password = "";
+      Student.LoggedOut.user := 0;
+      Student.LoggedOut.password := "";
     }
   }
 }
