@@ -52,8 +52,8 @@ public class Name extends Expression {
 	return this.name;
   }
   public List<Expression> getVariables(){
-	variables=new ArrayList<Expression>();
-	variables.add(this);
-	return variables;
+	this.variables=new ArrayList<Expression>();
+	this.variables.add(this);
+	return this.variables;
   }
 }

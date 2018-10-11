@@ -11,27 +11,8 @@ public class BinaryExpression extends Expression {
     this.left     = left;
     this.right    = right;
     this.operator = operator;
-	// There can be FunctionCall within BinaryExpression 
-	//or BinaryExpression inside FunctionCall
-	//if Functioncall - recursively identify all variables
-	//if BinaryExpression - recursively identify all variables
-    variables=new ArrayList<Expression>();
-    if(left instanceof IntegerConstant || left instanceof StringLiteral || left instanceof BooleanConstant){}
-	else if(left instanceof FunctionCall){
-		variables.addAll(((FunctionCall)left).getVariables());
-	}
-	else if(left instanceof BinaryExpression){
-		variables.addAll(((BinaryExpression)left).getVariables());
-	}
-    else variables.add(left);
-    if(right instanceof IntegerConstant || right instanceof StringLiteral || right instanceof BooleanConstant){}
-    else if(right instanceof FunctionCall){
-		variables.addAll(((FunctionCall)right).getVariables());
-	}
-	else if(right instanceof BinaryExpression){
-		variables.addAll(((BinaryExpression)right).getVariables());
-	}
-	else variables.add(right);
+	this.variables=new ArrayList<Expression>();
+    
     
   }
 
@@ -46,6 +27,26 @@ public class BinaryExpression extends Expression {
     return s;
   }
   public List<Expression> getVariables(){
+  // There can be FunctionCall within BinaryExpression 
+	//or BinaryExpression inside FunctionCall
+	//if Functioncall - recursively identify all variables
+	//if BinaryExpression - recursively identify all variables
+   if(this.left instanceof IntegerConstant || this.left instanceof StringLiteral || this.left instanceof BooleanConstant){}
+	else if(this.left instanceof FunctionCall){
+		this.variables.addAll(((FunctionCall)this.left).getVariables());
+	}
+	else if(this.left instanceof BinaryExpression){
+		this.variables.addAll(((BinaryExpression)this.left).getVariables());
+	}
+    else this.variables.add(left);
+    if(this.right instanceof IntegerConstant || this.right instanceof StringLiteral || this.right instanceof BooleanConstant){}
+    else if(this.right instanceof FunctionCall){
+		this.variables.addAll(((FunctionCall)this.right).getVariables());
+	}
+	else if(this.right instanceof BinaryExpression){
+		this.variables.addAll(((BinaryExpression)this.right).getVariables());
+	}
+	else this.variables.add(right);
 	return this.variables;
   }
 }

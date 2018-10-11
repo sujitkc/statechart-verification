@@ -10,11 +10,11 @@ public class UnaryExpression extends Expression {
   public UnaryExpression(Expression expression, int operator) {
     this.expression = expression;
     this.operator   = operator;
-    variables=new ArrayList<Expression>();
-    variables.add(expression);
+    this.variables=new ArrayList<Expression>();
+    
   }
   public List<Expression> getVariables(){
-  
+	this.variables.add(this.expression);
 	return this.variables;
   }
 }

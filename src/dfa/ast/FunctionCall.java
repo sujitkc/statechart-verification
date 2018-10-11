@@ -10,15 +10,8 @@ public class FunctionCall extends Expression {
   public FunctionCall(FunctionName name, List<Expression> argumentList) {
     this.name         = name;
     this.argumentList = argumentList;
-    variables=new ArrayList<Expression>();
-    for(Expression arg:argumentList){
-        if(arg instanceof IntegerConstant || arg instanceof StringLiteral){}
-		else if(arg instanceof FunctionCall)
-				variables.addAll(((FunctionCall)arg).getVariables());
-		else if(arg instanceof BinaryExpression)
-				variables.addAll(((BinaryExpression)arg).getVariables());
-		else variables.add(arg);
-	}
+    this.variables=new ArrayList<Expression>();
+    
     
   }
   
@@ -34,7 +27,14 @@ public class FunctionCall extends Expression {
     return s + ") : " + this.type;
   }
    public List<Expression> getVariables(){
-  
+	for(Expression arg:this.argumentList){
+        if(arg instanceof IntegerConstant || arg instanceof StringLiteral){}
+		else if(arg instanceof FunctionCall)
+				this.variables.addAll(((FunctionCall)arg).getVariables());
+		else if(arg instanceof BinaryExpression)
+				this.variables.addAll(((BinaryExpression)arg).getVariables());
+		else this.variables.add(arg);
+	}
 	return this.variables;
   }
 }

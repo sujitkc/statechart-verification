@@ -101,7 +101,7 @@ public class Analyser {
 		}
 	analyseStatementsForRegion((StatementList)s.entry,s); //analyse statements in state.entry
 	analyseStatementsForRegion((StatementList)s.exit,s);  //analyse statements in state.exit
-	//System.out.println("**"+s.getFullName());
+	//System.out.println("**State : "+s.getFullName());
 	//System.out.println("Actual write variables: "+ s.writeVariables); //Printing all variables written inside the state
 	//System.out.println("Actual read variables: "+ s.readVariables);	  //Printing all variables read inside the state
     }
