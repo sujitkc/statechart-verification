@@ -2,18 +2,24 @@ package ast;
 
 import java.util.List;
 import java.util.ArrayList;
-
+import program.IProgram;
 public class Name extends Expression {
 
   public final List<String> name = new ArrayList<String>();
   private Declaration declaration;
   public List<Expression> variables;
+  
 
+  public Name(IProgram prog,Type t){
+	super(prog,t);
+}
   public Name(String id) {
+    super(null,null);
     this.name.add(id);
   }
 
-  public Name(List<String> name) {
+ public Name(List<String> name) {
+    super(null,null);
     for(String id : name) {
       this.name.add(id);
     }

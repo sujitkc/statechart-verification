@@ -1,13 +1,20 @@
 package ast;
 import java.util.*;
-
+import program.IProgram;
 public class UnaryExpression extends Expression {
 
   public final Expression expression;
   public final int operator;
   public List<Expression> variables;
 
+
+  public UnaryExpression(IProgram prog,Type t){
+	super(prog,t);
+	this.expression=null;
+	this.operator=0;
+}
   public UnaryExpression(Expression expression, int operator) {
+    super(null,null);
     this.expression = expression;
     this.operator   = operator;
     this.variables=new ArrayList<Expression>();

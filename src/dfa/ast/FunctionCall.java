@@ -1,13 +1,19 @@
 package ast;
 
 import java.util.*;
-
+import program.IProgram;
 public class FunctionCall extends Expression {
   public final FunctionName name;
   public List<Expression> argumentList;
   public FunctionDeclaration function; // to be set only when the function call is being substantiated.
   public List<Expression> variables; 
+
+  public FunctionCall(IProgram prog,Type t){
+	super(prog,t);
+	this.name=null;
+}
   public FunctionCall(FunctionName name, List<Expression> argumentList) {
+    super(null,null);
     this.name         = name;
     this.argumentList = argumentList;
     this.variables=new ArrayList<Expression>();
