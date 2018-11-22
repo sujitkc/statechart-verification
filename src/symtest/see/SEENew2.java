@@ -91,7 +91,7 @@ public class SEENew2 {
                 continue;
             }
             ICFGNode correspondingICFGNode = pairSETNode.getCFGNode();
-//            System.out.println(correspondingICFGNode);
+//            System.out.println("Corresponding ICFGNode:"+correspondingICFGNode);
 
             if (correspondingICFGNode instanceof ICFGBasicBlockNode) {
                 ICFGNode successorNode = ((ICFGBasicBlockNode) correspondingICFGNode).getSuccessorNode();
@@ -99,7 +99,9 @@ public class SEENew2 {
 
                 if(successorNode!=null) {
                     SETNode setNode = singleStep(successorNode, pairSETNode);
+//                    System.out.println("BasicBlockCFG");
                     setNodeQueue.add(new Pair<>(setNode, pairDepth + 1));
+//                    System.out.println("BasicBlockCFGAdded");
 //                    System.out.println(setNodeQueue.size());
                 }
             }
@@ -107,29 +109,18 @@ public class SEENew2 {
             if (correspondingICFGNode instanceof ICFGDecisionNode) {
                 IExpression condition = ((SETDecisionNode)pairSETNode).getCondition();
 //                System.out.println("condition:"+condition);
-                AndExpression andExpression1 = new AndExpression(this.getSET(), pairSETNode.getPathPredicate(), condition);
-
-                //  node pe lagao, solver
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//                System.out.println("DecisionCFG");
+//                System.out.println(pairSETNode.getCFGNode());
+                IExpression pathPredicate = ((SETDecisionNode)pairSETNode).getPathPredicate();
+//                System.out.println("Path Predicate:"+pathPredicate);
+                AndExpression andExpression1 = new AndExpression(this.getSET(), pathPredicate, condition);
+//                System.out.println("DecisionCFG");
                 Set<IIdentifier> symVars = mSET.getVariables();
-                System.out.println(symVars);
+//                System.out.println(symVars);
 
                 ISolver solver = new Z3Solver(symVars, andExpression1);
                 SolverResult solution = solver.solve();
-                System.out.println(solution.getModel());
+//                System.out.println(solution.getModel());
                 //  if satisfiable
                 if (solution.getResult() == true) {
                     ICFGNode thenNode = ((ICFGDecisionNode) correspondingICFGNode).getThenSuccessorNode();
@@ -145,10 +136,10 @@ public class SEENew2 {
                 NotExpression notExpression = new NotExpression(this.getSET(), condition);
                 AndExpression andExpression2 = new AndExpression(this.getSET(), pairSETNode.getPathPredicate(), notExpression);
                 Set<IIdentifier> symVars2 = mSET.getVariables();
-                System.out.println(symVars2);
+//                System.out.println(symVars2);
                 ISolver solver2 = new Z3Solver(symVars2, andExpression2);
                 SolverResult solution2 = solver2.solve();
-                System.out.println(solution.getModel());
+//                System.out.println(solution.getModel());
                 //  if unsatisfiable
                 if (solution2.getResult() == true) {
                     ICFGNode elseNode = ((ICFGDecisionNode) correspondingICFGNode).getElseSuccessorNode();
@@ -173,19 +164,52 @@ public class SEENew2 {
         //  head is null, for just now, it will be initialised below soon.
         SETEdge newSETEdge = new SETEdge(mSET, prevSetNode, null);
 
-        //  if icfgNode is BasicBlockNode
-        if (icfgNode instanceof ICFGBasicBlockNode) {
-            //  startNode hai toh, sidha wohi node return kardo
-            //  tail upar hi set ho gaya hai, head ke liye naya node banao
-            returnSETNode = addNewSETBasicBlockNode(icfgNode, newSETEdge);
-//            System.out.println(mSET.getNodeSet());
-//            System.out.println(mSET.getEdgeSet());
+        ICFGNode predCFGNode = prevSetNode.getCFGNode();
+
+
+        /*
+        Case 1: prev node -> Basic & curr node -> Basic
+        Case 2: prev node -> Decision & curr node -> Basic
+        Case 3: prev node -> Basic & curr node -> Decision
+        Case 4: prev node -> Decision & curr node -> Decision
+         */
+
+        if(icfgNode instanceof ICFGBasicBlockNode){
+            if(predCFGNode instanceof ICFGBasicBlockNode){
+                returnSETNode = addNewSETBasicBlockNode(icfgNode, newSETEdge);
+            }
+
+            if(predCFGNode instanceof ICFGDecisionNode){
+                returnSETNode = addNewSETBasicBlockNode(icfgNode,newSETEdge);
+
+                ICFGDecisionNode predDecNode = (ICFGDecisionNode)predCFGNode;
+                if(predDecNode.getThenEdge().getHead() == icfgNode){
+                    ((SETDecisionNode)prevSetNode).setThenEdge(newSETEdge);
+                }
+
+                else if(predDecNode.getElseEdge().getHead() == icfgNode){
+                    ((SETDecisionNode)prevSetNode).setElseEdge(newSETEdge);
+                }
+            }
         }
 
-        //  if icfgNode is DecisionNode
-        else if (icfgNode instanceof ICFGDecisionNode) {
-            //  tail upar hi set ho gaya hai, head ke liye naya node banao
-            returnSETNode = addNewSETDecisionNode(icfgNode, newSETEdge);
+        else if(icfgNode instanceof ICFGDecisionNode){
+            if(predCFGNode instanceof ICFGBasicBlockNode){
+                returnSETNode = addNewSETDecisionNode(icfgNode, newSETEdge);
+            }
+
+            if(predCFGNode instanceof ICFGDecisionNode){
+                returnSETNode = addNewSETDecisionNode(icfgNode,newSETEdge);
+
+                ICFGDecisionNode predDecNode = (ICFGDecisionNode)predCFGNode;
+                if(predDecNode.getThenEdge().getHead() == icfgNode){
+                    ((SETDecisionNode)prevSetNode).setThenEdge(newSETEdge);
+                }
+
+                else if(predDecNode.getElseEdge().getHead() == icfgNode){
+                    ((SETDecisionNode)prevSetNode).setElseEdge(newSETEdge);
+                }
+            }
         }
         //  else case for escaping null pointer exception
         return returnSETNode;

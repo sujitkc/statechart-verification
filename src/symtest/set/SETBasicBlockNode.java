@@ -98,14 +98,23 @@ public class SETBasicBlockNode extends SETNode {
 			return new True(this.mSET);
 		}
 		SETEdge inEdge = this.mIncomingEdge;
+		System.out.println("getPathPredicate node SET : " + this.getId() + " CFGId :  " + this.getCFGNode().getId() );
+		//System.out.println("inEdgeTail:"+inEdge.getTail().getCFGNode().getId());
+		//System.out.println("inEdgeHead:"+inEdge.getHead().getCFGNode().getId());
 		SETNode pred = this.mIncomingEdge.getTail();
+		System.out.println("getPathPredicate pred SET : " + pred.getId() + " CFG :  " + pred.getCFGNode().getId());
 		IExpression result = null;
 		if(pred instanceof SETDecisionNode) {
 			SETDecisionNode pr = (SETDecisionNode)pred;
+			//System.out.println("decision node found :" + pred);
+//			System.out.println("then edge of node : " + pr.getId() + " is : " + pr.getThenEdge() );
+//			System.out.println("else edge : " + pr.getElseEdge());
 			if(inEdge.equals(pr.getThenEdge())) {
-				result = new AndExpression(this.mSET, pred.getPathPredicate(), pr.getCondition());
+				//System.out.println("then edge");
+				result = new AndExpression(this.mSET, pr.getPathPredicate(), pr.getCondition());
 			}
 			else if(inEdge.equals(pr.getElseEdge())) {
+//				System.out.println("else edge");
 				IExpression and = this.mIncomingEdge.getTail().getPathPredicate();
 				IExpression l = and;
 				IExpression r = pr.getCondition();
@@ -118,10 +127,11 @@ public class SETBasicBlockNode extends SETNode {
 			}
 		}
 		else if(pred instanceof SETBasicBlockNode) {
+			//System.out.println("basic node found:" + pred);
 			result = pred.getPathPredicate();
 		}
 		else {
-			Exception e = new Exception("SETBasicBlockNode.getPathPredicate : predecessor's node type not handled here.");
+			Exception e = new Exception("SETDecisionBlockNode.getPathPredicate : predecessor's node type not handled here.");
 			throw e;
 		}
 		return result;

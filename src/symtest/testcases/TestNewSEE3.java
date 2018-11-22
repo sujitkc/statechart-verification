@@ -84,21 +84,26 @@ public class TestNewSEE3 {
         ICFEdge BC = new CFEdge("BC", mCFG, B, C);
         ICFEdge CD = new CFEdge("CD", mCFG, C, D);
         ICFEdge DE = new CFEdge("DE", mCFG, D, E);
-        ICFEdge EF = new CFEdge("DF", mCFG, E, F);
+        ICFEdge EF = new CFEdge("EF", mCFG, E, F);
         ICFEdge EG = new CFEdge("EG", mCFG, E, G);
         ICFEdge FB = new CFEdge("FB", mCFG, F, B);
         ICFEdge GB = new CFEdge("GB", mCFG, G, B);
+        ICFEdge BW = new CFEdge("BW", mCFG, B, W);
 
+        B.setThenEdge(BC);
+        B.setElseEdge(BW);
 
-//        D.setThenEdge(DE);
-//        D.setElseEdge(DF);
+        E.setThenEdge(EF);
+        E.setElseEdge(EG);
+
+        System.out.println(mCFG.getEdgeSet());
 
 //        System.out.println(mCFG.getNodeSet());
 //        System.out.println(mCFG.getEdgeSet());
 
         SEENew2 seeNew2 = new SEENew2(mCFG);
 
-        SETNode setNode6 = seeNew2.allPathSE(mCFG,5);
+        SETNode setNode6 = seeNew2.allPathSE(mCFG,10);
 //
 //        System.out.println(seeNew2.getSET().getStartNode().getIncomingEdge());
 //        System.out.println(seeNew2.getSET().getStartNode().getCFGNode());

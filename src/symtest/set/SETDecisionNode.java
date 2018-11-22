@@ -112,9 +112,15 @@ public class SETDecisionNode extends SETNode {
 			return null;
 		}
 		SETEdge inEdge = this.mIncomingEdge;
+//		System.out.println("inEdgeTail:"+inEdge.getTail().getCFGNode().getId());
+//		System.out.println("inEdgeHead:"+inEdge.getHead().getCFGNode().getId());
+
 		SETNode pred = this.mIncomingEdge.getTail();
+//		System.out.println("pred:"+pred.getCFGNode().getId());
+
 		IExpression result = null;
 		if(pred instanceof SETDecisionNode) {
+//			System.out.println("wrong!!");
 			SETDecisionNode pr = (SETDecisionNode)pred;
 			if(inEdge.equals(pr.getThenEdge())) {
 				result = new AndExpression(this.mSET, pred.getPathPredicate(), pr.getCondition());
@@ -132,7 +138,9 @@ public class SETDecisionNode extends SETNode {
 			}
 		}
 		else if(pred instanceof SETBasicBlockNode) {
+//			System.out.println("Right!!!");
 			result = pred.getPathPredicate();
+//			System.out.println("result:"+result);
 		}
 		else {
 			Exception e = new Exception("SETBasicBlockNode.getPathPredicate : predecessor's node type not handled here.");

@@ -22,7 +22,7 @@ public class CFGDecisionNode extends CFGNode implements ICFGDecisionNode {
 			cfg.addDecisionNode(this);
 		}
 		this.mCondition = c;
-		System.out.println("CFGDecisionNodeCondition:"+this.mCondition);
+//		System.out.println("CFGDecisionNodeCondition:"+this.mCondition);
 		this.mId = CFGDecisionNode.generateId();
 	}
 
