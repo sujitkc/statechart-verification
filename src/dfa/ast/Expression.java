@@ -1,7 +1,8 @@
 package ast;
 import java.util.*;
 import program.IProgram;
-public abstract class Expression {
+import visitors.IAcceptor;
+public abstract class Expression implements IAcceptor{
 /*
   public enum Operator {
     ADD,

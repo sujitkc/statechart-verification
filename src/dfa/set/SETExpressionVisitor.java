@@ -1,6 +1,6 @@
 package set;
 
-import mycfg.CFGNode;
+import stablcfg.CFGNode;
 import program.IProgram;
 import visitors.IExprVisitor;
 
@@ -54,7 +54,49 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 			throw e;
 		}
 	}
+	public void visit(IntegerConstant exp) throws Exception {
+		this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
+	}
+
 	
+	public void visit(False exp) throws Exception {
+		this.mStack.push(new False(this.mNode.getSET()));
+	}
+	public void visit(True exp) throws Exception {
+		this.mStack.push(new True(this.mNode.getSET()));
+	}
+	private static String generateNewVariableName (Set<String> names) {
+		
+		while (true) {
+			Random random = new Random ();
+			int integer = random.nextInt();
+			if (integer < 0) {
+				integer = -1 * integer;
+			}
+			String name = "symvar" + Integer.toString(integer);
+			if (!names.contains(name)) {
+				return name;
+			}
+		}
+	}
+	public void visit(UnaryExpression exp) throws Exception {
+		exp.accept(this);
+		this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop()));
+	}
+	public void visit(BinaryExpression exp) throws Exception {
+		exp.accept(this);
+		Expression lhs = this.mStack.pop();
+		Expression rhs = this.mStack.pop();
+		this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs));
+	}
+	@Override
+	public Expression getValue() {
+		return this.mStack.peek();
+	}
+
+	public Stack<Expression> getStack() {
+		return mStack;
+	}
 	/*@Override
 	public void visit(Input exp) {
 		IProgram p = this.mNode.getSET();
@@ -102,14 +144,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 	}
 	
 	@Override*/
-	public void visit(IntegerConstant exp) throws Exception {
-		this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
-	}
-
-	@Override
-	public void visit(False exp) throws Exception {
-		this.mStack.push(new False(this.mNode.getSET()));
-	}
+	
         /*
 	@Override
 	public void visit(GreaterThanExpression exp) throws Exception {
@@ -180,9 +215,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 	}
          */
 //	@Override
-	public void visit(True exp) throws Exception {
-		this.mStack.push(new True(this.mNode.getSET()));
-	}
+	
 
 	/*@Override
 	public void visit(Variable exp) {
@@ -196,20 +229,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 		this.mStack.push(this.mNode.getLatestValue(exp));
 	}
 */
-	private static String generateNewVariableName (Set<String> names) {
-		
-		while (true) {
-			Random random = new Random ();
-			int integer = random.nextInt();
-			if (integer < 0) {
-				integer = -1 * integer;
-			}
-			String name = "symvar" + Integer.toString(integer);
-			if (!names.contains(name)) {
-				return name;
-			}
-		}
-	}
+	
         /*
 	@Override
 	public void visit(AndExpression exp) throws Exception {
@@ -229,10 +249,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 	}
         */
 //	@Override
-	public void visit(NotExpression exp) throws Exception {
-		exp.accept(this);
-		this.mStack.push(new NotExpression(this.mNode.getSET(), this.mStack.pop()));
-	}
+	
         /*
 	@Override
 	public void visit(EqualsExpression exp) throws Exception {
@@ -242,18 +259,5 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 		this.mStack.push(new EqualsExpression(this.mNode.getSET(), lhs, rhs));
 	}
         */
-	public void visit(BinaryExpression exp) throws Exception {
-		exp.accept(this);
-		Expression lhs = this.mStack.pop();
-		Expression rhs = this.mStack.pop();
-		this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs));
-	}
-	@Override
-	public Expression getValue() {
-		return this.mStack.peek();
-	}
-
-	public Stack<Expression> getStack() {
-		return mStack;
-	}
+	
 }

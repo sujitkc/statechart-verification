@@ -4,48 +4,73 @@ package stablcfg;
 import java.util.List;
 import cfg.*;
 import ast.Statement;
-
+import java.util.ArrayList;
+import java.util.List;
 public class CFGNode implements ICFGNode {
 
-	public boolean isIncomingEdge(ICFEdge edge){
+protected ICFG mCFG;
+	protected List<ICFEdge> mIncomingEdgeList = new ArrayList<ICFEdge>();
+	protected String mId;
+
+	@Override
+	public boolean isIncomingEdge(ICFEdge edge) {
+		return this.mIncomingEdgeList.contains(edge);
+	}
+
+	@Override
+	public ICFG getCFG() {
+		return this.mCFG;
+	}
+
+	@Override
+	public void setCFG(ICFG graph) {
+		this.mCFG = graph;
+	}
+
+	@Override
+	public List<ICFEdge> getIncomingEdgeList() {
+		return this.mIncomingEdgeList;
+	}
+
+	@Override
+	public boolean isCFPredecessor(ICFGNode node) {
+		for(ICFEdge e : this.mIncomingEdgeList) {
+			if(e.getTail().equals(node)) {
+				return true;
+			}
+		}
 		return false;
 	}
-	public boolean isOutgoingEdge(ICFGNode node){
-		return false;
+
+	@Override
+	public List<ICFGNode> getCFPredecessorNodeList() {
+		List<ICFGNode> list = new ArrayList<ICFGNode>();
+		for(ICFEdge e : this.mIncomingEdgeList) {
+			list.add(e.getTail());
+		}
+		return list;
 	}
-	public boolean isCFSuccessor(ICFGNode node){
-		return false;
-	}
-	public ICFG getCFG(){	
+	
+
+	@Override
+	public ICFEdge addIncomingEdge(ICFEdge edge) {
+		if(this.mIncomingEdgeList.add(edge)) {
+			return edge;
+		}
 		return null;
 	}
-	public void setCFG(ICFG graph){}	
-	public List<ICFEdge> getIncomingEdgeList(){
-		return null;
-	}
-	public List<ICFEdge> getOutgoingEdgeList(){
-		return null;
-	}
-	public List<ICFGNode> getCFPredecessorNodeList(){
-		return null;
-	}
-	public List<ICFGNode> getCFSuccessorNodeList(){
+
+	@Override
+	public ICFEdge deleteIncomingEdge(ICFEdge edge) {
+		if(!this.mIncomingEdgeList.contains(edge)) {
 			return null;
+		}
+		this.mIncomingEdgeList.remove(edge);
+		return edge;
 	}
-	public ICFEdge addIncomingEdge(ICFEdge edge){
-		return null;
-	}
-	public ICFEdge deleteIncomingEdge(ICFEdge edge){
-		return null;
-	}
-	public ICFEdge addOutgoingEdge(ICFEdge edge){
-		return null;
-	}
-	public ICFEdge deleteOutgoingEdge(ICFEdge edge){
-		return null;
-	}
-	public String getId(){
-		return null;
+	
+	public String getId() {
+		return this.mId;
 	}
 	
 }

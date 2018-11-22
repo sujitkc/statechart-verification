@@ -1,6 +1,7 @@
 package ast;
 import java.util.*;
 import program.IProgram;
+import visitors.IExprVisitor;
 public class UnaryExpression extends Expression {
 
   public final Expression expression;
@@ -24,4 +25,8 @@ public class UnaryExpression extends Expression {
 	this.variables.add(this.expression);
 	return this.variables;
   }
+  @Override
+	public void accept(IExprVisitor<?> visitor) throws Exception {
+		visitor.visit(this.expression);
+	}
 }

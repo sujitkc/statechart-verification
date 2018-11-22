@@ -1,6 +1,8 @@
 package ast;
 import java.util.*;
 import program.IProgram;
+import visitors.IExprVisitor;
+
 public class BinaryExpression extends Expression {
 
   public final Expression left;
@@ -65,4 +67,14 @@ public BinaryExpression(IProgram program,Expression left, Expression right, Stri
 	else this.variables.add(right);
 	return this.variables;
   }
+  @Override
+	public void accept(IExprVisitor<?> visitor) {
+		try {
+			visitor.visit(this.left);
+			visitor.visit(this.right);
+		} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
 }
