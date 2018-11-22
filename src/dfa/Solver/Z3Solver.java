@@ -140,9 +140,9 @@ public class Z3Solver implements ISolver {
 
 	private static Object parseVariableValue(Name var, String value)
 			throws Exception {
-		if (var.getDeclaration().getType()==ast.IntegerConstant) {
+		if (var.getDeclaration().getType()==(new IntegerConstant(0)).getType()) {
 			return Integer.parseInt(value);
-		} else if (var.getDeclaration().getType()==ast.BooleanConstant) {
+		} else if (var.getDeclaration().getType()==(new BooleanConstant(true)).getType()) {
 			return Boolean.parseBoolean(value);
 		} else {
 			Exception e = new Exception(

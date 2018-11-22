@@ -17,6 +17,7 @@ import ast.Expression;
 import ast.BinaryExpression;
 import ast.NotExpression;
 import ast.AssignmentStatement;
+import ast.BooleanConstant;
 import java.util.*;
 import utilities.Pair;
 
@@ -280,7 +281,7 @@ public class SEENew2 {
 
     public void computeExpression(SETDecisionNode node) throws Exception {
         SETExpressionVisitor visitor = new SETExpressionVisitor(node,
-                ast.BooleanConstant);
+                (new BooleanConstant(true)).getType());
         CFGDecisionNode cfgNode = (CFGDecisionNode) node.getCFGNode();
         Expression conditionCFG = cfgNode.getCondition();
 //        System.out.println("CFGCondition:"+conditionCFG);
