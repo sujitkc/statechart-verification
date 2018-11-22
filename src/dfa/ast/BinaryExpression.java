@@ -33,7 +33,9 @@ public BinaryExpression(IProgram program,Expression left, Expression right, Stri
     
     
   }
-
+  public String getOperator(){
+	return this.operator;
+  }
   public String toString() {
     String s = this.left.toString() + " " + this.operator + " " + this.right.toString();
     if(this.type != null) {  

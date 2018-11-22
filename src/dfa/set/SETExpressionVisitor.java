@@ -17,16 +17,16 @@ import ast.False;
 import ast.Name;
 import ast.IntegerConstant;
 import ast.NotExpression;
-
+import ast.Type;
 public class SETExpressionVisitor implements IExprVisitor<Expression> {
 
 	private SETNode mNode;
 	private Stack<Expression> mStack = new Stack<Expression>();
 	private final String mContextType; 
 
-	public SETExpressionVisitor(SETNode node, String type) {
+	public SETExpressionVisitor(SETNode node, Type type) {
 		this.mNode = node;
-		this.mContextType = type;		
+		this.mContextType = type.toString();		
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 	}
 	public void visit(UnaryExpression exp) throws Exception {
 		exp.accept(this);
-		this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop()));
+		this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop(),exp.getOperator()));
 	}
 	public void visit(BinaryExpression exp) throws Exception {
 		exp.accept(this);
 		Expression lhs = this.mStack.pop();
 		Expression rhs = this.mStack.pop();
-		this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs));
+		this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs, exp.getOperator()));
 	}
 	@Override
 	public Expression getValue() {

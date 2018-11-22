@@ -10,6 +10,8 @@ public class CFGNode implements ICFGNode {
 
 protected ICFG mCFG;
 	protected List<ICFEdge> mIncomingEdgeList = new ArrayList<ICFEdge>();
+	protected List<ICFEdge> mOutgoingEdgeList = new ArrayList<ICFEdge>();
+	
 	protected String mId;
 
 	@Override
@@ -68,7 +70,22 @@ protected ICFG mCFG;
 		this.mIncomingEdgeList.remove(edge);
 		return edge;
 	}
-	
+	@Override
+	public ICFEdge addOutgoingEdge(ICFEdge edge) {
+		if(this.mOutgoingEdgeList.add(edge)) {
+			return edge;
+		}
+		return null;
+	}
+
+	@Override
+	public ICFEdge deleteOutgoingEdge(ICFEdge edge) {
+		if(!this.mOutgoingEdgeList.contains(edge)) {
+			return null;
+		}
+		this.mOutgoingEdgeList.remove(edge);
+		return edge;
+	}
 	public String getId() {
 		return this.mId;
 	}

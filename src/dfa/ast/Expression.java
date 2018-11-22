@@ -2,6 +2,7 @@ package ast;
 import java.util.*;
 import program.IProgram;
 import visitors.IAcceptor;
+import visitors.IExprVisitor;
 public abstract class Expression implements IAcceptor{
 /*
   public enum Operator {
@@ -55,4 +56,8 @@ protected IProgram mProgram = null;
   public List<Expression> getVariables(){
 	return null;
   }
+    @Override
+	public void accept(IExprVisitor<?> visitor) throws Exception {
+	}
+
 }

@@ -21,6 +21,13 @@ public class UnaryExpression extends Expression {
     this.variables=new ArrayList<Expression>();
     
   }
+  public UnaryExpression(IProgram prog,Expression expression, int operator) {
+    super(null,null);
+    this.expression = expression;
+    this.operator   = operator;
+    this.variables=new ArrayList<Expression>();
+    
+  }
   public List<Expression> getVariables(){
 	this.variables.add(this.expression);
 	return this.variables;
@@ -29,4 +36,7 @@ public class UnaryExpression extends Expression {
 	public void accept(IExprVisitor<?> visitor) throws Exception {
 		visitor.visit(this.expression);
 	}
+	public int getOperator(){
+	return this.operator;
+  }
 }

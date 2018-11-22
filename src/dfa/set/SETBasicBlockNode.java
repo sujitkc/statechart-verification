@@ -108,7 +108,7 @@ public class SETBasicBlockNode extends SETNode implements ISETInstructionNode {
 		if(pred instanceof SETDecisionNode) {
 			SETDecisionNode pr = (SETDecisionNode)pred;
 			if(inEdge.equals(pr.getThenEdge())) {
-				result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"&");
+				result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"and");
 				//it was AndExpression
 			}
 			else if(inEdge.equals(pr.getElseEdge())) {
@@ -116,7 +116,7 @@ public class SETBasicBlockNode extends SETNode implements ISETInstructionNode {
 				Expression l = and;
 				Expression r = pr.getCondition();
 				NotExpression not = new NotExpression(r.getProgram(), r);
-				result = new BinaryExpression(r.getProgram(), l, not,"&");
+				result = new BinaryExpression(r.getProgram(), l, not,"and");
 				//it was AndExpression
 			}
 			else {

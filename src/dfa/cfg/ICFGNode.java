@@ -19,8 +19,8 @@ public interface ICFGNode {
 	//public List<ICFGNode> getCFSuccessorNodeList();
 	public ICFEdge addIncomingEdge(ICFEdge edge);
 	public ICFEdge deleteIncomingEdge(ICFEdge edge);
-	//public ICFEdge addOutgoingEdge(ICFEdge edge);
-	//public ICFEdge deleteOutgoingEdge(ICFEdge edge);
+	public ICFEdge addOutgoingEdge(ICFEdge edge);
+	public ICFEdge deleteOutgoingEdge(ICFEdge edge);
 	public String getId();
 	
 }

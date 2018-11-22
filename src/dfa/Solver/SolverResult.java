@@ -1,18 +1,18 @@
 package Solver;
 
-import expression.IIdentifier;
+import ast.Name;
 
 import java.util.Map;
 
 public class SolverResult {
 	private final boolean mResult;
-	private final Map<IIdentifier, Object> mModel;
+	private final Map<Name, Object> mModel;
 	
-	public SolverResult(boolean result, Map<IIdentifier, Object> model) {
+	public SolverResult(boolean result, Map<Name, Object> model) {
 		this.mResult = result;
 		this.mModel = model;
 	}
-	public SolverResult(Map<IIdentifier, Object> model) {
+	public SolverResult(Map<Name, Object> model) {
 		this.mModel = model;
 		this.mResult = false;
 	}
@@ -21,7 +21,7 @@ public class SolverResult {
 		return this.mResult;
 	}
 	
-	public Map<IIdentifier, Object> getModel() {
+	public Map<Name, Object> getModel() {
 		return this.mModel;
 	}
 	
@@ -31,7 +31,7 @@ public class SolverResult {
 			return "unsatisfiable\n";
 		}
 		s = "satisfiable\n";
-		for(IIdentifier var : this.mModel.keySet()) {
+		for(Name var : this.mModel.keySet()) {
 			s = s + "(" + var.getName() + ", " + this.mModel.get(var).toString() + ")\n";
 		}
 		return s;

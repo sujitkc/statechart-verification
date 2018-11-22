@@ -7,15 +7,18 @@ import cfg.ICFG;
 import cfg.ICFGBasicBlockNode;
 import cfg.ICFGDecisionNode;
 import cfg.ICFGNode;
-import expression.*;
-import mycfg.CFGBasicBlockNode;
-import mycfg.CFGDecisionNode;
+import stablcfg.CFGBasicBlockNode;
+import stablcfg.CFGDecisionNode;
 import program.IProgram;
 import set.*;
-import statement.IStatement;
-import utilities.Pair;
-
+import ast.Statement;
+import ast.Name;
+import ast.Expression;
+import ast.BinaryExpression;
+import ast.NotExpression;
+import ast.AssignmentStatement;
 import java.util.*;
+import utilities.Pair;
 
 public class SEENew2 {
     private SET mSET;
@@ -105,9 +108,9 @@ public class SEENew2 {
             }
 
             if (correspondingICFGNode instanceof ICFGDecisionNode) {
-                IExpression condition = ((SETDecisionNode)pairSETNode).getCondition();
+                Expression condition = ((SETDecisionNode)pairSETNode).getCondition();
 //                System.out.println("condition:"+condition);
-                AndExpression andExpression1 = new AndExpression(this.getSET(), pairSETNode.getPathPredicate(), condition);
+                BinaryExpression BinaryExpression1 = new BinaryExpression(this.getSET(), pairSETNode.getPathPredicate(), condition, "and");
 
                 //  node pe lagao, solver
 
@@ -124,10 +127,10 @@ public class SEENew2 {
 
 
 
-                Set<IIdentifier> symVars = mSET.getVariables();
+                Set<Name> symVars = mSET.getVariables();
                 System.out.println(symVars);
 
-                ISolver solver = new Z3Solver(symVars, andExpression1);
+                ISolver solver = new Z3Solver(symVars, BinaryExpression1);
                 SolverResult solution = solver.solve();
                 System.out.println(solution.getModel());
                 //  if satisfiable
@@ -143,10 +146,10 @@ public class SEENew2 {
 
                 //  here we have to add "Not of the expression"
                 NotExpression notExpression = new NotExpression(this.getSET(), condition);
-                AndExpression andExpression2 = new AndExpression(this.getSET(), pairSETNode.getPathPredicate(), notExpression);
-                Set<IIdentifier> symVars2 = mSET.getVariables();
+                BinaryExpression BinaryExpression2 = new BinaryExpression(this.getSET(), pairSETNode.getPathPredicate(), notExpression, "and");
+                Set<Name> symVars2 = mSET.getVariables();
                 System.out.println(symVars2);
-                ISolver solver2 = new Z3Solver(symVars2, andExpression2);
+                ISolver solver2 = new Z3Solver(symVars2, BinaryExpression2);
                 SolverResult solution2 = solver2.solve();
                 System.out.println(solution.getModel());
                 //  if unsatisfiable
@@ -225,14 +228,15 @@ public class SEENew2 {
         ICFGBasicBlockNode cfgBasicBlockNode = (ICFGBasicBlockNode) node
                 .getCFGNode();
 //        System.out.println(cfgBasicBlockNode);
-        IStatement statement = cfgBasicBlockNode.getStatement();
+        Statement statement = cfgBasicBlockNode.getStatement();
 
         /**TODO
          * add condition for stopNode, won't have LHS & RHS
          */
         try {
-            IIdentifier LHS = statement.getLHS();   //  x
-            IExpression RHS = statement.getRHS();   //  input
+		if(statement instanceof AssignmentStatement){
+            Name LHS = ((AssignmentStatement)statement).getLHS();   //  x
+            Expression RHS = ((AssignmentStatement)statement).getRHS();   //  input
 //            System.out.println(LHS);
 //            System.out.println(RHS);
 
@@ -245,27 +249,27 @@ public class SEENew2 {
 //            System.out.println(mSET.getVariables());
 //            Variable x = new Variable(LHS.getName(),mSET));
             SETExpressionVisitor visitor = new SETExpressionVisitor(node,
-                    LHS.getType());
+                    LHS.getDeclaration().getType());
 
             visitor.visit(RHS);
 
-//            Stack<IExpression> newStack = visitor.getStack();
+//            Stack<Expression> newStack = visitor.getStack();
 //            System.out.println("stack:"+visitor.getStack());
 
-            IExpression value = null;
+            Expression value = null;
             //  get the symbolic expression by visiting the RHS (top of stack)
             value = visitor.getValue();
 //            System.out.println(LHS + " "+ value);
 
-            IIdentifier var = LHS;
+            Name var = LHS;
             //  set symbolic expression into the node
             node.setValue(var, value);
-            Map<IIdentifier, IExpression> map = node.getValues();
-//        for (Map.Entry<IIdentifier,IExpression> entry : map.entrySet())
+            Map<Name, Expression> map = node.getValues();
+//        for (Map.Entry<Name,Expression> entry : map.entrySet())
 //            System.out.println("Key = " + entry.getKey() +
 //                    ", Value = " + entry.getValue());
 //        System.out.println(map);
-
+		}
         } catch (NullPointerException npe) {
 //            System.out.println(node.getCFGNode());
 //            System.out.println("End node reached");
@@ -276,17 +280,17 @@ public class SEENew2 {
 
     public void computeExpression(SETDecisionNode node) throws Exception {
         SETExpressionVisitor visitor = new SETExpressionVisitor(node,
-                Type.BOOLEAN);
+                ast.BooleanConstant);
         CFGDecisionNode cfgNode = (CFGDecisionNode) node.getCFGNode();
-        IExpression conditionCFG = cfgNode.getCondition();
+        Expression conditionCFG = cfgNode.getCondition();
 //        System.out.println("CFGCondition:"+conditionCFG);
-        IExpression conditionSET = node.getCondition();
+        Expression conditionSET = node.getCondition();
 //        System.out.println("SETCondition:"+conditionSET);
         if (conditionSET == null) {
             throw new Exception("Null Expression");
         } else {
             visitor.visit(conditionCFG);
-            IExpression value = visitor.getValue();
+            Expression value = visitor.getValue();
 //            System.out.println("CONDITION:"+value);
             node.setCondition(value);
         }

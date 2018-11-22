@@ -1,22 +1,23 @@
 package Solver;
 
-import expression.ExpressionPreorderToStringVisitor;
-import expression.IExpression;
-import expression.IIdentifier;
-import expression.Type;
+import ast.ExpressionPreorderToStringVisitor;
+import ast.Expression;
+import ast.Name;
+import ast.Type;
 import set.SETExpressionVisitor;
-
+import ast.IntegerConstant;
+import ast.BooleanConstant;
 import java.io.*;
 import java.util.*;
 
 
 public class Z3Solver implements ISolver {
 
-    IExpression mExpression;
-    //	IExpression mExpression;
-	Set<IIdentifier> mVariables;
+    Expression mExpression;
+    //	Expression mExpression;
+	Set<Name> mVariables;
 
-	public Z3Solver(Set<IIdentifier> symVars, IExpression exp) {
+	public Z3Solver(Set<Name> symVars, Expression exp) {
 		this.mVariables = symVars;
 		this.mExpression = exp;
 	}
@@ -49,7 +50,7 @@ public class Z3Solver implements ISolver {
      * @return
 	 * @throws Exception
 	 */
-	private static String makeZ3Input(Set<IIdentifier> symVars, IExpression expression) throws Exception {
+	private static String makeZ3Input(Set<Name> symVars, Expression expression) throws Exception {
 		
 
 //		SETExpressionVisitor preVisitor = new SETExpressionVisitor();
@@ -60,7 +61,7 @@ public class Z3Solver implements ISolver {
 
 //        String formula = preVisitor.getValue().toString();
 		String s = "";
-		for (IIdentifier v : symVars) {
+		for (Name v : symVars) {
 			s = s + "(declare-fun " + v.getName() + " () "
 					+ Z3Solver.getVariableTypeString(v) + ")" + "\n";
 		}
@@ -72,8 +73,8 @@ public class Z3Solver implements ISolver {
 
 	}
 
-	private static String getVariableTypeString(IIdentifier var) throws Exception {
-		String type = var.getType();
+	private static String getVariableTypeString(Name var) throws Exception {
+		/*String type = var.getType();
 		if (type.equals(Type.BOOLEAN)) {
 			return "Bool";
 		} else if (type.equals(Type.INT)) {
@@ -83,7 +84,8 @@ public class Z3Solver implements ISolver {
 					"Z3Solver.getVariableTypeString : type of variable '"
 							+ var.getName() + "' not handled.");
 			throw e;
-		}
+		}*/
+		return var.getDeclaration().getType().toString();
 	}
 
 	private static String cmdExec(String cmdLine) throws IOException {
@@ -115,13 +117,13 @@ public class Z3Solver implements ISolver {
 		  System.out.print("tokens = "); for(String t : tokens) {
 		  System.out.print(m + t + " "); m++;}
 	*/ 
-		Map<IIdentifier, Object> map = new HashMap<IIdentifier, Object>();
+		Map<Name, Object> map = new HashMap<Name, Object>();
 		if (tokens.get(0).equals("sat")) {
 			isSat = true;
 
 			for (int i = 3; i < tokens.size(); i = i + 5) {
 				String varName = tokens.get(i);
-				IIdentifier var = this.getVariableByName(varName);
+				Name var = this.getVariableByName(varName);
 				if (var == null) {
 					Exception e = new Exception(
 							"Z3Solver.parseZ3Output : variable '"
@@ -136,11 +138,11 @@ public class Z3Solver implements ISolver {
 		return new SolverResult(isSat, map);
 	}
 
-	private static Object parseVariableValue(IIdentifier var, String value)
+	private static Object parseVariableValue(Name var, String value)
 			throws Exception {
-		if (var.getType().equals(Type.INT)) {
+		if (var.getDeclaration().getType()==ast.IntegerConstant) {
 			return Integer.parseInt(value);
-		} else if (var.getType().equals(Type.BOOLEAN)) {
+		} else if (var.getDeclaration().getType()==ast.BooleanConstant) {
 			return Boolean.parseBoolean(value);
 		} else {
 			Exception e = new Exception(
@@ -150,8 +152,8 @@ public class Z3Solver implements ISolver {
 		}
 	}
 
-	private IIdentifier getVariableByName(String name) {
-		for (IIdentifier v : this.mVariables) {
+	private Name getVariableByName(String name) {
+		for (Name v : this.mVariables) {
 			if (v.getName().equals(name)) {
 				return v;
 			}
