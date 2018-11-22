@@ -10,8 +10,10 @@ import java.util.List;
 
 public interface ICFG extends IProgram {
 	public ICFGBasicBlockNode getStartNode();
+public ICFGBasicBlockNode getStopNode();
 	public ICFGBasicBlockNode addBasicBlockNode(ICFGBasicBlockNode node);
-	public void deleteCFGNode(ICFGNode node);
+	public ICFGBasicBlockNode deleteBasicBlockNode(ICFGBasicBlockNode node) ;
+public ICFGDecisionNode deleteDecisionNode(ICFGDecisionNode node);
 	public boolean hasBasicBlockNode(ICFGBasicBlockNode node);
 	public int getNumberOfBasicBlockNodes();
 	public ICFGDecisionNode addDecisionNode(ICFGDecisionNode node);
