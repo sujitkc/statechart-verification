@@ -11,23 +11,19 @@ public class Addition {
 
     public static void addition(){                  //  A
 
-        while(true)                                 //  B
+    Scanner sc = new Scanner(System.in);
+    int x = sc.nextInt();                           //  B
+    int i = sc.nextInt();                           //  C
+
+        while(x <i)                                 //  D
         {
-            Scanner sc = new Scanner(System.in);    //  B
-            int x = sc.nextInt();                   //  B
-            int y = sc.nextInt();                   //  B
+            int j = sc.nextInt();                   //  E
 
-            int z = x + y;                          //  C
-
-            if(z>10){                               //  D
-                if(x>5){                            //  E
-                    if(y<3){                        //  F
-                        x = 6;                      //  G
-                    }
-                    if(y>5){                        //  H
-                        x = 4;                      //  I
-                    }
-                }
+            if( (x+i)<(x+j) ){                      //  F
+                x = i+j;                            //  G
+            }
+            else{
+                x = i-j;                            //  H
             }
         }                                           //  W
     }                                               //

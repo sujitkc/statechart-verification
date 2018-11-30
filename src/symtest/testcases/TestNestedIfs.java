@@ -1,3 +1,38 @@
+/*
+ ***************** Nested-If**************
+
+    package testcases;
+
+    import java.util.Scanner;
+
+    public class Nested-If
+    {
+        public static void main(String args[])
+        {
+            int x,y,z=30;
+            Scanner sc = new Scanner(System.in);
+            x = sc.nextInt();
+            y = sc.nextInt();
+
+            if (x<y)
+            {
+
+                 if (x<z)
+                 {
+                         x = 0;
+                 }
+            }
+            else{
+
+                         x = 30;
+                 }
+        }
+     }
+
+
+
+ */
+
 package testcases;
 
 import cfg.ICFEdge;
