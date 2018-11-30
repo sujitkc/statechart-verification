@@ -10,17 +10,11 @@ import mycfg.CFG;
 import mycfg.CFGBasicBlockNode;
 import mycfg.CFGDecisionNode;
 import org.junit.Test;
-import see.SEENew;
-import see.SEENew2;
-import set.SETBasicBlockNode;
-import set.SETDecisionNode;
-import set.SETEdge;
+import see.SEE;
 import set.SETNode;
 import statement.Statement;
 
-import java.util.Set;
-
-public class TestNewSEE3 {
+public class TestLoops {
     @Test
     public void testNaya() throws Exception {
         // Why mCFG ? Because it is an inteface for Control Flow Graph
@@ -96,62 +90,9 @@ public class TestNewSEE3 {
         E.setThenEdge(EF);
         E.setElseEdge(EG);
 
-        System.out.println(mCFG.getEdgeSet());
-
-//        System.out.println(mCFG.getNodeSet());
-//        System.out.println(mCFG.getEdgeSet());
-
-        SEENew2 seeNew2 = new SEENew2(mCFG);
+        SEE seeNew2 = new SEE(mCFG);
 
         SETNode setNode6 = seeNew2.allPathSE(mCFG,10);
-//
-//        System.out.println(seeNew2.getSET().getStartNode().getIncomingEdge());
-//        System.out.println(seeNew2.getSET().getStartNode().getCFGNode());
-//
-//        Set<SETEdge> edgeSet = seeNew2.getSET().getEdgeSet();
-//        for (SETEdge setEdge:edgeSet){
-//            System.out.println("Edge:"+setEdge);
-//            System.out.println("Head:"+setEdge.getHead());
-//            System.out.println("Tail:"+setEdge.getTail().getIncomingEdge());
-//            System.out.println("Tail:"+setEdge.getTail().getCFGNode());
-//        }
-
-//        Set<SETNode> nodeSet = seeNew2.getSET().getNodeSet();
-//        for (SETNode setNode:nodeSet){
-//            System.out.println("Node:"+setNode);
-//            System.out.println("CFGNode:"+setNode.getCFGNode());
-////            System.out.println("Head:"+setEdge.getHead());
-////            System.out.println("Tail:"+setEdge.getTail());
-//        }
-
-//        //  passing empty environment & startNode
-//        SETBasicBlockNode startNode = new SETBasicBlockNode(seeNew2.getSET(),A);
-//
-//        SETNode setNode = seeNew2.singleStep(B,startNode);
-//        System.out.println(setNode.getLatestValue(x));
-//
-//        SETNode setNode2 = seeNew2.singleStep(C,setNode);
-//        System.out.println(setNode2.getLatestValue(y));
-//
-//        SETNode setNode3 = seeNew2.singleStep(D,setNode2);
-//        System.out.println("PathPredicate:"+((SETDecisionNode)setNode3).getCondition());
-//
-//        SETNode setNode4 = seeNew2.singleStep(E,setNode3);
-//        System.out.println(setNode4.getLatestValue(x));
-//
-//        SETNode setNode5 = seeNew2.singleStep(F,setNode4);
-//        System.out.println(setNode5.getLatestValue(x));
-
-//        SETNode setNode6 = seeNew2.allPathSE(mCFG,5);
-//        System.out.println(setNode6.getSET());
-
-//        System.out.println(seeNew2.getSET().getNodeSet());
-
-//        System.out.println(seeNew2.getSET().getNumberOfDecisionNodes());
-
-//        SETNode setNode6 = seeNew2.allPathSE(mCFG,5);
-//        System.out.println(setNode6);
-
 
 
 

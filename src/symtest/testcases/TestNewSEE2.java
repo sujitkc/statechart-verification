@@ -4,21 +4,18 @@ import cfg.ICFEdge;
 import cfg.ICFG;
 import cfg.ICFGBasicBlockNode;
 import cfg.ICFGDecisionNode;
-import expression.*;
+import expression.ConcreteConstant;
+import expression.Input;
+import expression.LesserThanExpression;
+import expression.Variable;
 import mycfg.CFEdge;
 import mycfg.CFG;
 import mycfg.CFGBasicBlockNode;
 import mycfg.CFGDecisionNode;
 import org.junit.Test;
-import see.SEENew;
-import see.SEENew2;
-import set.SETBasicBlockNode;
-import set.SETDecisionNode;
-import set.SETEdge;
+import see.SEE;
 import set.SETNode;
 import statement.Statement;
-
-import java.util.Set;
 
 public class TestNewSEE2 {
     @Test
@@ -96,7 +93,7 @@ public class TestNewSEE2 {
 //        D.setThenEdge(DE);
 //        D.setElseEdge(DF);
         System.out.println("creating seeNew2 object : " + mCFG);
-        SEENew2 seeNew2 = new SEENew2(mCFG);
+        SEE seeNew2 = new SEE(mCFG);
         System.out.println("calling all path SE : " + mCFG);
 
         SETNode setNode6 = seeNew2.allPathSE(mCFG,5);

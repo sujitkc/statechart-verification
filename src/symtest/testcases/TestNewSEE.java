@@ -8,7 +8,6 @@
 //import mycfg.CFGDecisionNode;
 //import org.junit.Test;
 //import see.SEE;
-//import see.SEENew;
 //import set.SETBasicBlockNode;
 //import set.SETDecisionNode;
 //import set.SETExpressionVisitor;
@@ -145,7 +144,6 @@
 //        System.out.println(D.getElseEdge() + "\n" + D.getThenEdge() + "\n");
 //
 //        //  to call singleStep()
-//        SEENew seeNew = new SEENew(mCFG);
 //        //  for initializing setNode
 //        //Now SET comes in picture
 //        // empty environment

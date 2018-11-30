@@ -7,7 +7,7 @@ import cfg.ICFEdge;
 import cfg.ICFG;
 import expression.IExpression;
 import expression.IIdentifier;
-import see.SEENew2;
+import see.SEE;
 import set.SET;
 import set.SETNode;
 
@@ -52,7 +52,7 @@ public class SymTestUtil {
 	}
 	
 	public static SET getSET(List<ICFEdge> path, ICFG mCFG) throws Exception {
-		SEENew2 mSEE = new SEENew2(mCFG);
+		SEE mSEE = new SEE(mCFG);
 //		mSEE.expandSET(path);
 		return mSEE.getSET();
 	}
