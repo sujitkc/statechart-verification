@@ -1,17 +1,24 @@
 MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
-
-Analyser : Analyser.java Lexer.java sym.java Parser.java ast/*.java
+MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
+FE=frontend
+Analyser : Analyser.java ${FE}/Lexer.java ${FE}/sym.java ast/*.java
 	if [ ! -d classes ]; then \
 		mkdir classes; \
 	fi;
-	javac -Xlint:-unchecked -d classes *.java ast/*.java flatten/Flattener.java metric/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:ast:./:classes;
+	javac -Xlint:-unchecked -d classes *.java ${FE}/*.java ast/*.java flatten/Flattener.java metric/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:ast:./:classes;
 
-sym.java : parser.cup
-	java -jar ${MYLIBPATH}/java-cup-11a.jar -parser Parser -dump < parser.cup
+${FE}/sym.java : ${FE}/parser.cup
+	java -jar ${MYLIBPATH}/java-cup-11a.jar -parser Parser -dump < ${FE}/parser.cup
 
-Lexer.java : lexer.flex
-	java -jar ${MYLIBPATH}/jflex-1.6.0.jar lexer.flex
+${FE}/Lexer.java : ${FE}/lexer.flex
+	java -jar ${MYLIBPATH}/jflex-1.6.0.jar ${FE}/lexer.flex
+
+test : ${FE}/Lexer.java ${FE}/sym.java ast/*.java
+	javac -Xlint:-unchecked -d classes *.java ast/*.java flatten/Flattener.java metric/*.java testcases/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:/home/sujit/My-Downloads/junit-4.8.1.jar:ast:classes:./;
+
+rt :
+	java -cp ~/My-Downloads/junit-4.8.1.jar:classes/:${MYCLASSPATH}:. org.junit.runner.JUnitCore testcases.${testcase}
 
 clean:
-	rm Parser.java sym.java Lexer.java
+	rm Parser.java sym.java ${FE}/Lexer.java
 	rm -rf classes/*

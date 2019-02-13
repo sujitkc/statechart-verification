@@ -1,4 +1,4 @@
-package analyse;
+package frontend;
 
 import java_cup.runtime.*;
 import java_cup.*;

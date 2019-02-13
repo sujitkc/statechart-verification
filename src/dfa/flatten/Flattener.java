@@ -8,7 +8,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.HashMap;
 import ast.*;
-import analyse.Typechecker;
+import frontend.*;
 
 abstract class Translator {
   abstract Statechart translate(Statechart S) throws Exception;

@@ -1,10 +1,8 @@
-package analyse;
+package frontend;
 
 import java_cup.runtime.Symbol;
 import java.io.FileInputStream;
 import java.io.InputStream;
-
-
 
 %%
 %class Lexer

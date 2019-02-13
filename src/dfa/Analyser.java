@@ -1,17 +1,13 @@
 package analyse;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+
+import java.io.FileNotFoundException;
 
 import java_cup.runtime.Symbol;
 
@@ -22,6 +18,9 @@ import ast.Environment;
 import ast.Declaration;
 import ast.Name;
 
+import frontend.FrontEnd;
+import frontend.Parser;
+import frontend.Typechecker;
 import flatten.Flattener;
 import metric.Metric;
 
@@ -33,7 +32,8 @@ public class Analyser {
   public static void main(String[] args) {
     Statechart statechart = null;
     try {
-      Parser parser = new Parser(new Lexer(new FileReader(args[0])));    
+      FrontEnd frontend = new FrontEnd(args[0]);
+      Parser parser = frontend.getParser();    
       Symbol result = parser.parse();
       statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");
@@ -41,7 +41,7 @@ public class Analyser {
       System.out.println("Printing parsed Statechart ... done!");
     }
     catch(FileNotFoundException e) {
-      System.out.println("Couldn't open file '" + args[0] + "'"); 
+      System.out.println("Couldn't open file '" + args[0] + "'");
     }
     catch(Exception e) {
       System.out.println("Couldn't parse '" + args[0] + "' : " + e.getMessage()); 
