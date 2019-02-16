@@ -61,7 +61,6 @@ public class State {
     }
     else {
       for(State s : this.states) {
-        System.out.println("State.nameToState: s.name = " + s.name);
         if(s.name.equals(name.name.get(i + 1))) {
           return s.nameToState(name, i + 1);
         }

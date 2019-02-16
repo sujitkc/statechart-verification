@@ -172,9 +172,6 @@ class Globaliser extends Translator {
       newTransitions
     );
     (new Typechecker(flattenedSC)).typecheck();
-    System.out.println("Printing analysed flattened Statechart ...");
-    System.out.println(flattenedSC);
-    System.out.println("Printing analysed flattened Statechart ... done!");
 
     return flattenedSC;
   }
@@ -416,9 +413,6 @@ class TransitionAtomiser extends Translator {
       newTransitions
     );
     (new Typechecker(newStatechart)).typecheck();
-    System.out.println("Printing analysed XT1 Statechart ...");
-    System.out.println(newStatechart);
-    System.out.println("Printing analysed XT1 Statechart ... done!");
 
     return newStatechart;
   }
@@ -450,9 +444,6 @@ class HierarchyPurger extends Translator {
   // Create transitions.
   private Statechart translateStatechart(Statechart statechart) throws Exception {
     Set<State> atomicStates = Translator.getAllAtomicDescendents(statechart);
-    for(State s : atomicStates) {
-      System.out.println("HierarchyPurger.translateStatechart : atomic state full name = " + s.getFullName());
-    }
     State istate = getAtomicInitialDescendent(statechart);
     atomicStates.remove(istate);
     List<State> newStates = new ArrayList<State>();
@@ -468,7 +459,6 @@ class HierarchyPurger extends Translator {
     );
     for(State s : atomicStates) {
       String stateName = Translator.underscoreFullName((s.getFullName()));
-      System.out.println("HierarchyPurger.translateStatechart : state name = " + stateName);
       newStates.add(
         new State(
           stateName,
@@ -482,7 +472,6 @@ class HierarchyPurger extends Translator {
     }
 
     for(State s : newStates) {
-      System.out.println("HierarchyPurger.translateStatechart : state full name = " + s.getFullName());
     }
     List<Transition> newTransitions = new ArrayList<Transition>();
     Set<Transition> oldTransitions = Translator.getAllTransitions(statechart);
@@ -513,9 +502,6 @@ class HierarchyPurger extends Translator {
       newStates,
       newTransitions
     );
-//    System.out.println("Printing flattened untypechecked statechart...");
-//    System.out.println(newStatechart);
-//    System.out.println("Printing flattened untypechecked statechart...done");
     (new Typechecker(newStatechart)).typecheck();
     return newStatechart;
   }
