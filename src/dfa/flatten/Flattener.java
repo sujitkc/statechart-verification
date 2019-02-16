@@ -33,6 +33,21 @@ abstract class Translator {
     return Translator.getAtomicInitialDescendent(state.states.get(0));
   }
 
+  protected static Set<Transition> getAllTransitions(State state) {
+    Set<Transition> alltransitions = new HashSet<Transition>();
+
+    for(Transition t : state.transitions) {
+      alltransitions.add(t);
+    }
+    for(State s : state.states) {
+      Set<Transition> transitions = getAllTransitions(s);
+      for(Transition t : transitions) {
+        alltransitions.add(t);
+      }
+    }
+    return alltransitions;
+  }
+
   protected static String underscoreFullName(String name) {
     String underscoredName = "";
 
@@ -47,17 +62,61 @@ abstract class Translator {
     return underscoredName;
   }
 
+  // returns a list of all ancestors of substate all the way upto and excluding
+  // superstate. The highest level superstate is the first in the list.
+  protected static List<State> getAllAncestorsExcluding(State substate, State superstate) {
+    if(substate.getSuperstate() == superstate) {
+      List<State> ancestors = new ArrayList<State>();
+      ancestors.add(substate);
+      return ancestors;
+    }
+    List<State> ancestors = Translator.getAllAncestorsExcluding(substate.getSuperstate(), superstate);
+    ancestors.add(substate);
+    return ancestors;
+  }
+
+  protected static List<State> getAllAncestorsIncluding(State substate, State superstate) {
+    return Translator.getAllAncestorsExcluding(substate, superstate.getSuperstate());
+  }
+
+  protected static Name getFullStateName(State state) {
+    List<State> sourceAncestors = Translator.getAllAncestorsExcluding(state, null);
+    List<String> sourceNames = new ArrayList<String>();
+    for(State sourceAncestor : sourceAncestors) {
+      sourceNames.add(sourceAncestor.name);
+    }
+    return new Name(sourceNames);
+  }
+
+  protected static StatementList flattenStatementList(StatementList list) {
+    StatementList newlist = new StatementList();
+    for(Statement statement : list.getStatements()) {
+      if(!(statement instanceof StatementList)) { // atomic statement
+        newlist.add(statement);
+      }
+      else {
+        StatementList slist = flattenStatementList((StatementList)statement);
+        int size = slist.getStatements().size();
+        for(Statement s : slist.getStatements()) {
+          newlist.add(s);
+        }
+      }
+    }
+    return newlist;
+  }
 }
 
 public class Flattener extends Translator {
-  private Translator globaliser                = new Globaliser();
-  private Translator transitionAtomiser        = new TransitionAtomiser();
+  private Translator globaliser             = new Globaliser();
+  private Translator transitionAtomiser     = new TransitionAtomiser();
+  private Translator hierarchyPurger        = new HierarchyPurger();
 
   public Statechart translate(Statechart S) throws Exception {
     return 
+      this.hierarchyPurger.translate(
       this.transitionAtomiser.translate(
       this.globaliser.translate(S)
-    );
+    ));
   }
 }
 
@@ -281,30 +340,15 @@ class Globaliser extends Translator {
 }
 
 // Translator for transitions with non-atomic sources
+// This translator converts all transitions such that they emerge and end at atomic states.
 class TransitionAtomiser extends Translator {
   public Statechart translate(Statechart S) throws Exception {
     return this.translateStatechart(S);
   }
 
-  // returns a list of all ancestors of substate all the way upto and excluding
-  // superstate. The highest level superstate is the first in the list.
-  private List<State> getAllAncestorsExcluding(State substate, State superstate) {
-    if(substate.getSuperstate() == superstate) {
-      List<State> ancestors = new ArrayList<State>();
-      ancestors.add(substate);
-      return ancestors;
-    }
-    List<State> ancestors = this.getAllAncestorsExcluding(substate.getSuperstate(), superstate);
-    ancestors.add(substate);
-    return ancestors;
-  }
-
-  private List<State> getAllAncestorsIncluding(State substate, State superstate) {
-    return this.getAllAncestorsExcluding(substate, superstate.getSuperstate());
-  }
 
   private Statement getExitStatements(State source, State superstate) {
-    List<State> ancestors = this.getAllAncestorsExcluding(source, superstate);
+    List<State> ancestors = Translator.getAllAncestorsExcluding(source, superstate);
     StatementList exitStatements = new StatementList();
     ListIterator<State> li = ancestors.listIterator(ancestors.size());
     State s;
@@ -316,21 +360,12 @@ class TransitionAtomiser extends Translator {
   }
 
   private Statement getEntryStatements(State destination, State superstate) {
-    List<State> ancestors = this.getAllAncestorsExcluding(destination, superstate);
+    List<State> ancestors = Translator.getAllAncestorsExcluding(destination, superstate);
     StatementList entryStatements = new StatementList();
     for(State ancestor : ancestors) {
       entryStatements.add(ancestor.entry);
     }
     return entryStatements;
-  }
-
-  private Name getFullStateName(State state) {
-    List<State> sourceAncestors = this.getAllAncestorsExcluding(state, null);
-    List<String> sourceNames = new ArrayList<String>();
-    for(State sourceAncestor : sourceAncestors) {
-      sourceNames.add(sourceAncestor.name);
-    }
-    return new Name(sourceNames);
   }
 
   private List<Transition> translateTransitions(State state) {
@@ -347,7 +382,6 @@ class TransitionAtomiser extends Translator {
         action.add(t.action);
         action.add(entryStatements);
 
-
         newTransitions.add(
           new Transition(
             t.name + '_' + Translator.underscoreFullName(src.getFullName())
@@ -356,7 +390,7 @@ class TransitionAtomiser extends Translator {
             destinationName,
             t.trigger,
             t.guard,
-            action
+            flattenStatementList(action)
           )
         );
       }
@@ -403,5 +437,86 @@ class TransitionAtomiser extends Translator {
       newStates,
       newTransitions
     );
+  }
+}
+
+class HierarchyPurger extends Translator {
+  public Statechart translate(Statechart S) throws Exception {
+    return translateStatechart(S);
+  }
+
+  // Basic idea is to just get rid of the non-atomic states.
+  // Retain all atomic states.
+  // Create transitions.
+  private Statechart translateStatechart(Statechart statechart) throws Exception {
+    Set<State> atomicStates = Translator.getAllAtomicDescendents(statechart);
+    for(State s : atomicStates) {
+      System.out.println("HierarchyPurger.translateStatechart : atomic state full name = " + s.getFullName());
+    }
+    State istate = getAtomicInitialDescendent(statechart);
+    atomicStates.remove(istate);
+    List<State> newStates = new ArrayList<State>();
+    newStates.add(
+      new State(
+        Translator.underscoreFullName(istate.getFullName()),
+        new DeclarationList(),
+        istate.entry,
+        istate.exit,
+        new ArrayList<State>(),
+        new ArrayList<Transition>()
+      )
+    );
+    for(State s : atomicStates) {
+      String stateName = Translator.underscoreFullName((s.getFullName()));
+      System.out.println("HierarchyPurger.translateStatechart : state name = " + stateName);
+      newStates.add(
+        new State(
+          stateName,
+          new DeclarationList(),
+          s.entry,
+          s.exit,
+          new ArrayList<State>(),
+          new ArrayList<Transition>()
+        )
+      );
+    }
+
+    for(State s : newStates) {
+      System.out.println("HierarchyPurger.translateStatechart : state full name = " + s.getFullName());
+    }
+    List<Transition> newTransitions = new ArrayList<Transition>();
+    Set<Transition> oldTransitions = Translator.getAllTransitions(statechart);
+    for(Transition t : oldTransitions) {
+        Name sourceName = new Name(statechart.name);
+        sourceName.add(Translator.underscoreFullName(Translator.getFullStateName(t.getSource()).toString()));
+        Name destinationName = new Name(statechart.name);
+        destinationName.add(Translator.underscoreFullName(Translator.getFullStateName(t.getDestination()).toString()));
+        newTransitions.add(
+          new Transition(
+            t.name,
+            sourceName,
+            destinationName,
+            t.trigger,
+            t.guard,
+            t.action
+          )
+        );
+    }
+    Statechart newStatechart = new Statechart(
+      statechart.name,
+      statechart.types,
+      statechart.events,
+      statechart.declarations,
+      new StatementList(),
+      new StatementList(),
+      statechart.functionDeclarations,
+      newStates,
+      newTransitions
+    );
+//    System.out.println("Printing flattened untypechecked statechart...");
+//    System.out.println(newStatechart);
+//    System.out.println("Printing flattened untypechecked statechart...done");
+    (new Typechecker(newStatechart)).typecheck();
+    return newStatechart;
   }
 }

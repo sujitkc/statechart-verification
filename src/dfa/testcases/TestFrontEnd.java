@@ -37,7 +37,7 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/s40.txt";
+    String input = "data/curfew1.txt";
     try {
       Parser parser = new FrontEnd(input).getParser();    
       Symbol result = parser.parse();

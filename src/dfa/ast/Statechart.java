@@ -70,6 +70,7 @@ public class Statechart extends State {
   }
 
   public State nameToState(Name name) {
+    System.out.println("nameToState = " + name + ", this.name = " + this.name); 
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
     }

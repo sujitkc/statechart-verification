@@ -27,12 +27,14 @@ public class Name extends Expression {
     for(int i = 1; i < this.name.size(); i++) {
       s += "." + this.name.get(i);
     }
+/*
     if(this.type != null) {  
       s += " : " + this.type;
     }
     else {
       s += " : not-assigned";
     }
+*/
     return s;
   }
 

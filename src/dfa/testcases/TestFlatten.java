@@ -37,7 +37,7 @@ public class TestFlatten {
   public void testFlatten() {
 
     Typechecker typechecker;
-    String input = "s44";
+    String input = "curfew1";
     Statechart statechart = null;
     try {
       Parser parser = new FrontEnd("data/" + input + ".txt").getParser();    
@@ -64,5 +64,18 @@ public class TestFlatten {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
+    Statechart flattenedSC = null;
+    try {
+      Flattener flattener = new Flattener();
+      flattenedSC = flattener.translate(statechart);
+      System.out.println("Printing flattened Statechart ...");
+      System.out.println(flattenedSC);
+      System.out.println("Printing flattened Statechart ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
   }
 }
