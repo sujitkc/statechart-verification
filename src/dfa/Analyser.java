@@ -21,7 +21,7 @@ import ast.Name;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
-import flatten.Flattener;
+import translation.Flattener;
 import metric.Metric;
 
 public class Analyser {

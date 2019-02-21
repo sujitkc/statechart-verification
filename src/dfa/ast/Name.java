@@ -27,14 +27,6 @@ public class Name extends Expression {
     for(int i = 1; i < this.name.size(); i++) {
       s += "." + this.name.get(i);
     }
-/*
-    if(this.type != null) {  
-      s += " : " + this.type;
-    }
-    else {
-      s += " : not-assigned";
-    }
-*/
     return s;
   }
 
@@ -48,5 +40,28 @@ public class Name extends Expression {
 
   public void setDeclaration(Declaration declaration) {
     this.declaration = declaration;
+  }
+
+  public boolean equals(Object o) {
+    boolean result = true;
+    Name n = null;
+    if((o instanceof Name) == false) {
+      return false;
+    }
+    else {
+      n = (Name)o;
+      if(this.name.size() != n.name.size()) {
+        return false;
+      }
+      else {
+        for(int i = 0; i < this.name.size(); i++) {
+          if(this.name.get(i).equals(n.name.get(i)) == false) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 }

@@ -1,5 +1,5 @@
-Add local variable declaration in statement blocks.
-
-Fix earlier test cases with function calls to add "<|" and "|>".
+21/2/2019: BinaryExpression design: operator type should be stored as the enumerated type (operator_type) to ensure type safety. 
+The current String based implementation is brittle. e.g. if a new binary operator type is added, the type-checker is
+impacted.
 
 minus(-) sign for integers.

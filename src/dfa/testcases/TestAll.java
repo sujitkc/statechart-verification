@@ -28,7 +28,7 @@ import ast.Environment;
 import ast.Declaration;
 import ast.Name;
 
-import flatten.Flattener;
+import translation.Flattener;
 import metric.Metric;
 
 public class TestAll {
