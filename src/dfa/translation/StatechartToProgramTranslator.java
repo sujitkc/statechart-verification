@@ -19,11 +19,15 @@ public class StatechartToProgramTranslator {
   public Program translate() {
     StatementList statements = new StatementList();
 
-/*
-    for(Transition t : this.statechart.transitions) {
-      System.out.println(t.name + " : " + t.sourceName);
+    int count = 0;
+    for(State state : this.statechart.states) {
+      statements.add(new AssignmentStatement(new Name(state.name), new IntegerConstant(count)));
+      count++;
     }
-*/
+    for(String event : this.statechart.events) {
+      statements.add(new AssignmentStatement(new Name(event), new IntegerConstant(count)));
+      count++;
+    }
     Statement outerIf = new SkipStatement();
     for(State state : this.statechart.states) {
       Set<Transition> transitions = this.getTransitionsFromSourceState(state);
@@ -33,13 +37,20 @@ public class StatechartToProgramTranslator {
         Expression evname = new Name(t.trigger);
         BinaryExpression eveq = new BinaryExpression(ev, evname, "=");
         BinaryExpression cond = new BinaryExpression(eveq, t.guard, "&&");
-        stmt = new IfStatement(cond, t.action, stmt);
+        Statement statechange = new AssignmentStatement(new Name("state"), t.destinationName);
+        StatementList innerstmtlst = new StatementList();
+        innerstmtlst.add(t.action);
+        innerstmtlst.add(statechange);
+        stmt = new IfStatement(cond, Translator.flattenStatementList(innerstmtlst), stmt);
       }
       Expression st = new Name("state");
       Expression stname = new Name(state.name);
       BinaryExpression steq = new BinaryExpression(st, stname, "=");
       outerIf = new IfStatement(steq, stmt, outerIf);
     }
+
+    this.statechart.declarations.add(new Declaration("state", new TypeName("int"), false));
+    this.statechart.declarations.add(new Declaration("event", new TypeName("int"), true));
     Statement whileStatement = new WhileStatement(new BooleanConstant(true), outerIf);
     statements.add(whileStatement);
     statements.add(new HaltStatement());
