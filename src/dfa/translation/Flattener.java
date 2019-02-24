@@ -91,15 +91,15 @@ abstract class Translator {
   protected static StatementList flattenStatementList(StatementList list) {
     StatementList newlist = new StatementList();
     for(Statement statement : list.getStatements()) {
-      if(!(statement instanceof StatementList)) { // atomic statement
-        newlist.add(statement);
-      }
-      else {
+      if(statement instanceof StatementList) {
         StatementList slist = flattenStatementList((StatementList)statement);
         int size = slist.getStatements().size();
         for(Statement s : slist.getStatements()) {
           newlist.add(s);
         }
+      }
+      else { // atomic statement
+        newlist.add(statement);
       }
     }
     return newlist;
