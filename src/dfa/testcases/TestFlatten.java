@@ -37,10 +37,10 @@ public class TestFlatten {
   public void testFlatten() {
 
     Typechecker typechecker;
-    String input = "curfew1";
+    String input = "data/curfew_structs_minimal.txt";
     Statechart statechart = null;
     try {
-      Parser parser = new FrontEnd("data/" + input + ".txt").getParser();    
+      Parser parser = new FrontEnd(input).getParser();    
       Symbol result = parser.parse();
       statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");

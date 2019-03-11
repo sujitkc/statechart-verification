@@ -37,7 +37,9 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/curfew1.txt";
+    String input = "data/curfew_structs_minimal.txt";
+    // String input = "data/s24.txt";
+    // String input = "data/curfew1.txt";
     try {
       Parser parser = new FrontEnd(input).getParser();    
       Symbol result = parser.parse();

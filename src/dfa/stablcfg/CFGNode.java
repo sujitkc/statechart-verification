@@ -1,0 +1,93 @@
+package stablcfg;
+
+
+import java.util.List;
+import cfg.*;
+import ast.Statement;
+import java.util.ArrayList;
+import java.util.List;
+public class CFGNode implements ICFGNode {
+
+protected ICFG mCFG;
+	protected List<ICFEdge> mIncomingEdgeList = new ArrayList<ICFEdge>();
+	protected List<ICFEdge> mOutgoingEdgeList = new ArrayList<ICFEdge>();
+	
+	protected String mId;
+
+	@Override
+	public boolean isIncomingEdge(ICFEdge edge) {
+		return this.mIncomingEdgeList.contains(edge);
+	}
+
+	@Override
+	public ICFG getCFG() {
+		return this.mCFG;
+	}
+
+	@Override
+	public void setCFG(ICFG graph) {
+		this.mCFG = graph;
+	}
+
+	@Override
+	public List<ICFEdge> getIncomingEdgeList() {
+		return this.mIncomingEdgeList;
+	}
+
+	@Override
+	public boolean isCFPredecessor(ICFGNode node) {
+		for(ICFEdge e : this.mIncomingEdgeList) {
+			if(e.getTail().equals(node)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public List<ICFGNode> getCFPredecessorNodeList() {
+		List<ICFGNode> list = new ArrayList<ICFGNode>();
+		for(ICFEdge e : this.mIncomingEdgeList) {
+			list.add(e.getTail());
+		}
+		return list;
+	}
+	
+
+	@Override
+	public ICFEdge addIncomingEdge(ICFEdge edge) {
+		if(this.mIncomingEdgeList.add(edge)) {
+			return edge;
+		}
+		return null;
+	}
+
+	@Override
+	public ICFEdge deleteIncomingEdge(ICFEdge edge) {
+		if(!this.mIncomingEdgeList.contains(edge)) {
+			return null;
+		}
+		this.mIncomingEdgeList.remove(edge);
+		return edge;
+	}
+	@Override
+	public ICFEdge addOutgoingEdge(ICFEdge edge) {
+		if(this.mOutgoingEdgeList.add(edge)) {
+			return edge;
+		}
+		return null;
+	}
+
+	@Override
+	public ICFEdge deleteOutgoingEdge(ICFEdge edge) {
+		if(!this.mOutgoingEdgeList.contains(edge)) {
+			return null;
+		}
+		this.mOutgoingEdgeList.remove(edge);
+		return edge;
+	}
+	public String getId() {
+		return this.mId;
+	}
+	
+}
