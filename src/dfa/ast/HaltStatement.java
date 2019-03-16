@@ -1,6 +1,6 @@
 package ast;
 
-public class HaltStatement extends Statement {
+public class HaltStatement extends InstructionStatement {
   public HaltStatement() {
   }
 

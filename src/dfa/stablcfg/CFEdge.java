@@ -1,86 +1,61 @@
 package stablcfg;
 
-import cfg.*;
 import utilities.IdGenerator;
-public class CFEdge implements ICFEdge {
 
-	ICFG mCFG;
-	ICFGNode mTail = null;
-	ICFGNode mHead = null;
-	private String mId;
-	public CFEdge(ICFG cfg, ICFGNode tail, ICFGNode head) {
-		this.mCFG = cfg;
-		this.mTail = tail;
-		this.mHead = head;
-		if(cfg != null) {
-//			cfg.addEdge(this);
-		}
-		this.mId = CFEdge.generateId();
-	}
-	private static String generateId() {
-		return IdGenerator.generateId("CFEdge");
-	}
+public class CFEdge {
 
-public CFEdge(String id, ICFG cfg, ICFGNode tail, ICFGNode head) throws Exception {
-		this.mCFG = cfg;
-		this.mTail = tail;
-		this.mHead = head;
-		if(IdGenerator.hasId(id)) {
-			Exception e = new Exception("Can't construct CFEdge : something with name '" + id + "' already exists.");
-			throw e;			
-		}
-		if(cfg != null) {
-			cfg.addEdge(this);
-		}
-		IdGenerator.addId(id);
-		this.mId = id;
-	}
+  CFGNode tail = null;
+  CFGNode head = null;
+  private String name;
 
+  public CFEdge(CFGNode tail, CFGNode head) {
+    this.tail = tail;
+    this.head = head;
+    this.name = CFEdge.generateId();
+  }
 
-	@Override
-	public ICFGNode getHead() {
-		return this.mHead;
-	}
+  private static String generateId() {
+    return IdGenerator.generateId("CFEdge");
+  }
 
-	@Override
-	public ICFGNode getTail() {
-		return this.mTail;
-	}
+  public CFEdge(String name, CFGNode tail, CFGNode head) throws Exception {
+    this.tail = tail;
+    this.head = head;
+    if(IdGenerator.hasId(name)) {
+      Exception e = new Exception("Can't construct CFEdge : something with name '" + name + "' already exists.");
+      throw e;      
+    }
+    IdGenerator.addId(name);
+    this.name = name;
+  }
 
-	@Override
-	public ICFG getCFG() {
-		return this.mCFG;
-	}
+  public CFGNode getHead() {
+    return this.head;
+  }
 
-	@Override
-	public void setCFG(ICFG graph) {
-		this.mCFG = graph;
-	}
+  public CFGNode getTail() {
+    return this.tail;
+  }
 
-	@Override
-	public String getId() {
-		return this.mId;
-	}
-	
-	public String toString() {
-		return "CFEdge " + this.mId + " tail = " + this.mTail.getId() + " head = " + this.mHead.getId() + "\n";
-	}
+  public String getName() {
+    return this.name;
+  }
+  
+  public String toString() {
+    return "CFEdge " + this.name + " tail = " + this.tail.name + " head = " + this.head.name + "\n";
+  }
 
-	@Override
-	public void setHead(ICFGNode node) {
-		this.mHead = node;
-	}
+  public void setHead(CFGNode node) {
+    this.head = node;
+  }
 
-	@Override
-	public void setTail(ICFGNode node) {
-		this.mTail = node;
-	}	
+  public void setTail(CFGNode node) {
+    this.tail = node;
+  }  
 
+  public void setEdgeAnnotation(boolean bool){}
 
-	
-
-public void setEdgeAnnotation(boolean bool){}
-	public boolean getEdgeAnnotation(){
-		return false;
-	}
+  public boolean getEdgeAnnotation(){
+    return false;
+  }
 }

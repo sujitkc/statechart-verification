@@ -30,11 +30,14 @@ import ast.Name;
 
 import translation.Flattener;
 import metric.Metric;
-
-public class TestFlatten {
+import translation.StatechartToProgramTranslator;
+import translation.ProgramToCFG;
+import program.Program;
+import stablcfg.*;
+public class TestProgramToCFG {
 
   @Test
-  public void testFlatten() {
+  public void testProgramToCFG() {
 
     Typechecker typechecker;
     String input = "data/curfew1.txt";
@@ -76,6 +79,32 @@ public class TestFlatten {
       System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
+
+    Program program = null;
+    try {
+      StatechartToProgramTranslator sctoprog = new StatechartToProgramTranslator(flattenedSC);
+      program = sctoprog.translate();
+      System.out.println("Printing Program ...");
+      System.out.println(program);
+      System.out.println("Printing Program ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't translate flattened statechart " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
+    try {
+      ProgramToCFG programToCFG = new ProgramToCFG();
+      CFG cfg = programToCFG.translate(program);
+//      System.out.println("Printing flattened Statechart ...");
+//      System.out.println(flattenedSC);
+//      System.out.println("Printing flattened Statechart ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
 
   }
 }

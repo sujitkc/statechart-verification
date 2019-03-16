@@ -2,275 +2,229 @@ package stablcfg;
 
 import java.util.Set;
 
+import ast.Declaration;
+import ast.DeclarationList;
+import ast.Type;
+import ast.FunctionDeclaration;
+
 import program.IProgram;
-import ast.Environment;
-import java.util.Queue;
-import ast.Expression;
 import ast.Name;
 import java.util.List;
 import utilities.IdGenerator;
 import java.util.HashSet;
 import java.util.Set;
-import cfg.*;
 
-public class CFG implements ICFG {
-	private Set<Name> mVariables = new HashSet<Name>();
+public class CFG {
 
-	private ICFGBasicBlockNode mStartNode; 
-	private ICFGBasicBlockNode mStopNode; 
-	
-	private Set<ICFGDecisionNode> mDecisionNodeList = new HashSet<ICFGDecisionNode>();
-	private Set<ICFGBasicBlockNode> mCFGBasicBlockNodeList = new HashSet<ICFGBasicBlockNode>();
-	private Set<ICFEdge> mEdges = new HashSet<ICFEdge>();
+  private String name;
 
-	private String mId;
+  public final DeclarationList declarations;
+  public final List<Type> types;
+  public final List<FunctionDeclaration> functionDeclarations;
+
+  private CFGBasicBlockNode startNode; 
+  private CFGBasicBlockNode stopNode; 
+  
+  private Set<CFGDecisionNode> decisionNodeList = new HashSet<CFGDecisionNode>();
+  private Set<CFGBasicBlockNode> cfgBasicBlockNodeList = new HashSet<CFGBasicBlockNode>();
+  private Set<CFEdge> edges = new HashSet<CFEdge>();
+
 
 
 // Initialises CFG instance with start & end node
-	public CFG(ICFGBasicBlockNode start, ICFGBasicBlockNode stop) throws Exception {
-		this.mStartNode = start;
-		if(start == null || stop == null) {
-			Exception e = new Exception("Can't construct CFG: start or stop node is null.");
-			throw e;
-		}
-		start.setCFG(this);
-		this.mStopNode = stop;
-		stop.setCFG(this);
-		this.mCFGBasicBlockNodeList.add(start);
-		this.mCFGBasicBlockNodeList.add(stop);
-		this.mId = CFG.generateId();
-	}
+  public CFG(
+      String name,
+      DeclarationList declarations,
+      List<Type> types,
+      List<FunctionDeclaration> functionDeclarations,
+      CFGBasicBlockNode start,
+      CFGBasicBlockNode stop) throws Exception {
 
-	public CFG(String id, ICFGBasicBlockNode start, ICFGBasicBlockNode stop) throws Exception {
-		this.mStartNode = start;
-		if(start == null || stop == null) {
-			Exception e = new Exception("Can't construct CFG: start or stop node is null.");
-			throw e;
-		}
-		start.setCFG(this);
-		this.mStopNode = stop;
-		stop.setCFG(this);
-		this.mCFGBasicBlockNodeList.add(start);
-		this.mCFGBasicBlockNodeList.add(stop);
-		
-		if(IdGenerator.hasId(id)) {
-			Exception e = new Exception("Can't construct CFG : something with name '" + id + "' already exists.");
-			throw e;
-		}
-		IdGenerator.addId(id);
-		this.mId = id;
-	}
+    this.name = name;
+    this.declarations = declarations;
+    this.types = types;
+    this.functionDeclarations = functionDeclarations;
+    this.startNode = start;
+    if(start == null || stop == null) {
+      Exception e = new Exception("Can't construct CFG: start or stop node is null.");
+      throw e;
+    }
+    this.stopNode = stop;
+    this.cfgBasicBlockNodeList.add(start);
+    this.cfgBasicBlockNodeList.add(stop);
+    this.name = CFG.generateId();
+  }
 
-	private static String generateId() {
-		return IdGenerator.generateId("CFG");
-	}
+/*
+  public CFG(String name, DeclarationList declarations, CFGBasicBlockNode start, CFGBasicBlockNode stop) throws Exception {
+    this.startNode = start;
+    if(start == null || stop == null) {
+      Exception e = new Exception("Can't construct CFG: start or stop node is null.");
+      throw e;
+    }
 
-	@Override
-	public ICFGBasicBlockNode getStartNode() {
-		return this.mStartNode;
-	}
+    this.declarations = declarations;
+    this.stopNode = stop;
+    this.cfgBasicBlockNodeList.add(start);
+    this.cfgBasicBlockNodeList.add(stop);
+    
+    if(IdGenerator.hasId(name)) {
+      Exception e = new Exception("Can't construct CFG : something with name '" + name + "' already exists.");
+      throw e;
+    }
+    IdGenerator.addId(name);
+    this.name = name;
+  }
+*/
 
-	@Override
-	public ICFGBasicBlockNode getStopNode() {
-		return this.mStopNode;
-	}
+  private static String generateId() {
+    return IdGenerator.generateId("CFG");
+  }
 
-	@Override
-	public ICFGDecisionNode addDecisionNode(ICFGDecisionNode node) {
-		if(this.hasDecisionNode(node)) {
-			return null;
-		}
-		this.mDecisionNodeList.add(node);
-		node.setCFG(this);
-		return node;
-	}
+  public CFGBasicBlockNode getStartNode() {
+    return this.startNode;
+  }
 
-	@Override
-	public ICFGBasicBlockNode addBasicBlockNode(ICFGBasicBlockNode node) {
-		if(this.hasBasicBlockNode(node)) {
-			return null;
-		}
-		this.mCFGBasicBlockNodeList.add(node);
-		node.setCFG(this);
-		return node;
-	}
+  public CFGBasicBlockNode getStopNode() {
+    return this.stopNode;
+  }
 
-	@Override
-	public ICFGBasicBlockNode deleteBasicBlockNode(ICFGBasicBlockNode node) {
-		if(!node.getCFG().equals(this)) {
-			return null;
-		}
-		if(!this.hasBasicBlockNode(node)) {
-			return null;
-		}
-		this.mCFGBasicBlockNodeList.remove(node);
-		node.setCFG(null);
-		return node;
-	}
+  public CFGDecisionNode addDecisionNode(CFGDecisionNode node) {
+    if(this.hasDecisionNode(node)) {
+      return null;
+    }
+    this.decisionNodeList.add(node);
+    return node;
+  }
 
-	@Override
-	public ICFGDecisionNode deleteDecisionNode(ICFGDecisionNode node) {
-		if(!node.getCFG().equals(this)) {
-			return null;
-		}
-		if(!this.hasDecisionNode(node)) {
-			return null;
-		}
-		this.mCFGBasicBlockNodeList.remove(node);
-		node.setCFG(null);
-		return node;
-	}
+  public CFGBasicBlockNode addBasicBlockNode(CFGBasicBlockNode node) {
+    if(this.hasBasicBlockNode(node)) {
+      return null;
+    }
+    this.cfgBasicBlockNodeList.add(node);
+    return node;
+  }
 
-	@Override
-	public boolean hasBasicBlockNode(ICFGBasicBlockNode node) {
-		return this.mCFGBasicBlockNodeList.contains(node);
-	}
+  public boolean hasBasicBlockNode(CFGBasicBlockNode node) {
+    return this.cfgBasicBlockNodeList.contains(node);
+  }
 
-	@Override
-	public int getNumberOfBasicBlockNodes() {
-		return this.mCFGBasicBlockNodeList.size();
-	}
+  public int getNumberOfBasicBlockNodes() {
+    return this.cfgBasicBlockNodeList.size();
+  }
 
-	@Override
-	public boolean hasDecisionNode(ICFGDecisionNode node) {
-		return this.mDecisionNodeList.contains(node);
-	}
+  public boolean hasDecisionNode(CFGDecisionNode node) {
+    return this.decisionNodeList.contains(node);
+  }
 
-	@Override
-	public int getNumberOfDecisionNodes() {
-		return this.mDecisionNodeList.size();
-	}
+  public int getNumberOfDecisionNodes() {
+    return this.decisionNodeList.size();
+  }
 
-	@Override
-	public boolean hasNode(ICFGNode node) {
-		if(node instanceof ICFGDecisionNode) {
-			return(this.hasDecisionNode((ICFGDecisionNode)node));
-		}
-		if(node instanceof ICFGBasicBlockNode) {
-			return(this.hasBasicBlockNode((ICFGBasicBlockNode)node));
-		}
-		return false;
-	}
+  public boolean hasNode(CFGNode node) {
+    if(node instanceof CFGDecisionNode) {
+      return(this.hasDecisionNode((CFGDecisionNode)node));
+    }
+    if(node instanceof CFGBasicBlockNode) {
+      return(this.hasBasicBlockNode((CFGBasicBlockNode)node));
+    }
+    return false;
+  }
 
-	@Override
-	public int getNumberOfNodes() {
-		return this.mCFGBasicBlockNodeList.size() + this.mDecisionNodeList.size();
-	}
+  public int getNumberOfNodes() {
+    return this.cfgBasicBlockNodeList.size() + this.decisionNodeList.size();
+  }
 
-	@Override
-	public ICFEdge addEdge(ICFEdge edge) {
-		ICFGNode h = edge.getHead();
-		ICFGNode t = edge.getTail();
-		if(!(this.hasNode(h) && this.hasNode(t))) {
-			return null;
-		}
-		edge.setCFG(this);
-		this.mEdges.add(edge);
-		if((t instanceof ICFGBasicBlockNode)) {
-			ICFGBasicBlockNode node = (ICFGBasicBlockNode)t;
-			node.setOutgoingEdge(edge);
-		}
-		else {
-			ICFGDecisionNode node = (ICFGDecisionNode)t;
-			if(!((node.getThenEdge() == null) || (node.getElseEdge() == null))) {
-				return null;
-			}
-			if(node.getThenEdge() == null) {
-				node.setThenEdge(edge);
-			}
-			else if(node.getElseEdge() == null) {
-				node.setElseEdge(edge);
-			}
-		}
-		h.addIncomingEdge(edge);
-//		System.out.println("IncomingEdge: "+h.getIncomingEdgeList());
-		return edge;
-	}
+  public CFEdge addEdge(CFEdge edge) {
+    CFGNode h = edge.getHead();
+    CFGNode t = edge.getTail();
+    if(!(this.hasNode(h) && this.hasNode(t))) {
+      return null;
+    }
+    this.edges.add(edge);
+    if((t instanceof CFGBasicBlockNode)) {
+      CFGBasicBlockNode node = (CFGBasicBlockNode)t;
+      node.setOutgoingEdge(edge);
+    }
+    else {
+      CFGDecisionNode node = (CFGDecisionNode)t;
+      if(!((node.getThenEdge() == null) || (node.getElseEdge() == null))) {
+        return null;
+      }
+      if(node.getThenEdge() == null) {
+        node.setThenEdge(edge);
+      }
+      else if(node.getElseEdge() == null) {
+        node.setElseEdge(edge);
+      }
+    }
+    h.addIncomingEdge(edge);
+    return edge;
+  }
 
-	@Override
-	public ICFEdge deleteEdge(ICFEdge edge) {
-		if(!this.hasEdge(edge)) {
-			return null;
-		}
-		edge.setCFG(null);
-		ICFGNode h = edge.getHead();
-		ICFGNode t = edge.getTail();
-		t.deleteOutgoingEdge(edge);
-		h.deleteIncomingEdge(edge);
-		this.mEdges.remove(edge);
-		return edge;
-	}
+  public boolean hasEdge(CFEdge edge) {
+    return this.edges.contains(edge);
+  }
 
-	@Override
-	public boolean hasEdge(ICFEdge edge) {
-		return this.mEdges.contains(edge);
-	}
+  public int getNumberOfEdges() {
+    return this.edges.size();
+  }
 
-	@Override
-	public int getNumberOfEdges() {
-		return this.mEdges.size();
-	}
+  public Set<CFGNode> getNodeSet() {
+    Set<CFGNode> nodeSet = new HashSet<CFGNode>();
+    for(CFGNode n : this.cfgBasicBlockNodeList) {
+      nodeSet.add(n);
+    }
+    for(CFGNode n : this.decisionNodeList) {
+      nodeSet.add(n);
+    }
+    return nodeSet;
+  }
 
-	@Override
-	public Set<ICFGNode> getNodeSet() {
-		Set<ICFGNode> nodeSet = new HashSet<ICFGNode>();
-		for(ICFGNode n : this.mCFGBasicBlockNodeList) {
-			nodeSet.add(n);
-		}
-		for(ICFGNode n : this.mDecisionNodeList) {
-			nodeSet.add(n);
-		}
-		return nodeSet;
-	}
+  public Set<CFEdge> getEdgeSet() {
+    return this.edges;
+  }
 
-	@Override
-	public Set<ICFEdge> getEdgeSet() {
-		return this.mEdges;
-	}
+  public Set<CFGDecisionNode> getDecisionNodeSet() {
+    return this.decisionNodeList;
+  }
 
-	@Override
-	public Set<ICFGDecisionNode> getDecisionNodeSet() {
-		return this.mDecisionNodeList;
-	}
+  public Set<CFGBasicBlockNode> getBasicBlockNodeSet() {
+    return this.cfgBasicBlockNodeList;
+  }
+  
+  public boolean addDeclaration(Declaration declaration) {
+    return this.declarations.add(declaration);
+  }
+  
+  public boolean hasVariable(Name var) {
+    if(this.declarations.lookup(var.toString()) == null) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public Set<ICFGBasicBlockNode> getBasicBlockNodeSet() {
-		return this.mCFGBasicBlockNodeList;
-	}
-	
-	@Override
-	public Name addVariable(Name var) {
-		if(this.hasVariable(var)) {
-			return null;
-		}
-		this.mVariables.add(var);
-		var.setProgram(this);
-		return var;
-	}
-	
-	@Override
-	public boolean hasVariable(Name var) {
-		return this.mVariables.contains(var);
-	}
-	@Override
-	public Set<Name> getVariables() {
-		return this.mVariables;
-	}
-	@Override
-	public String getId() {
-		return this.mId;
-	}
-	
-	public String toString() {
-		String s = "CFG = " + this.mId;
-		s = "Nodes {\n";
-		for(ICFGNode node : this.getNodeSet()) {
-			s = s + node.toString();
-		}
-		for(ICFEdge edge : this.getEdgeSet()) {
-			s = s + edge.toString();
-		}
-		return s;
-	}
+  public Set<Name> getVariables() {
+    Set<Name> vars = new HashSet<Name>();
+    for(Declaration d : this.declarations) {
+      vars.add(new Name(d.vname));
+    }
+    return vars;
+  }
 
+  public String getId() {
+    return this.name;
+  }
+  
+  public String toString() {
+    String s = "CFG = " + this.name;
+    s = "Nodes {\n";
+    for(CFGNode node : this.getNodeSet()) {
+      s = s + node.toString();
+    }
+    for(CFEdge edge : this.getEdgeSet()) {
+      s = s + edge.toString();
+    }
+    return s;
+  }
 }
