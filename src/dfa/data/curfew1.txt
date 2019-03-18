@@ -122,8 +122,8 @@ statechart Student {
     trigger     : eLogout;
     guard       : true;
     action      : { 
-      Student.LoggedOut.user = 0;
-      Student.LoggedOut.password = "";
+      Student.LoggedOut.user := 0;
+      Student.LoggedOut.password := "";
     }
   }
 }

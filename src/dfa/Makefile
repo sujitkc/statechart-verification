@@ -5,7 +5,7 @@ Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java
 	if [ ! -d classes ]; then \
 		mkdir classes; \
 	fi;
-	javac -Xlint:-unchecked -d classes *.java ${FE}/*.java ast/*.java translation/Flattener.java metric/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:ast:./:classes;
+	javac -Xlint:-unchecked -d classes *.java ${FE}/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java translation/Flattener.java metric/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:ast:./:classes;
 
 sym.java : ${FE}/parser.cup
 	java -jar ${MYLIBPATH}/java-cup-11a.jar -parser Parser -dump < ${FE}/parser.cup

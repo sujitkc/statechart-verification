@@ -3,9 +3,9 @@ package stablcfg;
 import ast.Expression;
 
 public class CFGDecisionNode extends CFGNode {
-  Expression condition;
-  CFEdge thenEdge;
-  CFEdge elseEdge;
+  public final Expression condition;
+  private CFEdge thenEdge;
+  private CFEdge elseEdge;
 
   public CFGDecisionNode(Expression cond){
     this.condition=cond;

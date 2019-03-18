@@ -135,7 +135,7 @@ public class CFG {
     return this.cfgBasicBlockNodeList.size() + this.decisionNodeList.size();
   }
 
-  public CFEdge addEdge(CFEdge edge) {
+  public CFEdge addEdge(CFEdge edge) throws Exception {
     CFGNode h = edge.getHead();
     CFGNode t = edge.getTail();
     if(!(this.hasNode(h) && this.hasNode(t))) {
@@ -212,7 +212,7 @@ public class CFG {
     return vars;
   }
 
-  public String getId() {
+  public String getName() {
     return this.name;
   }
   

@@ -4,11 +4,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
 
 import program.Program;
 import ast.*;
 import stablcfg.*;
 import utilities.Pair;
+import utilities.prettyprint.CFGToDot;
 
 public class ProgramToCFG {
 
@@ -47,6 +50,21 @@ public class ProgramToCFG {
         theCFG.addDecisionNode((CFGDecisionNode)node);
       }
     }
+
+    this.addSuccessor(program);
+    this.addCFEdge(program);
+
+    CFGToDot cfgToDot = new CFGToDot();
+    String dot = cfgToDot.toDot(this.theCFG);
+    try {
+      PrintWriter out = new PrintWriter("cfg.dot");
+      out.print(dot);
+      out.close();
+    }
+    catch(FileNotFoundException e) {
+      System.out.println("Couldn't find file cfg.dot.");
+    }
+
     return this.theCFG;
   }
 
@@ -94,6 +112,10 @@ public class ProgramToCFG {
     for(Statement statement : slist.getStatements()) {
       this.addNodeMapping(statement);
     }
+  }
+
+  private void addSuccessor(Program program) throws Exception {
+    this.addSuccessor(program.statements);
   }
 
   private void addSuccessor(Statement statement) throws Exception {
@@ -147,6 +169,15 @@ public class ProgramToCFG {
     this.successors.put(last, listSuccessor); 
     if((last instanceof InstructionStatement) == false) {
       this.addSuccessor(last);
+    }
+  }
+
+  private void addCFEdge(Program program) throws Exception {
+    this.addCFEdge(program.statements);
+    this.theCFG.addEdge(new CFEdge(this.theCFG.getStartNode(), this.nodeMap.get(program.statements.getFirstStatement())));
+    List<Statement> lastStatements = program.statements.getLastStatements();
+    for(Statement lastStatement : lastStatements) {
+      this.theCFG.addEdge(new CFEdge(this.nodeMap.get(lastStatement), this.theCFG.getStopNode()));
     }
   }
 
