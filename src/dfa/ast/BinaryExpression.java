@@ -1,41 +1,55 @@
 package ast;
-import java.util.*;
-import program.IProgram;
-import visitors.IExprVisitor;
+
+import java.util.Map;
+import java.util.HashMap;
 
 public class BinaryExpression extends Expression {
 
   public final Expression left;
   public final Expression right;
-  public List<Expression> variables;
+
   public final String operator;
-  
-public BinaryExpression(IProgram program, Type type){
-	super(program,type);
-	this.left     = null;
-        this.right    = null;
-        this.operator = null;
-}
-public BinaryExpression(IProgram program,Expression left, Expression right, String operator) {
-    super(program, left.getType());
-    this.left     = left;
-    this.right    = right;
-    this.operator = operator;
-    this.variables=new ArrayList<Expression>();    
+
+  public enum OperatorType {
+    PLUS, // "+"
+    MUL,  // "*"
+    SUB,  // "-"
+    DIV,  // "/"
+
+    GE,   // ">="
+    GT,   // ">"
+    LE,   // "<="
+    LT,   // "<"
+    NE,   // "!="
+    EQ,   // "="
+
+    AND,  // "&&"
+    OR    // "||"
+  }
+
+  public static final Map<OperatorType, String> operator_string = new HashMap<OperatorType, String>();
+
+  {
+    BinaryExpression.operator_string.put(OperatorType.PLUS, "+");
+    BinaryExpression.operator_string.put(OperatorType.MUL,  "*");
+    BinaryExpression.operator_string.put(OperatorType.SUB,  "-");
+    BinaryExpression.operator_string.put(OperatorType.DIV,  "/");
+    BinaryExpression.operator_string.put(OperatorType.GE,  ">=");
+    BinaryExpression.operator_string.put(OperatorType.GT,   ">");
+    BinaryExpression.operator_string.put(OperatorType.LE,  "<=");
+    BinaryExpression.operator_string.put(OperatorType.LT,   "<");
+    BinaryExpression.operator_string.put(OperatorType.NE,  "!=");
+    BinaryExpression.operator_string.put(OperatorType.EQ,   "=");
+    BinaryExpression.operator_string.put(OperatorType.AND,  "&&");
+    BinaryExpression.operator_string.put(OperatorType.OR,   "||");
   }
 
   public BinaryExpression(Expression left, Expression right, String operator) {
-    super(null,left.getType());
     this.left     = left;
     this.right    = right;
     this.operator = operator;
-	this.variables=new ArrayList<Expression>();
-    
-    
   }
-  public String getOperator(){
-	return this.operator;
-  }
+
   public String toString() {
     String s = this.left.toString() + " " + this.operator + " " + this.right.toString();
     if(this.type != null) {  
@@ -46,37 +60,4 @@ public BinaryExpression(IProgram program,Expression left, Expression right, Stri
     }
     return s;
   }
-  public List<Expression> getVariables(){
-  // There can be FunctionCall within BinaryExpression 
-	//or BinaryExpression inside FunctionCall
-	//if Functioncall - recursively identify all variables
-	//if BinaryExpression - recursively identify all variables
-   if(this.left instanceof IntegerConstant || this.left instanceof StringLiteral || this.left instanceof BooleanConstant){}
-	else if(this.left instanceof FunctionCall){
-		this.variables.addAll(((FunctionCall)this.left).getVariables());
-	}
-	else if(this.left instanceof BinaryExpression){
-		this.variables.addAll(((BinaryExpression)this.left).getVariables());
-	}
-    else this.variables.add(left);
-    if(this.right instanceof IntegerConstant || this.right instanceof StringLiteral || this.right instanceof BooleanConstant){}
-    else if(this.right instanceof FunctionCall){
-		this.variables.addAll(((FunctionCall)this.right).getVariables());
-	}
-	else if(this.right instanceof BinaryExpression){
-		this.variables.addAll(((BinaryExpression)this.right).getVariables());
-	}
-	else this.variables.add(right);
-	return this.variables;
-  }
-  @Override
-	public void accept(IExprVisitor<?> visitor) {
-		try {
-			visitor.visit(this.left);
-			visitor.visit(this.right);
-		} catch (Exception e) {
-				e.printStackTrace();
-			}
-	}
-
 }

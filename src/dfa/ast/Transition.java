@@ -1,8 +1,8 @@
 package ast;
 
-import java.util.*;
+import java.util.List;
 
-public class Transition extends Region{
+public class Transition {
   public  final String     name;
   public  final Name       sourceName;
   public  final Name       destinationName;
@@ -15,9 +15,7 @@ public class Transition extends Region{
   private       State      state;
   private       Statechart statechart;
 
-  //public List<Object> readVariables; //variables read in transition
-  //public List<Object> writeVariables; //variables write in transition
- 
+  
   // Variables declared in readEnvironment aren't allowed to be used as
   // l-values, e.g. LHS of an assignment
   private Environment readOnlyEnvironment = null;
@@ -46,9 +44,6 @@ public class Transition extends Region{
     this.trigger         = trigger;
     this.guard           = guard;
     this.action          = action;
-    this.readVariables = new ArrayList<Object>();
-    this.writeVariables = new ArrayList<Object>();
-    
   }
 
   public State getSource() {
@@ -133,5 +128,4 @@ public class Transition extends Region{
     s += "\n}\n";
     return s;
   }
-
 }

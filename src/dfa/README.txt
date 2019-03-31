@@ -1,7 +1,7 @@
 To build
 --------
   Change the value of MYLIBPATH to point to the directory where the jlex and cup are located.
-  make
+  make test
 
 To clean
 --------
@@ -10,9 +10,11 @@ To clean
 To run
 ------
   Single test case:
-  ./run.sh <input-file-name>
+  ./run.sh <test-case-name>
+  For example, to run the test case TestFrontEnd, we run the following command:
+  ./run.sh TestFrontEnd
 
   All test cases (listed in run.sh):
   ./run.sh
 
-Test cases are placed in data/ directory.
+Test inputs are placed in data/ directory.

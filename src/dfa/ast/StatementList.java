@@ -25,6 +25,21 @@ public class StatementList extends Statement {
     return this.statements;
   }
 
+  public Statement getFirstStatement() {
+    if(this.statements.isEmpty() == false) {
+      return this.statements.get(0).getFirstStatement();
+    }
+    return null;
+  }
+
+  public List<Statement> getLastStatements() {
+    List<Statement> last = new ArrayList<Statement>();
+    if(this.statements.isEmpty() == false) {
+      last.addAll(this.statements.get(this.statements.size() - 1).getLastStatements());
+    }
+    return last;
+  }
+
   public String toString() {
     String s = "\n{\n";
     for(Statement st : this.statements) {

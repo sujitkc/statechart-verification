@@ -20,8 +20,12 @@ statechart Student {
 
   rooms : map<| int, int |>;
 
+  entry :
+  {
+    students :=  put_map<|int, string |>(students, 100, "p1");
+    students :=  put_map<|int, string |>(students, 101, "p2");
+  }
 
-  entry : {}
   exit  : {}
 
   functions {
@@ -32,6 +36,9 @@ statechart Student {
   state LoggedOut {
     user #     : int;
     password # : string;  
+
+    entry : {}
+    exit  : {}
   }
 
   state LoggedIn {
@@ -49,7 +56,7 @@ statechart Student {
       room # : int;
 
       entry : {}
-      exit  : { put_map <| int, int |>(rooms, loggedinUser, room); }
+      exit  : { rooms := put_map <| int, int |>(rooms, loggedinUser, room); }
     }
 
     state ViewDetails {
@@ -92,7 +99,6 @@ statechart Student {
       action      : {}
     }
 
-
     transition tviewdetails_done {
       source      : Student.LoggedIn.ViewDetails;
       destination : Student.LoggedIn.Dashboard;
@@ -116,8 +122,8 @@ statechart Student {
     trigger     : eLogout;
     guard       : true;
     action      : { 
-      Student.LoggedOut.user = 0;
-      Student.LoggedOut.password = "";
+      Student.LoggedOut.user := 0;
+      Student.LoggedOut.password := "";
     }
   }
 }

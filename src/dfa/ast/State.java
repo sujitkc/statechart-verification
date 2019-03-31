@@ -1,8 +1,9 @@
 package ast;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
-public class State extends Region{
+public class State {
 
   public final String name;
   public final List<State> states;
@@ -10,9 +11,7 @@ public class State extends Region{
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
-  //public List<Object> readVariables; //variables read in entry/exit of state
-  //public List<Object> writeVariables; //variables write in entry/exit of state
-  
+
   protected Statechart statechart = null;
   protected State superstate = null;
   protected Environment environment = null;
@@ -40,9 +39,6 @@ public class State extends Region{
       t.setState(this);
     }
     this.declarations.setState(this);
-    this.readVariables=new ArrayList<Object>();
-    this.writeVariables=new ArrayList<Object>();
-    
   }
 
 
@@ -173,7 +169,4 @@ public class State extends Region{
     s += "}\n";
     return s;    
   }
- 
-  
- 
 }

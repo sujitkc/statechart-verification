@@ -1,0 +1,617 @@
+package frontend;
+
+import java_cup.runtime.*;
+import java_cup.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.ArrayList;
+
+
+action code
+{:
+  ast.Statechart statechart = null;
+:}
+parser code 
+{:
+  public static String strliteral = "";
+
+  public void syntax_error(Symbol s){
+    System.out.println("compiler has detected a syntax error at line " + s.left 
+      + " column " + s.right+"Symbol <"+s.toString()+">");
+  }
+:}
+
+non terminal ast.Statechart       statechart;
+non terminal ast.State            state;
+non terminal ast.Transition       transition;
+non terminal ast.Name             name;
+non terminal List<ast.State>      states;
+non terminal List<ast.Transition> transitions;
+
+non terminal ast.StatementList    statement_list;
+non terminal ast.Statement        statement;
+non terminal ast.Expression       expr;
+
+non terminal ast.DeclarationList  decl_list;
+non terminal ast.Declaration      decl;
+non terminal ast.Declaration      normal_decl;
+non terminal ast.Declaration      inp_decl;
+
+non terminal ast.DeclarationList  param_list;
+non terminal ast.DeclarationList  non_empty_param_list;
+non terminal ast.FunctionDeclaration funcdecl;
+non terminal List<ast.FunctionDeclaration> funcdecls;
+non terminal List<ast.FunctionDeclaration> funcs;
+non terminal ast.FunctionName func_name;
+
+non terminal List<ast.Expression> arg_list;
+non terminal List<ast.Expression> non_empty_arg_list;
+non terminal ast.FunctionCall func_call;
+
+non terminal List<ast.Struct> structs;
+non terminal ast.Struct       struct;
+
+non terminal ast.BooleanConstant boolconst;
+
+non terminal String binop;
+
+non terminal List<String> events;
+non terminal List<String> eventlist;
+non terminal String trigger;
+
+non terminal List<ast.Type> typelist;
+non terminal List<ast.Type> typedecls;
+non terminal ast.Type typedecl;
+non terminal ast.Type polytypedecl;
+non terminal List<String> tparams;
+non terminal List<String> ne_tparams;
+
+non terminal ast.TypeName typename;
+non terminal List<ast.TypeName> typenames;
+
+non terminal ast.Statement entry_clause;
+non terminal ast.Statement exit_clause;
+
+terminal String IDENTIFIER;
+terminal Integer INTCONST;
+terminal String STRLITERAL;
+
+terminal Symbol
+    LBRACE, RBRACE, LPAREN, RPAREN, LTRI, RTRI,          /* Brackets                 */
+    SEMICOLON, COLON, COMMA, DOT, HASH,                  /* Punctuations             */ 
+    ASSIGN,
+    WHILE, IF, ELSE,                                     /* Control flow             */
+    STATECHART, STATE, TRANSITION,                       /* Statechart related       */
+    SRC, DEST, TRIGGER, GUARD, ACTION,                   /* Transition label related */
+    ENTRY, EXIT,                                         /* State local code         */
+    EVENTS,                                              /* Event related            */
+    AND, OR,                                             /* Logical operators        */
+    EQ, NE, GE, GT, LE, LT,                              /* Relational operators     */
+    SUB, ADD, MUL, DIV,                                  /* Arithmetic operators     */
+    TRUE, FALSE,                                         /* Constants                */
+    STRUCT, TYPES, TYPE,                                 /* User defined types       */
+    FUNCTIONS                                            /* Functions                */
+    ;
+
+precedence nonassoc LE, LT, EQ, NE, GE, GT;
+precedence left LBRACE, RBRACE, AND, OR;
+precedence left DOT;
+precedence left ADD, SUB;
+precedence left MUL, DIV;
+precedence left LPAREN, RPAREN;
+
+start with statechart;
+
+/*********** fully qualified names like s1.s11 ****************/
+name ::=
+    IDENTIFIER:id {:
+      RESULT = new ast.Name(id);
+    :}
+  |  name:idlist DOT IDENTIFIER:id
+    {:
+      RESULT = idlist;
+      RESULT.add(id);
+    :}
+  ;
+
+/*********** skeletal statechart structure - begin *******/
+statechart ::= 
+    STATECHART IDENTIFIER:id LBRACE
+      typelist : tlist
+      eventlist:el
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      funcdecls:fdecls
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr);
+    :}
+  ;
+
+typelist ::=
+    TYPES LBRACE typedecls:decls RBRACE
+  {:
+    RESULT = decls;    
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.Type>();
+  :}
+  ;
+
+typedecls ::=
+    typedecls:decls typedecl:decl
+    {:
+      RESULT = decls;
+      RESULT.add(decl);
+    :}
+  | {:
+      RESULT = new ArrayList<ast.Type>();
+    :}
+  ;
+
+
+typedecl ::=
+    polytypedecl:decls
+  {:
+    RESULT = decls;
+  :}
+  | struct : str
+  {:
+    RESULT = str;
+  :}
+  ;
+
+polytypedecl ::=
+    TYPE IDENTIFIER:tname LTRI tparams:params RTRI SEMICOLON
+  {:
+    RESULT = new ast.BasicType(tname, params);
+  :}
+  ;
+
+tparams ::=
+    ne_tparams:params
+  {:
+    RESULT = params;
+  :}
+  | 
+  {:
+    RESULT = new ArrayList<String>();
+  :}
+  ;
+
+ne_tparams ::=
+    ne_tparams:params COMMA IDENTIFIER:param
+  {:
+    RESULT = params;
+    RESULT.add(param);
+  :}
+  | IDENTIFIER:param
+  {:
+    RESULT = new ArrayList<String>();
+    RESULT.add(param);
+  :}
+  ;
+
+struct ::=
+    /* non-polymorphic struct */
+    STRUCT IDENTIFIER:id LBRACE
+      decl_list:dlist
+    RBRACE
+    {:
+      RESULT = new ast.Struct(id, dlist, new ArrayList<String>());
+    :}
+
+  |
+    /* polymorphic struct */
+    STRUCT LTRI tparams:params RTRI IDENTIFIER:id LBRACE
+      decl_list:dlist
+    RBRACE
+    {:
+      RESULT = new ast.Struct(id, dlist, params);
+    :}
+  ;
+
+eventlist ::=
+    EVENTS LBRACE
+      events:el
+    RBRACE
+    {:
+      RESULT = el;
+    :}
+  |
+    {:
+      RESULT = new ArrayList<String>();
+    :}
+  ;
+
+events ::=
+    events:eventlist IDENTIFIER:e SEMICOLON
+    {:
+      RESULT = eventlist;
+      for(String event : eventlist) {
+        if(event.equals(e)) {
+          throw new Exception("Duplicate event" + e);
+        }
+      }
+      RESULT.add(e);
+    :}
+  | {:
+       RESULT = new ArrayList<String>();
+    :}
+  ;
+
+funcdecl ::=
+    IDENTIFIER:fname LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
+  {:
+    RESULT = new ast.FunctionDeclaration(fname, tname, params);
+  :}
+  | IDENTIFIER:fname LTRI tparams:typars RTRI LPAREN param_list:params RPAREN COLON typename:tname SEMICOLON
+  {:
+    RESULT = new ast.FunctionDeclaration(fname, typars, tname, params);
+  :}
+  ;
+
+param_list ::=
+    non_empty_param_list:params
+  {:
+    RESULT = params;
+  :}
+  | 
+  {:
+    RESULT = new ast.DeclarationList();
+  :}
+  ;
+
+non_empty_param_list ::=
+    non_empty_param_list:params COMMA normal_decl:param
+  {:
+    RESULT = params;
+    if(!RESULT.add(param)) {
+      throw new Exception("Duplication parameter name '" + param.vname + "' function parameter list.");
+    }
+  :}
+  | normal_decl:param
+  {:
+    RESULT = new ast.DeclarationList();
+    RESULT.add(param);
+  :}
+  ;
+
+funcdecls ::=
+    FUNCTIONS LBRACE
+      funcs:fs    
+    RBRACE
+  {:
+    RESULT = fs;
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.FunctionDeclaration>();
+  :}
+  ;
+
+funcs ::=
+    funcs:decs funcdecl:dec
+  {:
+    RESULT = decs;
+    for(ast.FunctionDeclaration f : decs) {
+      if(f.name.equals(dec.name)) {
+        throw new Exception("Duplicate function name " + dec.name);
+      }
+    }
+
+    RESULT.add(dec);
+  :}
+  |
+    {:
+      RESULT = new ArrayList<ast.FunctionDeclaration>();
+    :}
+  ;
+
+state ::= 
+    STATE IDENTIFIER:id LBRACE
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.State(id, dlist, en, ex, st, tr);
+    :}
+
+  ;
+
+entry_clause ::=
+    ENTRY COLON statement:a
+    {:
+      RESULT = a;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
+    :}
+  ;
+
+exit_clause ::=
+    EXIT COLON statement:a
+    {:
+      RESULT = a;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
+    :}
+  ;
+
+
+states ::=
+    states:slist state:s 
+    {:
+      RESULT = slist;
+      for(ast.State st : slist) {
+        if(st.name.equals(s.name)) {
+          throw new Exception("Duplicate state name " + s.name);
+        }
+      }
+      RESULT.add(s);
+    :}
+  | {:
+       RESULT = new ArrayList<ast.State>();
+    :}
+  ;
+
+transition ::=
+    TRANSITION IDENTIFIER:id LBRACE
+      SRC  COLON name:src SEMICOLON
+      DEST COLON name:des SEMICOLON
+      trigger:t
+      GUARD COLON expr:g SEMICOLON
+      ACTION COLON statement:a
+    RBRACE
+    {:
+      RESULT = new ast.Transition(id, src, des, t, g, a);
+    :}
+  ;
+
+trigger ::=
+    TRIGGER COLON IDENTIFIER:e SEMICOLON
+    {:
+      RESULT = e;
+    :}
+  |
+    {:
+      RESULT = "eNone";
+    :}
+  ;
+
+transitions ::=
+    transitions:tlist transition:t 
+    {:
+      RESULT = tlist;
+      for(ast.Transition tr : tlist) {
+        if(tr.name.equals(t.name)) {
+          throw new Exception("Duplicate transition name " + t.name);
+        }
+      }
+      RESULT.add(t);
+    :}
+  | {:
+        RESULT = new ArrayList<ast.Transition>();
+    :}
+  ;
+/*********** skeletal statechart structure - end *******/
+
+/********** expressions for action language - begin ******/
+expr ::=
+    name:n {:
+      RESULT = n;
+    :}
+  | expr:e1 binop:op expr:e2
+    {:
+      RESULT = new ast.BinaryExpression(e1, e2, op);
+    :}
+  | boolconst:e
+    {:
+      RESULT = e;
+    :}
+  | INTCONST:n
+    {:
+      RESULT = new ast.IntegerConstant(n);
+    :}
+   | STRLITERAL:s
+    {:
+      RESULT = new ast.StringLiteral(s);
+    :}
+ | LPAREN expr:e RPAREN
+    {:
+      RESULT = e;
+    :}
+  | func_call:e
+    {:
+      RESULT = e;
+    :}
+/*
+  | unaryop:op expr:e
+    {:
+      RESULT = new UnaryExpression(e, op);
+    :}
+*/
+  ;
+
+func_call ::=
+    func_name:f LPAREN arg_list:alist RPAREN
+  {:
+    RESULT = new ast.FunctionCall(f, alist);
+  :}
+  ;
+
+func_name ::=
+    IDENTIFIER:tid LTRI typenames:targs RTRI
+    {:
+      RESULT = new ast.FunctionName(tid, targs);
+    :}
+  | IDENTIFIER:tid LTRI RTRI
+    {:
+      RESULT = new ast.FunctionName(tid, new ArrayList<ast.TypeName>());
+    :}
+  ;
+
+arg_list ::=
+    non_empty_arg_list:args
+  {:
+    RESULT = args;
+  :}
+  |
+  {:
+    RESULT = new ArrayList<ast.Expression>();
+  :}
+  ;
+
+non_empty_arg_list ::=
+    non_empty_arg_list:args COMMA expr:arg
+  {:
+    RESULT = args;
+    RESULT.add(arg);
+  :}
+  | expr:arg
+  {:
+    RESULT = new ArrayList<ast.Expression>();
+    RESULT.add(arg);
+  :}
+  ;
+
+boolconst ::=
+    TRUE
+    {:
+      RESULT = new ast.BooleanConstant(true);
+    :}
+  | FALSE
+    {:
+      RESULT = new ast.BooleanConstant(false);
+    :}
+  ;
+
+binop ::=
+    ADD  {: RESULT = "+"; :}
+  | MUL  {: RESULT = "*"; :}
+  | SUB  {: RESULT = "-"; :}
+  | DIV  {: RESULT = "/"; :}
+  | GE   {: RESULT = ">="; :}
+  | GT   {: RESULT = ">"; :}
+  | LE   {: RESULT = "<="; :}
+  | LT   {: RESULT = "<"; :}
+  | EQ   {: RESULT = "="; :}
+  | NE   {: RESULT = "!="; :}
+  | AND  {: RESULT = "&&"; :}
+  | OR   {: RESULT = "||"; :}
+  ;
+
+/*
+unaryop ::=
+    UMIN  {: RESULT = Expression.UMIN; };
+  | NOT  {: RESULT = Expression.NOT; };
+*/
+
+statement_list::=
+    statement_list:sl statement:s 
+    {:
+      sl.add(s);
+      RESULT = sl;
+    :}
+  |
+    {:
+      RESULT = new ast.StatementList();
+    :}
+  ;
+
+statement::=
+    expr:e SEMICOLON
+    {:
+      RESULT = new ast.ExpressionStatement(e);
+    :}
+  | name:n ASSIGN expr:e SEMICOLON
+    {:
+      RESULT = new ast.AssignmentStatement(n, e);
+    :}
+  | LBRACE
+      statement_list:sl
+    RBRACE
+    {:
+      RESULT = sl;
+    :}
+  | IF expr:e statement:s1 ELSE statement:s2
+    {:
+      RESULT = new ast.IfStatement(e, s1, s2);
+    :}
+  | WHILE expr:e statement:s
+    {:
+      RESULT = new ast.WhileStatement(e, s);
+    :}
+  ;
+
+decl_list ::= decl_list:dlist decl:d
+    {:
+      RESULT = dlist;
+      if(!RESULT.add(d)) {
+        throw new Exception("Duplication variable name '" + d.vname + "' declaration in same scope.");
+      }
+    :}
+  | {:
+      RESULT = new ast.DeclarationList();
+    :}
+  ;
+
+decl ::=
+      normal_decl:d SEMICOLON
+    {:
+      RESULT = d;
+    :}
+  |   inp_decl:d SEMICOLON
+    {:
+      RESULT = d;
+    :}
+  ;
+
+normal_decl ::=
+     IDENTIFIER:id COLON typename:tid
+    {:
+      RESULT = new ast.Declaration(id, tid, false);
+    :}
+  ;
+
+inp_decl ::=
+     IDENTIFIER:id HASH COLON typename:tid
+    {:
+      RESULT = new ast.Declaration(id, tid, true);
+    :}
+  ;
+
+typename ::=
+      IDENTIFIER:tid
+    {:
+      RESULT = new ast.TypeName(tid);
+    :}
+  |   IDENTIFIER:tid LTRI typenames:targs RTRI
+    {:
+      RESULT = new ast.TypeName(tid, targs);
+    :}
+  ;
+
+typenames ::=
+      typenames:tns COMMA typename:tn
+    {:
+      RESULT = tns;
+      RESULT.add(tn);
+    :}
+  |  typename:tn
+    {:
+      RESULT = new ArrayList<ast.TypeName>();
+      RESULT.add(tn);
+    :}
+  ;

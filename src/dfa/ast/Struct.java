@@ -15,7 +15,10 @@ public class Struct extends Type {
     super(name, typeParameterNames);
     this.declarations = declarations;
   }
-  
+   public DeclarationList getDeclarationList() {
+	   System.out.println("inside struct");
+    return this.declarations;
+  }
   public Type substantiate(List<Type> typeArguments) throws Exception {
 
     DeclarationList decs = new DeclarationList();

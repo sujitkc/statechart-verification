@@ -20,7 +20,9 @@ public class Declaration {
   public String getFullVName() {
     return this.getState().getFullName() + '.' + this.vname;
   }
-
+  public String getFullVName(char ch) {
+    return this.vname;
+  }
   public Type getType() {
     return this.type;
   }
@@ -37,8 +39,12 @@ public class Declaration {
   public void setType(Type type) {
     this.type = type;
   }
-  
+
   public void setDeclarationList(DeclarationList declarationList) {
     this.declarationList = declarationList;
+  }
+ public DeclarationList getDeclarationList() {
+	 System.out.println("inside Declaration");
+    return this.declarationList;
   }
 }

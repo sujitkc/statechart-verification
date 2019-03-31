@@ -1,9 +1,6 @@
 package ast;
-import java.util.*;
-import program.IProgram;
-import visitors.IAcceptor;
-import visitors.IExprVisitor;
-public abstract class Expression implements IAcceptor{
+
+public abstract class Expression {
 /*
   public enum Operator {
     ADD,
@@ -25,27 +22,7 @@ public abstract class Expression implements IAcceptor{
 
   protected Type type;
 
-protected IProgram mProgram = null;
 
-	public Expression(IProgram program, Type type) {
-		this.mProgram = program;
-		this.type = type;
-		/*if(!Type.hasType(type)) {
-			Exception e = new Exception("Expression : Type " + type + " not found.");
-			throw e;
-		}*/
-	}
-	
-	public IProgram getProgram() {
-		return this.mProgram;
-	}
-
-	
-	public void setProgram(IProgram program) {
-		this.mProgram = program;
-	}
-
-	
   public Type getType() {
     return this.type;
   }
@@ -53,11 +30,4 @@ protected IProgram mProgram = null;
   public void setType(Type type) {
     this.type = type;
   }
-  public List<Expression> getVariables(){
-	return null;
-  }
-    @Override
-	public void accept(IExprVisitor<?> visitor) throws Exception {
-	}
-
 }

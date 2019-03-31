@@ -1,5 +1,8 @@
-Add local variable declaration in statement blocks.
+21/2/2019: BinaryExpression design: operator type should be stored as the enumerated type (operator_type) to ensure type safety. 
+The current String based implementation is brittle. e.g. if a new binary operator type is added, the type-checker is
+impacted.
 
-Fix earlier test cases with function calls to add "<|" and "|>".
-
+25/2/2019: Redesign typechecker. After translation from Statechart to Program, we need to typecheck the program. Much of the typechecking needed there is already implemented as a part of the frontend.Typechecker class. However, this assuming the typechecking happening in the context of a Statechart. We need to refactor it so that part of it which are relevant for Program typechecking do not have to be duplicated anywhere.
+Current Approach: is actually a hack. At the time of constructing the program, we do type-binding along side since all the extra variables added (e.g. state and event) are of int type, and it's simple. However, for any unforeseen complication, this approach will go horribly wrong.
+25/2/2019: Test case Debris. Most of the test cases in the data/ directory are obsolete. They were used very early. The concrete syntax has evolved since then. Now, many of them don't even parse.
 minus(-) sign for integers.
