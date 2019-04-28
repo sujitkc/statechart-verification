@@ -7,7 +7,6 @@ import ast.DeclarationList;
 import ast.Type;
 import ast.FunctionDeclaration;
 
-import program.IProgram;
 import ast.Name;
 import java.util.List;
 import utilities.IdGenerator;
