@@ -97,7 +97,7 @@ public class ExpressionPreorderToStringVisitor implements IExprVisitor<String> {
 	*/
 	
 	public void visit(BinaryExpression exp) throws Exception {
-		exp.accept(this);
+		//exp.accept(this);
 		String s = "( "+exp.getOperator()+" " + this.mStack.pop() + " " + this.mStack.pop() + ")";
 		this.mStack.push(s);
 	}
@@ -119,7 +119,7 @@ public class ExpressionPreorderToStringVisitor implements IExprVisitor<String> {
 	*/
 	
 	public void visit(NotExpression exp) throws Exception {
-		exp.accept(this);
+		//exp.accept(this);
 		String s = "( not " + this.mStack.pop() + ")";
 		this.mStack.push(s);
 	}

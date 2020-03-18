@@ -1,4 +1,4 @@
-MYLIBPATH=D:/karthika/tools/Statechart/lib
+MYLIBPATH=E:/documents/iiit/StaBL-code/statechart-verification/src/dfa/lib
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
 FE=frontend
 Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java

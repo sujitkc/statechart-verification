@@ -49,7 +49,9 @@ public class BinaryExpression extends Expression {
     this.right    = right;
     this.operator = operator;
   }
-
+  public String getOperator(){
+	return this.operator;
+  }
   public String toString() {
     String s = this.left.toString() + " " + this.operator + " " + this.right.toString();
     if(this.type != null) {  

@@ -1,6 +1,6 @@
-JFLEXPATH=D:/karthika/tools/Statechart/lib
-MYCLASSPATH=~${JFLEXPATH}/junit-4.8.1.jar;./;./classes/;${JFLEXPATH}/java-cup-11a.jar
-MYLIBPATH=D:/karthika/tools/Statechart/lib
+JFLEXPATH=E:/documents/iiit/lib
+MYCLASSPATH=${JFLEXPATH}/junit-4.13.jar;${JFLEXPATH}/hamcrest-all-1.3.jar;./;./classes/;${JFLEXPATH}/java-cup-11a.jar
+MYLIBPATH=E:/documents/iiit/lib
 if [ $# = 1 ]; then
   echo 1
   testcase=$1
@@ -15,4 +15,4 @@ if [ $# = 0 ]; then
   testcase=TestAll
 fi
 
-java -Dfilename=$2 -cp "${MYLIBPATH}/java-cup-11a.jar;${MYLIBPATH}/jflex-1.6.0.jar;${MYLIBPATH}/junit-4.8.1.jar;ast;classes;./;" org.junit.runner.JUnitCore testcases.${testcase} 
+java -cp "E:/documents/iiit/lib/junit-4.13.jar;E:/documents/iiit/lib/hamcrest-all-1.3.jar;./;./classes/;E:/documents/iiit/lib/java-cup-11a.jar" org.junit.runner.JUnitCore testcases.${testcase}

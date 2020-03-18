@@ -32,8 +32,8 @@ import translation.Flattener;
 import metric.Metric;
 
 public class TestAll {
-  String[] inputs = { 
-    "s2",
+  String[] inputs = { "curfew1"
+    /*"s2",
     "s3",  // error - assignment type mismatch
     "s4",  // error - misplaced transition
     "s5",  // error - unknown state
@@ -79,7 +79,7 @@ public class TestAll {
     "s43",
     "s44",
     "s45",
-    "s46",
+    "s46",*/
   };
 
   @Test

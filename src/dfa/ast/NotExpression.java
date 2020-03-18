@@ -6,8 +6,8 @@ public class NotExpression extends UnaryExpression{
 
 	private Expression mExpression;
 
-	public NotExpression(IProgram program, Expression exp) throws Exception {
-		super(program, exp.getType());
+	public NotExpression(IProgram program, Expression exp){
+		super(program, exp ,exp.getType(),0);
 		/*if(exp.getType() != Type.BOOLEAN) {
 			Exception e = new Exception("NotExpression : Type error in " + exp.toString());
 			throw e;

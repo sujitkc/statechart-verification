@@ -1,9 +1,12 @@
 package ast;
+import program.IProgram;
 
 public class BooleanConstant extends Expression {
 
   public final boolean value;
 
+   
+ 
   public BooleanConstant(boolean value) {
     this.value = value;
   }
