@@ -1,5 +1,5 @@
 JFLEXPATH=E:/documents/iiit/lib
-MYCLASSPATH=${JFLEXPATH}/junit-4.13.jar;${JFLEXPATH}/hamcrest-all-1.3.jar;./;./classes/;${JFLEXPATH}/java-cup-11a.jar
+MYCLASSPATH=${JFLEXPATH}/junit-4.13.jar:${JFLEXPATH}/hamcrest-all-1.3.jar:./:./classes/:${JFLEXPATH}/java-cup-11a.jar
 MYLIBPATH=E:/documents/iiit/lib
 if [ $# = 1 ]; then
   echo 1

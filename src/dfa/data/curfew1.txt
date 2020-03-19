@@ -22,8 +22,8 @@ statechart Student {
 
   entry :
   {
-    students :=  put_map<|int, string |>(students, 100, "p1");
-    students :=  put_map<|int, string |>(students, 101, "p2");
+    //students :=  put_map<|int, string |>(students, 100, "p1");
+    //students :=  put_map<|int, string |>(students, 101, "p2");
   }
 
   exit  : {}
@@ -112,7 +112,8 @@ statechart Student {
     source      : Student.LoggedOut;
     destination : Student.LoggedIn;
     trigger     : eLogin;
-    guard       : get_map <| int, string |>(students, Student.LoggedOut.user) = Student.LoggedOut.password;
+    guard       : true;
+	//get_map <| int, string |>(students, Student.LoggedOut.user) = Student.LoggedOut.password;
     action      : Student.LoggedIn.loggedinUser := Student.LoggedOut.user;
   }
 

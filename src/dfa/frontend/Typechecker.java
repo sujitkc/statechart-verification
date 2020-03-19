@@ -68,9 +68,15 @@ public class Typechecker {
   public void typecheck() throws Exception {
 
     this.typecheckTypeDeclarations();
+	System.out.println("---------------Type Declaration done");
     this.typecheckVariableDeclarations();
+	System.out.println("---------------Variable Declaration done");
     this.typecheckFunctionDeclarations();
+	System.out.println("---------------Function Declaration done");
+
     this.typecheckState();
+	System.out.println("---------------typecheck State done");
+
   }
 
   private void typecheckTypeDeclarations() throws Exception {
