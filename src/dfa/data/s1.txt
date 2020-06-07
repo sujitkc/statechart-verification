@@ -1,9 +1,22 @@
 statechart sc {
+
+    entry : {} 
+
+    exit  : {} 
+
   state s1 {
+
+    entry : {} 
+
+    exit  : {} 
 
   }
 
   state s2 {
+
+    entry : {} 
+
+    exit  : {} 
 
   }
 

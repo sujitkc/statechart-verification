@@ -20,13 +20,17 @@ import java_cup.runtime.Symbol;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
+import frontend.ZonotopeAbstractDomain;
 
 import ast.State;
 import ast.Statechart;
 import ast.Transition;
 import ast.Environment;
+import ast.InstructionStatement;
 import ast.Declaration;
 import ast.Name;
+import ast.AssignmentStatement;
+import ast.BooleanConstant;
 
 public class TestFrontEnd {
 
@@ -37,7 +41,7 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/curfew_structs_minimal.txt";
+    String input = "data/sc6.txt";
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {
@@ -66,5 +70,15 @@ public class TestFrontEnd {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
+    // creating a simulator
+    try
+    {
+      new FrontEnd(statechart);
+    }
+    catch(Exception e) {
+      System.out.println("Some Shit Went Wrong!\n");
+      System.exit(1);
+    }
+
   }
 }

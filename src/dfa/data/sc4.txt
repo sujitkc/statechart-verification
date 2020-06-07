@@ -1,0 +1,52 @@
+// multiple variables and statementlists
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  switch_status :int;
+
+  entry : switch_status := 0;
+
+  exit  : {} 
+
+
+  state s1 {
+    switch_status :int;
+    entry : {
+        switch_status := 0;
+        sc.switch_status := sc.switch_status + 2;
+        } 
+
+    exit  : {
+        switch_status := switch_status + 1;
+        sc.switch_status := sc.switch_status + 3;
+    } 
+
+  }
+
+  state s2 {
+    entry : {} 
+
+    exit  : {} 
+
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+   transition t2 {
+    source      : sc.s2;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+}

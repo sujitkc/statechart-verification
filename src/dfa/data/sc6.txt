@@ -1,0 +1,58 @@
+// Static Analyzer Test Case
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  a : int;
+
+  entry : 
+  { 
+      a := 0;
+  }
+
+  exit  : {} 
+
+
+  state s1 {
+    entry : 
+        {
+            if(a < 5)
+            {
+              a := a + 1;
+            }
+            else
+            {
+              a := a - 1;
+            }
+        } 
+
+    exit  : {} 
+
+  }
+
+  state s2 {
+    entry : {} 
+
+    exit  : {} 
+
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+   transition t2 {
+    source      : sc.s2;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+}
