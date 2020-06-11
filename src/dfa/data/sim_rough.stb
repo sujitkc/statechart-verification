@@ -1,0 +1,80 @@
+// Evaluates various types of binary expressions
+
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  a1 :int;
+  a2 :int;
+  b1 :int;
+  b2 :int;
+  c1 :int;
+  c2 :int;
+  st1 :string;
+  st2 :string;
+  l1 :boolean;
+  l2 :boolean;
+  d1 :int;
+  d2 :int;
+
+  entry : {
+      a1 := 1;
+      a2 := 2;
+      b1 := 1;
+      b2 := 2;
+      c1 := 1;
+      c2 := 2;
+      l1 := true;
+      l2 := false;
+      d1 := 1024;
+      d2 := 2;
+  }
+
+  exit  : {} 
+
+
+  state s1 {
+    entry : {} 
+
+    exit  : {
+        l1 := l1 && l2;
+    } 
+
+  }
+
+  state s2 {
+    entry : {} 
+
+    exit  : {} 
+
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    trigger     : switch;
+    guard       : true;
+    action      : {
+        a1 := a1 + a2;
+        b1 := b1 - b2;
+        c1 := c1 * c2;
+        d1 := d1 / d2;
+    }
+  }
+   transition t2 {
+    source      : sc.s2;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {
+        a2 := a1 + a2;
+        b2 := b2 - b1;
+        c2 := c1 * c2;
+        d1 := 1024;
+    }
+  }
+}

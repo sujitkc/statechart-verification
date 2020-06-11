@@ -1,0 +1,175 @@
+// Catches Non-Determinism in the statechart
+
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  switch_status :int;
+  HISTORY: boolean;
+
+  entry : switch_status := 0;
+
+  exit  : {} 
+
+
+  state s1 {
+    HISTORY: boolean;
+    entry : {switch_status := switch_status + 100;
+            HISTORY := true;}
+
+    exit  : {} 
+
+
+    state s11 {
+        HISTORY: boolean;
+        entry : {switch_status := switch_status + 110;
+            HISTORY := true;}
+
+        exit : {}
+
+        state s111 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 111;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        state s112 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 112;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        transition t111112 {
+          source      : sc.s1.s11.s111;
+          destination : sc.s1.s11.s112;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+    }
+
+    state s12 {
+        HISTORY: boolean;
+        entry : {switch_status := switch_status + 120;
+            HISTORY := true;}
+
+        exit : {}
+
+        state s121 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 121;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        state s122 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 122;
+            HISTORY := true;}
+            exit : {}
+        }
+    }
+    
+    transition t112121 {
+          source      : sc.s1.s11.s112;
+          destination : sc.s1.s12.s121;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+
+
+  }
+
+  state s2 {
+    HISTORY: boolean;
+    entry : {switch_status := switch_status + 200;
+            HISTORY := true;}
+
+    exit  : {} 
+
+    state s21 {
+        HISTORY: boolean;
+        entry : {switch_status := switch_status + 210;
+            HISTORY := true;}
+        exit : {}
+
+        state s211 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 211;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        state s212 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 212;
+            HISTORY := true;}
+            exit : {}
+        }
+    }
+
+    state s22 {
+        HISTORY: boolean;
+        entry : {switch_status := switch_status + 220;
+            HISTORY := true;}
+        exit : {}
+
+        state s221 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 221;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        state s222 {
+            HISTORY: boolean;
+            entry : {switch_status := switch_status + 222;
+            HISTORY := true;}
+            exit : {}
+        }
+
+        transition t221222 {
+          source      : sc.s2.s22.s221;
+          destination : sc.s2.s22.s222;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+    }
+
+    transition t22222 {
+          source      : sc.s2.s22;
+          destination : sc.s2.s22.s222;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+
+  }
+
+
+    transition t12122 {
+          source      : sc.s1.s12.s121;
+          destination : sc.s2.s22;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+
+    transition t2221 {
+          source      : sc.s2.s22.s222;
+          destination : sc.s1;
+          trigger     : switch;
+          guard       : true;
+          action      :  {}
+        }
+  
+   
+}

@@ -1,0 +1,59 @@
+// Evaluates the behavior of looping constructs
+
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  a : int;
+  b : int;
+
+  entry : {
+      a := 0;
+      b := 1;
+     }
+
+  exit  : {} 
+
+
+  state s1 {
+
+    entry : {}
+
+    exit  : {}
+
+  }
+
+  state s2 {
+    entry : {} 
+
+    exit  : {} 
+
+  }
+
+  transition t1 {
+    source      : sc.s1;
+    destination : sc.s2;
+    trigger     : switch;
+    guard       : true;
+    action      : {
+        while((a < 5) && (b < 16))
+        {
+            b := b * 2;
+            a := a + 1;
+        }
+    }
+  }
+   transition t2 {
+    source      : sc.s2;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {
+        a := a + 1;
+    }
+  }
+}
