@@ -79,6 +79,7 @@ terminal String IDENTIFIER;
 terminal Integer INTCONST;
 terminal String STRLITERAL;
 
+
 terminal Symbol
     LBRACE, RBRACE, LPAREN, RPAREN, LTRI, RTRI,          /* Brackets                 */
     SEMICOLON, COLON, COMMA, DOT, HASH,                  /* Punctuations             */ 
@@ -93,7 +94,8 @@ terminal Symbol
     SUB, ADD, MUL, DIV,                                  /* Arithmetic operators     */
     TRUE, FALSE,                                         /* Constants                */
     STRUCT, TYPES, TYPE,                                 /* User defined types       */
-    FUNCTIONS                                            /* Functions                */
+    FUNCTIONS,                                           /* Functions                */
+    HISTORY
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -129,7 +131,23 @@ statechart ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr);
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(false));
+    :}
+  ;
+
+statechart ::= 
+    STATECHART IDENTIFIER:id LBRACE
+      HISTORY
+      typelist : tlist
+      eventlist:el
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      funcdecls:fdecls
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(true));
     :}
   ;
 
@@ -316,13 +334,26 @@ funcs ::=
 
 state ::= 
     STATE IDENTIFIER:id LBRACE
+      HISTORY
       decl_list:dlist
       entry_clause:en
       exit_clause:ex
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr);
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(true));
+    :}
+  ;
+
+state ::= 
+    STATE IDENTIFIER:id LBRACE
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false));
     :}
 
   ;

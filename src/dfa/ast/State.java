@@ -11,6 +11,7 @@ public class State {
   public final DeclarationList declarations;
   public final Statement entry;
   public final Statement exit;
+  public final BooleanConstant history;
 
   protected Statechart statechart = null;
   protected State superstate = null;
@@ -23,7 +24,8 @@ public class State {
       Statement         entry,
       Statement         exit,
       List<State>       states,
-      List<Transition>  transitions) {
+      List<Transition>  transitions,
+      BooleanConstant           history) {
 
     this.name         = name;
     this.declarations = declarations;
@@ -31,6 +33,7 @@ public class State {
     this.exit         = exit;
     this.states       = states;
     this.transitions  = transitions;
+    this.history      = history;
 
     for(State st : this.states) {
       st.setSuperstate(this);
@@ -143,6 +146,10 @@ public class State {
     return this.environment;
   }  
 
+  public BooleanConstant maintainsHisotry() {
+    return this.history;
+  }
+
   public String toString() {
     String s = "\nstate " + this.name + "{\n";
      
@@ -166,6 +173,7 @@ public class State {
         s += tr.toString();
       }
     }
+    s += maintainsHisotry();
     s += "}\n";
     return s;    
   }
