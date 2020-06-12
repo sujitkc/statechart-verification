@@ -19,9 +19,10 @@ public class Statechart extends State {
       Statement                 exit,
       List<FunctionDeclaration> functionDeclarations,
       List<State>               states,
-      List<Transition>          transitions
+      List<Transition>          transitions,
+      BooleanConstant           history
       ) throws Exception {
-    super(name, declarations, entry, exit, states, transitions);
+    super(name, declarations, entry, exit, states, transitions, history);
 
     this.addType(new BasicType("int"));
     this.addType(new BasicType("boolean"));
