@@ -70,6 +70,14 @@ public class Transition {
     if(this.writeOnlyEnvironment == null) {
       this.writeOnlyEnvironment = this.destination.getEnvironment()
         .copyExclusive(this.state.getEnvironment());
+    
+    for(Declaration d : this.writeOnlyEnvironment.getDeclarations())
+    {
+      if(!d.getScope().name.equals("parameter"))
+      {
+        this.writeOnlyEnvironment.removeDeclaration((d));
+      }
+    }
     }
     return this.writeOnlyEnvironment;
   }

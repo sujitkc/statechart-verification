@@ -70,6 +70,7 @@ non terminal List<String> tparams;
 non terminal List<String> ne_tparams;
 
 non terminal ast.TypeName typename;
+non terminal ast.ScopeName scopename;
 non terminal List<ast.TypeName> typenames;
 
 non terminal ast.Statement entry_clause;
@@ -610,11 +611,12 @@ decl ::=
   ;
 
 normal_decl ::=
-     IDENTIFIER:id COLON typename:tid
+     IDENTIFIER:id COLON typename:tid COLON scopename:sid
     {:
-      RESULT = new ast.Declaration(id, tid, false);
+      RESULT = new ast.Declaration(id, sid, tid, false);
     :}
   ;
+
 
 inp_decl ::=
      IDENTIFIER:id HASH COLON typename:tid
@@ -631,6 +633,16 @@ typename ::=
   |   IDENTIFIER:tid LTRI typenames:targs RTRI
     {:
       RESULT = new ast.TypeName(tid, targs);
+    :}
+  ;
+
+scopename ::=
+      IDENTIFIER:sid
+    {:
+    if(sid.equals("static") | sid.equals("parameter") | sid.equals("local"))
+      RESULT = new ast.ScopeName(sid);
+    else
+      throw new Exception("Invalid Scope Declaration");
     :}
   ;
 

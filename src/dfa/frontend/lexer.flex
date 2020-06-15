@@ -32,7 +32,7 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 %%
 
 <YYINITIAL>"entry"          { /* System.out.println("entry");        */ return new Symbol(sym.ENTRY, yyline, yycolumn, null);      }
-<YYINITIAL>"exit"           { /* System.out.println("exit");        */ return new Symbol(sym.EXIT, yyline, yycolumn, null);        }
+<YYINITIAL>"exit"           { /* System.out.println("exit");         */ return new Symbol(sym.EXIT, yyline, yycolumn, null);       }
 //"String"         { /* System.out.println("String");       */ return new Symbol(sym.STRING, yyline, yycolumn, null);     }
 <YYINITIAL>"while"          { /* System.out.println("while");        */ return new Symbol(sym.WHILE, yyline, yycolumn, null);      }
 <YYINITIAL>"if"             { /* System.out.println("if");           */ return new Symbol(sym.IF, yyline, yycolumn, null);         }
@@ -53,7 +53,6 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 <YYINITIAL>"events"         { /* System.out.println("events");       */ return new Symbol(sym.EVENTS, yyline, yycolumn, null);     }
 <YYINITIAL>"functions"      { /* System.out.println("functions");    */ return new Symbol(sym.FUNCTIONS, yyline, yycolumn, null);  }
 <YYINITIAL>"HISTORY"        {                                           return new Symbol(sym.HISTORY, yyline, yycolumn, null);    }
-
 
 <YYINITIAL>"."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT, yyline, yycolumn, null);        }
 <YYINITIAL>"#"              { /* System.out.println("HASH");         */ return new Symbol(sym.HASH, yyline, yycolumn, null);       }
