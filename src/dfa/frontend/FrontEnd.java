@@ -22,13 +22,11 @@ public class FrontEnd {
 
   // necessary for simulator
   private Statechart statechart = null;
-
-  public static Map<Declaration, Expression> map        = new HashMap<Declaration, Expression>(); //Creating a HashMap for the variable bindings, every variable is identified with its fullVName which is unique to it
-  public static List<Transition>      transitions       = new ArrayList<Transition>();
-  public static Map<State, Integer>   history_map       = new HashMap<State, Integer>();
+  public static ExecutionState eState;
 
   // constructors
-  public FrontEnd(String input) throws FileNotFoundException {
+  public FrontEnd(String input) throws FileNotFoundException 
+  {
     this.parser = new Parser(new Lexer(new FileReader(input)));
   }
 
@@ -38,7 +36,7 @@ public class FrontEnd {
     try 
     {
       this.statechart = statechart;
-      simulation();
+      this.simulation();
     }
     catch (Exception e)
     {
@@ -46,126 +44,47 @@ public class FrontEnd {
     }
 
   }
+
   // pasrser
   public Parser getParser() 
   {
     return this.parser;
   }
   
-  // populate map, all variables are by default bound to null
-  private void populate(State s)
-  {
-    populate_state(s);      // populating the map - for all the declaration,value mapping
-    populate_transition(s); // populating the list - to contain all the transitions
-    
-    if(!s.states.isEmpty())
-    {
-      for(State st : s.states)
-        populate(st);
-    }
-  }
-  
-  // takes a state and populates the <declaration, value> map with all the declarations made in that state
-  private void populate_state(State s) 
-  {
-    for(Declaration d : s.declarations)
-    {
-      map.put(d, null);
-    }
-  }
-
-  // takes a state and populates the transition list with all the transitions declared in that state
-  private void populate_transition(State s)
-  {
-    for(Transition t : s.transitions)
-    {
-      transitions.add(t);
-    }
-  }
 
   // takes a state and returns the atomic state for it (in the process, it also executes all the entry statements for the states lying in the path)
   // also takes care of whether the state has a history tag or not
-  private State getAtomicState(State state) throws Exception
+  private State get_atomic_state(State state) throws Exception
   {
     State init = state;
+
     try 
     {
-      ExecuteStatement.executeStatement(init.entry);
-
-      if(init.states.isEmpty()) // if the state is atomic, return
-        return init;
-
-      int index = 0; // if the state is not atomic
-      if(history_map.containsKey(init))
-        index = history_map.get(init);
-      else
-        index = 0;
-      return getAtomicState(state.states.get(index));
-    }
-    catch (Exception e)
-    {
-      System.out.println("getAtomicState() Failed for: " + state.getFullName());
-    }
-
-    return init;
-  }
-  
-  // displays all the variables and their bindings for a current time-stamp
-  private void displayMap()
-  {
-    for(Map.Entry<Declaration, Expression> m : map.entrySet()){    
-      if(m.getKey().getFullVName().equals(m.getKey().getState().getFullName() + ".VARIABLE"))
-        continue;
-      else if(m.getKey().getFullVName().equals(m.getKey().getState().getFullName() + ".HISTORY"))
-        continue;
-      System.out.println(m.getKey().getFullVName()+": "+m.getValue());    
-     }  
-  }
-
-  // checking whether a state has a history tag or not (at the moment, this has been implemented in terms of a variable )
-  private boolean hasHistory(State s)
-  {
-    for(Declaration d : s.declarations)
-    {
-      if(d.getFullVName().equals(s.getFullName() + ".HISTORY")) // if the HISTORY variable exists
+      eState.enterState(init);                       // enters the state
+      ExecuteStatement.executeStatement(init.entry); // execute the entry statemen
+      if(init.states.isEmpty())                      // if the state is atomic
       {
-        if(map.get(d) instanceof BooleanConstant) // if the history variable is a boolean constant
+        return init;
+      }
+      else                                           // if the state is heirarchial
+      {
+        if((init.maintainsHisotry()).value)          // if the state maintains history
         {
-          if(((BooleanConstant)map.get(d)).value) // if the history variable is true
-            return true;
+          return this.get_atomic_state(eState.getHistoryState(init));
+        }
+        else                                         // if the state does not maintain history
+        {
+          return this.get_atomic_state(init.states.get(0));
         }
       }
     }
-    return false;
-  }
-
-  // checking whether a state has VAR (very rudimentary methodology for an interactive experience)
-  private boolean hasVAR(State s)
-  {
-    for(Declaration d : s.declarations)
+    catch (Exception e)                              // if the executeStatement failed
     {
-      if(d.getFullVName().equals(s.getFullName() + ".VARIABLE")) // if the VARIABLE variable exists
-      {
-        return true;
-      }
+      System.out.println("get_atomic_state() Failed for: " + state.getFullName() + " for the entry-statement: " + state.entry);
     }
-    return false;
-  }
 
-  // sets the initial state for a parent state which maintains history
-  private void setCurrent(State parent, State current)
-  {
-    int i = 0;
-    for(State s : parent.states) // getting the index of the current state
-    {
-      if(s.equals(current))
-        break;
-      else
-        i ++;
-    }
-    history_map.put(parent, i);
+    return init;                                    // execution never actually reaches here
   }
-
 
   // performing a transition, does the following :
   // a) gets the lower upper bound
@@ -179,22 +98,18 @@ public class FrontEnd {
     {
       State source = t.getSource();
       State destination = t.getDestination();
-      State lub = statechart.lub(source, destination);
+      State lub = this.statechart.lub(source, destination);
       State current = source;
 
       while(!current.equals(lub)) // bubbles up to lowest upper bound
       {
         ExecuteStatement.executeStatement(current.exit);
-        State currParent = current.getSuperstate();
-        if(hasHistory(currParent))
-        {
-          setCurrent(currParent, current);
-        }
-        current = currParent;
+        eState.exitState(current);
+        current = current.getSuperstate();
       }
       
       ExecuteStatement.executeStatement(t.action); // executes the transition action
-      
+    
       ArrayList<State> path = new ArrayList<State>();
       current = destination;
       while(!current.equals(lub)) // bubbles down to the destnation state
@@ -205,6 +120,7 @@ public class FrontEnd {
       int i = path.size() - 1;
       while(i > 0)
       {
+        eState.enterState(path.get(i));
         ExecuteStatement.executeStatement(path.get(i).entry);
         i --;
       }
@@ -216,44 +132,45 @@ public class FrontEnd {
   }
 
   // takes a state as the input and returns a valid transition (if available) with the input state as the source state
-  Transition getValidTransition(State curr) throws Exception 
+  Transition get_valid_transition(State curr, int i, Transition output) throws Exception 
   {
-    Transition output = null;
-
-    try{
-      int i = 0;
-      ArrayList<State> currSuperStates = (ArrayList<State>)curr.getAllSuperstates();
-      for(Transition t : transitions)
+    try
+    {
+      curr = curr.getSuperstate();
+      for(Transition t : curr.transitions)
       {
-        for(State s : currSuperStates) // searching for a transition with an ancestor of the input state as the source state
-        {
-          if(t.getSource().equals(s) && ((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value)
-          {
-            output = t;
-            i++; // for every transition that is valid
-          } 
-        }
-        if(t.getSource().equals(curr) && ((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value) // searching for a transition with the input state as the source state
+        if(((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value && eState.presentInConfiguration(t.getSource()))
         {
           output = t;
           i++;
         }
       }
-      if(i == 1) // if there are exactly one valid transitions
-        return output;
-      else if(i == 0) // no valid transitions out - halting
+      if(!curr.equals(this.statechart))
       {
-        ExecuteStatement.executeStatement(new HaltStatement());
+        return this.get_valid_transition(curr.getSuperstate(), i, output);
       }
-      else // if there are more than one valid transitions (Non-Determinism)
+      else
       {
-        System.out.println("Non-Determinism Detected at state: " + curr.getFullName());
-        ExecuteStatement.executeStatement(new HaltStatement());
+        if(i == 0)
+        {
+          System.out.println("No Viable Transition! Halting Simulation...");
+          ExecuteStatement.executeStatement(new HaltStatement());
+        }
+        else if(i > 1)
+        {
+          System.out.println("Non Determinism Detected At State: " + curr.name);
+          System.out.println("Halting Simulation...");
+          ExecuteStatement.executeStatement(new HaltStatement());
+        }
+        else
+        {
+          return output;
+        }
       }
-    }
+    } 
     catch (Exception e)
     {
-      System.out.println("getValidTransition failed to execute halt statement!\n");
+      System.out.println("this.get_valid_transition failed to execute halt statement!\n");
     }
     return output;
   }
@@ -263,58 +180,33 @@ public class FrontEnd {
   {
     try 
     {
-      System.out.println("\n\n\nSimulation...\n\n\n");
+      System.out.println("\n\n\n Beginning Simulation... \n\n\n");
 
-      // populating the map and transitions list to contain all the variables and transitions
-      this.populate(statechart);
+      // populating the valueEnvironment
+      eState = new ExecutionState(statechart);
 
-      System.out.println("Initial Statechart Map: ");
-      displayMap(); // displays the initial map
-
+      System.out.println("Initial Statechart Map: " + eState.generate_summary());
       
-      Scanner input = new Scanner(System.in);  // to check the sequential simulation
+      Scanner input = new Scanner(System.in);                                       // to check the sequential simulation
+      int counter = 0;                                                              // to label the number of transitions performed
 
-      int counter = 0; // to label the number of transitions performed
-
-      State curr = (State)statechart; // curr represents the current state
+      State curr = (State)statechart;                                               // curr represents the current state
 
       //Main-loop
       while(true)
       {
-        curr = getAtomicState(curr); // gets to the state where from where the execution begins
-        
-        /* Very Basic as of now (For an Interactive System)*/
-        if(hasVAR(curr)) // state takes an input - as of now, only integer
-        {
-          System.out.println("\n ENTER YOUR INPUT: ");
-          int user_input = input.nextInt();
-          for(Declaration d : curr.declarations)
-          {
-            if(d.getFullVName().equals(curr.getFullName() + ".VARIABLE"))
-            {
-              map.put(d, new IntegerConstant(user_input));
-            }
-          }
-        }
-
-        System.out.println("+--------------------------------------------------+");
-        System.out.println("Initial State Map: ");
-        displayMap();
-        System.out.println();
-
-        // System.out.println("Static Analysis: ");
-        // new ZonotopeAbstractDomain(curr, map); // - uncomment this to run the numerical static analyzer
-
+        curr = this.get_atomic_state(curr);                                         // gets to the state where from where the execution begins
         input.nextLine(); // to break the flow into key-strokes
 
+        System.out.println("+--------------------------------------------------+");
         System.out.println("After " + (counter+1) + " transition/transitions :-");
-        System.out.println("State: " + curr.getFullName());
-
-        Transition t = getValidTransition(curr);
+        System.out.println("From State: " + curr.getFullName());
+        Transition t = this.get_valid_transition(curr, 0, null);
+        System.out.println("Performing transition: " + t.name);
         performTransition(t);
-        System.out.println("Final State Map: ");
-        displayMap();
+        System.out.println("Final State Map: " + eState.generate_summary());
         curr = t.getDestination();
+        System.out.println("Reached State: " + curr.getFullName());
         System.out.println("+--------------------------------------------------+");
         counter ++;
       }

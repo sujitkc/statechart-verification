@@ -43,7 +43,7 @@ public class ExecuteStatement
     {
       try {
       Declaration variableDeclaration = assignment.lhs.getDeclaration();
-      FrontEnd.map.put(variableDeclaration, EvaluateExpression.evaluate(assignment.rhs));
+      FrontEnd.eState.setValue(variableDeclaration, EvaluateExpression.evaluate(assignment.rhs));
       }
       catch (Exception exc)
       {

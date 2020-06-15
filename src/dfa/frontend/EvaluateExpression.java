@@ -9,7 +9,7 @@ public class EvaluateExpression{
           if(e instanceof BinaryExpression)
             return evaluateBinaryExpression((BinaryExpression)e);
           else if(e instanceof Name)
-            return FrontEnd.map.get(((Name)e).getDeclaration());
+            return FrontEnd.eState.getValue(((Name)e).getDeclaration());
           else if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
             return e;
         }
@@ -30,13 +30,13 @@ public class EvaluateExpression{
         if(isConstantExpression(e.left))
           lhs = e.left;
         else if(e.left instanceof Name)
-          lhs =  FrontEnd.map.get(((Name)e.left).getDeclaration());
+          lhs =  FrontEnd.eState.getValue(((Name)e.left).getDeclaration());
         else
           lhs = evaluateBinaryExpression((BinaryExpression)e.left);
         if(isConstantExpression(e.right))
           rhs = e.right;
         else if(e.right instanceof Name)
-          rhs = FrontEnd.map.get(((Name)e.right).getDeclaration());
+          rhs = FrontEnd.eState.getValue(((Name)e.right).getDeclaration());
         else
           rhs = evaluateBinaryExpression((BinaryExpression)e.right);
         

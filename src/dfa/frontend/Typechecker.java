@@ -152,7 +152,7 @@ public class Typechecker {
   }
 
   private void typecheckDeclaration(
-      Declaration d, List<String> typeParameterNames, int i) throws Exception {
+    Declaration d, List<String> typeParameterNames, int i) throws Exception {
     Type type = this.lookupType(
       d.typeName, typeParameterNames, this.statechart.types.size());
     if(type == null) {
