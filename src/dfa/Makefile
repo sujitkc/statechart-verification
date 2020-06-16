@@ -1,4 +1,4 @@
-MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
+MYLIBPATH=/home/advait/Desktop/StatechartSimulator
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
 FE=frontend
 Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java
@@ -14,7 +14,7 @@ ${FE}/Lexer.java : ${FE}/lexer.flex
 	java -jar ${MYLIBPATH}/jflex-1.6.0.jar ${FE}/lexer.flex
 
 test : ${FE}/Lexer.java sym.java ast/*.java program/*.java translation/*.java
-	javac -Xlint:-unchecked -d classes *.java ast/*.java translation/*.java program/*.java metric/*.java testcases/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:/home/sujit/My-Downloads/junit-4.8.1.jar:ast:classes:./;
+	javac -Xlint:-unchecked -d classes *.java ast/*.java translation/*.java program/*.java metric/*.java testcases/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.6.0.jar:/home/advait/Desktop/StatechartSimulator/junit-4.8.1.jar:ast:classes:./;
 
 rt :
 	java -cp ~/My-Downloads/junit-4.8.1.jar:classes/:${MYCLASSPATH}:. org.junit.runner.JUnitCore testcases.${testcase}

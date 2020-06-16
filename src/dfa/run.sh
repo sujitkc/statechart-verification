@@ -1,5 +1,6 @@
-JFLEXPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
-MYCLASSPATH=~/My-Downloads/junit-4.8.1.jar:./:./classes/:${JFLEXPATH}/java-cup-11a.jar
+#JFLEXPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
+JFLEXPATH=/home/advait/Desktop/StatechartSimulator/
+MYCLASSPATH=~/home/advait/Desktop/StatechartSimulator/junit-4.8.1.jar:./:./classes/:${JFLEXPATH}/java-cup-11a.jar
 if [ $# = 1 ]; then
   echo 1
   testcase=$1
