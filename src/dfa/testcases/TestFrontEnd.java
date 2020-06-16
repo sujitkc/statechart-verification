@@ -21,7 +21,12 @@ import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
 
+import ast.State;
 import ast.Statechart;
+import ast.Transition;
+import ast.Environment;
+import ast.Declaration;
+import ast.Name;
 
 public class TestFrontEnd {
 
@@ -32,7 +37,7 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/sim_rough.stb";
+    String input = "data/curfew_structs_minimal.txt";
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {
@@ -61,15 +66,5 @@ public class TestFrontEnd {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
-    // creating a simulator
-    try
-    {
-      new FrontEnd(statechart);
-    }
-    catch(Exception e) {
-      System.out.println("Some Shit Went Wrong!\n");
-      System.exit(1);
-    }
-
   }
 }
