@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.List;
+import java.util.Iterator;
 
 public class Transition {
   public  final String     name;
@@ -70,12 +71,12 @@ public class Transition {
     if(this.writeOnlyEnvironment == null) {
       this.writeOnlyEnvironment = this.destination.getEnvironment()
         .copyExclusive(this.state.getEnvironment());
-    
-    for(Declaration d : this.writeOnlyEnvironment.getDeclarations())
+    Iterator<Declaration> i = this.writeOnlyEnvironment.getDeclarations().iterator();
+    while(i.hasNext())
     {
-      if(!d.getScope().name.equals("parameter"))
+      if(!i.next().getScope().name.equals("parameter"))
       {
-        this.writeOnlyEnvironment.removeDeclaration((d));
+        i.remove();
       }
     }
     }

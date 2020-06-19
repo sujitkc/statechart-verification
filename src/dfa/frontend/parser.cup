@@ -621,7 +621,7 @@ normal_decl ::=
 inp_decl ::=
      IDENTIFIER:id HASH COLON typename:tid
     {:
-      RESULT = new ast.Declaration(id, tid, true);
+      RESULT = new ast.Declaration(id, new ast.ScopeName("local"), tid, true);
     :}
   ;
 
