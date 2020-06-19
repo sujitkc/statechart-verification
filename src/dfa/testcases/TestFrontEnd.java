@@ -20,6 +20,7 @@ import java_cup.runtime.Symbol;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
+import simulator.Simulator;
 
 import ast.State;
 import ast.Statechart;
@@ -37,9 +38,8 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/curfew_structs_minimal.txt";
-    // String input = "data/s24.txt";
-    // String input = "data/curfew1.txt";
+    String input = "/home/redhood/Desktop/Work/StatechartSimulator/statechart-verification/src/dfa/data/sim_rough.stb";
+
     try {
       Parser parser = new FrontEnd(input).getParser();    
       Symbol result = parser.parse();
@@ -64,6 +64,13 @@ public class TestFrontEnd {
     }
     catch(Exception e) {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+    try{
+      new Simulator(statechart).simulation();
+    }
+    catch(Exception e){
+      System.out.println("Error in Simulation");
       e.printStackTrace();
     }
   }

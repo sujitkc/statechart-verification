@@ -1,15 +1,6 @@
 package simulator;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 
 import java.util.Scanner;
 
@@ -18,21 +9,12 @@ import ast.*;
 
 public class Simulator {
 
-  private final Parser parser;
-
   // necessary for simulator
   private Statechart statechart = null;
   public static ExecutionState eState;
 
-  // constructors
-  public FrontEnd(String input) throws FileNotFoundException 
-  {
-    this.parser = new Parser(new Lexer(new FileReader(input)));
-  }
-
   public Simulator(Statechart statechart) throws Exception
   {
-    this.parser = null; 
     try 
     {
       this.statechart = statechart;
@@ -40,16 +22,10 @@ public class Simulator {
     }
     catch (Exception e)
     {
-      System.out.println("Simulation Failed! Returning from FrontEnd\n");
+      System.out.println("Simulation Failed! Returning from Simulator\n");
     }
-
   }
 
-  // pasrser
-  public Parser getParser() 
-  {
-    return this.parser;
-  }
   
 
   // takes a state and returns the atomic state for it (in the process, it also executes all the entry statements for the states lying in the path)
@@ -57,11 +33,10 @@ public class Simulator {
   private State get_atomic_state(State state) throws Exception
   {
     State init = state;
-
     try 
     {
       eState.enterState(init);                       // enters the state
-      ExecuteStatement.executeStatement(init.entry); // execute the entry statemen
+      ExecuteStatement.executeStatement(init.entry); // execute the entry statement
       if(init.states.isEmpty())                      // if the state is atomic
       {
         return init;
@@ -147,7 +122,7 @@ public class Simulator {
       }
       if(!curr.equals(this.statechart))
       {
-        return this.get_valid_transition(curr.getSuperstate(), i, output);
+        return this.get_valid_transition(curr, i, output);
       }
       else
       {

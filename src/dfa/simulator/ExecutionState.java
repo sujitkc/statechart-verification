@@ -44,7 +44,10 @@ public class ExecutionState
 
     public State getHistoryState(State s)
     {
-        return this.stateHistory.get(s);
+        if(this.stateHistory.get(s) != null)
+            return this.stateHistory.get(s);
+        else
+            return s.states.get(0);
     }   
 
     public Boolean presentInConfiguration(State s)
