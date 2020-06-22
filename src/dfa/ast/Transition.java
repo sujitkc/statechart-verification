@@ -1,7 +1,6 @@
 package ast;
 
-import java.util.List;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Transition {
   public  final String     name;
@@ -68,17 +67,18 @@ public class Transition {
   }
 
   public Environment getWriteOnlyEnvironment() throws Exception {
-    if(this.writeOnlyEnvironment == null) {
-      this.writeOnlyEnvironment = this.destination.getEnvironment()
-        .copyExclusive(this.state.getEnvironment());
-    Iterator<Declaration> i = this.writeOnlyEnvironment.getDeclarations().iterator();
-    while(i.hasNext())
+    DeclarationList temp = new DeclarationList();
+    for(Declaration  d : this.destination.declarations)
     {
-      if(!i.next().getScope().name.equals("parameter"))
+      if(d.getScope().name.equals("parameter"))
       {
-        i.remove();
+        temp.add(d);
       }
     }
+    temp.setState(this.destination);
+    if(this.writeOnlyEnvironment == null) {
+      this.writeOnlyEnvironment = new Environment(temp, this.destination.getEnvironment().getNextEnvironment())
+        .copyExclusive(this.state.getEnvironment());
     }
     return this.writeOnlyEnvironment;
   }

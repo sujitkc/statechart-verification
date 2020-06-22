@@ -18,10 +18,10 @@ public class Environment {
     return this.declarations;
   }
 
-  public void removeDeclaration(Declaration d)
-  {
-    this.declarations.remove(d);
+  public void setDeclarations(DeclarationList d) {
+    this.declarations = d;
   }
+
 
   public Environment getNextEnvironment() {
     return this.next;

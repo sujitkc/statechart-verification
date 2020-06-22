@@ -1,4 +1,4 @@
-// Evaluates various types of binary expressions
+// Evaluates the behavior for when History is maintained
 
 statechart sc {
   
@@ -8,41 +8,60 @@ statechart sc {
     switch;
   }
 
-  a1 :int;
-  a2 :int;
-  b1 :int;
-  b2 :int;
-  c1 :int;
-  c2 :int;
-  st1 :string;
-  st2 :string;
-  l1 :boolean;
-  l2 :boolean;
-  d1 :int;
-  d2 :int;
+  switch_var :int :local;
 
   entry : {
-      a1 := 1;
-      a2 := 2;
-      b1 := 1;
-      b2 := 2;
-      c1 := 1;
-      c2 := 2;
-      l1 := true;
-      l2 := false;
-      d1 := 1024;
-      d2 := 2;
+    switch_var := 1;
   }
 
   exit  : {} 
 
 
   state s1 {
-    entry : {} 
+
+      inp1       :int: local;
+      inp2       :int: static;
+      inp3       :int: parameter;
+
+    entry : {
+      if (switch_var < 2)
+      {
+        inp1 := 0; 
+        inp2 := 0; 
+        inp3 := 0;
+        switch_var := 2;
+      }
+      else {}
+    } 
 
     exit  : {
-        l1 := l1 && l2;
+      inp1 := inp1 + 1; 
+      inp2 := inp2 + 1; 
+      inp3 := inp3 + 1; 
     } 
+
+
+    state s11 {
+
+        entry: {}
+
+        exit : {}
+    }
+
+    state s12 {
+
+        entry: {}
+
+        exit : {}
+    }
+
+    transition t11 {
+    source      : sc.s1.s11;
+    destination : sc.s1.s12;
+    trigger     : switch;
+    guard       : 0<1;
+    action      : {}
+  }
 
   }
 
@@ -51,30 +70,35 @@ statechart sc {
 
     exit  : {} 
 
+    state s21 {
+        entry : {}
+        exit : {}
+    }
+
+    state s22 {
+        entry : {}
+        exit : {}
+    }
+
+    
   }
 
-  transition t1 {
-    source      : sc.s1;
-    destination : sc.s2;
+  transition t12 {
+    source      : sc.s1.s12;
+    destination : sc.s2.s22;
     trigger     : switch;
-    guard       : true;
-    action      : {
-        a1 := a1 + a2;
-        b1 := b1 - b2;
-        c1 := c1 * c2;
-        d1 := d1 / d2;
-    }
+    guard       : 0<1;
+    action      : {}
   }
-   transition t2 {
-    source      : sc.s2;
+  
+  transition t21 {
+    source      : sc.s2.s22;
     destination : sc.s1;
     trigger     : switch;
-    guard       : true;
+    guard       : 0<1;
     action      : {
-        a2 := a1 + a2;
-        b2 := b2 - b1;
-        c2 := c1 * c2;
-        d1 := 1024;
+      inp3 := 21; 
     }
   }
+   
 }

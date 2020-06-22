@@ -38,7 +38,9 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "/home/redhood/Desktop/Work/StatechartSimulator/statechart-verification/src/dfa/data/sim_rough.stb";
+    //String input = "/home/advait/statechart-verification/src/dfa/data/sim_rough.stb";
+    String input = "data/sim_rough.stb";
+
 
     try {
       Parser parser = new FrontEnd(input).getParser();    
