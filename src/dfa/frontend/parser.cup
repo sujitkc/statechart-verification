@@ -70,6 +70,7 @@ non terminal List<String> tparams;
 non terminal List<String> ne_tparams;
 
 non terminal ast.TypeName typename;
+non terminal ast.ScopeName scopename;
 non terminal List<ast.TypeName> typenames;
 
 non terminal ast.Statement entry_clause;
@@ -78,6 +79,7 @@ non terminal ast.Statement exit_clause;
 terminal String IDENTIFIER;
 terminal Integer INTCONST;
 terminal String STRLITERAL;
+
 
 terminal Symbol
     LBRACE, RBRACE, LPAREN, RPAREN, LTRI, RTRI,          /* Brackets                 */
@@ -93,7 +95,8 @@ terminal Symbol
     SUB, ADD, MUL, DIV,                                  /* Arithmetic operators     */
     TRUE, FALSE,                                         /* Constants                */
     STRUCT, TYPES, TYPE,                                 /* User defined types       */
-    FUNCTIONS                                            /* Functions                */
+    FUNCTIONS,                                           /* Functions                */
+    HISTORY
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -129,7 +132,23 @@ statechart ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr);
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(false));
+    :}
+  ;
+
+statechart ::= 
+    STATECHART IDENTIFIER:id LBRACE
+      HISTORY
+      typelist : tlist
+      eventlist:el
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      funcdecls:fdecls
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(true));
     :}
   ;
 
@@ -316,13 +335,26 @@ funcs ::=
 
 state ::= 
     STATE IDENTIFIER:id LBRACE
+      HISTORY
       decl_list:dlist
       entry_clause:en
       exit_clause:ex
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr);
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(true));
+    :}
+  ;
+
+state ::= 
+    STATE IDENTIFIER:id LBRACE
+      decl_list:dlist
+      entry_clause:en
+      exit_clause:ex
+      states:st transitions:tr
+    RBRACE
+    {:
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false));
     :}
 
   ;
@@ -579,16 +611,17 @@ decl ::=
   ;
 
 normal_decl ::=
-     IDENTIFIER:id COLON typename:tid
+     IDENTIFIER:id COLON typename:tid COLON scopename:sid
     {:
-      RESULT = new ast.Declaration(id, tid, false);
+      RESULT = new ast.Declaration(id, sid, tid, false);
     :}
   ;
+
 
 inp_decl ::=
      IDENTIFIER:id HASH COLON typename:tid
     {:
-      RESULT = new ast.Declaration(id, tid, true);
+      RESULT = new ast.Declaration(id, new ast.ScopeName("local"), tid, true);
     :}
   ;
 
@@ -600,6 +633,16 @@ typename ::=
   |   IDENTIFIER:tid LTRI typenames:targs RTRI
     {:
       RESULT = new ast.TypeName(tid, targs);
+    :}
+  ;
+
+scopename ::=
+      IDENTIFIER:sid
+    {:
+    if(sid.equals("static") | sid.equals("parameter") | sid.equals("local"))
+      RESULT = new ast.ScopeName(sid);
+    else
+      throw new Exception("Invalid Scope Declaration");
     :}
   ;
 

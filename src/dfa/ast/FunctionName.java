@@ -18,6 +18,9 @@ public class FunctionName {
     this.typeArgumentNames = typeArgumentNames;
   }
 
+  public String getName(){
+    return this.name;
+  }
   public String toString() {
     String s = this.name;
     if(this.typeArgumentNames.size() != 0) {

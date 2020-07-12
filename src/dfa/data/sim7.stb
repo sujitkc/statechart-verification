@@ -1,0 +1,96 @@
+// Evaluates the behavior when history is not maintained (similar statechart w.r.t sim6.stb)
+
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  switch_status :int;
+  
+
+  entry : switch_status := 0;
+
+  exit  : {} 
+
+
+  state s1 {
+    entry : {
+      switch_status := 0; 
+            } 
+
+    exit  : {} 
+
+
+    state s11 {
+
+        entry : {
+          switch_status := 1;
+        }
+
+        exit : {}
+    }
+
+    state s12 {
+
+        entry : {
+          switch_status := 2;
+        }
+
+        exit : {}
+    }
+
+    transition t11 {
+    source      : sc.s1.s11;
+    destination : sc.s1.s12;
+    trigger     : switch;
+    guard       : 0<1;
+    action      : {}
+  }
+
+  }
+
+  state s2 {
+    entry : {} 
+
+    exit  : {} 
+
+    state s21 {
+        entry : {
+          switch_status := 3;
+        }
+        exit : {
+          
+        }
+    }
+
+    state s22 {
+        entry : {
+          switch_status := 4;
+        }
+        exit : {}
+    }
+
+    
+
+  }
+
+  transition t12 {
+    source      : sc.s1.s12;
+    destination : sc.s2.s22;
+    trigger     : switch;
+    guard       : 0<1;
+    action      : {}
+  }
+  
+  transition t22 {
+    source      : sc.s2.s22;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : 0<1;
+    action      : {}
+  }
+   
+}

@@ -18,6 +18,11 @@ public class Environment {
     return this.declarations;
   }
 
+  public void setDeclarations(DeclarationList d) {
+    this.declarations = d;
+  }
+
+
   public Environment getNextEnvironment() {
     return this.next;
   }

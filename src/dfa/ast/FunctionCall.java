@@ -12,8 +12,16 @@ public class FunctionCall extends Expression {
     this.argumentList = argumentList;
   }
 
+  public FunctionDeclaration getFunctionDeclaration(){
+    return this.function;
+  }
+
   public List<Expression> getArgumentList() {
     return this.argumentList;
+  }
+
+  public String getName(){
+    return this.name.getName();
   }
 
   public String toString() {

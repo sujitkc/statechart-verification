@@ -1,0 +1,170 @@
+// Evaluates the behavior for when History is maintained
+
+statechart CourseEnrollment {
+  
+  events {
+    eSelectSubject;
+	eSelectCredit;
+	eVerifySelection;
+	eEnroll;
+	eSubmit;
+	eCancel;
+  }
+ 
+  student : int : static;
+  degree : int : static;
+  semester :int: static;
+  
+  entry : {
+    student := input<||>();
+	degree := input<||>();
+	semester := input<||>();
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+ 
+  state Selection {
+	  isSelected       :boolean: local;
+      creditsSelected       :int: static;
+      
+    entry : {
+		isSelected:=false;
+    } 
+
+    exit  : {
+     
+    } 
+
+    state SubjectSelection {
+		
+		subjCode :int :local;
+		scredit :int:local;
+		
+        entry: {
+			subjCode:=input<||>();
+			scredit:=input<||>();
+		}
+
+        exit : {
+			creditsSelected:=creditsSelected+scredit;
+		}
+    }
+
+    state CreditSelection {
+
+		credits: int: local;
+		credittype: int: local;
+        entry: {}
+
+        exit : {}
+    }
+	
+
+    transition t1 {
+    source      : CourseEnrollment.Selection.SubjectSelection;
+    destination : CourseEnrollment.Selection.CreditSelection;
+    trigger     : eSelectCredit;
+    guard       : true;//sc.s1.user.userType=0;
+    action      : {}
+  }
+    transition t2 {
+	source		: CourseEnrollment.Selection.CreditSelection;
+	destination : CourseEnrollment.Selection.SubjectSelection;
+	trigger		: eSelectSubject;
+	guard		: true;
+	action		: {}
+	}
+	transition t3 {
+	source		: CourseEnrollment.Selection.SubjectSelection;
+	destination : CourseEnrollment.Selection.SubjectSelection;
+	trigger		: eSelectSubject;
+	guard		: true;
+	action		: {}
+	}
+  }
+
+  state Submission {
+	creditsChosen : int : parameter;
+	creditLimit	:int: local;
+	scredit : int: local;
+    entry : {
+		scredit:=creditsChosen;
+	} 
+
+    exit  : {} 
+
+    state Verification {
+	creditType: int: parameter;
+        entry : {
+		if(creditType>1){
+			creditLimit:=20;
+			}
+		else{}
+		}
+        exit : {}
+    }
+
+    state Enrollment {
+	result: boolean: parameter;
+        entry : {}
+        exit : {}
+    }
+
+    transition t6{
+	source		: CourseEnrollment.Submission.Verification;
+	destination : CourseEnrollment.Submission.Enrollment;
+	trigger		: eEnroll;
+	guard		: true;
+	action		: {}
+	}
+	
+	transition t9{
+	source		: CourseEnrollment.Submission.Enrollment;
+	destination : CourseEnrollment.Submission.Enrollment;
+	trigger		: eSubmit;
+	guard		: ((creditLimit-scredit)<=0)&&((degree=1)||(degree=2));
+	action		: {}
+	}
+  }
+  transition t4 {
+    source      : CourseEnrollment.Selection.SubjectSelection;
+    destination : CourseEnrollment.Submission;
+    trigger     : eVerifySelection;
+    guard       : creditsSelected!=0;
+    action      : {creditsChosen:=creditsSelected;}
+  }
+  transition t5 {
+    source      : CourseEnrollment.Selection.CreditSelection;
+    destination : CourseEnrollment.Submission;
+    trigger     : eVerifySelection;
+    guard       : credits!=0;
+    action      : {creditsChosen:=credits;}
+  }
+  transition t7 {
+    source      : CourseEnrollment.Submission.Enrollment;
+    destination : CourseEnrollment.Selection.SubjectSelection;
+    trigger     : eSubmit;
+    guard       : (scredit-creditLimit)>0;
+    action      : {}
+  }
+  transition t8 {
+    source      : CourseEnrollment.Submission.Enrollment;
+    destination : CourseEnrollment.Selection.CreditSelection;
+    trigger     : eSubmit;
+    guard       : (scredit/3)!=0;
+    action      : {}
+  }
+  
+  transition t10 {
+    source      : CourseEnrollment.Submission;
+    destination : CourseEnrollment.Selection;
+    trigger     : eCancel;
+    guard       : true;
+    action      : {
+    }
+  }
+   
+}

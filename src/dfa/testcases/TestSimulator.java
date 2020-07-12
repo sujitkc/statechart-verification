@@ -21,6 +21,8 @@ import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
 
+import simulator.*;
+
 import ast.State;
 import ast.Statechart;
 import ast.Transition;
@@ -28,20 +30,18 @@ import ast.Environment;
 import ast.Declaration;
 import ast.Name;
 
-import translation.Flattener;
-import metric.Metric;
-import translation.StatechartToProgramTranslator;
-import translation.ProgramToCFG;
-import program.Program;
-import stablcfg.*;
-public class TestProgramToCFG {
+public class TestSimulator {
 
   @Test
-  public void testProgramToCFG() {
+  public void testSimulator() {
+    System.out.println("Hello front end.");
 
     Typechecker typechecker;
-    String input = "data/curfew1.txt";
+
     Statechart statechart = null;
+    String input = "data/curfew_structs_minimal.txt";
+    // String input = "data/s24.txt";
+    // String input = "data/curfew1.txt";
     try {
       Parser parser = new FrontEnd(input).getParser();    
       Symbol result = parser.parse();
@@ -56,6 +56,7 @@ public class TestProgramToCFG {
     catch(Exception e) {
       System.out.println("Couldn't parse '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
+      System.exit(1);
     }
     try {
       new Typechecker(statechart).typecheck();
@@ -67,44 +68,15 @@ public class TestProgramToCFG {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
-    Statechart flattenedSC = null;
-    try {
-      Flattener flattener = new Flattener();
-      flattenedSC = flattener.translate(statechart);
-      System.out.println("Printing flattened Statechart ...");
-      System.out.println(flattenedSC);
-      System.out.println("Printing flattened Statechart ... done!");
+
+      // creating a simulator
+    try
+    {
+      new Simulator(statechart);
     }
     catch(Exception e) {
-      System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
-      e.printStackTrace();
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
     }
-
-    Program program = null;
-    try {
-      StatechartToProgramTranslator sctoprog = new StatechartToProgramTranslator(flattenedSC);
-      program = sctoprog.translate();
-      System.out.println("Printing Program ...");
-      System.out.println(program);
-      System.out.println("Printing Program ... done!");
-    }
-    catch(Exception e) {
-      System.out.println("Couldn't translate flattened statechart " + e.getMessage()); 
-      e.printStackTrace();
-    }
-
-    try {
-      ProgramToCFG programToCFG = new ProgramToCFG();
-      CFG cfg = programToCFG.translate(program);
-//      System.out.println("Printing flattened Statechart ...");
-//      System.out.println(flattenedSC);
-//      System.out.println("Printing flattened Statechart ... done!");
-    }
-    catch(Exception e) {
-      System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
-      e.printStackTrace();
-    }
-
-
   }
 }

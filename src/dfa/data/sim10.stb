@@ -1,0 +1,199 @@
+// Model Banking System
+
+statechart sc {
+  
+  types {}
+
+  events {
+    switch;
+  }
+
+  balance :int;
+  input   :int;
+
+  entry : balance := 0;
+
+  exit  : {} 
+
+  state s1 
+  {
+      HISTORY : boolean;
+      login   : int;
+      password: int;
+      login_status : string;
+      entry : 
+      {
+          HISTORY := true;
+      }
+      exit : {}
+
+      state s11
+      {
+          VARIABLE : int;
+          entry : {}
+          exit : 
+          {
+              login := VARIABLE;
+          }
+      }
+
+      state s12 
+      {
+          VARIABLE : int;
+          entry : {}
+          exit : 
+          {
+              password := VARIABLE;
+          }
+      }
+
+      state s13 
+      {
+          entry : {
+            login_status := "Attempting to login...";
+          }
+          exit : {}
+      }
+
+      state s14 
+      {
+          VARIABLE : int;
+          entry : {}
+          exit : 
+          {
+              input := VARIABLE;
+          }
+      }
+
+    transition t1112 
+    {
+    source      : sc.s1.s11;
+    destination : sc.s1.s12;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+    }
+
+    transition t1213 
+    {
+    source      : sc.s1.s12;
+    destination : sc.s1.s13;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+    }
+
+    transition t1314 
+    {
+      source      : sc.s1.s13;
+      destination : sc.s1.s14;
+      trigger     : switch;
+      guard       : login = password;
+      action      : {
+        login_status := "Login Success!";
+      }
+    }
+
+    transition t1311 
+    {
+      source      : sc.s1.s13;
+      destination : sc.s1.s11;
+      trigger     : switch;
+      guard       : login != password;
+      action      : {
+        login_status := "Login Fail!";
+      }
+    }
+
+  }
+
+  state s2 
+  {
+      inst : string;
+
+      entry : {}
+      exit : {}
+
+      state s21 
+      {
+          entry : {
+            if(input = 1)
+            {
+              inst := "Enter the amount you want to deposit";
+            }
+            else
+            {
+              inst := "Enter the amount you want to withdraw";
+            }
+          }
+          exit : {}
+      }
+
+      state s22 
+      {
+          VARIABLE : int;
+          entry : {}
+          exit : 
+          {
+              balance := balance + VARIABLE;
+          }
+      }
+
+      state s23 {
+          VARIABLE : int;
+          entry : {}
+          exit : {
+              balance := balance - VARIABLE;
+          }
+      }
+
+
+    transition t2122 
+    {
+    source      : sc.s2.s21;
+    destination : sc.s2.s22;
+    trigger     : switch;
+    guard       : input = 1;
+    action      : {}
+    }
+
+    transition t2123 
+    {
+    source      : sc.s2.s21;
+    destination : sc.s2.s23;
+    trigger     : switch;
+    guard       : input = 2;
+    action      : {}
+    }
+
+  }
+
+  // Transitions Across S1 and S2
+  transition t142 
+  {
+    source      : sc.s1.s14;
+    destination : sc.s2;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+
+  transition t221 
+  {
+    source      : sc.s2.s22;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+  
+  transition t231 
+  {
+    source      : sc.s2.s23;
+    destination : sc.s1;
+    trigger     : switch;
+    guard       : true;
+    action      : {}
+  }
+
+}

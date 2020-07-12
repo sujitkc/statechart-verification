@@ -6,14 +6,30 @@ import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
+import java.util.Scanner;
+
+import ast.*;
+//
+
 public class FrontEnd {
+
   private final Parser parser;
 
-  public FrontEnd(String input) throws FileNotFoundException {
+  // constructors
+  public FrontEnd(String input) throws FileNotFoundException 
+  {
     this.parser = new Parser(new Lexer(new FileReader(input)));
   }
 
-  public Parser getParser() {
+  // pasrser
+  public Parser getParser() 
+  {
     return this.parser;
   }
+  
 }

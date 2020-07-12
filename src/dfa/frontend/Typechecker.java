@@ -152,7 +152,7 @@ public class Typechecker {
   }
 
   private void typecheckDeclaration(
-      Declaration d, List<String> typeParameterNames, int i) throws Exception {
+    Declaration d, List<String> typeParameterNames, int i) throws Exception {
     Type type = this.lookupType(
       d.typeName, typeParameterNames, this.statechart.types.size());
     if(type == null) {
@@ -303,6 +303,7 @@ public class Typechecker {
   private void typecheckStringLiteral(StringLiteral e) throws Exception {
     e.setType(this.lookupType(new TypeName("string")));
   }
+
 
   private void typecheckBinaryExpression(
       BinaryExpression b,
@@ -527,7 +528,7 @@ public class Typechecker {
 
     this.typecheckName(as.lhs, wenv);
     this.typecheckExpression(as.rhs, renv);
-
+    
     if(!as.lhs.getType().equals(as.rhs.getType())) {
       throw new Exception("In assignment " + as + " lhs: " + as.lhs.getType() +
         " and rhs type " + as.rhs.getType() + " don't match.");
