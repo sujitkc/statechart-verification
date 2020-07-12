@@ -171,6 +171,7 @@ public class Simulator {
       while(true)
       {
         curr = this.get_atomic_state(curr);                                         // gets to the state where from where the execution begins
+        System.out.println("Press 'Enter' to continue...");
         input.nextLine(); // to break the flow into key-strokes
 
         System.out.println("+--------------------------------------------------+");

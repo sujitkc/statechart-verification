@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import ast.*;
 
@@ -71,6 +72,16 @@ public class ExecutionState
         this.configuration.add(s);
         for(Declaration d : s.declarations)
         {
+            //if(d.isInput()){
+            //    System.out.println("Enter the value: " + d.getFullVName());
+            //    Scanner sc = new Scanner(System.in);
+            //    if(d.getType().toString().equals("Variable type: basic type 'int'")){
+            //        int temp = sc.nextInt();
+            //    }
+            //    //if(d.getType().equals("int")){
+            //    //    int temp = sc.nextLine();
+            //    //}
+            //}
             if(d.getScope().name.equals("local"))
             {
                 this.valueEnvironment.put(d, null);

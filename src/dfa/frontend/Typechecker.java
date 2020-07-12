@@ -304,6 +304,7 @@ public class Typechecker {
     e.setType(this.lookupType(new TypeName("string")));
   }
 
+
   private void typecheckBinaryExpression(
       BinaryExpression b,
       Environment env) throws Exception {

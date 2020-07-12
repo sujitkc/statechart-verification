@@ -19,6 +19,8 @@ statechart sc {
 
   state s1 {
 
+      inp : int : local;
+
       inp1       :int: local;
       inp2       :int: static;
       inp3       :int: parameter;
@@ -26,6 +28,7 @@ statechart sc {
     entry : {
       if (switch_var < 2)
       {
+        inp := input<||>();
         inp1 := 0; 
         inp2 := 0; 
         inp3 := 0;

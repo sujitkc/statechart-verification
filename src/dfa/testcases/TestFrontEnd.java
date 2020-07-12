@@ -39,7 +39,7 @@ public class TestFrontEnd {
 
     Statechart statechart = null;
     //String input = "/home/advait/statechart-verification/src/dfa/data/sim_rough.stb";
-    String input = "data/sim_rough.stb";
+    String input = "data/course.stb";
 
 
     try {

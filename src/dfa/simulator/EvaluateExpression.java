@@ -1,5 +1,7 @@
 package simulator;
 
+import java.util.Scanner;
+
 import ast.*;
 
 /* EvaluateExpression class - Contains all the static methods required to evaluate expressions - regular or binary. */
@@ -12,6 +14,8 @@ public class EvaluateExpression{
             return Simulator.eState.getValue(((Name)e).getDeclaration());
           else if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
             return e;
+          else if(e instanceof FunctionCall)
+            return evaluateFunction((FunctionCall)e);
         }
         catch (Exception exc)
         {
@@ -21,6 +25,18 @@ public class EvaluateExpression{
         return null; // the execution should not get to here
 
         
+    }
+
+    // Implementation to take input as a function call
+    public static Expression evaluateFunction(FunctionCall f){
+        // Evaluate the input function
+        if(f.getName().equals("input")){
+            System.out.println("Enter the value of the variable: ");
+            Scanner sc = new Scanner(System.in);
+            int temp = sc.nextInt();
+            return (Expression)(new IntegerConstant(temp));
+        }
+        return null;
     }
 
     /* Implementation to evaluate binary expressions */
