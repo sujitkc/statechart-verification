@@ -23,7 +23,7 @@ public class Simulator {
     }
     catch (Exception e)
     {
-      System.out.println("Simulation Failed! Returning from Simulator\n");
+      e.printStackTrace();
     }
   }
   
@@ -62,7 +62,7 @@ public class Simulator {
     }
     catch (Exception e)                              // if the executeStatement failed
     {
-      System.out.println("get_atomic_state() Failed for: " + state.getFullName() + " for the entry-statement: " + state.entry);
+      e.printStackTrace();
     }
 
     return init;                                    // execution never actually reaches here
@@ -113,7 +113,7 @@ public class Simulator {
     }
     catch (Exception e)
     {
-      System.out.println("performTransition() failed for transition: " + t);
+      e.printStackTrace();
     }
   }
 
@@ -163,7 +163,7 @@ public class Simulator {
     } 
     catch (Exception e)
     {
-      System.out.println("this.get_valid_transition failed to execute halt statement!\n");
+      e.printStackTrace();
     }
     return output;
   }

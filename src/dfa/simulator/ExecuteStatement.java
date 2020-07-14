@@ -34,7 +34,7 @@ public class ExecuteStatement
         }
         catch (Exception e)
         {
-          System.out.println("Execution of the following statement failed: " + statement);
+          e.printStackTrace();
         }
     }
 
@@ -45,9 +45,9 @@ public class ExecuteStatement
       Declaration variableDeclaration = assignment.lhs.getDeclaration();
       Simulator.eState.setValue(variableDeclaration, EvaluateExpression.evaluate(assignment.rhs));
       }
-      catch (Exception exc)
+      catch (Exception e)
       {
-        System.out.println("The following assignment statement failed: " + assignment);
+        e.printStackTrace();
       }
     }
 
@@ -68,7 +68,7 @@ public class ExecuteStatement
           }
           catch (Exception e)
           {
-            System.out.println("Execution of the following statement list failed: " + statement);
+            e.printStackTrace();
           }
         }
     }
@@ -94,12 +94,11 @@ public class ExecuteStatement
           executeStatement(c.then_body);
         else
           executeStatement(c.else_body);
-      }
-      
+      }   
     }
     catch (Exception e)
     {
-      System.out.println("Execution of the following conditional statement failed: " + c);
+      e.printStackTrace();
     }
   }
 
@@ -131,7 +130,7 @@ public class ExecuteStatement
     }
     catch (Exception e)
     {
-      System.out.println("Execution of the following loop failed: " + w);
+      e.printStackTrace();
     }
   } 
 

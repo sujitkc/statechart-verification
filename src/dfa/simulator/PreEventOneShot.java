@@ -38,7 +38,7 @@ public class PreEventOneShot implements SimulationMode
         }
         catch(Exception e)
         {
-            System.out.println("Simulation Failed!\n");
+            e.printStackTrace();
         }
     }
 }

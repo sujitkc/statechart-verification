@@ -41,7 +41,7 @@ public class PreEventInSteps implements SimulationMode
         }
         catch(Exception e)
         {
-            System.out.println("Simulation Failed!\n");
+            e.printStackTrace();
         }
     }
 }

@@ -25,8 +25,7 @@ public class EvaluateExpression{
           return null;
         }
         return null; // the execution should not get to here
-
-        
+   
     }
 
     // Implementation to take input as a function call
@@ -36,6 +35,7 @@ public class EvaluateExpression{
             System.out.println("Enter the value of the variable: ");
             Scanner sc = new Scanner(System.in);
             int temp = sc.nextInt();
+            sc.close();
             return (Expression)(new IntegerConstant(temp));
         }
         return null;
