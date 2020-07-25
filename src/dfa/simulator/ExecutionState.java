@@ -20,13 +20,13 @@ public class ExecutionState
 
     public ExecutionState(Statechart st)
     {
-        populate_state(st);
+        this.populate(st);
 
         if(!st.states.isEmpty())
         {
           for(State s : st.states)
           {
-            populate_state(s);
+            this.populate(s);
           }
         }
 
@@ -158,7 +158,7 @@ public class ExecutionState
     }
 
 
-    private void populate_state(State s)
+    private void populate(State s)
     {
         for(Declaration d : s.declarations)
         {

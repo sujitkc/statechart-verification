@@ -19,6 +19,9 @@ public class Simulator {
       this.statechart = statechart;
       eState = new ExecutionState(statechart); 
       this.simulationMode = new UserEventInSteps(this.statechart);
+
+      new SymbolicEngine(this.statechart);
+      
       this.simulationMode.simulate(eState);
     }
     catch (Exception e)
@@ -125,10 +128,21 @@ public class Simulator {
       curr = curr.getSuperstate();
       for(Transition t : curr.transitions)
       {
-        if(((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value && eState.presentInConfiguration(t.getSource()) && t.trigger.equals(event))
+        try
         {
-          output = t;
-          i++;
+            if(((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value && eState.presentInConfiguration(t.getSource()) && t.trigger.equals(event))
+            {
+              output = t;
+              i++;
+            }
+        }
+        catch (NullPointerException e) // if one of the above expressions evaluate to null, that transition is not considered viable.
+        {
+          continue;
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
         }
       }
       if(!curr.equals(statechart))

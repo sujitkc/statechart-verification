@@ -7,25 +7,24 @@ import ast.*;
 /* EvaluateExpression class - Contains all the static methods required to evaluate expressions - regular or binary. */
 public class EvaluateExpression{
     public static Expression evaluate(Expression e){
-        try {
-          if(e instanceof BinaryExpression)
-          {
-           return evaluateBinaryExpression((BinaryExpression)e);
-          }
-          else if(e instanceof Name)
-            return Simulator.eState.getValue(((Name)e).getDeclaration());
-          else if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
-            return e;
-          else if(e instanceof FunctionCall)
-            return evaluateFunction((FunctionCall)e);
+        try 
+        {
+            if(e instanceof BinaryExpression)
+                return evaluateBinaryExpression((BinaryExpression)e);
+            else if(e instanceof Name)
+                return Simulator.eState.getValue(((Name)e).getDeclaration());
+            else if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
+                return e;
+            else if(e instanceof FunctionCall)
+                return evaluateFunction((FunctionCall)e);
+            else
+                return null;
         }
         catch (Exception exc)
         {
-          System.out.println("Unknown Type of Expression!\n");
-          return null;
+            System.out.println("Unknown Type of Expression!\n");
+            return null;
         }
-        return null; // the execution should not get to here
-   
     }
 
     // Implementation to take input as a function call
@@ -35,7 +34,6 @@ public class EvaluateExpression{
             System.out.println("Enter the value of the variable: ");
             Scanner sc = new Scanner(System.in);
             int temp = sc.nextInt();
-            sc.close();
             return (Expression)(new IntegerConstant(temp));
         }
         return null;
