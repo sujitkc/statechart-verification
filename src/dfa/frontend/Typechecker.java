@@ -334,8 +334,16 @@ public class Typechecker {
         b.operator.equals("<")  ||
         b.operator.equals("!=") ||
         b.operator.equals("=") ) {
-
-      TypeName[] allowedTypes = { new TypeName("int"), new TypeName("string") };
+		boolean type_set = false; 
+		System.out.println("b.left.getType() :"+b.left.getType() );
+		System.out.println("b.right.getType() :"+b.right.getType() );
+		
+		if(b.left.getType().equals(b.right.getType())) {
+          b.setType(this.lookupType(new TypeName("boolean")));
+          type_set = true;
+          
+        }
+      /*TypeName[] allowedTypes = { new TypeName("int"), new TypeName("string"), new TypeName("boolean") };
       boolean type_set = false; 
       for(TypeName tname : allowedTypes) {
         Type type = this.lookupType(tname);
@@ -345,7 +353,7 @@ public class Typechecker {
           type_set = true;
           break;
         }
-      }
+      }*/
       if(type_set == false) {
         throw new Exception(
           "typecheckBinaryExpression failed: operand type mismatch between "
@@ -469,6 +477,7 @@ public class Typechecker {
       this.typecheckName((Name)exp, env); 
     }
     else if(exp instanceof BooleanConstant) {
+		System.out.println("Boolean constant detected");
       this.typecheckBooleanConstant((BooleanConstant)exp); 
     }
     else if(exp instanceof IntegerConstant) {

@@ -30,10 +30,10 @@ public class ExecutionState
           }
         }
 
-        for(String e : st.events)
+       /* for(String e : st.events)
         {
             this.eventQueue.add(e);
-        }
+        }*/
     }
 
     public void addEvent(String e)

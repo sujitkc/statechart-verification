@@ -17,7 +17,10 @@ public class Simulator {
     try 
     {
       this.statechart = statechart;
+	  
       eState = new ExecutionState(statechart); 
+	  for (int i=0;i<1;i++)
+			eState.addEvent("e");
       this.simulationMode = new UserEventInSteps(this.statechart);
 
       new SymbolicEngine(this.statechart);

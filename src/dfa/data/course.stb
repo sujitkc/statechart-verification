@@ -1,182 +1,280 @@
 // Evaluates the behavior for when History is maintained
-
-statechart CourseEnrollment {
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  CoillisionAvoidance{
   
   events {
-    eSelectSubject;
-	eSelectCredit;
-	eVerifySelection;
-	eEnroll;
-	eSubmit;
-	eCancel;
+	e;
+	Error;
   }
  
-  student : int : static;
-  degree : int : static;
-  semester :int: static;
-  
+  CA_Enabled : boolean : local;
+  CA_HVI : int : local;
+  CA_Warning :int: local;
+  Warning :int: local;
+  AccelPedal :int: local;
   entry : {
-    student := input<||>();
-	degree := input<||>();
-	semester := input<||>();
+    CA_Enabled:=true;
+
   }
 
   exit  : {} 
   functions {
   input<||>() : int;
   }
- 
-  state Selection {
-	  isSelected       :boolean: local;
-      creditsSelected       :int: static;
-      
-    entry : {
-		isSelected:=false;
-        creditsSelected := 0;
-	  //user.userType:=2;
-      /*if (switch_var < 2)
-      {
-        inp1 := 0; 
-        inp2 := 0; 
-        inp3 := 0;
-        switch_var := 2;
-      }
-      else {
-		switch_var := 1;
-	  }*/
-    } 
-
-    exit  : {
-     
-    } 
-
-    state SubjectSelection {
-		
-		subjCode :int :local;
-		scredit :int:local;
-		
-        entry: {
-			subjCode:=input<||>();
-			scredit:=input<||>();
-		}
-
-        exit : {
-			creditsSelected:=creditsSelected+scredit;
-		}
-    }
-
-    state CreditSelection {
-
-		credits: int: local;
-		credittype: int: local;
-        entry: {}
-
-        exit : {}
-    }
-	
-
-    transition t1 {
-    source      : CourseEnrollment.Selection.SubjectSelection;
-    destination : CourseEnrollment.Selection.CreditSelection;
-    trigger     : eSelectCredit;
-    guard       : true;//sc.s1.user.userType=0;
-    action      : {}
+  state Disabled{
+   entry: {}
+   exit : {}
   }
-    transition t2 {
-	source		: CourseEnrollment.Selection.CreditSelection;
-	destination : CourseEnrollment.Selection.SubjectSelection;
-	trigger		: eSelectSubject;
-	guard		: true;
-	action		: {}
-	}
-	transition t3 {
-	source		: CourseEnrollment.Selection.SubjectSelection;
-	destination : CourseEnrollment.Selection.SubjectSelection;
-	trigger		: eSelectSubject;
-	guard		: true;
-	action		: {}
-	}
+  state Override{
+   entry: {}
+   exit : {}
   }
-
-  state Submission {
-	creditsChosen : int : parameter;
-	creditLimit	:int: local;
-	scredit : int: local;
-    entry : {
-		scredit:=creditsChosen;
-	} 
-
-    exit  : {} 
-
-    state Verification {
-	creditType: int: parameter;
-        entry : {
-		if(creditType>1){
-			creditLimit:=20;
-			}
-		else{}
-		}
-        exit : {}
-    }
-
-    state Enrollment {
-	result: boolean: parameter;
-        entry : {}
-        exit : {}
-    }
-
-    transition t6{
-	source		: CourseEnrollment.Submission.Verification;
-	destination : CourseEnrollment.Submission.Enrollment;
-	trigger		: eEnroll;
-	guard		: true;
-	action		: {}
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   BreakPedal:int:local;
+   Speed:int:local;
+   PRNDL_In:int:local;
+   const25:int:local;
+   const3:int:local;
+   const0:int:local;
+   const10:int:local;
+   
+   entry: {
+     const0:=0;
+	 const3:=3;
+	 const25:=25;
+	 const10:=10;
+   }
+   exit : {}
+   state Disengaged{
+     entry: {
+		PRNDL_In:=input<||>();
+		Speed:=input<||>();
+	 }
+     exit : {}
+   }
+   state Engaged{
+     ThreatCA:int:local;
+	 Set_Brake:int:local;
+	 const1:int:local;
+	 const2:int:local;
+	 
+	 entry: {
+		const1:=1;
+		const2:=2;
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Avoid{
+	 entry: {}
+     exit : {}
 	}
 	
-	transition t9{
-	source		: CourseEnrollment.Submission.Enrollment;
-	destination : CourseEnrollment.Submission.Enrollment;
-	trigger		: eSubmit;
-	guard		: ((creditLimit-scredit)<=0)&&((degree=1)||(degree=2));
-	action		: {}
-	}
-  }
-  transition t4 {
-    source      : CourseEnrollment.Selection.SubjectSelection;
-    destination : CourseEnrollment.Submission;
-    trigger     : eVerifySelection;
-    guard       : creditsSelected!=0;
-    action      : {creditsChosen:=creditsSelected;}
-  }
-  transition t5 {
-    source      : CourseEnrollment.Selection.CreditSelection;
-    destination : CourseEnrollment.Submission;
-    trigger     : eVerifySelection;
-    guard       : credits!=0;
-    action      : {creditsChosen:=credits;}
-  }
-  transition t7 {
-    source      : CourseEnrollment.Submission.Enrollment;
-    destination : CourseEnrollment.Selection.SubjectSelection;
-    trigger     : eSubmit;
-    guard       : (scredit-creditLimit)>0;
-    action      : {}
-  }
-  transition t8 {
-    source      : CourseEnrollment.Submission.Enrollment;
-    destination : CourseEnrollment.Selection.CreditSelection;
-    trigger     : eSubmit;
-    guard       : (scredit/3)!=0;
-    action      : {}
-  }
-  
-  transition t10 {
-    source      : CourseEnrollment.Submission;
-    destination : CourseEnrollment.Selection;
-    trigger     : eCancel;
-    guard       : true;
-    action      : {
+	state Mitigate{
+	 entry: {}
+     exit : {}
     }
+	transition t19{
+    source: CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t20{
+    source: CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t21{
+    source: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t22{
+    source: CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2; Set_Brake:=30;}
+    }
+	
+	transition t23{
+    source: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t33{
+    source: CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+	transition t34{
+    source: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t35{
+    source: CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3; Set_Brake:=80;}
+    }
+	
+	transition t29{
+    source: CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t31{
+    source: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t30{
+    source: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t32{
+    source: CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+   }
+   state Halt{
+	 entry: {}
+     exit : {}
+   }
+   transition t16{
+    source: CoillisionAvoidance.Enabled.Disengaged;
+    destination: CoillisionAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>25)&&(PRNDL_In=3);
+    action:{CA_HVI:=2;}
   }
    
+   transition t17{
+    source: CoillisionAvoidance.Enabled.Engaged;
+    destination: CoillisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<=25))||(PRNDL_In!=3);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t24{
+    source: CoillisionAvoidance.Enabled.Halt;
+    destination: CoillisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BreakPedal>10);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t25{
+    source: CoillisionAvoidance.Enabled.Engaged;
+    destination: CoillisionAvoidance.Enabled.Halt;
+    trigger: e;
+    guard:(Speed=0);
+    action:{CA_HVI:=1;Warning:=4;}
+  }
+   
+  }
+  transition t14{
+  source: CoillisionAvoidance.Disabled;
+  destination: CoillisionAvoidance.Enabled;
+  trigger: e;
+  guard:(CA_Enabled=true);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t15{
+  source: CoillisionAvoidance.Enabled;
+  destination: CoillisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=true);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+   
+  transition t38{
+  source: CoillisionAvoidance.Override;
+  destination: CoillisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=true);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+  
+  transition t36{
+  source: CoillisionAvoidance.Enabled;
+  destination: CoillisionAvoidance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{CA_HVI:=4;Warning:=0;}
+  }
+  
+  transition t37{
+  source: CoillisionAvoidance.Override;
+  destination: CoillisionAvoidance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t39{
+  source: CoillisionAvoidance.Override;
+  destination: CoillisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;}
+  }
+  
+  transition t27{
+  source: CoillisionAvoidance.Enabled;
+  destination: CoillisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;Warning:=0;}
+  }
+  
 }
