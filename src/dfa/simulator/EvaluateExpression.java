@@ -61,6 +61,8 @@ public class EvaluateExpression{
           return (Expression)(new BooleanConstant(((BooleanConstant)(lhs)).value && ((BooleanConstant)(rhs)).value));
         else if(e.operator.equals("||") && lhs instanceof BooleanConstant)
           return (Expression)(new BooleanConstant(((BooleanConstant)(lhs)).value || ((BooleanConstant)(rhs)).value));
+        else if(e.operator.equals("=") && lhs instanceof BooleanConstant)
+        return (Expression)(new BooleanConstant(((BooleanConstant)(lhs)).value == ((BooleanConstant)(rhs)).value));
         // for integers which return integers
         else if(e.operator.equals("+") && lhs instanceof IntegerConstant)
           return (Expression)(new IntegerConstant(((IntegerConstant)(lhs)).value + ((IntegerConstant)(rhs)).value));
