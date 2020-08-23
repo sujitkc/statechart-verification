@@ -1,6 +1,7 @@
 package symbolic_execution;
 
 import ast.*;
+import symbolic_execution.se_tree.*;
 
 import java.util.ArrayList;
 
@@ -14,12 +15,14 @@ public class SymbolicExecutionEngine{
             this.execute(statechart);
         }
         catch (Exception e){
+            e.printStackTrace();
         }
     } 
 
     // TODO
-    public execute(Statechart statechart){
-        return null;
+    public void execute(Statechart statechart){ 
+        ArrayList<SETNode> done = new ArrayList<SETNode>();
+        
     }
 
     /*

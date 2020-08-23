@@ -21,10 +21,7 @@ public class Simulator {
       eState = new ExecutionState(statechart); 
 	  for (int i=0;i<1;i++)
 			eState.addEvent("e");
-      this.simulationMode = new UserEventInSteps(this.statechart);
-
-      new SymbolicEngine(this.statechart);
-      
+      this.simulationMode = new UserEventInSteps(this.statechart);      
       this.simulationMode.simulate(eState);
     }
     catch (Exception e)

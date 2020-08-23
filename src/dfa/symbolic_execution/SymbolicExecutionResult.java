@@ -1,7 +1,7 @@
 package symbolic_execution;
 
 import ast.*;
-
+import symbolic_execution.se_tree.*;
 import java.util.List;
 
 public class SymbolicExecutionResult{
@@ -9,17 +9,18 @@ public class SymbolicExecutionResult{
     private final List<SETNode> done;
     private final List<SETNode> live;
 
-    public SymbolicExecutionResult(){
+    public SymbolicExecutionResult()
+    {
         
     }
 
-
-
-    public static getDoneNodes(){
-        return done;
+    public List<SETNode> getDoneNodes()
+    {
+        return this.done;
     }
 
-    public static getLiveNodes(){
-        return live;
+    public List<SETNode> getLiveNodes()
+    {
+        return this.live;
     }
 }
