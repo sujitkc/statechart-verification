@@ -117,11 +117,12 @@ public class Typechecker {
         typeParameterNames.indexOf(typeName.name));
     }
     else {
-      type = this.getKnownType(typeName, i).copy();
+      type = this.getKnownType(typeName, i);
       if(type == null) {
         throw new Exception("lookupType failed : Type name " + typeName +
           " not found.");
       }
+      type = type.copy();
       List<Type> typelist = new ArrayList<Type>();
       for(TypeName targ : typeName.typeArgumentNames) {
         Type ty = null;
