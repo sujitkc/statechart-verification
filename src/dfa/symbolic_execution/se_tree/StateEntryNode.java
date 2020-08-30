@@ -6,7 +6,7 @@ public class StateEntryNode extends SETNode{
     
     public final State state;
     
-    public StateEntryNode(SETNode p, State s)
+    public StateEntryNode(State s, SETNode p)
     {
         super(p);
         this.state = s;
