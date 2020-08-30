@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class SymbolicExecutionEngine{
     
     private Statechart statechart;
-    public static ExecutionState eState;
 
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
@@ -106,14 +105,26 @@ public class SymbolicExecutionEngine{
         return result;
     }
 
+    public ArrayList<ArrayList<SETNode>> executeStatement(Statement s, ArrayList<SETNode> leaves)
+    {
+        ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
+        ArrayList<SETNode> done = new ArrayList<SETNode>();
+        for(SETNode l : leaves)
+        {
+            // need to define executeStatement operations for this.
+            // add d to done
+            // add l to leaves_
+        }
+        ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
+        result.add(done);
+        result.add(leaves_);
+        return result;
+    }
+
     public boolean satisfiable(Expression e) // need to implement this
     {
         return true;
     }
 
-    /*
-    // Functions need implementa    tion
-    public static SymbolicExecutionResult executeStatement();
-    */
 
 }
