@@ -99,7 +99,7 @@ public class SymbolicExecutionEngine{
         leaves = leaves_;
 
         // Execute block
-        ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
+        leaves_.clear();
         for(SETNode l : leaves){
             ArrayList<SETNode> d = executeBlock(t.getAction()).get(0);
             ArrayList<SETNode> l_ = executeBlock(t.getAction()).get(1);
@@ -109,10 +109,10 @@ public class SymbolicExecutionEngine{
         leaves = leaves_;
 
         // Enter state
-        ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
+        leaves_.clear();
         for(SETNode l : leaves){
             ArrayList<SETNode> d = enterState(destination, l).get(0);
-            ArrayList<SETNode> l_ = exitState(destination, l).get(1);
+            ArrayList<SETNode> l_ = enterState(destination, l).get(1);
             done.addAll(d);
             leaves_.addAll(l_);
         }
@@ -145,7 +145,14 @@ public class SymbolicExecutionEngine{
             /* SETBBNode is not clear. Idk what to do */
 
             if(s.equals("local")){
-                leaf = new VariableNode();
+                leaf = new VariableNode(leaf, d, d.getType().init); 
+                // Type ast needs to have an initial value 
+            }
+            else if(s.equals("static")){
+                // First entry to the state
+                leaf = new VariableNode(leaf, d, d.getType().init);
+
+                // Need to address 'not the first entry to the state'
             }
         }
 
