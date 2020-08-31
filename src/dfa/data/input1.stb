@@ -1,0 +1,65 @@
+// non determinism on event e in state A1 on transitions t1_A1_A2 and t1_A_B
+// simulator should flag y as undefined in t1_B_A
+
+statechart  Test{
+  
+  events {
+	e;
+  }
+  
+  x:boolean:local;
+  entry : {
+  }
+
+  exit  : {} 
+  functions {
+  }
+  state A{
+   x:int:local;
+   entry: {
+		x:=1;
+   }
+   exit : {}
+   state A1{
+		   x:boolean:local;
+		   entry: {
+			x:=true;
+		   }
+		   exit : {}
+		   
+	}
+	state A2{
+		entry: {}
+        exit : {}
+	}
+	transition t1_A1_A2{
+	source: Test.A.A1;
+	destination: Test.A.A2;
+	trigger: e;
+	guard:(x=true);
+	action:{}
+   }
+  }
+  state B{
+   y:int;
+   entry: {}
+   exit : {}
+  }
+  
+  transition t1_A_B{
+  source: Test.A;
+  destination: Test.B;
+  trigger: e;
+  guard:(x=1);
+  action:{}
+  }
+  
+  transition t1_B_A{
+  source: Test.B;
+  destination: Test.A;
+  trigger: e;
+  guard:(y=1);
+  action:{}
+  }
+  
+}
