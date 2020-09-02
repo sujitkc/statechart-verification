@@ -1,6 +1,8 @@
-MYLIBPATH=/home/sujit/My-Downloads/source/jflex-1.6.0/lib
+# Replace MYLIBPATH with path to the directory containing the jars
+MYLIBPATH=/home/rinz13r/Downloads/jflex-1.6.0/jflex/lib
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
 FE=frontend
+
 Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java
 	if [ ! -d classes ]; then \
 		mkdir classes; \
@@ -19,6 +21,9 @@ test : ${FE}/Lexer.java sym.java ast/*.java program/*.java translation/*.java
 rt :
 	java -cp ~/My-Downloads/junit-4.8.1.jar:classes/:${MYCLASSPATH}:. org.junit.runner.JUnitCore testcases.${testcase}
 
+# replace test.stbl with the file to use
+run: Analyser.java
+	java -cp ${MYCLASSPATH} analyse/Analyser test.stbl
 clean:
 	rm Parser.java sym.java ${FE}/Lexer.java
 	rm -rf classes/*

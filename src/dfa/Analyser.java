@@ -98,7 +98,6 @@ public class Analyser {
     System.out.println("Rscope -- End\n\n");
 
 
-/*
     Statechart flattenedSC = null;
     try {
       Flattener flattener = new Flattener();
@@ -111,7 +110,6 @@ public class Analyser {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
-*/
   }
 
   public Analyser(Statechart statechart) {
