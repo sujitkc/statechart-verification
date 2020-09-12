@@ -1,6 +1,9 @@
 package ast;
 
 import java.util.Map;
+
+import visitor.Visitor;
+
 import java.util.HashMap;
 
 public class BinaryExpression extends Expression {
@@ -59,5 +62,9 @@ public class BinaryExpression extends Expression {
       s += " : not-assigned";
     }
     return s;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitBinaryExpression(this);
   }
 }

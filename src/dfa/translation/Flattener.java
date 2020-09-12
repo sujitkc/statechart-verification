@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.HashMap;
 import ast.*;
 import frontend.*;
@@ -49,17 +50,7 @@ abstract class Translator {
   }
 
   protected static String underscoreFullName(String name) {
-    String underscoredName = "";
-
-    for(char c : name.toCharArray()) {
-      if(c == '.') {
-        underscoredName += "_";
-      }
-      else {
-        underscoredName += c;
-      }
-    }
-    return underscoredName;
+    return name.replace ('.', '-');
   }
 
   // returns a list of all ancestors of substate all the way upto and excluding
@@ -104,6 +95,17 @@ abstract class Translator {
     }
     return newlist;
   }
+
+  static String validCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  static int length = validCharacters.length();
+  protected static String generateRandomString () {
+    int len = 6;
+    StringBuilder builder = new StringBuilder();
+    for (int i = 0; i < len; i++) {
+      builder.append(validCharacters.charAt((int)(Math.random()*length)));
+    }
+    return builder.toString();
+  }
 }
 
 public class Flattener extends Translator {
@@ -123,20 +125,26 @@ public class Flattener extends Translator {
 class Globaliser extends Translator {
 
   Map<Declaration, Declaration> globalDeclarations = new HashMap<Declaration, Declaration>();
+  Set<String> globalVariableNames = new HashSet<>();
   public Statechart translate(Statechart S) throws Exception {
     this.makeGlobalDeclarations(S);
     
     return this.globaliseStatechart(S);
   }
 
+  public String generateUniqueVarname () {
+    String varName = Translator.generateRandomString();
+    while (this.globalVariableNames.contains (varName)) {
+      varName = Translator.generateRandomString();
+    }
+    return varName;
+  }
+
   private void makeGlobalDeclarations(State state) {
     for(Declaration dec : state.declarations) {
-      String underscoredName = Translator.underscoreFullName(dec.getFullVName());
-      while(this.globalDeclarations.get(underscoredName) != null) {
-        underscoredName += "1";
-      }
+      String newName = this.generateUniqueVarname();
       Declaration newdec = new Declaration(
-        underscoredName,
+        newName,
         dec.typeName,
         dec.input);
       this.globalDeclarations.put(dec, newdec);

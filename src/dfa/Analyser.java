@@ -21,8 +21,9 @@ import ast.Name;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
-import translation.Flattener;
+import translation.*;
 import metric.Metric;
+import program.Program;
 
 public class Analyser {
 
@@ -105,6 +106,14 @@ public class Analyser {
       System.out.println("Printing flattened Statechart ...");
       System.out.println(flattenedSC);
       System.out.println("Printing flattened Statechart ... done!");
+
+      StatechartToProgramTranslator translator = new StatechartToProgramTranslator (flattenedSC);
+      System.out.println("Printing flattened program ...");
+      Program program = translator.translate();
+      System.out.println(program.toString());
+      System.out.println("Printing flattened program ... done!");
+
+      (new ProgramToCpp(program)).translate();
     }
     catch(Exception e) {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 

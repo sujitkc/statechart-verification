@@ -2,11 +2,13 @@ package translation;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
 import ast.*;
 import program.*;
+import utilities.UniqueVarNameGenerator;
 
 public class StatechartToProgramTranslator {
 
@@ -17,6 +19,8 @@ public class StatechartToProgramTranslator {
   private Declaration eventVarDeclaration;
   private Type intType = null; // to be made the type of all state and event variables.
   private Type boolType = null;
+
+  private UniqueVarNameGenerator varNameGenerator = new UniqueVarNameGenerator ();
 
   public StatechartToProgramTranslator(Statechart statechart) {
     this.statechart = statechart;
@@ -41,6 +45,9 @@ public class StatechartToProgramTranslator {
     }
   }
 
+  HashMap<String, String> stateNameMap = new HashMap<>();
+  HashMap<String, String> eventNameMap = new HashMap<>();
+
   public Program translate() {
     StatementList statements = new StatementList();
 
@@ -48,14 +55,19 @@ public class StatechartToProgramTranslator {
     this.statechart.declarations.add(this.eventVarDeclaration);
     int count = 0;
     for(State state : this.statechart.states) {
-      Declaration stateDeclaration = new Declaration(state.name, new TypeName("int"), false);
+      String newStateName = this.varNameGenerator.generate();
+      stateNameMap.put (state.getFullName(), newStateName);
+      Declaration stateDeclaration = new Declaration(newStateName, new TypeName("int"), false);
       stateDeclaration.setType(this.intType);
       this.statechart.declarations.add(stateDeclaration);
       this.stateDeclarations.add(stateDeclaration);
-      statements.add(new AssignmentStatement(new Name(state.name), new IntegerConstant(count)));
+      statements.add(new AssignmentStatement(new Name(newStateName), new IntegerConstant(count)));
       count++;
     }
-    for(String event : this.statechart.events) {
+    count = 0;
+    for(String eventName : this.statechart.events) {
+      String event = this.varNameGenerator.generate();
+      eventNameMap.put(eventName, event);
       Declaration eventDeclaration = new Declaration(event, new TypeName("int"), false);
       eventDeclaration.setType(this.intType);
       this.statechart.declarations.add(eventDeclaration);
@@ -70,16 +82,22 @@ public class StatechartToProgramTranslator {
       for(Transition t : transitions) {
         Name ev = new Name("event");
         ev.setDeclaration(this.eventVarDeclaration);
-        Name evname = new Name(t.trigger);
+
+        Name evname = new Name(eventNameMap.get(t.trigger));
         ev.setType(this.intType);
         evname.setType(this.intType);
         evname.setDeclaration(this.eventDeclarations.lookup(t.trigger));
+
         BinaryExpression eveq = new BinaryExpression(ev, evname, "=");
         BinaryExpression cond = new BinaryExpression(eveq, t.guard, "&&");
+
         Name sn1 = new Name("state");
         sn1.setType(this.intType);
         sn1.setDeclaration(this.stateVarDeclaration);
-        Statement statechange = new AssignmentStatement(sn1, t.destinationName);
+
+        Name destName = new Name (stateNameMap.get (t.destination.getFullName()));
+        Statement statechange = new AssignmentStatement(sn1, destName);
+
         StatementList innerstmtlst = new StatementList();
         innerstmtlst.add(t.action);
         innerstmtlst.add(statechange);
@@ -88,16 +106,19 @@ public class StatechartToProgramTranslator {
       Name st = new Name("state");
       st.setType(this.intType);
       st.setDeclaration(this.stateVarDeclaration);
-      Expression stname = new Name(state.name);
+      Expression stname = new Name(stateNameMap.get(state.getFullName()));
       stname.setType(this.intType);
       BinaryExpression steq = new BinaryExpression(st, stname, "=");
       outerIf = new IfStatement(steq, stmt, outerIf);
     }
 
     State initState = this.statechart.states.get(0);
+    // TODO: change 'state'
     Name stinit = new Name("state");
     stinit.setType(this.intType);
-    AssignmentStatement initialiseState = new AssignmentStatement(stinit, new Name(initState.name));
+    String initStateName = stateNameMap.get (initState.getFullName());
+    assert (initStateName != null);
+    AssignmentStatement initialiseState = new AssignmentStatement(stinit, new Name(initStateName));
     statements.add(initialiseState);
     BooleanConstant cond = new BooleanConstant(true);
     cond.setType(this.boolType);

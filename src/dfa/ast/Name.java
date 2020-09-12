@@ -1,6 +1,9 @@
 package ast;
 
 import java.util.List;
+
+import visitor.Visitor;
+
 import java.util.ArrayList;
 
 public class Name extends Expression {
@@ -63,5 +66,9 @@ public class Name extends Expression {
     }
 
     return true;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitName(this);
   }
 }
