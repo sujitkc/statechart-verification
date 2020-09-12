@@ -39,9 +39,18 @@ statechart  Test{
 	guard:(x=true);
 	action:{}
    }
+   transition t1_A2_A1{
+	source: Test.A.A2;
+	destination: Test.A.A1;
+	trigger: e;
+	guard:(true);
+	action:{}
+   }
+   
   }
   state B{
-   y:int;
+   y:int:local;
+   x:boolean:parameter;
    entry: {}
    exit : {}
   }
@@ -51,9 +60,15 @@ statechart  Test{
   destination: Test.B;
   trigger: e;
   guard:(x=1);
+  action:{x:=true;}
+  }
+  transition t1_A_A{
+  source: Test.A;
+  destination: Test.A;
+  trigger: e;
+  guard:(x=1);
   action:{}
   }
-  
   transition t1_B_A{
   source: Test.B;
   destination: Test.A;
@@ -61,5 +76,11 @@ statechart  Test{
   guard:(y=1);
   action:{}
   }
-  
+  transition t1_A1_B{
+	source: Test.A.A1;
+	destination: Test.B;
+	trigger: e;
+	guard:(x=true);
+	action:{}
+   }
 }

@@ -4,11 +4,12 @@ import ast.*;
 import symbolic_execution.se_tree.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SymbolicExecutionEngine{
     
     private Statechart statechart;
-
+    
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
             this.statechart = statechart;
@@ -54,8 +55,28 @@ public class SymbolicExecutionEngine{
         }
         while(!leaves.isEmpty())
         {
-            ArrayList<Transition> out_ts = new ArrayList<Transition>(conf.get(conf.size() - 1).transitions);
-            for(SETNode leaf : leaves)
+           // ArrayList<Transition> out_ts = new ArrayList<Transition>(conf.get(conf.size() - 1).transitions);
+			  
+			int level=0;
+			ArrayList<Transition> all_ts=new ArrayList<Transition>();
+			ArrayList<Transition> out_ts=new ArrayList<Transition>(); 
+			while((level+1)<conf.size()){
+				//State curr_state=conf.get(level+1);
+				State par_state=conf.get(level);
+				//System.out.println("current state: "+curr_state.name);
+				//System.out.println("parent state: "+par_state.name);
+
+				all_ts= new ArrayList<Transition>(par_state.transitions);
+			for(Transition t:all_ts){
+					if(conf.contains(t.getSource())){
+						System.out.println("Outgoing transition found : "+t.name);
+						out_ts.add(t);
+						}
+				}
+			level++;
+			}
+			
+	for(SETNode leaf : leaves)
             {
                 ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
                 for(Transition t : out_ts)
@@ -77,6 +98,7 @@ public class SymbolicExecutionEngine{
 
     public ArrayList<ArrayList<SETNode>> takeTransition(Transition t, SETNode leaf) // need to implement this
     {
+		System.out.println("inside take transition : " + t.name);
         ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
         ArrayList<SETNode> done = new ArrayList<SETNode>();
         ArrayList<SETNode> leaves = new ArrayList<SETNode>();
@@ -86,16 +108,7 @@ public class SymbolicExecutionEngine{
         // Compute the transition source and destination as per the StaBL semantics.
         State source = t.getSource();
         State destination = t.getDestination();
-
-        // Exit state
         ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
-        for(SETNode l : leaves){
-            ArrayList<SETNode> d = exitState(source, l).get(0);
-            ArrayList<SETNode> l_ = exitState(source, l).get(1);
-            done.addAll(d);
-            leaves_.addAll(l_);
-        }
-        leaves = leaves_;
 
         // Execute block
         leaves_.clear();
@@ -103,13 +116,28 @@ public class SymbolicExecutionEngine{
             ArrayList<ArrayList<SETNode>> r = new ArrayList<ArrayList<SETNode>>();
             ArrayList<SETNode> l__ = new ArrayList<SETNode>();
             l__.add(l);
-            r = executeBlock(t.action, l__);
+			System.out.println("Calling execute block of transition");
+            /*
+			// Results in stack overflow error
+			r = executeBlock(t.action, l__);
             ArrayList<SETNode> d = r.get(0);
             ArrayList<SETNode> l_ = r.get(1);
+            done.addAll(d);
+            leaves_.addAll(l_);*/
+        }
+        leaves = leaves_;
+
+
+        // Exit state
+        leaves_.clear();
+		for(SETNode l : leaves){
+            ArrayList<SETNode> d = exitState(source, l).get(0);
+            ArrayList<SETNode> l_ = exitState(source, l).get(1);
             done.addAll(d);
             leaves_.addAll(l_);
         }
         leaves = leaves_;
+
 
         // Enter state
         leaves_.clear();
@@ -130,6 +158,7 @@ public class SymbolicExecutionEngine{
     /* Enter State */
     public ArrayList<ArrayList<SETNode>> enterState(State st, SETNode l)
     {
+		System.out.println("Entering state : "+st.getFullName());
         ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
         ArrayList<SETNode> done = new ArrayList<SETNode>();
         ArrayList<SETNode> leaves = new ArrayList<SETNode>();
@@ -148,19 +177,41 @@ public class SymbolicExecutionEngine{
             /* SETBBNode is not clear. Idk what to do */
 
             if(s.equals("local")){
-                leaf = new VariableNode(leaf, d); 
+				System.out.println("local variable found: "+s);
+                //leaf = new InstructionNode(leaf, d); 
                 // Type ast needs to have an initial value 
             }
             else if(s.equals("static")){
+				System.out.println("static variable found: "+s);
                 // First entry to the state
-                leaf = new VariableNode(leaf, d);
+                //leaf = new InstructionNode(leaf, d);
 
                 // Need to address 'not the first entry to the state'
             }
         }
-
-
-
+		
+		System.out.println("Entry statements: "+st.entry);
+		try{
+		if(st.entry instanceof StatementList)
+        {
+          List<Statement> st_list = ((StatementList)st.entry).getStatements();
+          for(Statement stmt : st_list)
+            executeStatement(stmt,"",leaves);
+        }
+        else 
+        {
+          try 
+          {
+            executeStatement(st.entry,"",leaves); 
+          }
+          catch (Exception ex)
+          {
+            ex.printStackTrace();
+          }
+        }
+		}catch(Exception ex){
+			System.out.println("Exception occured : "+ex);
+		}
         result.add(done);
         result.add(leaves);
         return result;
@@ -168,6 +219,7 @@ public class SymbolicExecutionEngine{
 
     public ArrayList<ArrayList<SETNode>> exitState(State s, SETNode leaf) // need to implement this
     {
+		System.out.println("Exit state : "+s.getFullName());
         ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
         ArrayList<SETNode> done = new ArrayList<SETNode>();
         ArrayList<SETNode> leaves = new ArrayList<SETNode>();
@@ -182,7 +234,8 @@ public class SymbolicExecutionEngine{
         ArrayList<ArrayList<SETNode>> result_ = new ArrayList<ArrayList<SETNode>>();
         for(SETNode l : leaves)
         {
-            if(f.equals("executeInstruction"))
+            
+			if(f.equals("executeInstruction"))
             {
                 result_ = executeInstruction(s, l);
             }
@@ -251,6 +304,7 @@ public class SymbolicExecutionEngine{
 
     public boolean satisfiable(Expression e) // need to implement this
     {
+		
         return true;
     }
 

@@ -149,7 +149,7 @@ public class State {
   public BooleanConstant maintainsHisotry() {
     return this.history;
   }
-
+  
   public String toString() {
     String s = "\nstate " + this.name + "{\n";
      

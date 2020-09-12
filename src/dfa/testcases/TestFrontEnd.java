@@ -39,7 +39,7 @@ public class TestFrontEnd {
 
     Statechart statechart = null;
     //String input = "/home/advait/statechart-verification/src/dfa/data/sim_rough.stb";
-    String input = "data/course.stb";
+    String input = "data/input1.stb";
 
 
     try {
@@ -69,7 +69,8 @@ public class TestFrontEnd {
       e.printStackTrace();
     }
     try{
-      new Simulator(statechart);
+      //new Simulator(statechart);
+	  new symbolic_execution.SymbolicExecutionEngine(statechart);
     }
     catch(Exception e){
       System.out.println("Error in Simulation");
