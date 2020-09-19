@@ -60,7 +60,7 @@ statechart  Test{
   destination: Test.B;
   trigger: e;
   guard:(x=1);
-  action:{x:=true;}
+  action:{} //x:=true;if(x){x:=false;} else {x:=true;}
   }
   transition t1_A_A{
   source: Test.A;
@@ -69,13 +69,13 @@ statechart  Test{
   guard:(x=1);
   action:{}
   }
-  transition t1_B_A{
+  /*transition t1_B_A{
   source: Test.B;
   destination: Test.A;
   trigger: e;
   guard:(y=1);
   action:{}
-  }
+  }*/
   transition t1_A1_B{
 	source: Test.A.A1;
 	destination: Test.B;

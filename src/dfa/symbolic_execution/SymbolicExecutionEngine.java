@@ -13,27 +13,34 @@ public class SymbolicExecutionEngine{
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
             this.statechart = statechart;
-            this.execute(statechart);
+            this.execute((State)statechart);
         }
         catch (Exception e){
             e.printStackTrace();
         }
     } 
-
-    // TODO
-    public ArrayList<SETNode> execute(Statechart statechart)
-    { 
-        ArrayList<SETNode> done = new ArrayList<SETNode>();
-        ArrayList<SETNode> leaves = new ArrayList<SETNode>();
-        leaves.add(new SETNode(null));
-        ArrayList<State> conf = new ArrayList<State>();
-        State curr = (State)statechart;
-        conf.add(curr);
+	public ArrayList<State> getConfiguration(State curr){
+		ArrayList<State> conf = new ArrayList<State>();
+        
+		conf.add(curr);
         while(!curr.states.isEmpty())
         {
             curr = curr.states.get(0);
             conf.add(curr);
         }
+		return conf;
+	}
+    // TODO
+    public ArrayList<SETNode> execute(State statechart)
+    { 
+        ArrayList<SETNode> done = new ArrayList<SETNode>();
+        ArrayList<SETNode> leaves = new ArrayList<SETNode>();
+        leaves.add(new SETNode(null));
+        ArrayList<State> conf = new ArrayList<State>();
+        
+		State curr = statechart;
+        conf=getConfiguration(curr);
+		
         // here, conf gives us the initial configuration
         for(State s : conf)
         {
@@ -53,10 +60,13 @@ public class SymbolicExecutionEngine{
                 }
             }
         }
+					int depth=0;
+
         while(!leaves.isEmpty())
         {
            // ArrayList<Transition> out_ts = new ArrayList<Transition>(conf.get(conf.size() - 1).transitions);
-			  
+			/*if(depth<10){  
+			System.out.println("==========In depth :"+depth+"==============");*/
 			int level=0;
 			ArrayList<Transition> all_ts=new ArrayList<Transition>();
 			ArrayList<Transition> out_ts=new ArrayList<Transition>(); 
@@ -75,10 +85,10 @@ public class SymbolicExecutionEngine{
 				}
 			level++;
 			}
-			
 	for(SETNode leaf : leaves)
             {
-                ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
+                
+				ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
                 for(Transition t : out_ts)
                 {
                     if(satisfiable(t.guard))
@@ -89,9 +99,17 @@ public class SymbolicExecutionEngine{
                         done.addAll(d);
                         leaves_.addAll(l);
                     }
+					// else - add the leaf node to done
+					
                 }
-                leaves = leaves_;
+                //leaves = leaves_; /* not to use this type of assignment*/
+				//leaves.clear();
+				leaves.addAll(leaves_);
+				leaves.remove(leaf);
             }
+			/*}
+			else{break;}
+			depth++;*/
         }
         return done;
     }
@@ -110,24 +128,8 @@ public class SymbolicExecutionEngine{
         State destination = t.getDestination();
         ArrayList<SETNode> leaves_ = new ArrayList<SETNode>();
 
-        // Execute block
-        leaves_.clear();
-        for(SETNode l : leaves){
-            ArrayList<ArrayList<SETNode>> r = new ArrayList<ArrayList<SETNode>>();
-            ArrayList<SETNode> l__ = new ArrayList<SETNode>();
-            l__.add(l);
-			System.out.println("Calling execute block of transition");
-            /*
-			// Results in stack overflow error
-			r = executeBlock(t.action, l__);
-            ArrayList<SETNode> d = r.get(0);
-            ArrayList<SETNode> l_ = r.get(1);
-            done.addAll(d);
-            leaves_.addAll(l_);*/
-        }
-        leaves = leaves_;
-
-
+        
+		
         // Exit state
         leaves_.clear();
 		for(SETNode l : leaves){
@@ -136,22 +138,52 @@ public class SymbolicExecutionEngine{
             done.addAll(d);
             leaves_.addAll(l_);
         }
-        leaves = leaves_;
+        //leaves = leaves_;
+		leaves.clear();
+		leaves.addAll(leaves_);
+
+		// Execute t.action block
+        leaves_.clear();
+        for(SETNode l : leaves){
+            ArrayList<ArrayList<SETNode>> r = new ArrayList<ArrayList<SETNode>>();
+            ArrayList<SETNode> l__ = new ArrayList<SETNode>();
+            l__.add(l);
+			System.out.println("Calling execute block of transition");
+            
+			r = executeBlock(t.action, l__);
+			if(r.size()==2){
+            ArrayList<SETNode> d = r.get(0);
+            ArrayList<SETNode> l_ = r.get(1);
+            done.addAll(d);
+            leaves_.addAll(l_);
+			}
+        }
+        //leaves = leaves_;  /*Not to use this assignmenet - This is creating a reference of leaves_ to leaves - so further when leaves_ is cleared, leaves also gets cleared */
+		
+		leaves.clear();
+		leaves.addAll(leaves_);
 
 
         // Enter state
-        leaves_.clear();
+        /*leaves_.clear();
         for(SETNode l : leaves){
             ArrayList<SETNode> d = enterState(destination, l).get(0);
             ArrayList<SETNode> l_ = enterState(destination, l).get(1);
             done.addAll(d);
             leaves_.addAll(l_);
         }
-        leaves = leaves_;      
-
+        //leaves = leaves_;      
+		leaves.clear();
+		leaves.addAll(leaves_);
+		*/
+		// New Enter State
+        for(SETNode l : leaves){
+			execute(destination);
+		}
+		
         // Return done and leaves
-        result.add(done);
-        result.add(leaves);
+        result.add(0,done);
+        result.add(1,leaves);
         return result;
     }
 
@@ -160,7 +192,9 @@ public class SymbolicExecutionEngine{
     {
 		System.out.println("Entering state : "+st.getFullName());
         ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
-        ArrayList<SETNode> done = new ArrayList<SETNode>();
+        ArrayList<ArrayList<SETNode>> result_ = new ArrayList<ArrayList<SETNode>>();
+        
+		ArrayList<SETNode> done = new ArrayList<SETNode>();
         ArrayList<SETNode> leaves = new ArrayList<SETNode>();
 
         // New enterState node
@@ -194,11 +228,12 @@ public class SymbolicExecutionEngine{
 		try{
 		if(st.entry instanceof StatementList)
         {
-          List<Statement> st_list = ((StatementList)st.entry).getStatements();
+          /*List<Statement> st_list = ((StatementList)st.entry).getStatements();
           for(Statement stmt : st_list)
-            executeStatement(stmt,"",leaves);
+            executeStatement(stmt,"",leaves);*/
+			result_=executeBlock(st.entry,leaves);
         }
-        else 
+        /*else 
         {
           try 
           {
@@ -208,10 +243,15 @@ public class SymbolicExecutionEngine{
           {
             ex.printStackTrace();
           }
-        }
+        }*/
 		}catch(Exception ex){
 			System.out.println("Exception occured : "+ex);
 		}
+		if(result_.size()==2){
+		done=result_.get(0);
+		leaves=result_.get(1);
+		}
+		
         result.add(done);
         result.add(leaves);
         return result;
@@ -221,9 +261,37 @@ public class SymbolicExecutionEngine{
     {
 		System.out.println("Exit state : "+s.getFullName());
         ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
-        ArrayList<SETNode> done = new ArrayList<SETNode>();
+        ArrayList<ArrayList<SETNode>> result_ = new ArrayList<ArrayList<SETNode>>();
+        
+		ArrayList<SETNode> done = new ArrayList<SETNode>();
         ArrayList<SETNode> leaves = new ArrayList<SETNode>();
-        result.add(done);
+		leaves.add(leaf);
+        try{
+		if(s.exit instanceof StatementList)
+        {
+          //List<Statement> st_list = ((StatementList)st.exit).getStatements();
+          //for(Statement stmt : st_list)
+            result_=executeBlock(s.exit,leaves);
+        }
+        /*else 
+        {
+          try 
+          {
+            executeStatement(st.entry,"",leaves); 
+          }
+          catch (Exception ex)
+          {
+            ex.printStackTrace();
+          }
+        }*/
+		}catch(Exception ex){
+			System.out.println("Exception occured : "+ex);
+		}
+		if(result_.size()==2){
+		done=result_.get(0);
+		leaves=result_.get(1);
+		}
+		result.add(done);
         result.add(leaves);
         return result;
     }
@@ -247,8 +315,14 @@ public class SymbolicExecutionEngine{
             {
                 result_ = executeBlock(s, leaves);
             }
-            result.get(0).addAll(result_.get(0));
-            result.get(1).addAll(result_.get(1));
+			if(result_.size()==2){
+				/* Code by Advait/Amogh commented - have to recheck the code here is it result.get(0).addAll()? - as it results in IndexOutOfBounds*/
+            //result.get(0).addAll(result_.get(0));
+			//result.get(1).addAll(result_.get(1));
+			result.add(result_.get(0));
+			result.add(result_.get(1));
+			
+			}
         }
         return result;
     }
@@ -261,21 +335,30 @@ public class SymbolicExecutionEngine{
         leaves.addAll(l);
         if(a instanceof InstructionStatement)
         {
+			System.out.println("inside executeBlock-InstructionStatement");
             result = executeStatement(a, "executeInstruction", leaves);
         }
         else if(a instanceof IfStatement)
         {
+			System.out.println("inside executeBlock-IfStatement");
             result = executeStatement(a, "executeIf", leaves);
         }
         else if(a instanceof StatementList)
         {
-            result = executeStatement(a, "executeBlock", leaves);
+			System.out.println("inside executeBlock-StatementList :" +((StatementList)a).getStatements());
+			for(Statement s:((StatementList)a).getStatements()){
+					result = executeBlock(s, leaves);
+					//result = executeStatement(s, "executeInstruction", leaves);
+			}
         }
+		if(result.size()==2){
         done.addAll(result.get(0));
-        leaves = result.get(1);
+        leaves = result.get(1);}
+		//System.out.println("Leaves : "+ leaves);
         result.clear();
         result.add(0, done);
         result.add(1, leaves);
+		
         return result;
     }
 
