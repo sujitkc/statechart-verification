@@ -9,6 +9,9 @@ statechart  Test{
   
   x:boolean:local;
   entry : {
+	x:=true;
+	x:=false;
+	x:=true;
   }
 
   exit  : {} 

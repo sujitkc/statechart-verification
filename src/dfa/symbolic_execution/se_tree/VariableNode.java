@@ -7,7 +7,7 @@ import java.util.Map;
 public class VariableNode extends SETNode{
     
     public final Declaration declaration;
-    public final Expression e;
+    public final Expression expression;
 
 
     public VariableNode(SETNode p, Declaration d, Expression e){
