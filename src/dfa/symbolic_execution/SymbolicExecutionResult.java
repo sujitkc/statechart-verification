@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class SymbolicExecutionResult{
     
-    private  ArrayList<SETNode> done;
-    private  ArrayList<SETNode> live;
+    public  ArrayList<SETNode> done; //can be List
+    public  ArrayList<SETNode> live;
 
     public SymbolicExecutionResult()
     {
@@ -23,11 +23,11 @@ public class SymbolicExecutionResult{
 	}
     public ArrayList<SETNode> getDoneNodes()
     {
-        return this.done;
+        return (ArrayList)this.done;
     }
 
     public ArrayList<SETNode> getLiveNodes()
     {
-        return this.live;
+        return (ArrayList)this.live;
     }
 }

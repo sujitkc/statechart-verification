@@ -69,7 +69,24 @@ public class Statechart extends State {
     }
     return cca;
   }
-
+  public State getDestinationSuperState(State s1, State s2) {
+    List<State> a1 = s1.getAllSuperstates();
+    List<State> a2 = s2.getAllSuperstates();
+    State cca = null;
+    while(a1.size() != 0 && a2.size() != 0) {
+      if(a1.get(0).equals(a2.get(0))) {
+        //cca = a1.get(0);
+        a1.remove(0);
+        a2.remove(0);
+      }
+      else {
+        cca=a2.get(0);
+		break;
+      }
+    }
+	if(cca==null) cca=s2; // when there is no super state for destination that does not match with the super state of source
+    return cca;
+  }
   public State nameToState(Name name) {
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
