@@ -15,6 +15,8 @@ public class InstructionNode extends SETNode{
         this.statement = s;
         this.environment = m;
 		this.declaration=null;
+		System.out.println("Instruction node created at depth : "+this.depth +" : "+s);
+
     }
 	public InstructionNode(Declaration d, SETNode p, Map<Declaration, Expression> m)
     {
@@ -22,6 +24,8 @@ public class InstructionNode extends SETNode{
         this.statement = null;
         this.environment = m;
 		this.declaration=d;
+		System.out.println("Instruction node created at depth : "+this.depth +" : "+d);
+
     }
 	
     public Statement getStatement()

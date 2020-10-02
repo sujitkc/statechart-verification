@@ -12,6 +12,12 @@ statechart  Test{
 	x:=true;
 	x:=false;
 	x:=true;
+	if(x){
+		x:=false;
+	}
+	else{
+		x:=true;
+	}
   }
 
   exit  : {} 
@@ -28,7 +34,7 @@ statechart  Test{
 		   entry: {
 			x:=true;
 		   }
-		   exit : {}
+		   exit : {x:=false;}
 		   
 	}
 	state A2{

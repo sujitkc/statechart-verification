@@ -14,6 +14,8 @@ public class DecisionNode extends SETNode{
         super(p);
         this.environment = m;
         this.expression = e;
+		System.out.println("Decision node created at depth : "+this.depth +" : "+e);
+
     }
 
     public Expression getExpression()

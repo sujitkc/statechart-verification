@@ -69,8 +69,8 @@ public class TestFrontEnd {
       e.printStackTrace();
     }
     try{
-      //new Simulator(statechart);
-	  new symbolic_execution.SymbolicExecutionEngine(statechart);
+      new Simulator(statechart);
+	  //new symbolic_execution.SymbolicExecutionEngine(statechart);
     }
     catch(Exception e){
       System.out.println("Error in Simulation");
