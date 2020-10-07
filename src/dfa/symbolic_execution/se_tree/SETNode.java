@@ -5,14 +5,10 @@ import ast.*;
 public class SETNode{
     
     public final SETNode parent;
-	public final int depth;
+	public int depth;
     public SETNode(SETNode p)
     {
         this.parent = p;
-		if(p==null) 
-			this.depth=1;
-		else 
-			this.depth=p.depth+1;
     }
 
     public SETNode getParent()

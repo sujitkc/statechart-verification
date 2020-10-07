@@ -8,13 +8,26 @@ public class StatementList extends Statement {
 
   public StatementList() {
   }
-
+  public void makeEmpty(){
+	  this.statements.clear();
+  }
+  public boolean isEmpty(){
+	  if(this.statements.size()>0) return false;
+	  else return true;
+  }
   public StatementList(Statement s) {
     this.statements.add(s);
   }
-
+  
+  public void addAll(List<Statement> s){
+	  this.statements.addAll(s);
+  }
+  
   public void add(Statement s) {
-    this.statements.add(s);
+	  if(s instanceof StatementList){
+		  this.statements.addAll(((StatementList)s).getStatements());
+	  }
+	  else this.statements.add(s);
   }
 
   public void add(int i, Statement s) {

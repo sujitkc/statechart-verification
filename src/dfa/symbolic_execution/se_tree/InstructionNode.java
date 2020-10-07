@@ -2,29 +2,86 @@ package symbolic_execution.se_tree;
 
 import ast.*;
 
-import java.util.Map;
+import java.util.*;
+import visitors.SETExpressionVisitor;
 
 public class InstructionNode extends SETNode{
 
     public final Statement statement;
     public Map<Declaration, Expression> environment;
 	public final Declaration declaration;
-    public InstructionNode(Statement s, SETNode p, Map<Declaration, Expression> m)
+	public final String symval;
+    public InstructionNode(Statement s, SETNode p, Map<Declaration, Expression> m, Set<String> symvars)
     {
         super(p);
+		if(p==null) 
+			this.depth=1;
+		else 
+			this.depth=p.depth+1;
         this.statement = s;
         this.environment = m;
 		this.declaration=null;
-		System.out.println("Instruction node created at depth : "+this.depth +" : "+s);
+		//this.symval=null;
+		if(p instanceof InstructionNode && ((InstructionNode)p).declaration!=null)
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace(System.getProperty("line.separator"), ""));
+		else if(p instanceof InstructionNode && ((InstructionNode)p).statement!=null)
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace(System.getProperty("line.separator"), ""));
+		else if(p instanceof DecisionNode)
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace(System.getProperty("line.separator"), ""));
+
+		if(s instanceof AssignmentStatement){
+			//System.out.println("Assign :  "+ ((AssignmentStatement)s).lhs +" with "+((AssignmentStatement)s).rhs);
+			if(((AssignmentStatement)s).rhs instanceof FunctionCall){
+				if((((FunctionCall)((AssignmentStatement)s).rhs).name.getName()).equalsIgnoreCase("input"))
+				{	
+					//creating symbolic variable name
+					//String symvar="symvar";
+					//symvar+=(((AssignmentStatement)s).lhs).name;
+					
+					this.symval=SETExpressionVisitor.generateNewVariableName(symvars);
+					System.out.println("Created symbolic value here : "+this.symval);
+				}
+			
+				else if(((AssignmentStatement)s).rhs instanceof UnaryExpression){
+							this.symval=null;
+				}
+				else if(((AssignmentStatement)s).rhs instanceof BinaryExpression){
+							this.symval=null;
+				}
+				else
+					this.symval=null;
+			}
+			else
+				this.symval=null;
+		}
+		else if(s instanceof ExpressionStatement){
+					this.symval=null;
+		}
+		else
+			this.symval=null;
+
+		
+		// As per the type of the statement - get the symbolic value and add it to the environment
+		//as per the variable on lhs, get and add the corresponding declaration as well
 
     }
 	public InstructionNode(Declaration d, SETNode p, Map<Declaration, Expression> m)
     {
         super(p);
+		if(p==null) 
+			this.depth=1;
+		else 
+			this.depth=p.depth+1;
         this.statement = null;
         this.environment = m;
 		this.declaration=d;
-		System.out.println("Instruction node created at depth : "+this.depth +" : "+d);
+		this.symval=null;
+		if(p instanceof InstructionNode && ((InstructionNode)p).declaration!=null)
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace(System.getProperty("line.separator"), ""));
+		else if(p instanceof InstructionNode && ((InstructionNode)p).statement!=null)
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace(System.getProperty("line.separator"), ""));
+		else if(p instanceof DecisionNode)
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace(System.getProperty("line.separator"), ""));
 
     }
 	

@@ -3,16 +3,17 @@ package symbolic_execution;
 import ast.*;
 import symbolic_execution.se_tree.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SymbolicExecutionEngine{
     
     private Statechart statechart;
     private int depth=0;
-	private int maxdepth=100;
+	private int maxdepth=20;
+	public Set<String> symvars;
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
+			this.symvars=new HashSet<String>();
             this.statechart = statechart;
 			//ArrayList<SETNode> done = new ArrayList<SETNode>();
 			ArrayList<SETNode> leaves = new ArrayList<SETNode>();
@@ -66,13 +67,14 @@ public class SymbolicExecutionEngine{
 			return out_ts;
 	}
 	public SymbolicExecutionResult executeasSym(State currstate, SymbolicExecutionResult sym){
-			
-		 SymbolicExecutionResult result=new SymbolicExecutionResult();
+	
+	SymbolicExecutionResult result=new SymbolicExecutionResult();
+		if(sym.live.size()>0){	
 		 
 		 SymbolicExecutionResult enterStateResult=enterSuperState(currstate,sym);
 		 result.done.addAll(enterStateResult.done);
 		 result.live.addAll(enterStateResult.live);
-		 System.out.println("Live nodes after entering the states :"+result.live.size());
+		 System.out.println("Live : "+result.live.size()+" Done : "+result.done.size());
 		 //Get all the outgoing transitions of the configuration
 		 ArrayList<Transition> out_ts=new ArrayList<Transition>();
 		 ArrayList<State> conf=getConfiguration(currstate);
@@ -81,6 +83,7 @@ public class SymbolicExecutionEngine{
 		 
 		 //for each outgoing transition from the current state, take all leaves and create new SETNodes
 		 SymbolicExecutionResult liveNodes=new SymbolicExecutionResult();
+		 
 		 liveNodes.live.addAll(result.live); //only the live nodes after enter state
 		 SymbolicExecutionResult liveNodesAfterTransitionAction=new SymbolicExecutionResult();
 		 //for(SETNode leaf: liveNodes.live){
@@ -96,10 +99,14 @@ public class SymbolicExecutionEngine{
 			 result.live.removeAll(liveNodes.live);
 			 result.live.addAll(liveNodesAfterTransitionAction.live);
 		 }
-		 
-		 
-		 
-		 return result;
+		 		 return result;
+
+		 }
+		 else{
+			 System.exit(0);
+			 return null;
+		 }
+			 
 	}
     // TODO
 	
@@ -118,8 +125,8 @@ public class SymbolicExecutionEngine{
 		//Call the transition action
 		//for(SETNode exitleaf:res.live){
 			System.out.println("Calling transition action .. "+(t.action).getClass());
-			List<Statement> stmtlist=((StatementList)t.action).getStatements();
-			SymbolicExecutionResult transresult=newExecuteBlock(stmtlist,res);
+			//List<Statement> stmtlist=((StatementList)t.action).getStatements();
+			SymbolicExecutionResult transresult=newExecuteBlock(t.action,res);
 			computeResultAfterTransition.done.addAll(transresult.done);
 			computeResultAfterTransition.live.addAll(transresult.live);
 		//}
@@ -139,51 +146,66 @@ public class SymbolicExecutionEngine{
 	  public SymbolicExecutionResult enterSuperState(State st, SymbolicExecutionResult sym)
     {
 		System.out.println("Entering state : "+st.getFullName());
+		//Get all the current live nodes
 		ArrayList<SETNode> liveNodes=new ArrayList<SETNode>();
 		liveNodes.addAll(sym.live);
+		//for each leaf in the live nodes
+		StatementList entryBlock=new StatementList();
+		entryBlock.add(st.entry);
         for(SETNode currleaf:liveNodes){
-			if(currleaf.depth+1<maxdepth){
+			entryBlock.makeEmpty();
+			entryBlock.add(st.entry);
+			if(currleaf.depth<maxdepth){ // if depth of leaf is less than maxdepth
 				SETNode leaf = new StateEntryNode(st, currleaf);
-				
 				Environment e = st.getEnvironment();
+				//get the declarations in the state
 				DeclarationList dl = e.getDeclarations();
-				
+				ArrayList<SETNode> leaves=new ArrayList<SETNode>();
+				//for each declaration create instruction node - add the last declaration as live
+				//if there is no declaration, state entry node becomes the leaf
 				for(int i=0;i<dl.size();i++){
-					sym.done.add(leaf); // Initially it adds stateEntryNode to done, in further iterations it adds the node that was created in previous iteration
-											// Instruction node created in last iteration won't get added to done list where as it will get added to leaves to call execute block
+					
 					Declaration d=dl.get(i);
 					String s = d.getScope().name;
-					if(s.equals("local")){
-						System.out.println("local variable found: "+s);
-						//3rd parameter to be worked out
-						
-						leaf = new InstructionNode(d, leaf, null); 
-						// Type ast needs to have an initial value 
+				if(leaf.depth<maxdepth){
+						if(s.equals("local")){
+							leaf = new InstructionNode(d, leaf, null); 						
+						}
+						else if(s.equals("static")){
+							leaf = new InstructionNode(d, leaf, null);
+						}
+						else if(s.equals("parameter")){
+							leaf = new InstructionNode(d, leaf, null); 
+						}
 					}
-					else if(s.equals("static")){
-						System.out.println("static variable found: "+s);
-						// First entry to the state
-						leaf = new InstructionNode(d, leaf, null); 
-						// Need to address 'not the first entry to the state'
+					else{
+						sym.done.add(leaf);
+						break;
 					}
-					else if(s.equals("parameter")){
-						System.out.println("Parameter variable found : "+s);
-						leaf = new InstructionNode(d, leaf, null); 
-					}
+					System.out.println("Instruction node created : Live: "+leaves.size() +" Done : "+sym.done.size());
 				}
-				ArrayList<SETNode> leaves=new ArrayList<SETNode>();
-				leaves.add(leaf); //if there are no declarations, the state entry node becomes the leaf or after declaration there is only one leaf
-				System.out.println("Calling execute block at st.entry : with " + (st.entry).getClass());
+				
+				leaves.add(leaf);
+				//if there are no declarations, the state entry node becomes the leaf or after declaration there is only one leaf
+				//System.out.println("*Live : "+leaves.size() +" Done : "+sym.done.size());
+				System.out.println("Calling execute block at st.entry : ");
 				SymbolicExecutionResult inexec=new SymbolicExecutionResult();
 				inexec.live.addAll(leaves);
-				List<Statement> stmtlist=((StatementList)st.entry).getStatements();
-				SymbolicExecutionResult executeBlockResult = newExecuteBlock(stmtlist,inexec); 
-				sym.done.addAll(executeBlockResult.getDoneNodes());
-				sym.live.addAll(executeBlockResult.getLiveNodes());
+					SymbolicExecutionResult executeBlockResult = newExecuteBlock(entryBlock,inexec); 
+					sym.done.addAll(executeBlockResult.done);
+					sym.live.addAll(executeBlockResult.live);
+					sym.live.removeAll(executeBlockResult.done);
+
+					//System.out.println("**Live : "+sym.live.size() +" Done : "+sym.done.size());
+
+			}
+			else{
+				sym.done.add(currleaf);
+				sym.live.remove(currleaf);
 			}
 		}
 		sym.live.removeAll(liveNodes);
-		sym.done.addAll(liveNodes);
+		//sym.done.addAll(liveNodes);
 		if(!st.states.isEmpty()) {
 				return enterSuperState(st.states.get(0),sym);
 			}
@@ -194,8 +216,6 @@ public class SymbolicExecutionEngine{
 
 
 	/*Enter State - Symbolic Execution Result*/
-	
-	
 
 	public SymbolicExecutionResult newExitState(State src, State dest, SymbolicExecutionResult sym){
 		System.out.println("Exit state called for source :" +src.getFullName());
@@ -204,23 +224,29 @@ public class SymbolicExecutionEngine{
 		List<State> a2 = dest.getAllSuperstates();
 		ArrayList<SETNode> liveNodes=new ArrayList<SETNode>();
 		liveNodes.addAll(sym.live);
-		System.out.println("Livenodes size : "+ liveNodes.size());
+		StatementList exitBlock=new StatementList();
+		exitBlock.add(src.exit);
         for(SETNode currleaf:liveNodes){
+			exitBlock.makeEmpty();
+			exitBlock.add(src.exit);
+
 			if(currleaf.depth+1<maxdepth){
 				SETNode leaf = new StateExitNode(src, currleaf);
 				ArrayList<SETNode> leaves=new ArrayList<SETNode>();
 				leaves.add(leaf);
-				System.out.println("Calling execute block at st.exit : with " + (src.exit).getClass());
+				System.out.println("Calling execute block at st.exit : " );
 				SymbolicExecutionResult inexec=new SymbolicExecutionResult();
 				inexec.live.addAll(leaves);
-				List<Statement> stmtlist=((StatementList)src.exit).getStatements();
-				SymbolicExecutionResult executeBlockResult = newExecuteBlock(stmtlist,inexec); 
+				//List<Statement> stmtlist=((StatementList)src.exit).getStatements(); //remove static cast
+				SymbolicExecutionResult executeBlockResult = newExecuteBlock(exitBlock,inexec); 
 				sym.done.addAll(executeBlockResult.done);
 				sym.live.addAll(executeBlockResult.live);
 				}
+				else{
+					sym.done.add(currleaf);
+				}
 		}
 		sym.live.removeAll(liveNodes);
-		
 		
 		if(a1.size()>0&&!a2.contains(a1.get(a1.size()-1))){
 			return newExitState(a1.get(a1.size()-1),dest,sym);
@@ -232,202 +258,143 @@ public class SymbolicExecutionEngine{
    
 
 
-    public SymbolicExecutionResult executeStatement(Statement s, String f, ArrayList<SETNode> leaves)
-    {
-        //ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
-        //ArrayList<ArrayList<SETNode>> result_ = new ArrayList<ArrayList<SETNode>>();
-        SymbolicExecutionResult result = new SymbolicExecutionResult();
-        SymbolicExecutionResult result_ = new SymbolicExecutionResult();
-       
-		for(SETNode l : leaves)
-        {   
-			if(f.equals("executeInstruction"))
-            {
-                result_ = executeInstruction(s, l);
-            }
-            else if(f.equals("executeIf"))
-            {
-                result_ = executeIf(s, l);
-            }
-            else if(f.equals("executeBlock"))
-            {
-                result_ = executeBlock(s, leaves);
-            }
-				/* Code by Advait/Amogh commented - have to recheck the code here is it result.get(0).addAll()? - as it results in IndexOutOfBounds*/
-            //result.get(0).addAll(result_.get(0));
-			//result.get(1).addAll(result_.get(1));
-			//result.add(result_.get(0));
-			//result.add(result_.get(1));
-			
-			
-        }
-        return result_;
-    }
+  
 	
-	
-	public SymbolicExecutionResult newExecuteBlock(List<Statement> stmtlist, SymbolicExecutionResult sym){
-		
-		
-		//List<Statement> stmtlist=((StatementList)a).getStatements();
+	public SymbolicExecutionResult newExecuteBlock(Statement blockstmt, SymbolicExecutionResult sym){
+		System.out.println("Executing Block...");
+		List<Statement> stmtlist;
+		if(blockstmt instanceof StatementList){
+			stmtlist=((StatementList)blockstmt).getStatements();
+			//System.out.println("The number of statements in the block is : "+stmtlist.size());
+		}
+		else stmtlist=new ArrayList<Statement>();
 		if(stmtlist.size()>0){
 			Statement stmt=stmtlist.get(0);
 			//Get the current live nodes, iterate over and create new set of live nodes
 			ArrayList<SETNode> liveNodes=new ArrayList<SETNode>();
 			liveNodes.addAll(sym.live);
-			ArrayList<SETNode> newLiveNodes=new ArrayList<SETNode>();
-			System.out.println("New set of leaves is being created with statement : "+stmt);
+			//System.out.println("The leaf nodes from prev level is : "+sym.live.size());
+			//ArrayList<SETNode> newLiveNodes=new ArrayList<SETNode>();
+			//System.out.println("New set of leaves is being created with statement : "+stmt);
+			//System.out.println("Number of live nodes "+liveNodes.size());
+			//System.out.println("******** Statement "+stmtlist.size());
+
+			SymbolicExecutionResult res=new SymbolicExecutionResult();
+			res.done.addAll(sym.done);
+			res.live.addAll(sym.live);
 			for(SETNode leaf: liveNodes){
-				if(stmt instanceof InstructionStatement)
-				{
-					newLiveNodes.add(newExecuteInstruction(stmt,leaf));
-				}
-				else if(stmt instanceof IfStatement){
-					newExecuteIf(stmt,sym);
+				/*if(leaf instanceof InstructionNode)
+				System.out.println("inside next iteration of the leaf : " +((InstructionNode)leaf).statement);
+				else if(leaf instanceof DecisionNode)
+				System.out.println("inside next iteration of the leaf : " +((DecisionNode)leaf).expression);*/
+				if(leaf.depth<maxdepth+1){
+					if(stmt instanceof InstructionStatement)
+					{
+						sym.live.add(newExecuteInstruction(stmt,leaf));
+						sym.live.remove(leaf);
+						System.out.println("I*Live : "+sym.live.size()+" Done : "+sym.done.size());
+					}
+					else if(stmt instanceof IfStatement){
+						res=newExecuteIf(stmt,leaf);
+						sym.live.remove(leaf);
+						sym.live.addAll(res.live);
+						sym.done.addAll(res.done);
+						//newLiveNodes.addAll(res.live);
+						System.out.println("D*Live : "+sym.live.size()+" Done : "+sym.done.size());
+					}
+					else{
+						System.out.println("Unhandled Instruction");
+					}
 				}
 				else{
-					System.out.println("Unhandled Instruction");
+					 sym.done.add(leaf);
+					 sym.live.remove(leaf);
 				}
 			}
 			//add the livenodes to done
-			sym.done.addAll(liveNodes);
 			sym.live.removeAll(liveNodes); //remove the livenodes from live list
-			sym.live.addAll(newLiveNodes); //add new live nodes to live list
+			//sym.live.addAll(newLiveNodes); //add new live nodes to live list
 			//remove the current statement from statement list and call execute block for rest of the statements
 			stmtlist.remove(stmt);
-			return newExecuteBlock(stmtlist,sym);
+			StatementList returnList =new StatementList();
+			returnList.addAll(stmtlist);
+			if(stmtlist.size()>0)
+				return newExecuteBlock(returnList,sym);
+			else
+				return sym;
 		}
-		else 
+		else {
+			//System.out.println("Live nodes after execute block : "+(sym.live).size());
 			return sym;
+			}
 	}
 
-   public SymbolicExecutionResult executeBlock(Statement a, ArrayList<SETNode> l)
-    {
-        //ArrayList<ArrayList<SETNode>> result = new ArrayList<ArrayList<SETNode>>();
+  
+
+	public SymbolicExecutionResult newExecuteIf(Statement stmt, SETNode leaf){
+		System.out.println("newExecuteIf : ");
+		//ArrayList<SETNode> currentLiveNodes=new ArrayList<SETNode>();
+		//currentLiveNodes.addAll(sym.live);
+		SymbolicExecutionResult sym=new SymbolicExecutionResult();
+
+		SymbolicExecutionResult res1=new SymbolicExecutionResult();
+		SymbolicExecutionResult res2=new SymbolicExecutionResult();
+		//System.out.println("*******************");
+		//System.out.println("Decision node found : "+ifStatement);
+		//System.out.println("Current live nodes : "+currentLiveNodes.size());
+		int i=0;
+		StatementList ifStatement_then=new StatementList();
+		//ifStatement_then.add(((IfStatement)stmt).then_body);
+		StatementList ifStatement_else=new StatementList();
+		//ifStatement_else.add(((IfStatement)stmt).else_body);
+		Expression cond=((IfStatement)stmt).condition;
 		
-		SymbolicExecutionResult result=new SymbolicExecutionResult();
-        
-		//SymbolicExecutionResult result_to_return=new SymbolicExecutionResult();
-        ArrayList<SETNode> done = new ArrayList<SETNode>();
-        ArrayList<SETNode> leaves = new ArrayList<SETNode>();
-        leaves.addAll(l);
-        if(a instanceof InstructionStatement)
-        {
-			System.out.println("inside executeBlock-InstructionStatement");
-            result = executeStatement(a, "executeInstruction", leaves);
-        }
-        else if(a instanceof IfStatement)
-        {
-			System.out.println("inside executeBlock-IfStatement");
-            result = executeStatement(a, "executeIf", leaves);
-        }
-        else if(a instanceof StatementList)
-        {
-			System.out.println("inside executeBlock-StatementList :" +((StatementList)a).getStatements());
-			SymbolicExecutionResult result_=new SymbolicExecutionResult();
-			if((((StatementList)a).getStatements()).size()>0){
-			for(Statement s:((StatementList)a).getStatements()){
-					//result=executeBlock(s, leaves);
-					result_=executeBlock(s,leaves);
-					
-					result.setDoneNodes(result_.getDoneNodes());
-					leaves.clear();
-					leaves.addAll(result_.getLiveNodes());
-					//result = executeStatement(s, "executeInstruction", leaves);
-			}
-			result.setLiveNodes(result_.getLiveNodes());
-			}
-			else{
-				result.setLiveNodes(leaves);
-			}
-        }
-       return result;
-    }
-
-
-	public SymbolicExecutionResult newExecuteIf(Statement ifStatement, SymbolicExecutionResult sym){
-		ArrayList<SETNode> currentLiveNodes=new ArrayList<SETNode>();
-		currentLiveNodes.addAll(sym.live);
-		for(SETNode leaf:currentLiveNodes){
-		Expression c=sym_eval(((IfStatement)ifStatement).condition,leaf);
-		DecisionNode decisionNode=new DecisionNode(((IfStatement)ifStatement).condition, leaf, null);
-		sym.live.add(decisionNode);
+		//for(SETNode leaf:currentLiveNodes){
+			//System.out.println(i+++" ========"+currentLiveNodes.size()+"\n======"+stmt);
+			ifStatement_then.makeEmpty();
+			ifStatement_else.makeEmpty();
+			ifStatement_then.add(((IfStatement)stmt).then_body);
+			ifStatement_else.add(((IfStatement)stmt).else_body);
+		Expression c=sym_eval(cond,leaf);
+		DecisionNode decisionNode=new DecisionNode(cond, leaf, null);
 		if(satisfiable(c)){
-					SymbolicExecutionResult res = newExecuteBlock(((StatementList)((IfStatement)ifStatement).then_body).getStatements(), sym);
-					sym.done.addAll(res.done);
-					sym.live.addAll(res.live);
-					
+					res1.live.clear();
+					res1.live.add(decisionNode);
+					res1= newExecuteBlock(ifStatement_then, res1);
+					res1.live.remove(decisionNode);
 			}
-		if(satisfiable(negation(c))){			
-					SymbolicExecutionResult res = newExecuteBlock(((StatementList)((IfStatement)ifStatement).else_body).getStatements(), sym);
-					sym.done.addAll(res.done);
-					sym.live.addAll(res.live);
+		if(satisfiable(negation(c))){	
+					 res2.live.clear();
+					 res2.live.add(decisionNode);
+					 //System.out.println("\n ****** Then body ********\n"+ifStatement_else);
+					 res2 = newExecuteBlock(ifStatement_else, res2);
+					 res2.live.remove(decisionNode);
 			}
-		}
-		sym.done.addAll(currentLiveNodes);
-		sym.live.removeAll(currentLiveNodes);
+			sym.done.addAll(res1.done);
+			sym.live.addAll(res1.live);
+			sym.done.addAll(res2.done);
+			sym.live.addAll(res2.live);
+		//}
+		//System.out.println("result1 live :"+(res1.live).size());
+		//System.out.println("result2 live :"+(res2.live).size());
+
+		//sym.done.addAll(currentLiveNodes);
+		//sym.live.removeAll(currentLiveNodes);
+		System.out.println("Sym live after if block :"+sym.live.size());
 		return sym;
 	}
- 	public SymbolicExecutionResult executeIf(Statement ifStatement, SETNode leaf)
-    {
-		SymbolicExecutionResult result=new SymbolicExecutionResult();
-		Expression c=sym_eval(((IfStatement)ifStatement).condition,leaf);
-		ArrayList<SETNode> leaves=new ArrayList<SETNode>();
-		if(satisfiable(c)){
-			// need to work on 3rd parameter of decision node
-			DecisionNode decisionNode=new DecisionNode(((IfStatement)ifStatement).condition, leaf, null);
-			leaves.add(decisionNode);
-			SymbolicExecutionResult result_=executeBlock(((IfStatement)ifStatement).then_body, leaves);
-			result.setDoneNodes(result_.getDoneNodes());
-			result.setLiveNodes(result_.getLiveNodes());
-		}
-		else{
-			leaves.add(leaf);
-			result.setDoneNodes(leaves);
-			}
-		leaves.clear();
-		if(satisfiable(negation(c)))
-		{
-			//need to work on 3rd parameter of decision node
-			DecisionNode decisionNode=new DecisionNode(((IfStatement)ifStatement).condition, leaf, null);
-			leaves.add(decisionNode);
-			SymbolicExecutionResult result_=executeBlock(((IfStatement)ifStatement).else_body, leaves);
-			result.setDoneNodes(result_.getDoneNodes());
-			result.setLiveNodes(result_.getLiveNodes());
-		}
-		else{
-			leaves.add(leaf);
-			result.setDoneNodes(leaves);
-		}
-		return result;
-	}
+ 	
 	
 public InstructionNode newExecuteInstruction(Statement instructionStatement,SETNode leaf){
-	return new InstructionNode(instructionStatement,leaf,null);
+	if(instructionStatement instanceof AssignmentStatement &&(((AssignmentStatement)instructionStatement).rhs instanceof FunctionCall) && ((((FunctionCall)((AssignmentStatement)instructionStatement).rhs).name.getName()).equalsIgnoreCase("input")))
+				{	
+					InstructionNode in = new InstructionNode(instructionStatement,leaf,null,symvars);
+					symvars.add(in.symval);
+					return in;
+				}
+	else 
+		return new InstructionNode(instructionStatement,leaf,null,symvars);
 }
-public SymbolicExecutionResult executeInstruction(Statement instructionStatement, SETNode leaf)
-    {
-		SymbolicExecutionResult result=new SymbolicExecutionResult();
-		//Single step
-		InstructionNode in=new InstructionNode(instructionStatement, leaf, null);
-		ArrayList<SETNode> done=new ArrayList<SETNode>();
-		ArrayList<SETNode> leaves=new ArrayList<SETNode>();
-				
-		if(leaf.depth+1>maxdepth){
-			System.out.println("Symbolic execution stops in this path as creating a node at depth "+ (leaf.depth+1) +" is greater than "+maxdepth);
-			// Should we create a node here or not?			
-			done.add(in);
-			result.setDoneNodes(done);
-			result.setLiveNodes(leaves);
-		}
-		else{
-			System.out.println("Creating a instruction statement at depth : "+(leaf.depth+1));
-			//InstructionNode in=new InstructionNode(instructionStatement, leaf, null);
-			leaves.add(in);
-			result.setDoneNodes(done);
-			result.setLiveNodes(leaves);
-		}
-		return result;
-	}
 	public Expression sym_eval(Expression e, SETNode leaf){
 		
 		return e;

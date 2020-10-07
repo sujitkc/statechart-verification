@@ -10,7 +10,9 @@ public class StateExitNode extends SETNode{
     {
         super(p);
         this.state = s;
-		System.out.println("State Exit node created at depth : "+this.depth +" : "+s.getFullName());
+		this.depth=p.depth;
+		System.out.println(this.depth+": SExitN : "+s.getFullName());
+
 
     }
 

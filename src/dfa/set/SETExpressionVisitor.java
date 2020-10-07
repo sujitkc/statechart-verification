@@ -65,7 +65,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 	public void visit(True exp) throws Exception {
 		this.mStack.push(new True(this.mNode.getSET()));
 	}
-	private static String generateNewVariableName (Set<String> names) {
+	public static String generateNewVariableName (Set<String> names) {
 		
 		while (true) {
 			Random random = new Random ();

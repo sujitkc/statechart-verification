@@ -9,8 +9,10 @@ public class StateEntryNode extends SETNode{
     public StateEntryNode(State s, SETNode p)
     {
         super(p);
+		this.depth=p.depth;
         this.state = s;
-		System.out.println("State Entry node created at depth : "+this.depth +" : "+s.getFullName());
+		System.out.println();
+		System.out.println(this.depth+": SEntryN : "+s.getFullName());
 
     }
 
