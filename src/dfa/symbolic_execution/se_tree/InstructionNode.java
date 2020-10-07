@@ -23,12 +23,16 @@ public class InstructionNode extends SETNode{
 		this.declaration=null;
 		//this.symval=null;
 		if(p instanceof InstructionNode && ((InstructionNode)p).declaration!=null)
-			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace(System.getProperty("line.separator"), ""));
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace("\n", ""));
 		else if(p instanceof InstructionNode && ((InstructionNode)p).statement!=null)
-			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace(System.getProperty("line.separator"), ""));
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace("\n", ""));
 		else if(p instanceof DecisionNode)
-			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace(System.getProperty("line.separator"), ""));
-
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace("\n", ""));
+		else if(p instanceof StateEntryNode)
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: Entry - "+(((StateEntryNode)p).state).getFullName());
+		else if(p instanceof StateExitNode)
+			System.out.println(this.depth+": IN created : "+(s.toString()).replace("\n", "")+" >> Par: Exit - "+(((StateExitNode)p).state).getFullName());
+		
 		if(s instanceof AssignmentStatement){
 			//System.out.println("Assign :  "+ ((AssignmentStatement)s).lhs +" with "+((AssignmentStatement)s).rhs);
 			if(((AssignmentStatement)s).rhs instanceof FunctionCall){
@@ -41,18 +45,26 @@ public class InstructionNode extends SETNode{
 					this.symval=SETExpressionVisitor.generateNewVariableName(symvars);
 					System.out.println("Created symbolic value here : "+this.symval);
 				}
-			
-				else if(((AssignmentStatement)s).rhs instanceof UnaryExpression){
-							this.symval=null;
-				}
-				else if(((AssignmentStatement)s).rhs instanceof BinaryExpression){
-							this.symval=null;
-				}
-				else
+				
+				else{
+					System.out.println("Some expression found ::: "+(((AssignmentStatement)s).rhs).getClass());
 					this.symval=null;
+				}
 			}
-			else
+			else if((((AssignmentStatement)s).rhs) instanceof UnaryExpression){
+							this.symval=null;
+							
+							System.out.println("Unary expression found");
+
+				}
+			else if((((AssignmentStatement)s).rhs) instanceof BinaryExpression){
+							this.symval=null;
+							System.out.println("Binary expression found with variables : "+((BinaryExpression)((AssignmentStatement)s).rhs).left+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).right+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).operator);
+				}
+			else{
+				System.out.println("Some expression found : "+(((AssignmentStatement)s).rhs).getClass());
 				this.symval=null;
+				}
 		}
 		else if(s instanceof ExpressionStatement){
 					this.symval=null;
@@ -77,12 +89,16 @@ public class InstructionNode extends SETNode{
 		this.declaration=d;
 		this.symval=null;
 		if(p instanceof InstructionNode && ((InstructionNode)p).declaration!=null)
-			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace(System.getProperty("line.separator"), ""));
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace("\n", ""));
 		else if(p instanceof InstructionNode && ((InstructionNode)p).statement!=null)
-			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace(System.getProperty("line.separator"), ""));
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).statement.toString()).replace("\n", ""));
 		else if(p instanceof DecisionNode)
-			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace(System.getProperty("line.separator"), ""));
-
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace("\n", ""));
+		else if(p instanceof StateEntryNode)
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: Entry - "+(((StateEntryNode)p).state).getFullName());
+		else if(p instanceof StateExitNode)
+			System.out.println(this.depth+": IN created : "+(d.toString()).replace("\n", "")+" >> Par: Exit - "+(((StateExitNode)p).state).getFullName());
+		
     }
 	
     public Statement getStatement()

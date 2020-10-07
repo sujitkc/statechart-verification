@@ -9,8 +9,9 @@ public class SymbolicExecutionEngine{
     
     private Statechart statechart;
     private int depth=0;
-	private int maxdepth=20;
+	private int maxdepth=10;
 	public Set<String> symvars;
+	
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
 			this.symvars=new HashSet<String>();
@@ -118,7 +119,7 @@ public class SymbolicExecutionEngine{
 		 //for each node in result.live exit state transitively till destination
         State source = currstate;
         State destination = t.getDestination();
-		System.out.println("Executing the transition between source: "+(t.getSource()).getFullName()+ " destination :"+destination.getFullName()+"with current state : "+currstate.getFullName());
+		System.out.println("Executing the transition between source: "+(t.getSource()).getFullName()+ " destination :"+destination.getFullName()+" with current state : "+currstate.getFullName());
 		SymbolicExecutionResult res=newExitState(source, destination, sym);
 		
 		SymbolicExecutionResult computeResultAfterTransition=new SymbolicExecutionResult();
@@ -287,6 +288,7 @@ public class SymbolicExecutionEngine{
 				System.out.println("inside next iteration of the leaf : " +((InstructionNode)leaf).statement);
 				else if(leaf instanceof DecisionNode)
 				System.out.println("inside next iteration of the leaf : " +((DecisionNode)leaf).expression);*/
+				System.out.println("Statement found is instance of "+stmt.getClass());
 				if(leaf.depth<maxdepth+1){
 					if(stmt instanceof InstructionStatement)
 					{

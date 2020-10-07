@@ -20,9 +20,9 @@ statechart  Test{
 	  }
 	  state A{
 		exit:{
-			x:=1;
+			
 			x:=input<||>();
-
+			x:=x+1;
 		}
 	  }
 	  state B{
