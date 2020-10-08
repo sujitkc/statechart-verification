@@ -1,6 +1,6 @@
 //main state of statechart
 // declarations
-// two states - no statements - loop transition
+// two states - minimal statements - loop transition
 
 statechart  Test{
   

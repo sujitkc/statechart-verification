@@ -9,6 +9,7 @@ public class InstructionNode extends SETNode{
 
     public final Statement statement;
     public Map<Declaration, Expression> environment;
+
 	public final Declaration declaration;
 	public final String symval;
     public InstructionNode(Statement s, SETNode p, Map<Declaration, Expression> m, Set<String> symvars)
@@ -41,8 +42,9 @@ public class InstructionNode extends SETNode{
 					//creating symbolic variable name
 					//String symvar="symvar";
 					//symvar+=(((AssignmentStatement)s).lhs).name;
-					
-					this.symval=SETExpressionVisitor.generateNewVariableName(symvars);
+					//SETExpressionVisitor sev=new SETExpressionVisitor();
+					this.symval=SETExpressionVisitor.visit(((AssignmentStatement)s).lhs,symvars);
+					//this.env.put(((Name)(((AssignmentStatement)s).lhs).name).getDeclaration(),this.symval);
 					System.out.println("Created symbolic value here : "+this.symval);
 				}
 				
@@ -58,6 +60,9 @@ public class InstructionNode extends SETNode{
 
 				}
 			else if((((AssignmentStatement)s).rhs) instanceof BinaryExpression){
+							BinaryExpression b=(BinaryExpression)(((AssignmentStatement)s).rhs);
+							SETExpressionVisitor.visit(b);
+							
 							this.symval=null;
 							System.out.println("Binary expression found with variables : "+((BinaryExpression)((AssignmentStatement)s).rhs).left+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).right+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).operator);
 				}

@@ -9,7 +9,7 @@ public class SymbolicExecutionEngine{
     
     private Statechart statechart;
     private int depth=0;
-	private int maxdepth=10;
+	private int maxdepth=5;
 	public Set<String> symvars;
 	
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
@@ -104,6 +104,7 @@ public class SymbolicExecutionEngine{
 
 		 }
 		 else{
+			 System.out.println("Max depth reached..");
 			 System.exit(0);
 			 return null;
 		 }
@@ -289,7 +290,7 @@ public class SymbolicExecutionEngine{
 				else if(leaf instanceof DecisionNode)
 				System.out.println("inside next iteration of the leaf : " +((DecisionNode)leaf).expression);*/
 				System.out.println("Statement found is instance of "+stmt.getClass());
-				if(leaf.depth<maxdepth+1){
+				if(leaf.depth<maxdepth){
 					if(stmt instanceof InstructionStatement)
 					{
 						sym.live.add(newExecuteInstruction(stmt,leaf));
@@ -413,6 +414,17 @@ public InstructionNode newExecuteInstruction(Statement instructionStatement,SETN
 		
         return true;
     }
-
+	/*private void computeExpression(SETDecisionNode node) throws Exception {
+		SETExpressionVisitor visitor = new SETExpressionVisitor(node,
+				"boolean");
+		CFGDecisionNode cfgNode = (CFGDecisionNode) node.getCFGNode();
+		if (node.getCondition() == null) {
+			throw new Exception("Null Expression");
+		} else {
+			visitor.visit(cfgNode.getCondition());
+			IExpression value = visitor.getValue();
+			node.setCondition(value);
+		}
+	}*/
 
 }
