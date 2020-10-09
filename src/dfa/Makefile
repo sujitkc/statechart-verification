@@ -1,5 +1,6 @@
 MYLIBPATH=./lib
-MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
+MYCLASSPATH="./classes/;"${MYLIBPATH}"/java-cup-11a.jar"
+
 FE=frontend
 Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java
 	if [ ! -d classes ]; then \
@@ -17,10 +18,7 @@ test : ${FE}/Lexer.java sym.java ast/*.java program/*.java symbolic_execution/*.
 	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java testcases/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.4.1.jar:${MYLIBPATH}/junit-4.8.1.jar:ast:classes:./;
 
 symtest : ${FE}/Lexer.java sym.java ast/*.java program/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java visitors/*.java
-	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java testcases/*.java visitors/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java  -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.4.1.jar:${MYLIBPATH}/junit-4.8.1.jar:ast:classes:./;
-
-
-
+	javac -cp "./lib/java-cup-11a-runtime.jar;./lib/jflex-1.4.1.jar;./lib/junit-4.8.1.jar;ast;classes;./" -Xlint:-unchecked -d  classes *.java ast/*.java program/*.java metric/*.java testcases/*.java visitors/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java
 
 rt :
 	java -cp ~/My-Downloads/junit-4.8.1.jar:classes/:${MYCLASSPATH}:. org.junit.runner.JUnitCore testcases.${testcase}
@@ -28,3 +26,6 @@ rt :
 clean:
 	rm Parser.java sym.java ${FE}/Lexer.java
 	rm -rf classes/*
+
+oldsymtest:
+		javac -cp .;${MYLIBPATH}/java-cup-11a-runtime.jar;${MYLIBPATH}/jflex-1.4.1.jar;${MYLIBPATH}/junit-4.8.1.jar;ast;classes;./ -Xlint:-unchecked -d  classes *.java ast/*.java program/*.java metric/*.java testcases/*.java visitors/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java
