@@ -391,6 +391,7 @@ public class SymbolicExecutionEngine{
 public InstructionNode newExecuteInstruction(Statement instructionStatement,SETNode leaf){
 	if(instructionStatement instanceof AssignmentStatement &&(((AssignmentStatement)instructionStatement).rhs instanceof FunctionCall) && ((((FunctionCall)((AssignmentStatement)instructionStatement).rhs).name.getName()).equalsIgnoreCase("input")))
 				{	
+					
 					InstructionNode in = new InstructionNode(instructionStatement,leaf,null,symvars);
 					symvars.add(in.symval);
 					return in;

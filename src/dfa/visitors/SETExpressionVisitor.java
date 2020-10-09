@@ -8,6 +8,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
+
+
 import symbolic_execution.se_tree.*;
 import ast.*;
 //public class SETExpressionVisitor implements IExprVisitor<Expression> {
@@ -16,14 +20,14 @@ public class SETExpressionVisitor {
 	private SETNode mNode;
 	private Stack<Expression> mStack = new Stack<Expression>();
 	private final String mContextType; 
-
+	public static Set<String> symvars=new HashSet<String>();
 	public SETExpressionVisitor(SETNode node, Type type) {
 		this.mNode = node;
 		this.mContextType = type.toString();		
 	}
 
 	//@Override
-	public void visit(Expression exp) throws Exception {
+public void visit(Expression exp) {
 //		System.out.println("Class of expression: "+exp.getClass());
 		if(exp instanceof Name) {
 			this.visit((Name)exp);
@@ -35,18 +39,26 @@ public class SETExpressionVisitor {
 			this.visit((UnaryExpression)exp);
 		}
 		else if(exp == null) {
+			
 		}
 		else {
-			Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
-			throw e;
+			//Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
+			//throw e;
+			
 		}
+		
 	}
-	public static String visit(Name exp, Set<String> symvars) {
+	public static Expression visit(FunctionCall exp) {
 		//this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
-		return generateNewVariableName(symvars);
+		//Map<Declaration,Expression> m=new HashMap<Declaration,Expression>();
+		//m.put(exp.getDeclaration(),generateNewVariableName(symvars));
+		System.out.println("Function Call : ");//+exp.getDeclaration());
+		Name name = SETExpressionVisitor.generateNewVariableName(symvars);
+		
+		return name;
 	}
 	
-	private static String generateNewVariableName (Set<String> names) {
+	private static Name generateNewVariableName (Set<String> names) {
 		
 		while (true) {
 			Random random = new Random ();
@@ -56,19 +68,22 @@ public class SETExpressionVisitor {
 			}
 			String name = "symvar" + Integer.toString(integer);
 			if (!names.contains(name)) {
-				return name;
+				return new Name(name);
 			}
 		}
 	}
-	public static void visit(UnaryExpression exp) {
+	public  Expression visit(UnaryExpression exp) {
 		//exp.accept(this);
 		//this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop(),exp.getOperator()));
+		return null;
 	}
-	public static void visit(BinaryExpression exp){
+	public Expression visit(BinaryExpression exp){
 		//exp.accept(this);
-		//Expression lhs = this.mStack.pop();
-		//Expression rhs = this.mStack.pop();
-		//this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs, exp.getOperator()));
+		System.out.println("Binary : ");
+		//Expression lhs = this.visit(exp.left);
+		//Expression rhs = this.visit(exp.right);
+		//return new BinaryExpression(lhs, rhs, exp.operator);
+		return new BinaryExpression(exp.left, exp.right, exp.operator);
 	}
 	//@Override
 	public Expression getValue() {

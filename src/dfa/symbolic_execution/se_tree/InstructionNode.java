@@ -9,9 +9,10 @@ public class InstructionNode extends SETNode{
 
     public final Statement statement;
     public Map<Declaration, Expression> environment;
+	private Map<Name, Expression> mValues = new HashMap<Name, Expression>();
 
 	public final Declaration declaration;
-	public final String symval;
+	public String symval="";
     public InstructionNode(Statement s, SETNode p, Map<Declaration, Expression> m, Set<String> symvars)
     {
         super(p);
@@ -36,16 +37,22 @@ public class InstructionNode extends SETNode{
 		
 		if(s instanceof AssignmentStatement){
 			//System.out.println("Assign :  "+ ((AssignmentStatement)s).lhs +" with "+((AssignmentStatement)s).rhs);
+			SETExpressionVisitor visitor = new SETExpressionVisitor(this,
+					(((AssignmentStatement)s).lhs).getType());
 			if(((AssignmentStatement)s).rhs instanceof FunctionCall){
 				if((((FunctionCall)((AssignmentStatement)s).rhs).name.getName()).equalsIgnoreCase("input"))
 				{	
+					
+					this.mValues.put(((AssignmentStatement)s).lhs,visitor.visit((FunctionCall)((AssignmentStatement)s).rhs));
+					visitor.symvars=symvars;
+					System.out.println(mValues);
 					//creating symbolic variable name
 					//String symvar="symvar";
 					//symvar+=(((AssignmentStatement)s).lhs).name;
 					//SETExpressionVisitor sev=new SETExpressionVisitor();
-					this.symval=SETExpressionVisitor.visit(((AssignmentStatement)s).lhs,symvars);
+					//this.m.putAll(SETExpressionVisitor.visit(((AssignmentStatement)s).lhs,symvars));
 					//this.env.put(((Name)(((AssignmentStatement)s).lhs).name).getDeclaration(),this.symval);
-					System.out.println("Created symbolic value here : "+this.symval);
+					//System.out.println("Created symbolic value here : "+this.symval);
 				}
 				
 				else{
@@ -61,10 +68,11 @@ public class InstructionNode extends SETNode{
 				}
 			else if((((AssignmentStatement)s).rhs) instanceof BinaryExpression){
 							BinaryExpression b=(BinaryExpression)(((AssignmentStatement)s).rhs);
-							SETExpressionVisitor.visit(b);
-							
+							visitor.visit(b);
+							this.mValues.put(((AssignmentStatement)s).lhs,visitor.visit((BinaryExpression)((AssignmentStatement)s).rhs));
+							System.out.println(mValues);
 							this.symval=null;
-							System.out.println("Binary expression found with variables : "+((BinaryExpression)((AssignmentStatement)s).rhs).left+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).right+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).operator);
+							//System.out.println("Binary expression found with variables : "+((BinaryExpression)((AssignmentStatement)s).rhs).left+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).right+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).operator);
 				}
 			else{
 				System.out.println("Some expression found : "+(((AssignmentStatement)s).rhs).getClass());

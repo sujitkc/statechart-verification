@@ -1,6 +1,6 @@
 package ast;
 
-public class Declaration {
+public class Declaration{
   public final String vname;
   public final ScopeName scope;
   public final TypeName typeName;
