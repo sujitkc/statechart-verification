@@ -1,0 +1,48 @@
+// integration test
+
+statechart sc {
+    events {
+        ev1;
+        ev2;
+    }
+
+ // start
+    state a {
+
+        state b {}
+        state c {}
+
+        transition t1 {
+            source: sc.a.b;
+            destination: sc.a.c;
+            trigger: ev1;
+            guard: true;
+            action: {}
+        }
+    }
+
+// dest
+    state b {}
+
+    state c {
+        state a {
+            state b {} // initial descendant
+        }
+    }
+
+     transition t1 {
+        source: sc.a;
+        destination: sc.b;
+        trigger: ev2;
+        guard: true;
+        action: {}
+    }
+
+    transition t2 {
+        source: sc.a;
+        destination: sc.c;
+        trigger: ev1;
+        guard: false;
+        action: {}
+    }
+}

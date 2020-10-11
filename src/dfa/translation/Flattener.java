@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.HashMap;
 import ast.*;
 import frontend.*;
@@ -84,7 +83,6 @@ abstract class Translator {
     for(Statement statement : list.getStatements()) {
       if(statement instanceof StatementList) {
         StatementList slist = flattenStatementList((StatementList)statement);
-        int size = slist.getStatements().size();
         for(Statement s : slist.getStatements()) {
           newlist.add(s);
         }
@@ -142,6 +140,7 @@ class Globaliser extends Translator {
 
   private void makeGlobalDeclarations(State state) {
     for(Declaration dec : state.declarations) {
+      // generate new variable name for each declaration
       String newName = this.generateUniqueVarname();
       Declaration newdec = new Declaration(
         newName,
@@ -155,10 +154,7 @@ class Globaliser extends Translator {
   }
 
   private Statechart globaliseStatechart(Statechart statechart) throws Exception {
-    DeclarationList declarations = new DeclarationList();
-    for(Declaration declaration : this.globalDeclarations.keySet()) {
-      declarations.add(this.globalDeclarations.get(declaration));
-    }
+    DeclarationList declarations  = new DeclarationList (this.globalDeclarations.values());
     List<State> newStates = new ArrayList<State>();
     for(State s : statechart.states) {
       newStates.add(this.globaliseState(s));
@@ -258,7 +254,7 @@ class Globaliser extends Translator {
     Declaration oldDeclaration = oldName.getDeclaration();
     Declaration newDeclaration = globalDeclarations.get(oldDeclaration);
     if(newDeclaration == null) {
-      throw new Exception("No global declaration for " + newDeclaration.vname + " found.");
+      throw new Exception("No global declaration for " + oldName + " found.");
     }
     Name newName = new Name(newDeclaration.vname);
 
@@ -271,6 +267,9 @@ class Globaliser extends Translator {
   private Expression globaliseExpression(Expression e) throws Exception {
     if(e instanceof BinaryExpression) {
       return this.globaliseBinaryExpression((BinaryExpression)e);
+    }
+    else if (e instanceof UnaryExpression) {
+      return this.globaliseUnaryExpression ((UnaryExpression)e);
     }
     else if(e instanceof BooleanConstant) {
       return this.globaliseBooleanConstant((BooleanConstant)e);
@@ -318,8 +317,9 @@ class Globaliser extends Translator {
 
   private Name globaliseName(Name e) throws Exception {
     Declaration declaration = e.getDeclaration();
-    String fullVName = declaration.getFullVName();
+    // String fullVName = declaration.getFullVName();
     Declaration globalisedName = this.globalDeclarations.get(declaration);
+    assert (globalisedName != null);
     return new Name(globalisedName.vname);
   }
 
@@ -327,7 +327,7 @@ class Globaliser extends Translator {
     return e;
   }
 
-  private UnaryExpression globaliseUnaryExpression(UnaryExpression e) throws Exception {
+  private UnaryExpression globaliseUnaryExpression(UnaryExpression e) throws Exception { 
     return new UnaryExpression(
       this.globaliseExpression(e.expression),
       e.operator
@@ -379,7 +379,7 @@ class TransitionAtomiser extends Translator {
       Set<State> atomicSources = Translator.getAllAtomicDescendents(t.getSource());
       State atomicDestination = Translator.getAtomicInitialDescendent(t.getDestination());
       Statement entryStatements = this.getEntryStatements(atomicDestination, state);
-      Name destinationName = this.getFullStateName(atomicDestination);
+      Name destinationName = Translator.getFullStateName(atomicDestination);
       for(State src : atomicSources) {
         Statement exitStatements = this.getExitStatements(src, state);
         StatementList action = new StatementList();
@@ -391,10 +391,11 @@ class TransitionAtomiser extends Translator {
           new Transition(
             t.name + '_' + Translator.underscoreFullName(src.getFullName())
               + '_' + Translator.underscoreFullName(atomicDestination.getFullName()),
-            this.getFullStateName(src),
+            Translator.getFullStateName(src),
             destinationName,
             t.trigger,
             t.guard,
+	    // TODO:
             flattenStatementList(action)
           )
         );
@@ -479,8 +480,6 @@ class HierarchyPurger extends Translator {
       );
     }
 
-    for(State s : newStates) {
-    }
     List<Transition> newTransitions = new ArrayList<Transition>();
     Set<Transition> oldTransitions = Translator.getAllTransitions(statechart);
     for(Transition t : oldTransitions) {

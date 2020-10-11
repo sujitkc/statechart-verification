@@ -1,0 +1,22 @@
+// Atomic to Non-Atomic Transitions
+statechart sc {
+    events {
+	random;
+    }
+
+    state na {
+	state a {}
+	state b {}
+	state c {}
+    }
+
+    state a {}
+
+    transition t1 {
+	source: sc.a;
+	destination: sc.na;
+	trigger: random;
+	guard: false;
+	action: {}
+    }
+}

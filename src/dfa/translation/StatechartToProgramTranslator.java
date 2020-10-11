@@ -80,6 +80,7 @@ public class StatechartToProgramTranslator {
       Set<Transition> transitions = this.getTransitionsFromSourceState(state);
       Statement stmt = new SkipStatement();
       for(Transition t : transitions) {
+	// TODO: Change name of variable
         Name ev = new Name("event");
         ev.setDeclaration(this.eventVarDeclaration);
 

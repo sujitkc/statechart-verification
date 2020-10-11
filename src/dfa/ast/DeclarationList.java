@@ -1,7 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class DeclarationList extends ArrayList<Declaration>{
 
@@ -40,5 +40,13 @@ public class DeclarationList extends ArrayList<Declaration>{
       s += d.toString() + '\n';
     }
     return s;
+  }
+
+  public DeclarationList (Collection<Declaration> collection) {
+    super (collection);
+  }
+
+  public DeclarationList () {
+    super ();
   }
 }
