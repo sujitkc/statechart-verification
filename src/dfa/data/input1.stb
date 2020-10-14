@@ -9,6 +9,7 @@ statechart  Test{
 	  }
 	  x:int:local;
 	  y:int:static;
+	  z:int:local;
 	  entry : {
 	  }
 
@@ -22,7 +23,10 @@ statechart  Test{
 		exit:{
 			
 			x:=input<||>();
-			x:=x+1;
+			y:=input<||>();
+
+			x:=x+y;
+			z:=x+y;
 		}
 	  }
 	  state B{

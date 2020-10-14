@@ -19,7 +19,7 @@ public class InstructionNode extends SETNode{
 			this.depth=1;
 		else 
 			this.depth=p.depth+1;
-        this.statement = s;
+        //this.statement = s;
         this.environment = m;
 		this.declaration=null;
 		//this.symval=null;
@@ -41,10 +41,11 @@ public class InstructionNode extends SETNode{
 			if(((AssignmentStatement)s).rhs instanceof FunctionCall){
 				if((((FunctionCall)((AssignmentStatement)s).rhs).name.getName()).equalsIgnoreCase("input"))
 				{	
-					
-					this.mValues.put(((AssignmentStatement)s).lhs,visitor.visit((FunctionCall)((AssignmentStatement)s).rhs));
+					Expression e=visitor.visit((FunctionCall)((AssignmentStatement)s).rhs);
+					this.mValues.put(((AssignmentStatement)s).lhs,e);
+					this.statement=new AssignmentStatement(((AssignmentStatement)s).lhs,e);
 					visitor.symvars=symvars;
-					System.out.println(mValues);
+					//System.out.println(mValues);
 					//creating symbolic variable name
 					//String symvar="symvar";
 					//symvar+=(((AssignmentStatement)s).lhs).name;
@@ -56,35 +57,42 @@ public class InstructionNode extends SETNode{
 				
 				else{
 					System.out.println("Some expression found ::: "+(((AssignmentStatement)s).rhs).getClass());
+					this.statement=s;
 					this.symval=null;
 				}
 			}
 			else if((((AssignmentStatement)s).rhs) instanceof UnaryExpression){
 							this.symval=null;
-							
+							this.statement=s;
 							System.out.println("Unary expression found");
 
 				}
 			else if((((AssignmentStatement)s).rhs) instanceof BinaryExpression){
 							BinaryExpression b=(BinaryExpression)(((AssignmentStatement)s).rhs);
 							visitor.visit(b);
-							this.mValues.put(((AssignmentStatement)s).lhs,visitor.visit((BinaryExpression)((AssignmentStatement)s).rhs));
-							System.out.println(mValues);
+							Expression e=visitor.visit((BinaryExpression)((AssignmentStatement)s).rhs);
+							this.mValues.put(((AssignmentStatement)s).lhs,e);
+							//System.out.println(mValues);
 							this.symval=null;
+							this.statement=new AssignmentStatement(((AssignmentStatement)s).lhs,e);
+							//System.out.println("Binary expression found :"+e);
 							//System.out.println("Binary expression found with variables : "+((BinaryExpression)((AssignmentStatement)s).rhs).left+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).right+" : "+((BinaryExpression)((AssignmentStatement)s).rhs).operator);
 				}
 			else{
 				System.out.println("Some expression found : "+(((AssignmentStatement)s).rhs).getClass());
+				this.statement=s;
 				this.symval=null;
 				}
 		}
 		else if(s instanceof ExpressionStatement){
 					this.symval=null;
+					this.statement=s;
 		}
-		else
+		else{
 			this.symval=null;
-
-		
+			this.statement=s;
+		}
+		System.out.println("Symbolic Statement : "+(this.statement.toString()).replace("\n", ""));
 		// As per the type of the statement - get the symbolic value and add it to the environment
 		//as per the variable on lhs, get and add the corresponding declaration as well
 

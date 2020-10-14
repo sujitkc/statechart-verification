@@ -9,7 +9,7 @@ public class SymbolicExecutionEngine{
     
     private Statechart statechart;
     private int depth=0;
-	private int maxdepth=5;
+	private int maxdepth=10;
 	public Set<String> symvars;
 	
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{

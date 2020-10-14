@@ -27,51 +27,54 @@ public class SETExpressionVisitor {
 	}
 
 	//@Override
-public void visit(Expression exp) {
+public Expression visit(Expression exp) {
 //		System.out.println("Class of expression: "+exp.getClass());
 		if(exp instanceof Name) {
-			this.visit((Name)exp);
+			return this.visit((Name)exp);
 		}
 		else if(exp instanceof BinaryExpression) {
-			this.visit((BinaryExpression)exp);
+			return this.visit((BinaryExpression)exp);
 		}
 		else if(exp instanceof UnaryExpression) {
-			this.visit((UnaryExpression)exp);
+			return this.visit((UnaryExpression)exp);
 		}
 		else if(exp == null) {
-			
+			return exp;
 		}
 		else {
 			//Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
 			//throw e;
-			
+			return null;
 		}
 		
 	}
-	public void visit(Name exp){
+	public Expression visit(Name exp){
 		System.out.println("Name  found : "+exp +" "+exp.getDeclaration());
-				System.out.println("Entry set : "+this.mNode.mValues.entrySet());
-
-		Iterator it = this.mNode.mValues.entrySet().iterator();
-		while (it.hasNext()) {
-        Map.Entry pair = (Map.Entry)it.next();
-        System.out.println(pair.getKey() + " = " + pair.getValue());
-        it.remove(); // avoids a ConcurrentModificationException
-		}
-		if(this.mNode.mValues.get(exp)!=null)
-		System.out.println("Value  found : "+this.mNode.mValues.get(exp));
-		else{
-			SETNode node=this.mNode.parent;
-			
+		
+		//if(this.mNode.mValues.get(exp)!=null)
+		//System.out.println("Value  found : "+this.mNode.mValues.get(exp));
+		    SETNode node=this.mNode.parent;
+			Expression e=null;
 			while(node!=null){
-				System.out.println(" Current node is : "+node+" "+node.mValues);
-				if(node.mValues.get(exp)==null) node=node.parent;
+				e=null;
+				//System.out.println("Entry set : "+this.mNode.mValues.entrySet());
+				Iterator it = node.mValues.entrySet().iterator();
+				while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry)it.next();
+				if (exp.getDeclaration()==((Name)pair.getKey()).getDeclaration()){
+					 e=(Expression)pair.getValue();
+					 break;
+				} //System.out.println((exp.getDeclaration()==((Name)pair.getKey()).getDeclaration())+" "+exp+" ===== "+pair.getKey() + " ==== " + pair.getValue());
+				//it.remove(); // avoids a ConcurrentModificationException
+				}
+				//System.out.println(" Current node is : "+node+" "+e);
+				if(e==null) node=node.parent;
 				else break;
 				System.out.println("Going back");
 			}
-			System.out.println(" Current node is :"+node);
-		} 
-			
+			System.out.println(" Expression is :"+e);
+		
+			return e;
 		
 	}
 	public Expression visit(FunctionCall exp) {
@@ -107,13 +110,12 @@ public void visit(Expression exp) {
 	}
 	public Expression visit(BinaryExpression exp){
 		//exp.accept(this);
-		System.out.println("Binary : ");
-		this.visit(exp.left);
-		this.visit(exp.right);
-		//Expression lhs = this.visit(exp.left);
-		//Expression rhs = this.visit(exp.right);
+		Expression lhs = this.visit(exp.left);
+		Expression rhs = this.visit(exp.right);
+		//System.out.println("Binary : "+lhs+" "+rhs);
+		
 		//return new BinaryExpression(lhs, rhs, exp.operator);
-		return new BinaryExpression(exp.left, exp.right, exp.operator);
+		return new BinaryExpression(lhs,rhs, exp.operator);
 	}
 	//@Override
 	public Expression getValue() {
