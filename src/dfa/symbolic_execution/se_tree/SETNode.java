@@ -3,7 +3,8 @@ package symbolic_execution.se_tree;
 import ast.*;
 import java.util.*;
 public class SETNode{
-    
+    public Map<Name, Expression> mValues = new HashMap<Name, Expression>();
+
     public final SETNode parent;
 	public int depth;
 	public Map<Declaration, String> env;

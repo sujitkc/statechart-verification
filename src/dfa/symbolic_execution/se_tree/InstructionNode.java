@@ -9,7 +9,6 @@ public class InstructionNode extends SETNode{
 
     public final Statement statement;
     public Map<Declaration, Expression> environment;
-	private Map<Name, Expression> mValues = new HashMap<Name, Expression>();
 
 	public final Declaration declaration;
 	public String symval="";

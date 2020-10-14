@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.*;
 
 import symbolic_execution.se_tree.*;
 import ast.*;
@@ -48,13 +48,41 @@ public void visit(Expression exp) {
 		}
 		
 	}
-	public static Expression visit(FunctionCall exp) {
+	public void visit(Name exp){
+		System.out.println("Name  found : "+exp +" "+exp.getDeclaration());
+				System.out.println("Entry set : "+this.mNode.mValues.entrySet());
+
+		Iterator it = this.mNode.mValues.entrySet().iterator();
+		while (it.hasNext()) {
+        Map.Entry pair = (Map.Entry)it.next();
+        System.out.println(pair.getKey() + " = " + pair.getValue());
+        it.remove(); // avoids a ConcurrentModificationException
+		}
+		if(this.mNode.mValues.get(exp)!=null)
+		System.out.println("Value  found : "+this.mNode.mValues.get(exp));
+		else{
+			SETNode node=this.mNode.parent;
+			
+			while(node!=null){
+				System.out.println(" Current node is : "+node+" "+node.mValues);
+				if(node.mValues.get(exp)==null) node=node.parent;
+				else break;
+				System.out.println("Going back");
+			}
+			System.out.println(" Current node is :"+node);
+		} 
+			
+		
+	}
+	public Expression visit(FunctionCall exp) {
 		//this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
 		//Map<Declaration,Expression> m=new HashMap<Declaration,Expression>();
 		//m.put(exp.getDeclaration(),generateNewVariableName(symvars));
 		System.out.println("Function Call : ");//+exp.getDeclaration());
 		Name name = SETExpressionVisitor.generateNewVariableName(symvars);
-		
+		if(mNode instanceof InstructionNode)
+		if(((InstructionNode)mNode).statement instanceof AssignmentStatement)
+		name.setDeclaration((((AssignmentStatement)((InstructionNode)mNode).statement).lhs).getDeclaration());
 		return name;
 	}
 	
@@ -80,6 +108,8 @@ public void visit(Expression exp) {
 	public Expression visit(BinaryExpression exp){
 		//exp.accept(this);
 		System.out.println("Binary : ");
+		this.visit(exp.left);
+		this.visit(exp.right);
 		//Expression lhs = this.visit(exp.left);
 		//Expression rhs = this.visit(exp.right);
 		//return new BinaryExpression(lhs, rhs, exp.operator);
