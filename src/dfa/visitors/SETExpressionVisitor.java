@@ -44,7 +44,7 @@ public Expression visit(Expression exp) {
 		else {
 			//Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
 			//throw e;
-			return null;
+			return exp;
 		}
 		
 	}
@@ -113,9 +113,10 @@ public Expression visit(Expression exp) {
 		Expression lhs = this.visit(exp.left);
 		Expression rhs = this.visit(exp.right);
 		//System.out.println("Binary : "+lhs+" "+rhs);
-		
+		BinaryExpression b=new BinaryExpression(lhs,rhs, exp.operator);
+		b.setType(exp.getType());
 		//return new BinaryExpression(lhs, rhs, exp.operator);
-		return new BinaryExpression(lhs,rhs, exp.operator);
+		return b;
 	}
 	//@Override
 	public Expression getValue() {

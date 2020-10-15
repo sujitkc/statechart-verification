@@ -3,6 +3,7 @@ package symbolic_execution.se_tree;
 import ast.*;
 
 import java.util.Map;
+import visitors.SETExpressionVisitor;
 
 public class DecisionNode extends SETNode{
     
@@ -17,8 +18,14 @@ public class DecisionNode extends SETNode{
 		else 
 			this.depth=p.depth+1;
         this.environment = m;
+		SETExpressionVisitor visitor = new SETExpressionVisitor(this,
+					e.getType());
+		e=visitor.visit(e);
         this.expression = e;
 		//System.out.println("Decision node created at depth : "+this.depth +" : "+e+ " with parent : "+p);
+		System.out.println(e+" "+e.getClass());
+
+		if(e!=null){
 		if(p instanceof InstructionNode && ((InstructionNode)p).declaration!=null)
 			System.out.println(this.depth+": DN Created : "+(e.toString()).replace("\n", "")+" >> Par: "+(((InstructionNode)p).declaration.toString()).replace(System.getProperty("line.separator"), ""));
 		else if(p instanceof InstructionNode && ((InstructionNode)p).statement!=null)
@@ -26,10 +33,10 @@ public class DecisionNode extends SETNode{
 		else if(p instanceof DecisionNode)
 			System.out.println(this.depth+": DN created : "+(e.toString()).replace("\n", "")+" >> Par: "+(((DecisionNode)p).expression.toString()).replace(System.getProperty("line.separator"), ""));
 		else if(p instanceof StateEntryNode)
-			System.out.println(this.depth+": IN created : "+(e.toString()).replace("\n", "")+" >> Par: Entry - "+(((StateEntryNode)p).state).getFullName());
+			System.out.println(this.depth+": DN created : "+(e.toString()).replace("\n", "")+" >> Par: Entry - "+(((StateEntryNode)p).state).getFullName());
 		else if(p instanceof StateExitNode)
-			System.out.println(this.depth+": IN created : "+(e.toString()).replace("\n", "")+" >> Par: Exit - "+(((StateExitNode)p).state).getFullName());
-		
+			System.out.println(this.depth+": DN created : "+(e.toString()).replace("\n", "")+" >> Par: Exit - "+(((StateExitNode)p).state).getFullName());
+		}
     }
 
     public Expression getExpression()
