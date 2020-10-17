@@ -17,8 +17,8 @@ ${FE}/Lexer.java : ${FE}/lexer.flex
 test : ${FE}/Lexer.java sym.java ast/*.java program/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java  
 	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java testcases/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java -cp ${MYLIBPATH}/java-cup-11a.jar:${MYLIBPATH}/jflex-1.4.1.jar:${MYLIBPATH}/junit-4.8.1.jar:ast:classes:./;
 
-symtest : ${FE}/Lexer.java sym.java ast/*.java program/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java visitors/*.java
-	javac -cp "./lib/java-cup-11a-runtime.jar;./lib/jflex-1.4.1.jar;./lib/junit-4.8.1.jar;ast;classes;./" -Xlint:-unchecked -d  classes *.java ast/*.java program/*.java metric/*.java testcases/*.java visitors/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java
+symtest : ${FE}/Lexer.java sym.java ast/*.java program/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java visitors/*.java solver/*.java configuration/*.java
+	javac -cp "./lib/java-cup-11a-runtime.jar;./lib/jflex-1.4.1.jar;./lib/junit-4.8.1.jar;ast;classes;./" -Xlint:-unchecked -d  classes *.java ast/*.java program/*.java metric/*.java testcases/*.java configuration/*.java visitors/*.java solver/*.java symbolic_execution/*.java symbolic_execution/se_tree/*.java see/*.java
 
 rt :
 	java -cp ~/My-Downloads/junit-4.8.1.jar:classes/:${MYCLASSPATH}:. org.junit.runner.JUnitCore testcases.${testcase}

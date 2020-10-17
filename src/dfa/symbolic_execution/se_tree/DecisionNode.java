@@ -48,6 +48,8 @@ public class DecisionNode extends SETNode{
     {
         return this.environment;
     }
-
+	public Expression getPathPredicate() throws Exception {
+		return this.expression;
+	}
     // Has a variable called value which is of the type SymbolicExpression
 }

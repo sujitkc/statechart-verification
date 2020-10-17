@@ -1,7 +1,7 @@
 package symbolic_execution.se_tree;
 
 import ast.*;
-
+import java.util.*;
 import java.util.*;
 import visitors.SETExpressionVisitor;
 
@@ -9,9 +9,10 @@ public class InstructionNode extends SETNode{
 
     public final Statement statement;
     public Map<Declaration, Expression> environment;
-
+	public Set<Name> newNames;
 	public final Declaration declaration;
 	public String symval="";
+	public Name symvalName;
     public InstructionNode(Statement s, SETNode p, Map<Declaration, Expression> m, Set<String> symvars)
     {
         super(p);
@@ -20,6 +21,8 @@ public class InstructionNode extends SETNode{
 		else 
 			this.depth=p.depth+1;
         //this.statement = s;
+		this.newNames=new HashSet<Name>();
+
         this.environment = m;
 		this.declaration=null;
 		//this.symval=null;
@@ -42,6 +45,8 @@ public class InstructionNode extends SETNode{
 				if((((FunctionCall)((AssignmentStatement)s).rhs).name.getName()).equalsIgnoreCase("input"))
 				{	
 					Expression e=visitor.visit((FunctionCall)((AssignmentStatement)s).rhs);
+					if(e instanceof Name)
+					newNames.add((Name)e);
 					this.mValues.put(((AssignmentStatement)s).lhs,e);
 					this.statement=new AssignmentStatement(((AssignmentStatement)s).lhs,e);
 					visitor.symvars=symvars;

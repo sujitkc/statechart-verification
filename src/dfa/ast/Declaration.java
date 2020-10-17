@@ -26,7 +26,9 @@ public class Declaration{
   public State getState() {
     return this.declarationList.getState();
   }
-
+  public String getName() {
+	  return this.vname;
+  }
   public String getFullVName() {
     return this.getState().getFullName() + '.' + this.vname;
   }

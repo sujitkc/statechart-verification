@@ -1,19 +1,29 @@
-package Solver;
+package solver;
 
-import expression.ExpressionPreorderToStringVisitor;
-import expression.IExpression;
-import expression.IIdentifier;
-import expression.Type;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import java.io.*;
-import java.util.*;
+import configuration.SymTestConfiguration;
+import visitors.ExpressionPreorderToStringVisitor;
+import ast.Expression;
+import ast.Name;
+import ast.Type;
 
-public class YicesSolver implements ISolver {
+public class YicesSolver{
 
-	IExpression mExpression;
-	Set<IIdentifier> mVariables;
+	Expression mExpression;
+	Set<Name> mVariables;
 
-	public YicesSolver(Set<IIdentifier> symVars, IExpression exp) {
+	public YicesSolver(Set<Name> symVars, Expression exp) {
 		this.mVariables = symVars;
 		this.mExpression = exp;
 	}
@@ -22,7 +32,6 @@ public class YicesSolver implements ISolver {
 		String yicesInput = YicesSolver.makeYicesInput(this.mVariables,
 				this.mExpression);
 
-		// System.out.println("/home/sujit/My-Download/yices-2.2.2/bin/yices input :\n" + yicesInput);
 
 		FileWriter outFile;
 
@@ -30,7 +39,7 @@ public class YicesSolver implements ISolver {
 		PrintWriter out = new PrintWriter(outFile);
 		out.println(yicesInput);
 		out.close();
-		String command = "/home/sujit/My-Downloads/yices-2.2.2/bin/yices resources/input.ys";
+		String command = SymTestConfiguration.YICES_PATH + " resources/input.ys";
 		String output = YicesSolver.cmdExec(command);
 		// System.out.println("yices output :\n" + output);
 
@@ -48,8 +57,8 @@ public class YicesSolver implements ISolver {
 	 * @return
 	 * @throws Exception
 	 */
-	private static String makeYicesInput(Set<IIdentifier> mVariables2,
-			IExpression expression) throws Exception {
+	private static String makeYicesInput(Set<Name> mVariables2,
+			Expression expression) throws Exception {
 		
 
 		ExpressionPreorderToStringVisitor preVisitor = new ExpressionPreorderToStringVisitor();
@@ -58,8 +67,10 @@ public class YicesSolver implements ISolver {
 		String formula = preVisitor.getValue();
 
 		String s = "";
-		for (IIdentifier v : mVariables2) {
-			s = s + "(define " + v.getName() + "::"
+		for (Name v : mVariables2) {
+			//s = s + "(define " + v.getName() + "::"
+			//		+ YicesSolver.getVariableTypeString(v) + ")" + "\n";
+			s = s + "(define " + v + "::"
 					+ YicesSolver.getVariableTypeString(v) + ")" + "\n";
 		}
 		s = s + "(assert " + formula + ")\n";
@@ -69,8 +80,9 @@ public class YicesSolver implements ISolver {
 
 	}
 
-	private static String getVariableTypeString(IIdentifier v) throws Exception {
-		String type = v.getType();
+	private static String getVariableTypeString(Name v) throws Exception {
+		return "int";
+		/*String type = v.getType();
 		if (type.equals(Type.BOOLEAN)) {
 			return "bool";
 		} else if (type.equals(Type.INT)) {
@@ -80,7 +92,7 @@ public class YicesSolver implements ISolver {
 					"YicesSolver.getVariableTypeString : type of variable '"
 							+ v.getName() + "' not handled.");
 			throw e;
-		}
+		}*/
 	}
 
 	private static String cmdExec(String cmdLine) throws IOException {
@@ -112,13 +124,13 @@ public class YicesSolver implements ISolver {
 		 * System.out.print("tokens = "); for(String t : tokens) {
 		 * System.out.print(t + " "); }
 		 */
-		Map<IIdentifier, Object> map = new HashMap<IIdentifier, Object>();
+		Map<Name, Object> map = new HashMap<Name, Object>();
 		if (tokens.get(0).equals("sat")) {
 			isSat = true;
 
 			for (int i = 2; i < tokens.size(); i = i + 3) {
 				String varName = tokens.get(i);
-				IIdentifier var = this.getVariableByName(varName);
+				Name var = this.getVariableByName(varName);
 				if (var == null) {
 					Exception e = new Exception(
 							"YicesSolver.parseYicesOutput : variable '"
@@ -133,9 +145,10 @@ public class YicesSolver implements ISolver {
 		return new SolverResult(isSat, map);
 	}
 
-	private static Object parseVariableValue(IIdentifier var, String value)
+	private static Object parseVariableValue(Name var, String value)
 			throws Exception {
-		if (var.getType().equals(Type.INT)) {
+				return 1;
+		/*if (var.getType().equals(Type.INT)) {
 			return Integer.parseInt(value);
 		} else if (var.getType().equals(Type.BOOLEAN)) {
 			return Boolean.parseBoolean(value);
@@ -144,12 +157,12 @@ public class YicesSolver implements ISolver {
 					"YicesSolver.parseVariableValue : type of variable '"
 							+ var.getName() + "' not handled.");
 			throw e;
-		}
+		}*/
 	}
 
-	private IIdentifier getVariableByName(String name) {
-		for (IIdentifier v : this.mVariables) {
-			if (v.getName().equals(name)) {
+	private Name getVariableByName(String name) {
+		for (Name v : this.mVariables) {
+			if (v.equals(name)) {
 				return v;
 			}
 		}

@@ -4,6 +4,7 @@ import ast.*;
 import symbolic_execution.se_tree.*;
 
 import java.util.*;
+import solver.*;
 
 public class SymbolicExecutionEngine{
     
@@ -11,10 +12,13 @@ public class SymbolicExecutionEngine{
     private int depth=0;
 	private int maxdepth=10;
 	public Set<String> symvars;
+	public Set<Name> symvarsname;
 	
     public SymbolicExecutionEngine(Statechart statechart) throws Exception{
         try{
 			this.symvars=new HashSet<String>();
+			this.symvarsname=new HashSet<Name>();
+
             this.statechart = statechart;
 			//ArrayList<SETNode> done = new ArrayList<SETNode>();
 			ArrayList<SETNode> leaves = new ArrayList<SETNode>();
@@ -394,6 +398,7 @@ public InstructionNode newExecuteInstruction(Statement instructionStatement,SETN
 					
 					InstructionNode in = new InstructionNode(instructionStatement,leaf,null,symvars);
 					symvars.add(in.symval);
+					symvarsname.addAll(in.newNames);
 					return in;
 				}
 	else 
@@ -412,7 +417,11 @@ public InstructionNode newExecuteInstruction(Statement instructionStatement,SETN
 
     public boolean satisfiable(Expression e) // need to implement this
     {
-		
+		// Using SMT Solver
+		Z3Solver solver = new Z3Solver(symvarsname, e);
+//		ISolver solver = new DRealSolver(symVars, exp);
+		SolverResult solution = solver.solve();
+		System.out.println("Solution is :"+solution);
         return true;
     }
 	/*private void computeExpression(SETDecisionNode node) throws Exception {
