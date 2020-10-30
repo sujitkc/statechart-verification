@@ -11,6 +11,20 @@ import program.*;
 import utilities.UniqueVarNameGenerator;
 
 public class StatechartToProgramTranslator {
+	protected StatementList flattenStatementList (StatementList list) {
+		StatementList result = new StatementList();
+		for (Statement stmt: list.getStatements()) {
+			if (stmt instanceof StatementList) {
+				StatementList stmt_list = flattenStatementList ((StatementList)stmt);
+				for (Statement smt: stmt_list.getStatements()) {
+					result.add (smt);
+				}
+			} else {
+				result.add (stmt);
+			}
+		}
+		return result;
+	}
 
   private final Statechart statechart;
   private final DeclarationList stateDeclarations = new DeclarationList();
@@ -75,42 +89,114 @@ public class StatechartToProgramTranslator {
       statements.add(new AssignmentStatement(new Name(event), new IntegerConstant(count)));
       count++;
     }
+
+	FunctionName assert_name = new FunctionName("stuck_spec");
+	FunctionName assert_nd_name = new FunctionName("non_det");
+
     Statement outerIf = new SkipStatement();
     for(State state : this.statechart.states) {
       Set<Transition> transitions = this.getTransitionsFromSourceState(state);
-      Statement stmt = new SkipStatement();
-      for(Transition t : transitions) {
-	// TODO: Change name of variable
-        Name ev = new Name("event");
-        ev.setDeclaration(this.eventVarDeclaration);
 
-        Name evname = new Name(eventNameMap.get(t.trigger));
-        ev.setType(this.intType);
-        evname.setType(this.intType);
-        evname.setDeclaration(this.eventDeclarations.lookup(t.trigger));
+	  Expression guards_or = null;
+	  for (Transition t: transitions) {
+		if (guards_or == null) {
+			guards_or = t.guard;
+		} else {
+			guards_or = new BinaryExpression (guards_or, t.guard, "||");
+		}
+	  }
 
-        BinaryExpression eveq = new BinaryExpression(ev, evname, "=");
-        BinaryExpression cond = new BinaryExpression(eveq, t.guard, "&&");
+	  HashMap<String, List<Transition>> transitions_for_event = new HashMap<>();
+	  for (Transition t: transitions) {
+		  if (transitions_for_event.containsKey(t.trigger)) {
+			  transitions_for_event.get(t.trigger).add(t);
+		  } else {
+			  ArrayList<Transition> list = new ArrayList<>();
+			  list.add (t);
+			  transitions_for_event.put(t.trigger, list);
+		  }
+	  }
 
-        Name sn1 = new Name("state");
-        sn1.setType(this.intType);
-        sn1.setDeclaration(this.stateVarDeclaration);
+	  Statement under_state_eq = new SkipStatement();
+	  for (String trigger: transitions_for_event.keySet()) {
+		  List<Transition> edges = transitions_for_event.get(trigger);
+		  Name event_var_name = new Name ("event");
+		  event_var_name.setDeclaration(this.eventVarDeclaration);
 
-        Name destName = new Name (stateNameMap.get (t.destination.getFullName()));
-        Statement statechange = new AssignmentStatement(sn1, destName);
+		  Name event_ins_name = new Name (eventNameMap.get(trigger));
+		  event_ins_name.setType (this.intType);
+		  event_ins_name.setDeclaration(this.eventDeclarations.lookup(trigger));
 
-        StatementList innerstmtlst = new StatementList();
-        innerstmtlst.add(t.action);
-        innerstmtlst.add(statechange);
-        stmt = new IfStatement(cond, Translator.flattenStatementList(innerstmtlst), stmt);
-      }
+		  BinaryExpression eveq = new BinaryExpression(event_var_name, event_ins_name, "=");
+
+		  Statement under_event_eq = new SkipStatement();
+		  /* Non-Determinism begin*/
+		  // All guards for this event (trigger)
+		  ArrayList<Expression> all_guards = new ArrayList<>();
+		  for (Transition t: edges) {
+			  all_guards.add(t.guard);
+		  }
+		  // Generate the pairs
+		  ArrayList<Expression> pairwise_ands = new ArrayList<>();
+		  int size = all_guards.size();
+		  for (int i = 0; i < size; i++) {
+			  for (int j = i+1; j < size; j++) {
+				  pairwise_ands.add(new BinaryExpression(all_guards.get(i), all_guards.get(j), "&&"));
+			  }
+		  }
+		  Expression or_of_ands = null;
+		  for (Expression and: pairwise_ands) {
+			  if (or_of_ands == null) {
+				  or_of_ands = and;
+			  } else {
+				  or_of_ands = new BinaryExpression (or_of_ands, and, "||");
+			  }
+		  }
+		  /* Non-Determinism end */
+		  for (Transition t: edges) {
+			  Name state_var_name = new Name ("state");
+			  state_var_name.setType(this.intType);
+			  state_var_name.setDeclaration(this.stateVarDeclaration);
+
+			  Name destName = new Name (stateNameMap.get (t.destination.getFullName()));
+			  Statement statechange_stmt = new AssignmentStatement(state_var_name, destName);
+			  StatementList stmt_list = new StatementList();
+			  stmt_list.add(t.action);
+			  stmt_list.add(statechange_stmt);
+
+
+			  under_event_eq = new IfStatement(t.guard, stmt_list, under_event_eq);
+		  }
+		  StatementList stmt = new StatementList();
+		  if (or_of_ands != null) {
+			  ArrayList<Expression> args = new ArrayList<>();
+			  args.add (or_of_ands);
+			  stmt.add (new ExpressionStatement(new FunctionCall(assert_nd_name, args)));
+		  }
+		  stmt.add(under_event_eq);
+		  under_state_eq = new IfStatement(eveq, stmt, under_state_eq);
+	  }
+
       Name st = new Name("state");
       st.setType(this.intType);
       st.setDeclaration(this.stateVarDeclaration);
       Expression stname = new Name(stateNameMap.get(state.getFullName()));
       stname.setType(this.intType);
       BinaryExpression steq = new BinaryExpression(st, stname, "=");
-      outerIf = new IfStatement(steq, stmt, outerIf);
+
+
+	  if (guards_or != null) {
+	  	StatementList stmt_list = new StatementList ();
+	  	List<Expression> args = new ArrayList<>();
+	  	args.add (guards_or);
+	  	FunctionCall call = new FunctionCall(assert_name, args);
+	  	ExpressionStatement call_stmt = new ExpressionStatement(call);
+	  	stmt_list.add (call_stmt);
+	  	stmt_list.add (under_state_eq);
+	  	under_state_eq = flattenStatementList(stmt_list);
+	  }
+
+	  outerIf = new IfStatement(steq, under_state_eq, outerIf);
     }
 
     State initState = this.statechart.states.get(0);

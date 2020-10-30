@@ -54,7 +54,7 @@ public class BinaryExpression extends Expression {
   }
 
   public String toString() {
-    String s = this.left.toString() + " " + this.operator + " " + this.right.toString();
+    String s = "BinaryExpr=> " + this.left.toString() + " " + this.operator + " " + this.right.toString();
     if(this.type != null) {  
       s += " : " + this.type.name;
     }
