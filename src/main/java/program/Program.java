@@ -1,15 +1,18 @@
 package program;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.HashMap;
 import ast.*;
+import utilities.*;
+
 
 public class Program {
-
   public final String name;
-  public final DeclarationList declarations;
+  public final DeclarationList declarations; // State declarations only
+  public DeclarationList other_declarations; // Other declarations (everything except State declarations): relavant to translation process
   public final List<Type> types;
   public final List<FunctionDeclaration> functionDeclarations;
+  public HashMap<String, Pair<String, Integer>> eventNameMap;
 
   public final StatementList statements;
   public Program(
@@ -25,9 +28,17 @@ public class Program {
     this.statements = statements;
   }
 
+  public void set_other_declarations (DeclarationList other_declarations) {
+	  this.other_declarations = other_declarations;
+  }
+  public void setEventNameMap (HashMap<String, Pair<String, Integer>> eventNameMap) {
+	  this.eventNameMap = eventNameMap;
+  }
+
   public String toString() {
     String s = "Program {\n";
     s += this.declarations;
+	s += this.other_declarations;
     s += this.statements.toString();
     s += "}";
     return s;

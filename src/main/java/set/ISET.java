@@ -2,7 +2,7 @@ package set;
 
 import java.util.Set;
 
-import program.IProgram;
+import program.Program;
 import ast.Environment;
 import set.ISETNode;
 import set.ISETDecisionNode;

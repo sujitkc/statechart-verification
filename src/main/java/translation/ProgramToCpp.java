@@ -5,6 +5,8 @@ import program.Program;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import visitor.Visitor;
+import java.util.HashSet;
+import utilities.*;
 
 public class ProgramToCpp implements Visitor {
 
@@ -60,14 +62,26 @@ public class ProgramToCpp implements Visitor {
         }
     }
 
+	HashSet<String> variable_names = new HashSet<>();
+
     void addDeclarations() {
         for (Declaration decl : this.program.declarations) {
             writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
+			variable_names.add(decl.vname);
         }
+		for (Declaration decl: this.program.other_declarations) {
+            writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
+		}
     }
 
     void addStatements() throws Exception {
 	    // All the statements go into the run() function, which is called from main()
+		// Event name map
+		println("char const* reverse_map[" + this.program.eventNameMap.size() + "];");
+		for (Pair<String, Integer> pair: this.program.eventNameMap.values()) {
+			println("reverse_map["+pair.getSecond()+"]="+"\""+pair.getFirst()+"\";");
+		}
+
         println("void run(int * events, int N){");
         enter_nest();
         // println("for (int i = 0; i < N; i++) {");
@@ -80,8 +94,13 @@ public class ProgramToCpp implements Visitor {
 
         println("int main () {");
         enter_nest();
+		// TODO: Make 'N' a user input
 		println("int N = 5; int events[N];");
 		println("klee_make_symbolic(events, sizeof events, \"events\");");
+		for (String variable_name: variable_names) {
+			System.out.println ("varname: " + variable_name);
+			println("klee_make_symbolic(&" + variable_name + ", sizeof " + variable_name + ",\"" + variable_name + "\");");
+		}
         println("run(events, N);");
         println("return 0;");
         println("}");

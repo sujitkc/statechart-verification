@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import ast.*;
 import program.*;
-import utilities.UniqueVarNameGenerator;
+import utilities.*;
 
 public class StatechartToProgramTranslator {
 	protected StatementList flattenStatementList (StatementList list) {
@@ -27,8 +27,8 @@ public class StatechartToProgramTranslator {
 	}
 
   private final Statechart statechart;
-  private final DeclarationList stateDeclarations = new DeclarationList();
-  private final DeclarationList eventDeclarations = new DeclarationList();
+  private final DeclarationList stateDeclarations = new DeclarationList(); // Declare each state
+  private final DeclarationList eventDeclarations = new DeclarationList(); // Declare each event
   private Declaration stateVarDeclaration;
   private Declaration eventVarDeclaration;
   private Type intType = null; // to be made the type of all state and event variables.
@@ -60,31 +60,36 @@ public class StatechartToProgramTranslator {
   }
 
   HashMap<String, String> stateNameMap = new HashMap<>();
-  HashMap<String, String> eventNameMap = new HashMap<>();
+  HashMap<String, Pair<String, Integer>> eventNameMap = new HashMap<>();
+
+  DeclarationList other_declarations = new DeclarationList(); // other than state members.
 
   public Program translate() {
     StatementList statements = new StatementList();
 
-    this.statechart.declarations.add(this.stateVarDeclaration);
-    this.statechart.declarations.add(this.eventVarDeclaration);
+    this.other_declarations.add(this.stateVarDeclaration);
+    this.other_declarations.add(this.eventVarDeclaration);
+
     int count = 0;
+	// individual states as variables
     for(State state : this.statechart.states) {
       String newStateName = this.varNameGenerator.generate();
       stateNameMap.put (state.getFullName(), newStateName);
       Declaration stateDeclaration = new Declaration(newStateName, new TypeName("int"), false);
       stateDeclaration.setType(this.intType);
-      this.statechart.declarations.add(stateDeclaration);
-      this.stateDeclarations.add(stateDeclaration);
+      this.other_declarations.add(stateDeclaration);
+     //  this.stateDeclarations.add(stateDeclaration);
       statements.add(new AssignmentStatement(new Name(newStateName), new IntegerConstant(count)));
       count++;
     }
     count = 0;
+	// individual events as variables
     for(String eventName : this.statechart.events) {
       String event = this.varNameGenerator.generate();
-      eventNameMap.put(eventName, event);
+      eventNameMap.put(eventName, new Pair(event, count));
       Declaration eventDeclaration = new Declaration(event, new TypeName("int"), false);
       eventDeclaration.setType(this.intType);
-      this.statechart.declarations.add(eventDeclaration);
+      this.other_declarations.add(eventDeclaration);
       this.eventDeclarations.add(eventDeclaration);
       statements.add(new AssignmentStatement(new Name(event), new IntegerConstant(count)));
       count++;
@@ -123,7 +128,7 @@ public class StatechartToProgramTranslator {
 		  Name event_var_name = new Name ("event");
 		  event_var_name.setDeclaration(this.eventVarDeclaration);
 
-		  Name event_ins_name = new Name (eventNameMap.get(trigger));
+		  Name event_ins_name = new Name (eventNameMap.get(trigger).getFirst());
 		  event_ins_name.setType (this.intType);
 		  event_ins_name.setDeclaration(this.eventDeclarations.lookup(trigger));
 
@@ -212,12 +217,17 @@ public class StatechartToProgramTranslator {
     Statement whileStatement = new WhileStatement(cond, outerIf);
     statements.add(whileStatement);
     statements.add(new HaltStatement());
-    return new Program(
+    Program res = new Program(
       this.statechart.name,
       this.statechart.declarations,
       this.statechart.types,
       this.statechart.functionDeclarations,
       statements); 
+
+	res.set_other_declarations(this.other_declarations);
+	res.setEventNameMap(this.eventNameMap);
+
+	return res;
   }
 
   private Set<Transition> getTransitionsFromSourceState(State src) {
