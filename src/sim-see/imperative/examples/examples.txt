@@ -1,0 +1,25 @@
+1.txt:
+Basic example
+Multiple declarations
+Straight line code
+Multiple statements
+maxdepth gets over just after the execution of the last statement.
+
+2.txt:
+Basic example
+Multiple declarations
+Straight line code
+Multiple statements
+maxdepth gets over just before the execution of the last statement. Hence, it doesn't get added to the SET.
+
+3.txt:
+Basic example
+Multiple declarations
+Straight line code
+Multiple statements
+maxdepth is not reached after the execution of the last statement.
+
+4.txt:
+Multiple declarations
+if else branching statement
+maxdepth is reached after the execution of the last statement.
