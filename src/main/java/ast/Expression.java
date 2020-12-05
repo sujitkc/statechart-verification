@@ -3,25 +3,6 @@ package ast;
 import visitor.Visitor;
 
 public abstract class Expression {
-/*
-  public enum Operator {
-    ADD,
-    MUL,
-    SUB,
-    DIV,
-    GE,
-    GT,
-    LE,
-    LT,
-    EQ,
-    NE,
-    AND,
-    OR,
-    UMIN,
-    NOT
-  };
-*/
-
   protected Type type;
 
 

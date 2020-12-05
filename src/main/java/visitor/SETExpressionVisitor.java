@@ -1,71 +1,94 @@
-package set;
+package visitor;
 
-import stablcfg.CFGNode;
-import program.IProgram;
-import visitors.IExprVisitor;
+//import stablcfg.CFGNode;
+//import program.IProgram;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.*;
 
-import ast.BinaryExpression;
-import ast.Expression;
-import ast.UnaryExpression;
-import ast.True;
-import ast.False;
-import ast.Name;
-import ast.IntegerConstant;
-import ast.NotExpression;
-import ast.Type;
-public class SETExpressionVisitor implements IExprVisitor<Expression> {
+import set.*;
+import ast.*;
+//public class SETExpressionVisitor implements IExprVisitor<Expression> {
+public class SETExpressionVisitor {
 
 	private SETNode mNode;
 	private Stack<Expression> mStack = new Stack<Expression>();
 	private final String mContextType; 
-
+	public static Set<String> symvars=new HashSet<String>();
 	public SETExpressionVisitor(SETNode node, Type type) {
 		this.mNode = node;
 		this.mContextType = type.toString();		
 	}
 
-	@Override
-	public void visit(Expression exp) throws Exception {
+	//@Override
+public Expression visit(Expression exp) {
 //		System.out.println("Class of expression: "+exp.getClass());
-		if(exp instanceof IntegerConstant) {
-			this.visit((IntegerConstant)exp);
-		}
-		else if(exp instanceof False) {
-			this.visit((False)exp);
-		}
-		else if(exp instanceof True) {
-			this.visit((True)exp);
+		if(exp instanceof Name) {
+			return this.visit((Name)exp);
 		}
 		else if(exp instanceof BinaryExpression) {
-			this.visit((BinaryExpression)exp);
+			return this.visit((BinaryExpression)exp);
 		}
 		else if(exp instanceof UnaryExpression) {
-			this.visit((UnaryExpression)exp);
+			return this.visit((UnaryExpression)exp);
 		}
 		else if(exp == null) {
+			return exp;
 		}
 		else {
-			Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
-			throw e;
+			//Exception e = new Exception("SETExpressionVisitor : Type '" + exp.getClass().getCanonicalName() + "' of expression not handled.");
+			//throw e;
+			return exp;
 		}
+		
 	}
-	public void visit(IntegerConstant exp) throws Exception {
-		this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
+	public Expression visit(Name exp){
+		System.out.println("Name  found : "+exp +" "+exp.getDeclaration());
+		
+		//if(this.mNode.mValues.get(exp)!=null)
+		//System.out.println("Value  found : "+this.mNode.mValues.get(exp));
+		    SETNode node=this.mNode.parent;
+			Expression e=null;
+			while(node!=null){
+				e=null;
+				//System.out.println("Entry set : "+this.mNode.mValues.entrySet());
+				Iterator it = node.mValues.entrySet().iterator();
+				while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry)it.next();
+				if (exp.getDeclaration()==((Name)pair.getKey()).getDeclaration()){
+					 e=(Expression)pair.getValue();
+					 break;
+				} //System.out.println((exp.getDeclaration()==((Name)pair.getKey()).getDeclaration())+" "+exp+" ===== "+pair.getKey() + " ==== " + pair.getValue());
+				//it.remove(); // avoids a ConcurrentModificationException
+				}
+				//System.out.println(" Current node is : "+node+" "+e);
+				if(e==null) node=node.parent;
+				else break;
+				System.out.println("Going back");
+			}
+			System.out.println(" Expression is :"+e);
+		
+			return e;
+		
 	}
-
+	public Expression visit(FunctionCall exp) {
+		//this.mStack.push(new IntegerConstant(exp.getValue(), this.mNode.getSET()));
+		//Map<Declaration,Expression> m=new HashMap<Declaration,Expression>();
+		//m.put(exp.getDeclaration(),generateNewVariableName(symvars));
+		System.out.println("Function Call : ");//+exp.getDeclaration());
+		Name name = SETExpressionVisitor.generateNewVariableName(symvars);
+		if(mNode instanceof SETInstructionNode)
+		if(((SETInstructionNode)mNode).statement instanceof AssignmentStatement)
+		name.setDeclaration((((AssignmentStatement)((SETInstructionNode)mNode).statement).lhs).getDeclaration());
+		return name;
+	}
 	
-	public void visit(False exp) throws Exception {
-		this.mStack.push(new False(this.mNode.getSET()));
-	}
-	public void visit(True exp) throws Exception {
-		this.mStack.push(new True(this.mNode.getSET()));
-	}
-	private static String generateNewVariableName (Set<String> names) {
+	private static Name generateNewVariableName (Set<String> names) {
 		
 		while (true) {
 			Random random = new Random ();
@@ -75,21 +98,26 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 			}
 			String name = "symvar" + Integer.toString(integer);
 			if (!names.contains(name)) {
-				return name;
+				return new Name(name);
 			}
 		}
 	}
-	public void visit(UnaryExpression exp) throws Exception {
-		exp.accept(this);
-		this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop(),exp.getOperator()));
+	public  Expression visit(UnaryExpression exp) {
+		//exp.accept(this);
+		//this.mStack.push(new UnaryExpression(this.mNode.getSET(), this.mStack.pop(),exp.getOperator()));
+		return null;
 	}
-	public void visit(BinaryExpression exp) throws Exception {
-		exp.accept(this);
-		Expression lhs = this.mStack.pop();
-		Expression rhs = this.mStack.pop();
-		this.mStack.push(new BinaryExpression(this.mNode.getSET(), lhs, rhs, exp.getOperator()));
+	public Expression visit(BinaryExpression exp){
+		//exp.accept(this);
+		Expression lhs = this.visit(exp.left);
+		Expression rhs = this.visit(exp.right);
+		//System.out.println("Binary : "+lhs+" "+rhs);
+		BinaryExpression b=new BinaryExpression(lhs,rhs, exp.operator);
+		b.setType(exp.getType());
+		//return new BinaryExpression(lhs, rhs, exp.operator);
+		return b;
 	}
-	@Override
+	//@Override
 	public Expression getValue() {
 		return this.mStack.peek();
 	}

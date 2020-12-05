@@ -320,7 +320,9 @@ class Globaliser extends Translator {
     // String fullVName = declaration.getFullVName();
     Declaration globalisedName = this.globalDeclarations.get(declaration);
     assert (globalisedName != null);
-    return new Name(globalisedName.vname);
+    Name name = new Name(globalisedName.vname);
+	name.setDeclaration (globalisedName);
+	return name;
   }
 
   private StringLiteral globaliseStringLiteral(StringLiteral e) throws Exception {

@@ -113,7 +113,8 @@ public class Analyser {
       System.out.println(program.toString());
       System.out.println("Printing flattened program ... done!");
 
-      (new ProgramToCpp(program)).translate();
+      // (new ProgramToCpp(program)).translate();
+	  System.out.println ((new ProgramToCFG()).translate(program).toString());
     }
     catch(Exception e) {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 

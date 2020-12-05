@@ -1,8 +1,8 @@
-package Solver;
-
-import ast.Name;
+package solver;
 
 import java.util.Map;
+
+import ast.Name;
 
 public class SolverResult {
 	private final boolean mResult;
@@ -32,7 +32,7 @@ public class SolverResult {
 		}
 		s = "satisfiable\n";
 		for(Name var : this.mModel.keySet()) {
-			s = s + "(" + var.getName() + ", " + this.mModel.get(var).toString() + ")\n";
+			s = s + "(" + var+ ", " + this.mModel.get(var).toString() + ")\n";
 		}
 		return s;
 	}
