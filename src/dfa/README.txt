@@ -18,3 +18,8 @@ To run
   ./run.sh
 
 Test inputs are placed in data/ directory.
+
+To Run symbolic execution engine
+
+java -cp ./lib/junit-4.8.1.jar;./;./classes/;./lib/java-cup-11a.jar org.junit.runner.JUnitCore testcases.TestSymbolicExecution
+
