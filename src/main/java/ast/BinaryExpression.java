@@ -2,7 +2,7 @@ package ast;
 
 import java.util.Map;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 import java.util.HashMap;
 
@@ -64,7 +64,7 @@ public class BinaryExpression extends Expression {
     return s;
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     visitor.visitBinaryExpression(this);
   }
 }

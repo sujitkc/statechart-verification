@@ -1,5 +1,7 @@
 package ast;
 
+import visitor.ExpressionVisitor;
+
 public class UnaryExpression extends Expression {
 
   public enum Operator {
@@ -25,5 +27,9 @@ public class UnaryExpression extends Expression {
   public UnaryExpression(Expression expression, Operator operator) {
     this.expression = expression;
     this.operator   = operator;
+  }
+
+  public void visit (ExpressionVisitor visitor) {
+	  visitor.visitUnaryExpression(visitor);
   }
 }

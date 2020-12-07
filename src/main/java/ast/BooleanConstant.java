@@ -1,6 +1,6 @@
 package ast;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 public class BooleanConstant extends Expression {
 
@@ -18,7 +18,7 @@ public class BooleanConstant extends Expression {
     }
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     visitor.visitBooleanConstant(this);
   }
 }

@@ -1,6 +1,6 @@
 package ast;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 public abstract class Expression {
   protected Type type;
@@ -14,7 +14,7 @@ public abstract class Expression {
     this.type = type;
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     System.out.println(this.toString());
     this.visit(visitor);
   }

@@ -1,20 +1,25 @@
 package set;
 
-public class SETNode{
-    protected final SETNode parent;
-	protected int depth;
+import ast.Declaration;
+import ast.Expression;
+
+abstract public class SETNode{
+    protected final SETNode _parent;
+	protected int _depth;
 
 	public SETNode (SETNode parent) {
-		this.parent = parent;
+		this._parent = parent;
 		if (parent == null) {
-			this.depth = 0;
+			this._depth = 0;
 		}
 		else {
-			this.depth = parent.depth + 1;
+			this._depth = parent._depth + 1;
 		}
 	}
 
-    public SETNode getParent() {return this.parent;}
-	public int getDepth () {return this.depth;}
+    public SETNode getParent() {return this._parent;}
+	public int getDepth () {return this._depth;}
+
+	abstract public Expression getVarValue (Declaration decl) throws Exception;
 }
 

@@ -4,11 +4,12 @@ import ast.*;
 import program.Program;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import visitor.ExpressionVisitor;
 import visitor.Visitor;
 import java.util.HashSet;
 import utilities.*;
 
-public class ProgramToCpp implements Visitor {
+public class ProgramToCpp implements ExpressionVisitor, Visitor {
 
     Program program = null;
     PrintWriter writer;

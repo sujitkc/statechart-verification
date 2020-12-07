@@ -1,6 +1,6 @@
 package ast;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 public class IntegerConstant extends Expression {
 
@@ -14,7 +14,7 @@ public class IntegerConstant extends Expression {
     return new Integer(this.value).toString();
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     visitor.visitIntegerConstant(this);
   }
 }

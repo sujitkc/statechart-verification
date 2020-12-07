@@ -2,7 +2,7 @@ package ast;
 
 import java.util.List;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 public class FunctionCall extends Expression {
   public final FunctionName name;
@@ -26,7 +26,7 @@ public class FunctionCall extends Expression {
     return s + ") : " + this.type;
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     visitor.visitFunctionCall(this);
   }
 }

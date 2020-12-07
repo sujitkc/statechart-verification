@@ -49,7 +49,14 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.sosy-lab/java-smt -->
+<dependency>
+    <groupId>org.sosy-lab</groupId>
+    <artifactId>java-smt</artifactId>
+    <version>3.2.0</version>
+</dependency>
+
         <!--https: //mvnrepository.com/artifact/com.github.vbmacher/java-cup -->
         <dependency>
             <groupId>com.github.vbmacher</groupId>

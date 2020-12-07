@@ -4,22 +4,34 @@ import program.Program;
 import ast.*;
 import set.*;
 import java.util.ArrayList;
+import visitor.ExpressionFormulaGenerator;
+import org.sosy_lab.java_smt.api.*;
+import org.sosy_lab.java_smt.SolverContextFactory;
+import org.sosy_lab.java_smt.SolverContextFactory.Solvers;
+import org.sosy_lab.common.configuration.Configuration;
+import org.sosy_lab.common.log.LogManager;
+import org.sosy_lab.common.log.BasicLogManager;
+import org.sosy_lab.common.ShutdownManager;
+import org.sosy_lab.common.configuration.InvalidConfigurationException;
+import org.sosy_lab.java_smt.api.SolverContext.ProverOptions;
 
 public class Engine {
-	final private Program _program;
-	final private int _max_depth;
+	private Program _program;
+	private int _max_depth;
 	private SEResult _res;
 
-	Engine (Program program, int max_depth) throws Exception {
+	public Engine () {}
+
+	public SEResult getSEResult (Program program, int max_depth) throws Exception {
 		this._program = program;
 		this._max_depth = max_depth;
-
 		DeclarationList decls = new DeclarationList();
 		decls.addAll(this._program.declarations);
 		decls.addAll(this._program.other_declarations);
 		SEResult result = executeDeclarations(decls);
 		SETNode leaf = result.getLastestLeaf();
 		_res = this.executeStatements (this._program.statements, leaf);
+		return _res;
 	}
 
 	// sym_eval
@@ -34,40 +46,20 @@ public class Engine {
 			return expr;
 		} else if (expr instanceof Name) {
 			Name name = (Name)expr;
-			return getVarValue (name, leaf);
+			return leaf.getVarValue(name.getDeclaration());
 		}
 
 		throw new Exception ("Unexpected expression");
 	}
 
-	Expression getVarValue (Name name, SETNode leaf) throws Exception {
-		if (leaf instanceof SETDecisionNode) {
-			return getVarValue(name, leaf.getParent());
-		} else if (leaf instanceof SETInstructionNode) {
-			SETInstructionNode inode = (SETInstructionNode)leaf;
-			if (inode.getName().getDeclaration() == name.getDeclaration()) {
-				return inode.getExpression();
-			} else {
-				return getVarValue(name, leaf.getParent());
-			}
-		} else {
-			throw new Exception("Variable not found");
-		}
-	}
-
 	SEResult executeStatements (StatementList stmts, SETNode leaf) throws Exception {
 		ArrayList<SETNode> live = new ArrayList<>();
 		ArrayList<SETNode> done = new ArrayList<>();
+		SEResult res = new SEResult(live, done);
 		for (Statement stmt: stmts.getStatements()) {
-			leaf = executeStatement(stmt, leaf);
-			if (leaf.getDepth() >= this._max_depth) {
-				done.add(leaf);
-				break;
-			} else {
-				live.add(leaf);
-			}
+			res = res.merge (executeStatement(stmt, leaf));
 		}
-		return new SEResult(live, done);
+		return res;
 	}
 
 	SEResult executeStatement (Statement statement, SETNode leaf) throws Exception {
@@ -119,7 +111,7 @@ public class Engine {
 			return executeStatements ((StatementList)statement, leaf);
 		}
 
-		throw Exception ("Unknown statement");
+		throw new Exception ("Unknown statement");
 	}
 
 	Expression defaultValue (Type type) throws Exception {
@@ -154,8 +146,16 @@ public class Engine {
 		return inode;
 	}
 
+	boolean isSat (Expression expr) throws InvalidConfigurationException, Exception {
+		String [] args = {};
+		Configuration config = Configuration.fromCmdLineArguments(args);
+		LogManager logger = BasicLogManager.create(config);
+		ShutdownManager shutdown = ShutdownManager.create();
 
-	boolean isSat (Expression expr) {
-		return true;
+		SolverContext context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(), Solvers.SMTINTERPOL);
+		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(context);
+		ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
+		prover.addConstraint(fg.generate(expr));
+		return !prover.isUnsat();
 	}
 }

@@ -2,7 +2,7 @@ package ast;
 
 import java.util.List;
 
-import visitor.Visitor;
+import visitor.ExpressionVisitor;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class Name extends Expression {
     return true;
   }
 
-  public void visit (Visitor visitor) throws Exception {
+  public void visit (ExpressionVisitor visitor) throws Exception {
     visitor.visitName(this);
   }
 }
