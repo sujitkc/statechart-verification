@@ -13,7 +13,6 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 		this._stack = new Stack<>();
 		this._imgr = context.getFormulaManager().getIntegerFormulaManager();
 		this._bmgr = context.getFormulaManager().getBooleanFormulaManager();
-		context.newProverEnvironment(SolverContext.ProverOptions.GENERATE_MODELS);
 	}
 
 	public BooleanFormula generate(Expression expr) throws Exception {
@@ -27,14 +26,11 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 
 		Formula rhs = _stack.pop();
 		Formula lhs = _stack.pop();
-		
-		if (expr.operator == "==") {
-			if (expr.right.getType().name == "boolean") {
-				_stack.push (_bmgr.equivalence ((BooleanFormula)rhs, (BooleanFormula)lhs));
-			} else { // "int"
-				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)rhs, (NumeralFormula.IntegerFormula)lhs));
-			}
-		} else { // ">", "<"
+
+		if (rhs instanceof BooleanFormula) {
+			_stack.push (_bmgr.equivalence ((BooleanFormula)rhs, (BooleanFormula)lhs));
+		} else { // IntegerFormula
+			_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)rhs, (NumeralFormula.IntegerFormula)lhs));
 		}
 	}
 
@@ -50,7 +46,9 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 
 	public void visitName(Name expr) throws Exception {
 		Formula res;
-		if (expr.getDeclaration().getType().name.equals("int")) {
+		System.out.println ("Name: " + expr);
+		System.out.println ("Type: " + expr.getType());
+		if (expr.getType().name.equals("int")) {
 			res = _imgr.makeVariable(expr.name.get(0));
 		} else {
 			res = _bmgr.makeVariable(expr.name.get(0));
@@ -61,6 +59,7 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 	public void visitStringLiteral(StringLiteral expr) throws Exception {}
 
 	public void visitUnaryExpression(UnaryExpression expr) throws Exception {
+		expr.expression.visit(this);
 		if (expr.operator == UnaryExpression.Operator.NOT) {
 			_stack.push (_bmgr.not ((BooleanFormula)_stack.pop()));
 		}

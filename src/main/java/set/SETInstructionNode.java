@@ -23,7 +23,7 @@ public class SETInstructionNode extends SETNode {
 		} else if (this._parent != null) {
 			return this._parent.getVarValue(decl);
 		} else {
-			throw new Exception ("No such var");
+			throw new Exception ("No such var" + decl.vname);
 		}
 	}
 }

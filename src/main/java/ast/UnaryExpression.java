@@ -29,7 +29,7 @@ public class UnaryExpression extends Expression {
     this.operator   = operator;
   }
 
-  public void visit (ExpressionVisitor visitor) {
-	  visitor.visitUnaryExpression(visitor);
+  public void visit (ExpressionVisitor visitor) throws Exception {
+	  visitor.visitUnaryExpression(this);
   }
 }

@@ -75,7 +75,7 @@ public class Z3Solver {
 
 		String s = "";
 		for (Name v : symVars) {
-			s = s + "(declare-fun " + (v.getDeclaration()).getName() + " () "
+			s = s + "(declare-fun " + (v.getDeclaration()).getFullVName() + " () "
 					+ Z3Solver.getVariableTypeString(v) + ")" + "\n";
 		}
 		s = s + "(assert " + formula + ")\n";

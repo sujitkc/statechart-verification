@@ -52,7 +52,7 @@ public Expression visit(Expression exp) {
 		
 		//if(this.mNode.mValues.get(exp)!=null)
 		//System.out.println("Value  found : "+this.mNode.mValues.get(exp));
-		    SETNode node=this.mNode.parent;
+		    SETNode node=this.mNode.getParent();
 			Expression e=null;
 			while(node!=null){
 				e=null;
@@ -67,7 +67,7 @@ public Expression visit(Expression exp) {
 				//it.remove(); // avoids a ConcurrentModificationException
 				}
 				//System.out.println(" Current node is : "+node+" "+e);
-				if(e==null) node=node.parent;
+				if(e==null) node=node.getParent();
 				else break;
 				System.out.println("Going back");
 			}

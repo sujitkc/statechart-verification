@@ -25,6 +25,8 @@ import translation.*;
 import metric.Metric;
 import program.Program;
 
+import see.Engine;
+
 public class Analyser {
 
   private final Statechart statechart;
@@ -113,8 +115,10 @@ public class Analyser {
       System.out.println(program.toString());
       System.out.println("Printing flattened program ... done!");
 
-      // (new ProgramToCpp(program)).translate();
-	  System.out.println ((new ProgramToCFG()).translate(program).toString());
+	  Engine engine = new Engine();
+	  int max_depth = 10; // default
+	  if (args.length > 1) max_depth = Integer.parseInt(args[1]);
+	  engine.getSEResult(program, max_depth);
     }
     catch(Exception e) {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 

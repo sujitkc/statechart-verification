@@ -10,6 +10,19 @@ public class SEResult {
 		this._done = done;
 	}
 
+	public SEResult() {
+		this._live = new ArrayList<>();
+		this._done = new ArrayList<>();
+	}
+
+	public void addToLive(SETNode node) {
+		this._live.add(node);
+	}
+
+	public void addToDone (SETNode node) {
+		this._done.add(node);
+	}
+
 	public SEResult merge (SEResult result) {
 		ArrayList<SETNode> live = new ArrayList<>();
 		ArrayList<SETNode> done = new ArrayList<>();
@@ -21,11 +34,6 @@ public class SEResult {
 		return new SEResult(live, done);
 	}
 
-	public SETNode getLastestLeaf() {
-		SETNode res = null;
-		if (this._live != null && this._live.size() > 0) {
-			res = this._live.get(this._live.size() - 1);
-		}
-		return res;
-	}
+	public ArrayList<SETNode> getLive() {return _live;}
+	public ArrayList<SETNode> getDone() {return _done;}
 }
