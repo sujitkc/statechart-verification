@@ -95,6 +95,8 @@ public class StatechartToProgramTranslator {
       this.eventDeclarations.add(eventDeclaration);
 	 Name name = new Name(event);
 	 name.setType (this.intType);
+	 name.setDeclaration(eventDeclaration);
+
       statements.add(new AssignmentStatement(name, new IntegerConstant(count)));
       count++;
     }
@@ -222,7 +224,18 @@ public class StatechartToProgramTranslator {
     statements.add(initialiseState);
     BooleanConstant cond = new BooleanConstant(true);
     cond.setType(this.boolType);
-    Statement whileStatement = new WhileStatement(cond, outerIf);
+
+	FunctionName input_fn_name = new FunctionName("input");
+	FunctionCall event_input_call = new FunctionCall (input_fn_name, new ArrayList<>());
+	Name event_var_name = new Name ("event");
+	event_var_name.setType (this.intType);
+	event_var_name.setDeclaration(this.eventVarDeclaration);
+
+	AssignmentStatement stmt = new AssignmentStatement(event_var_name, event_input_call);
+	StatementList primary = new StatementList(stmt);
+	primary.add(outerIf);
+
+    Statement whileStatement = new WhileStatement(cond, primary);
     statements.add(whileStatement);
     statements.add(new HaltStatement());
     Program res = new Program(

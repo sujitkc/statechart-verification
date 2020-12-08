@@ -87,16 +87,20 @@ public class Engine {
 	SEResult executeDecision (IfStatement stmt, SETNode leaf) throws Exception {
 		SEResult res = new SEResult();
 		Expression then_cond = executeExpression(stmt.condition, leaf);
-		if (isSat(then_cond)) {
-			SETDecisionNode node = new SETDecisionNode(leaf, then_cond);
-			SEResult then_res = executeBlock (new StatementList(stmt.then_body), node);
+		SETDecisionNode then_node = new SETDecisionNode(leaf, then_cond);
+		Expression pc = then_node.getPathConstraint();
+		if (pc == null) pc = new BooleanConstant(true);
+		if (isSat(pc)) {
+			SEResult then_res = executeBlock (new StatementList(stmt.then_body), then_node);
 			res = res.merge (then_res);
 		}
 
 		Expression else_cond = new UnaryExpression(stmt.condition, UnaryExpression.Operator.NOT);
-		if (isSat (else_cond)) {
-			SETDecisionNode node = new SETDecisionNode(leaf, else_cond);
-			SEResult else_res = executeBlock ( new StatementList (stmt.else_body), node);
+		SETDecisionNode else_node = new SETDecisionNode(leaf, else_cond);
+		pc = else_node.getPathConstraint();
+		if (pc == null) pc = new BooleanConstant(true);
+		if (isSat (pc)) {
+			SEResult else_res = executeBlock ( new StatementList (stmt.else_body), else_node);
 			res = res.merge (else_res);
 		}
 
@@ -174,12 +178,13 @@ public class Engine {
 		ShutdownManager shutdown = ShutdownManager.create();
 
 		SolverContext context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(), Solvers.SMTINTERPOL);
-		ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
+		ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_ALL_SAT);
 		prover.push();
 		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(context);
 		prover.addConstraint(fg.generate(expr));
 		prover.pop();
-		return true;
+		boolean res = prover.isUnsat();
+		return !res;
 		// return !prover.isUnsat();
 	}
 }

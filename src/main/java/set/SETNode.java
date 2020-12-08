@@ -21,5 +21,13 @@ abstract public class SETNode{
 	public int getDepth () {return this._depth;}
 
 	abstract public Expression getVarValue (Declaration decl) throws Exception;
+
+	public Expression getPathConstraint () {
+		if (this._parent != null) {
+			return this._parent.getPathConstraint();
+		} else {
+			return null;
+		}
+	}
 }
 
