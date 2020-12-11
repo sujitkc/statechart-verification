@@ -256,7 +256,7 @@ class Globaliser extends Translator {
     if(newDeclaration == null) {
       throw new Exception("No global declaration for " + oldName + " found.");
     }
-    Name newName = new Name(newDeclaration.vname);
+    Name newName = this.globaliseName(s.lhs);
 
     Expression oldExpression = s.rhs;
     Expression newExpression = this.globaliseExpression(oldExpression);
@@ -397,8 +397,7 @@ class TransitionAtomiser extends Translator {
             destinationName,
             t.trigger,
             t.guard,
-	    // TODO:
-            flattenStatementList(action)
+            action
           )
         );
       }

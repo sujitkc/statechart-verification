@@ -109,6 +109,7 @@ public class Analyser {
       System.out.println(flattenedSC);
       System.out.println("Printing flattened Statechart ... done!");
 
+	  // S2P translator = new S2P ();
       StatechartToProgramTranslator translator = new StatechartToProgramTranslator (flattenedSC);
       System.out.println("Printing flattened program ...");
       Program program = translator.translate();
