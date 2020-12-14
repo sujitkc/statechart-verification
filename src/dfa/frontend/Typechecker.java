@@ -264,7 +264,7 @@ public class Typechecker {
         dec = env.lookup(name.name.get(0));
       }
       if(dec == null) {
-        System.out.println(env);
+        // System.out.println(env);
         throw new Exception("Name " + name + 
         " didn't type check. Couldn't locate a variable with matching" +
         " description.");
@@ -335,8 +335,8 @@ public class Typechecker {
         b.operator.equals("!=") ||
         b.operator.equals("=") ) {
 		boolean type_set = false; 
-		System.out.println("b.left.getType() :"+b.left.getType() );
-		System.out.println("b.right.getType() :"+b.right.getType() );
+		// System.out.println("b.left.getType() :"+b.left.getType() );
+		// System.out.println("b.right.getType() :"+b.right.getType() );
 		
 		if(b.left.getType().equals(b.right.getType())) {
           b.setType(this.lookupType(new TypeName("boolean")));
@@ -477,7 +477,7 @@ public class Typechecker {
       this.typecheckName((Name)exp, env); 
     }
     else if(exp instanceof BooleanConstant) {
-		System.out.println("Boolean constant detected");
+		// System.out.println("Boolean constant detected");
       this.typecheckBooleanConstant((BooleanConstant)exp); 
     }
     else if(exp instanceof IntegerConstant) {

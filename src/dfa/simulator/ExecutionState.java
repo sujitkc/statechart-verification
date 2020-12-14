@@ -116,16 +116,6 @@ public class ExecutionState
         this.configuration.add(s);
         for(Declaration d : s.declarations)
         {
-            //if(d.isInput()){
-            //    System.out.println("Enter the value: " + d.getFullVName());
-            //    Scanner sc = new Scanner(System.in);
-            //    if(d.getType().toString().equals("Variable type: basic type 'int'")){
-            //        int temp = sc.nextInt();
-            //    }
-            //    //if(d.getType().equals("int")){
-            //    //    int temp = sc.nextLine();
-            //    //}
-            //}
             if(d.getScope().name.equals("local"))
             {
                 this.valueEnvironment.put(d, null);
@@ -176,23 +166,25 @@ public class ExecutionState
     // need to have an individual toString() function for all the environment variables
     public String generate_summary()
     {
-        String s = "";
+        String s = "\n";
         s += "Value Environment: \n";
         for(Declaration d : this.valueEnvironment.keySet())
         {
-            s += d.getFullVName() + " : " + this.valueEnvironment.get(d) + "\n";
+            s += "\t" + d.getFullVName() + " : " + this.valueEnvironment.get(d) + "\n";
         }
-        s += "Configuration: ";
+        s += "\nConfiguration: \n\t";
         for(State st : this.configuration)
         {
-            s += st.name + " ";
+            s += st.name + "->";
         }
+        s = s.substring(0, s.length() - 2);
         s += "\n";
-        s += "State History: ";
+        s += "\nState History: ";
         for(State st : this.stateHistory.keySet())
         {
-            s += "\n" + st.name + " : " + this.stateHistory.get(st).name;
+            s += "\n" + "\t" + st.name + " : " + this.stateHistory.get(st).name;
         }
+        s += "\n";
         // not adding the value history for now as it will get way too cluttered
         return s; 
     }

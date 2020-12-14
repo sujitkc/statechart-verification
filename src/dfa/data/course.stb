@@ -31,10 +31,10 @@ statechart CourseEnrollment
  
   state Selection
   {
-	    isSelecte         :boolean : local;
-      creditsSelecte    :int     : static;
+	  isSelected        :boolean : local;
+    creditsSelected   :int     : static;
        
-    entry : {} 
+    entry : {creditsSelected := 0;} 
 
     exit  : {} 
 
@@ -62,12 +62,11 @@ statechart CourseEnrollment
 		  credits     : int : local;
 		  credittype  : int : local;
        
-        entry: {}
+      entry: {credits := creditsSelected;}
 
-        exit : {}
+      exit : {}
     }
 	
-
     transition t1 
     {
       source      : CourseEnrollment.Selection.SubjectSelection;
@@ -112,14 +111,7 @@ statechart CourseEnrollment
     state Verification 
     {
 	    creditType  : int : parameter;
-      entry : 
-      {
-	    	if(creditType>1)
-        {
-	    		creditLimit:=20;
-	    	}
-	    	else{}
-	    }
+      entry : {creditLimit:=20;}
 
       exit : {}
     }
@@ -147,7 +139,7 @@ statechart CourseEnrollment
 	    source		  : CourseEnrollment.Submission.Enrollment;
 	    destination : CourseEnrollment.Submission.Enrollment;
 	    trigger		  : eSubmit;
-	    guard		    : ((creditLimit-scredit)<=0)&&((degree=1)||(degree=2));
+	    guard		    : true;
 	    action		  : {}
 	  }
   }
@@ -175,7 +167,7 @@ statechart CourseEnrollment
     source      : CourseEnrollment.Submission.Enrollment;
     destination : CourseEnrollment.Selection.SubjectSelection;
     trigger     : eSubmit;
-    guard       : (scredit-creditLimit)>0;
+    guard       : true;
     action      : {}
   }
 

@@ -31,7 +31,7 @@ public class PreEventInSteps implements SimulationMode
               Transition t = Simulator.get_valid_transition(curr, curr, 0, null, event, this.statechart);
               System.out.println("Performing transition: " + t.name);
               Simulator.performTransition(t, curr, this.statechart);
-              System.out.println("Final State Map: " + eState.generate_summary());
+              System.out.println(eState.generate_summary());
               curr = t.getDestination();
               System.out.println("Reached State: " + curr.getFullName());
               System.out.println("+--------------------------------------------------+");

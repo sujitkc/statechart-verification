@@ -17,12 +17,13 @@ public class Simulator {
     try 
     {
       this.statechart = statechart;
-	  
-      eState = new ExecutionState(statechart); 
-	    for (int i=0;i<1;i++)
-		  	eState.addEvent("e");
-        this.simulationMode = new PreEventInSteps(this.statechart);
 
+      eState = new ExecutionState(statechart); 
+	    for (String e : this.statechart.events)
+        eState.addEvent(e);
+        
+        this.simulationMode = new PreEventInSteps(this.statechart);
+  
         new SymbolicEngine(this.statechart);
 
         this.simulationMode.simulate(eState);
@@ -128,7 +129,6 @@ public class Simulator {
   {
     try
     {
-      curr = curr.getSuperstate();
       for(Transition t : curr.transitions)
       {
         try
@@ -150,7 +150,7 @@ public class Simulator {
       }
       if(!curr.equals(statechart))
       {
-        return get_valid_transition(curr, fix, i, output, event, statechart);
+        return get_valid_transition(curr.getSuperstate(), fix, i, output, event, statechart);
       }
       else
       {

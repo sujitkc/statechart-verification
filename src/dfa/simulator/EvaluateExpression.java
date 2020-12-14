@@ -31,7 +31,7 @@ public class EvaluateExpression{
     public static Expression evaluateFunction(FunctionCall f){
         // Evaluate the input function
         if(f.getName().equals("input")){
-            System.out.println("Enter the value of the variable: ");
+            System.out.print("User Input: ");
             Scanner sc = new Scanner(System.in);
             int temp = sc.nextInt();
             return (Expression)(new IntegerConstant(temp));
