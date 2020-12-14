@@ -109,17 +109,21 @@ public class Analyser {
       System.out.println(flattenedSC);
       System.out.println("Printing flattened Statechart ... done!");
 
-	  // S2P translator = new S2P ();
-      StatechartToProgramTranslator translator = new StatechartToProgramTranslator (flattenedSC);
+	  S2P translator = new S2P ();
+      // StatechartToProgramTranslator translator = new StatechartToProgramTranslator (flattenedSC);
       System.out.println("Printing flattened program ...");
-      Program program = translator.translate();
+      Program program = translator.translate(flattenedSC);
       System.out.println(program.toString());
       System.out.println("Printing flattened program ... done!");
 
 	  Engine engine = new Engine();
 	  int max_depth = 10; // default
+	  Engine.PropertyOfInterest property = Engine.PropertyOfInterest.STUCK_SPECIFICATION;
 	  if (args.length > 1) max_depth = Integer.parseInt(args[1]);
-	  engine.getSEResult(program, max_depth);
+	  if (args.length > 2) {
+		  if (args[2].equals("NON_DET")) property = Engine.PropertyOfInterest.NON_DETERMINISM;
+	  }
+	  engine.getSEResult(program, max_depth, property);
     }
     catch(Exception e) {
       System.out.println("Couldn't flatten '" + args[0] + "' : " + e.getMessage()); 

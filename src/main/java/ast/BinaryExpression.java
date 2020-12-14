@@ -54,13 +54,13 @@ public class BinaryExpression extends Expression {
   }
 
   public String toString() {
-    String s = "BinaryExpr=> " + this.left.toString() + " " + this.operator + " " + this.right.toString();
-    if(this.type != null) {  
-      s += " : " + this.type.name;
-    }
-    else {
-      s += " : not-assigned";
-    }
+    String s = "BinaryExpr(" + this.left.toString() + " " + this.operator + " " + this.right.toString() + ")";
+    // if(this.type != null) {  
+    //   s += " : " + this.type.name;
+    // }
+    // else {
+    //   s += " : not-assigned";
+    // }
     return s;
   }
 

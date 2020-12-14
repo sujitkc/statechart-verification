@@ -39,6 +39,8 @@ public class S2P {
 		// init 'state' and 'event' variable declarations
 		Declaration stateVarDecl = new Declaration("state", new TypeName("int"), false);
 		Declaration eventVarDecl = new Declaration("event", new TypeName("int"), true); // 'event' is an input
+		stateVarDecl.setType (this._intType);
+		eventVarDecl.setType (this._intType);
 
 		this._eventName = new Name("event");
 		_eventName.setDeclaration(eventVarDecl);
@@ -92,9 +94,11 @@ public class S2P {
 		int rep = 0;
 		for (State state: _statechart.states) {
 			Declaration decl = new Declaration(state.name, new TypeName("int"), false);
+			decl.setType (this._intType);
 
 			Name lhs = new Name (state.name);
 			lhs.setDeclaration(decl);
+			lhs.setType (this._intType);
 			state_var_name_map.put (state.name, lhs);
 
 			Expression rhs = new IntegerConstant(rep);
@@ -105,37 +109,77 @@ public class S2P {
 
 			rep += 1;
 		}
+
+		// Set init state
+		String init_state_name = this._statechart.states.get(0).name;
+		Statement init_state_assignment = new AssignmentStatement(this._stateName, state_var_name_map.get(init_state_name));
+		_program.statements.add (init_state_assignment);
 	}
 
 	private void processTransitions () {
+		FunctionName stuck_spec_name = new FunctionName("stuck_spec");
+		FunctionName non_det_name = new FunctionName("non_det");
+
 		Statement outerIf = new SkipStatement();
 		for (State state: _statechart.states) {
 			Name stateName = this.state_var_name_map.get(state.name);
-			Expression state_equal_expr = new BinaryExpression(this._stateName, stateName, "=");
+			Expression state_equal_expr = new BinaryExpression(this._stateName, stateName, "="); // state=s1
 			StatementList state_equals_then = new StatementList();
 			List<Transition> transitions = this.getStateTransitionFrom(state);
+
+			List<Expression> guard_list = new ArrayList<> (); // g1, g2, ...
+			for (Transition transition: transitions) {
+				guard_list.add (transition.guard);
+			}
+			// Instrumentation
+			// stuck specification
+			if (guard_list.size() > 0) {
+				FunctionCall stuck_spec_call = new FunctionCall(stuck_spec_name, guard_list);
+				ExpressionStatement call_stmt = new ExpressionStatement(stuck_spec_call);
+				state_equals_then.add(call_stmt);
+			} else {
+				// Intended to be stuck
+			}
+
+			// Non Determinism
+			if (guard_list.size () > 1) { // With a single/no transition, Non Determinism is not possible
+				FunctionCall non_det_call = new FunctionCall(non_det_name, guard_list);
+				ExpressionStatement call_stmt = new ExpressionStatement(non_det_call);
+				state_equals_then.add(call_stmt);
+			}
+
+			// TODO: Undefined Variable Access
+
  			for (Transition transition: transitions) {
 				Name triggerName = this.event_var_name_map.get(transition.trigger);
 
-				BinaryExpression condition = new BinaryExpression(this._eventName, triggerName, "=");
+				BinaryExpression event_equal_condition = new BinaryExpression(this._eventName, triggerName, "="); // event=e1
+				Expression condition = new BinaryExpression (event_equal_condition, transition.guard, "&&"); // (event=e1) && (t.guard)
 
 				Name destName = this.state_var_name_map.get(transition.getDestination().name);
-				Statement state_change_stmt = new AssignmentStatement(this._stateName, destName);
-				Statement then_stmt = state_change_stmt;
+				Statement state_change_stmt = new AssignmentStatement(this._stateName, destName); // state=s2
+				StatementList then_stmt = new StatementList();
+				then_stmt.add(state_change_stmt);
+				then_stmt.add(transition.action); // Add action block
 
-				Statement stmt = new IfStatement(condition, then_stmt, new SkipStatement());
+				Statement stmt = new IfStatement(condition, then_stmt, new SkipStatement()); // if (event=e1) {state=s2} else {}
 				state_equals_then.add(stmt);
 			}
-			outerIf = new IfStatement(state_equal_expr, state_equals_then, outerIf);
+
+			outerIf = new IfStatement(state_equal_expr, state_equals_then, outerIf); // if(state=s1) {if(event=e1 && g1) {state=s2} else {} if(event=e2 && g2) {state=s3} else {}}
 		}
-		StatementList while_body = new StatementList (new ExpressionStatement(this._eventName));
+
+		FunctionName input_func_name = new FunctionName("input");
+		FunctionCall input_func_call = new FunctionCall(input_func_name, new ArrayList<>());
+		// event := input()
+		AssignmentStatement stmt = new AssignmentStatement(this._eventName, input_func_call);
+
+		StatementList while_body = new StatementList ();
+		while_body.add (stmt);
 		while_body.add(outerIf);
 
 		_program.statements.add (new WhileStatement(new BooleanConstant(true), while_body));
 	}
-
-	// TODO
-	private void instrument() {}
 
 	private List<Transition> getStateTransitionFrom (State state) {
 		List<Transition> transitions = new ArrayList<>();

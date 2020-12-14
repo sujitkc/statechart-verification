@@ -49,7 +49,7 @@ abstract class Translator {
   }
 
   protected static String underscoreFullName(String name) {
-    return name.replace ('.', '-');
+    return name.replace ('.', '_');
   }
 
   // returns a list of all ancestors of substate all the way upto and excluding

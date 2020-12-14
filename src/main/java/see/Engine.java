@@ -3,6 +3,7 @@ package see;
 import program.Program;
 import ast.*;
 import set.*;
+import java.util.List;
 import java.util.ArrayList;
 import visitor.ExpressionFormulaGenerator;
 import org.sosy_lab.java_smt.api.*;
@@ -20,16 +21,41 @@ public class Engine {
 	private int _max_depth;
 	private SEResult _res;
 
+
+	public enum PropertyOfInterest {
+		NON_DETERMINISM,
+		STUCK_SPECIFICATION
+	}
+
+	private PropertyOfInterest _property;
+
 	public Engine () {}
 
-	public SEResult getSEResult (Program program, int max_depth) throws Exception {
+	private static StatementList flattenStatementList (StatementList list) {
+		StatementList res = new StatementList();
+		for (Statement stmt: list.getStatements()) {
+			if (stmt instanceof StatementList) {
+				StatementList sl = flattenStatementList((StatementList)stmt);
+				for (Statement st: sl.getStatements()) {
+					res.add(st);
+				}
+			} else {
+				res.add (stmt);
+			}
+		}
+		return res;
+	}
+
+	public SEResult getSEResult (Program program, int max_depth, PropertyOfInterest property) throws Exception {
+		this.setUpJavaSMT();
 		this._program = program;
 		this._max_depth = max_depth;
+		this._property = property;
 		DeclarationList decls = new DeclarationList();
 		decls.addAll(this._program.declarations);
-		decls.addAll(this._program.other_declarations);
 		SEResult result = executeDeclarations(decls);
 		StatementList stmts = processProgramStatementList(this._program.statements);
+		stmts = flattenStatementList(stmts);
 		_res = this.executeStatement(stmts, result.getLive());
 		return _res;
 	}
@@ -62,18 +88,51 @@ public class Engine {
 			return expr;
 		} else if (expr instanceof Name) {
 			Name name = (Name)expr;
-			return leaf.getVarValue(name.getDeclaration());
+			Expression ret = leaf.getVarValue(name.getDeclaration());
+			return ret;
+		} else if (expr instanceof UnaryExpression) {
+			UnaryExpression unary_expr = (UnaryExpression) expr;
+			return new UnaryExpression(executeExpression(unary_expr.expression, leaf), unary_expr.operator);
 		}
 
-		throw new Exception ("Unexpected expression");
+		if (expr instanceof FunctionCall) return expr;
+		throw new Exception ("Unexpected expression" + expr);
 	}
 
 	SEResult executeInstruction (InstructionStatement istmt, SETNode leaf) {
-		if (istmt instanceof HaltStatement || istmt instanceof SkipStatement || istmt instanceof ExpressionStatement) {
-			return new SEResult();
+		if (istmt instanceof HaltStatement || istmt instanceof SkipStatement) {
+			ArrayList<SETNode> leaves = new ArrayList<>();
+			leaves.add (leaf);
+			return new SEResult(leaves, new ArrayList<>());
 		}
+		if (istmt instanceof ExpressionStatement) {
+			Expression expr = ((ExpressionStatement)istmt).expression;
+			if (expr instanceof FunctionCall) {
+				FunctionCall call = (FunctionCall) expr;
+				if (_property == PropertyOfInterest.STUCK_SPECIFICATION) {
+					if (call.name.name.equals ("stuck_spec")) {
+						this.stuckSpecification (call.argumentList, leaf);
+					}
+				} else if (_property == PropertyOfInterest.NON_DETERMINISM) {
+					if (call.name.name.equals ("non_det")) {
+						this.nonDeterminism (call.argumentList, leaf);
+					}
+				}
+			}
+			ArrayList<SETNode> leaves = new ArrayList<>();
+			leaves.add (leaf);
+
+			return new SEResult(leaves, new ArrayList<>());
+		}
+
 		AssignmentStatement stmt = (AssignmentStatement) istmt;
-		SETNode node = new SETInstructionNode(leaf, stmt.lhs, stmt.rhs);
+		Expression rhs = stmt.rhs;
+		try {
+			rhs = executeExpression(rhs, leaf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		SETNode node = new SETInstructionNode(leaf, stmt.lhs, rhs);
 		SEResult res = new SEResult();
 		if (node.getDepth() > _max_depth) {
 			res.addToDone (node);
@@ -84,22 +143,28 @@ public class Engine {
 		return res;
 	}
 
+	boolean print_stmts = false;
 	SEResult executeDecision (IfStatement stmt, SETNode leaf) throws Exception {
 		SEResult res = new SEResult();
-		Expression then_cond = executeExpression(stmt.condition, leaf);
-		SETDecisionNode then_node = new SETDecisionNode(leaf, then_cond);
-		Expression pc = then_node.getPathConstraint();
-		if (pc == null) pc = new BooleanConstant(true);
+		SETDecisionNode then_node = new SETDecisionNode(leaf, stmt.condition);
+		// Expression pc = then_node.getPathConstraint();
+		Expression pc = stmt.condition;
+		// if (pc == null) pc = new BooleanConstant(true);
+		pc = executeExpression(pc, leaf);
 		if (isSat(pc)) {
+			ArrayList<SETNode> leaves = new ArrayList<>();
+			leaves.add(then_node);
 			SEResult then_res = executeBlock (new StatementList(stmt.then_body), then_node);
 			res = res.merge (then_res);
 		}
 
 		Expression else_cond = new UnaryExpression(stmt.condition, UnaryExpression.Operator.NOT);
 		SETDecisionNode else_node = new SETDecisionNode(leaf, else_cond);
-		pc = else_node.getPathConstraint();
-		if (pc == null) pc = new BooleanConstant(true);
+		// if (pc == null) pc = new BooleanConstant(true);
+		pc = executeExpression(else_cond, leaf);
 		if (isSat (pc)) {
+			ArrayList<SETNode> leaves = new ArrayList<> ();
+			leaves.add(else_node);
 			SEResult else_res = executeBlock ( new StatementList (stmt.else_body), else_node);
 			res = res.merge (else_res);
 		}
@@ -133,13 +198,13 @@ public class Engine {
 		ArrayList<SETNode> leaves = new ArrayList<>();
 		leaves.add(leaf);
 		for (Statement stmt: stmts.getStatements()) {
-			res = res.merge (executeStatement(stmt, leaves));
-			leaves = res.getLive();
+			SEResult temp = executeStatement(stmt, leaves);
+			leaves = temp.getLive();
+			res = res.merge (temp);
 		}
 
 		return res;
 	}
-
 
 	Expression defaultValue (Type type) throws Exception {
 		if (type.name.equals("int")) {
@@ -158,8 +223,7 @@ public class Engine {
 			leaf = executeDeclaration(decl, leaf);
 			done.add(leaf);
 		}
-
-		if (done.size() > 0) done.remove (done.size()-1);
+if (done.size() > 0) done.remove (done.size()-1);
 		live.add(leaf);
 		return new SEResult(live, done);
 	}
@@ -171,20 +235,62 @@ public class Engine {
 		return inode;
 	}
 
-	boolean isSat (Expression expr) throws InvalidConfigurationException, Exception {
+	SolverContext _context;
+	ProverEnvironment _prover;
+
+	void setUpJavaSMT () throws InvalidConfigurationException {
 		String [] args = {};
 		Configuration config = Configuration.fromCmdLineArguments(args);
 		LogManager logger = BasicLogManager.create(config);
 		ShutdownManager shutdown = ShutdownManager.create();
+		this._context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(), Solvers.SMTINTERPOL);
+		this._prover = this._context.newProverEnvironment(ProverOptions.GENERATE_MODELS);	}
 
-		SolverContext context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(), Solvers.SMTINTERPOL);
-		ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_ALL_SAT);
-		prover.push();
-		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(context);
-		prover.addConstraint(fg.generate(expr));
-		prover.pop();
-		boolean res = prover.isUnsat();
-		return !res;
-		// return !prover.isUnsat();
+	boolean isSat (Expression expr) {
+		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(this._context);
+		try {
+			// TODO: Exception check
+			_prover.push();
+			BooleanFormula form = fg.generate(expr);
+
+			this._prover.addConstraint(form);
+			boolean res = this._prover.isUnsat();
+			this._prover.pop();
+			return !res;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	void stuckSpecification (List<Expression> guards, SETNode leaf) {
+		// Path constraint would be valid, otherwise we wouldn't have reached this point
+		// For stuck stuckSpecification, none of the guards would be true
+		// if (!(g1 || g2 || g3)) then stuck
+
+		Expression expr = new BooleanConstant (false);
+		for (Expression guard: guards) {
+			expr = new BinaryExpression(expr, guard, "||");
+		}
+		expr = new UnaryExpression(expr, UnaryExpression.Operator.NOT);
+		
+		if (isSat(expr)) {
+			System.out.println ("---------------------------------------Specification stuck--------------------------------");
+		}
+	}
+
+	void nonDeterminism (List<Expression> guards, SETNode leaf) {
+		// 2 or more guards are active simultaneously
+		// (g1 ^ g2) V (g2 ^ g3) V (g3 ^ g1)
+		// g1 + g2 + g3 ... gn > 1
+		Expression expr = new BooleanConstant (false);
+		for (Expression guard: guards) {
+			expr = new BinaryExpression(expr, guard, "+");
+		}
+
+		expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
+		if (isSat (expr)) {
+			System.out.println ("Non Deterministic state found");
+		}
 	}
 }

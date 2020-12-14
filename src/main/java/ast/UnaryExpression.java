@@ -32,4 +32,8 @@ public class UnaryExpression extends Expression {
   public void visit (ExpressionVisitor visitor) throws Exception {
 	  visitor.visitUnaryExpression(this);
   }
+
+  public String toString () {
+	  return this.operator.toString() + "[" + this.expression.toString() + "]";
+  }
 }

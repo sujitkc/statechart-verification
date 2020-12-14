@@ -17,7 +17,9 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 
 	public BooleanFormula generate(Expression expr) throws Exception {
 		expr.visit(this);
-		return _bmgr.equivalence((BooleanFormula)_stack.pop(), _bmgr.makeTrue());
+		BooleanFormula form = (BooleanFormula)_stack.pop();
+		// return _bmgr.equivalence(form, _bmgr.makeTrue());
+		return form;
 	}
 
 	public void visitBinaryExpression(BinaryExpression expr) throws Exception {
@@ -29,18 +31,36 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 
 		if (expr.operator.equals("&&")) {
 			if (rhs instanceof BooleanFormula) {
-				_stack.push (_bmgr.and((BooleanFormula)rhs, (BooleanFormula)lhs));
+				_stack.push (_bmgr.and((BooleanFormula)lhs, (BooleanFormula)rhs));
 			} else { // IntegerFormula
-				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)rhs, (NumeralFormula.IntegerFormula)lhs));
+				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)lhs, (NumeralFormula.IntegerFormula)rhs));
 			}
 		} else if (expr.operator.equals("=")) {
 			if (rhs instanceof BooleanFormula) {
-				_stack.push (_bmgr.equivalence ((BooleanFormula)rhs, (BooleanFormula)lhs));
+				_stack.push (_bmgr.equivalence ((BooleanFormula)lhs, (BooleanFormula)rhs));
 			} else { // IntegerFormula
-				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)rhs, (NumeralFormula.IntegerFormula)lhs));
+				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)lhs, (NumeralFormula.IntegerFormula)rhs));
 			}
+		} else if (expr.operator.equals("||")) {
+			if (rhs instanceof BooleanFormula) {
+				_stack.push (_bmgr.or((BooleanFormula)lhs, (BooleanFormula)rhs));
+			} else { // IntegerFormula
+				// TODO: check
+				_stack.push (_imgr.equal ((NumeralFormula.IntegerFormula)lhs, (NumeralFormula.IntegerFormula)rhs));
+			}
+		} else if (expr.operator.equals ("+")){
+			if (lhs instanceof BooleanFormula) {
+				lhs = _imgr.makeNumber (_bmgr.isTrue((BooleanFormula)lhs) ? 1 : 0);
+			}
+			if (rhs instanceof BooleanFormula) {
+				rhs = _imgr.makeNumber (_bmgr.isTrue((BooleanFormula)rhs) ? 1 : 0);
+			}
+
+			_stack.push(_imgr.add ((NumeralFormula.IntegerFormula)lhs, (NumeralFormula.IntegerFormula)rhs));
+		} else if (expr.operator.equals (">")) {
+			_stack.push (_imgr.greaterThan ((NumeralFormula.IntegerFormula)lhs, (NumeralFormula.IntegerFormula)rhs));
 		} else {
-			throw new Exception("Unknown binary operator");
+			throw new Exception("Unknown binary operator: " + expr.operator);
 		}
 	}
 
@@ -49,8 +69,9 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 	}
 
 	public void visitFunctionCall(FunctionCall expr) throws Exception {
-		System.out.println("Call: " + expr.name.name);
+		// System.out.println("Call: " + expr.name.name);
 		if (expr.name.name.equals ("input")) {
+			// System.out.println("HERE!");
 			_stack.push (_imgr.makeVariable("event"));
 		}
 	}
@@ -73,8 +94,10 @@ public class ExpressionFormulaGenerator implements ExpressionVisitor {
 
 	public void visitUnaryExpression(UnaryExpression expr) throws Exception {
 		expr.expression.visit(this);
+		// _stack.push (_bmgr.not ((BooleanFormula)_stack.pop()));
 		if (expr.operator == UnaryExpression.Operator.NOT) {
 			_stack.push (_bmgr.not ((BooleanFormula)_stack.pop()));
 		}
+		// TODO : Other unaries
 	}
 }
