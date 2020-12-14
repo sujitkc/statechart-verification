@@ -12,6 +12,8 @@ public class Simulator {
   public static ExecutionState eState;
   public SimulationMode simulationMode;
 
+  private static ArrayList<Transition> validTransitions = new ArrayList<Transition>();
+
   public Simulator(Statechart statechart) throws Exception
   {
     try 
@@ -137,6 +139,11 @@ public class Simulator {
             {
               output = t;
               i++;
+              if(i == 1)
+              {
+                validTransitions = new ArrayList<Transition>();
+              }
+              validTransitions.add(t);
             }
         }
         catch (NullPointerException e) // if one of the above expressions evaluate to null, that transition is not considered viable.
@@ -170,6 +177,9 @@ public class Simulator {
         {
           System.out.println("Non Determinism Detected At State: " + curr.name);
           System.out.println("Halting Simulation...");
+          System.out.println("List of valid transitions are: ");
+          for(Transition t : validTransitions)
+            System.out.println("->\t" + t.name); 
           ExecuteStatement.executeStatement(new HaltStatement());
         }
         else
