@@ -19,13 +19,13 @@ public class Simulator {
       this.statechart = statechart;
 	  
       eState = new ExecutionState(statechart); 
-	  for (int i=0;i<1;i++)
-			eState.addEvent("e");
-      this.simulationMode = new UserEventInSteps(this.statechart);
+	    for (int i=0;i<1;i++)
+		  	eState.addEvent("e");
+        this.simulationMode = new PreEventInSteps(this.statechart);
 
-      new SymbolicEngine(this.statechart);
-      
-      this.simulationMode.simulate(eState);
+        new SymbolicEngine(this.statechart);
+
+        this.simulationMode.simulate(eState);
     }
     catch (Exception e)
     {
