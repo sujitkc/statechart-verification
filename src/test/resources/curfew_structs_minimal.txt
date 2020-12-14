@@ -1,0 +1,86 @@
+statechart Curfew { 
+
+  types { 
+
+
+  struct User { 
+ 
+    username : string;  //rollno 
+
+    password : string; 
+
+    userType : int; 
+
+  } 
+  type map<| a, b |>;
+
+} 
+
+   events { 
+
+    eLogin; 
+
+  } 
+
+  students : map<| string, User |>; 
+
+  userType :int; // admin=0, student=1 
+
+  registeredUsers : map<|string, User|>; 
+
+  entry : {} 
+
+  exit  : {} 
+
+functions { 
+
+    put_map<| A, B |>(amap : map<| A, B |>, k : A, v : B) : map<| A, B |>; 
+
+    get_map<| A, B |>(amap : map<| A, B |>, k : A) : B; 
+      
+  } 
+
+  state LoggedOut { 
+
+    user     : User; 
+    username # : string;
+    password # : string;
+    exit:{
+         user:=get_map <| string, User |>(students, Curfew.LoggedOut.username);
+  	}	
+
+  } 
+ 
+
+  state LoggedIn { 
+
+    loggedinUser : User; 
+
+    loggedinUsertype : int; 
+
+    entry : {} 
+
+    exit  : {} 
+
+  }
+  transition tlogin_admin { 
+
+    source      : Curfew.LoggedOut; 
+
+    destination : Curfew.LoggedIn; 
+
+    trigger     : eLogin; 
+
+    guard       : (Curfew.LoggedOut.user.password = Curfew.LoggedOut.password) && (Curfew.LoggedIn.loggedinUser.userType=0);
+
+    action      : { 
+ 
+      Curfew.LoggedIn.loggedinUser := Curfew.LoggedOut.user; 
+
+      Curfew.LoggedIn.loggedinUser := get_map <| string, User |>(registeredUsers,Curfew.LoggedOut.password); 
+
+      Curfew.LoggedIn.loggedinUsertype:=Curfew.LoggedIn.loggedinUser.userType; 
+
+    } 
+  } 
+}  

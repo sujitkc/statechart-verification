@@ -1,5 +1,3 @@
-package testcases;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -21,26 +19,22 @@ import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
 
-import ast.State;
-import ast.Statechart;
-import ast.Transition;
-import ast.Environment;
-import ast.Declaration;
-import ast.Name;
+import ast.*;
+import translation.*;
+import program.*;
 
-import translation.Flattener;
 import metric.Metric;
 
-public class TestFlatten {
+public class TestSCtoProg {
 
   @Test
   public void testFlatten() {
 
     Typechecker typechecker;
-    String input = "data/curfew1.txt";
+    String input = "curfew1";
     Statechart statechart = null;
     try {
-      Parser parser = new FrontEnd(input).getParser();    
+      Parser parser = new FrontEnd("data/" + input + ".txt").getParser();    
       Symbol result = parser.parse();
       statechart = (Statechart)result.value;
       System.out.println("Printing parsed Statechart ...");
@@ -74,6 +68,18 @@ public class TestFlatten {
     }
     catch(Exception e) {
       System.out.println("Couldn't flatten '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+
+    try {
+      StatechartToProgramTranslator sctoprog = new StatechartToProgramTranslator(flattenedSC);
+      Program program = sctoprog.translate();
+      System.out.println("Printing Program ...");
+      System.out.println(program);
+      System.out.println("Printing Program ... done!");
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't translate flattened statechart " + e.getMessage()); 
       e.printStackTrace();
     }
 

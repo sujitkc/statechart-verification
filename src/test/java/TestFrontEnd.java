@@ -1,9 +1,8 @@
-package testcases;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.io.FileReader;
 
 import java.util.List;
@@ -37,7 +36,8 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/curfew_structs_minimal.txt";
+	String input = "src/test/resources/curfew_structs_minimal.txt";
+	System.out.println(input);
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {
