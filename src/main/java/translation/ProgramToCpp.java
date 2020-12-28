@@ -68,20 +68,20 @@ public class ProgramToCpp implements ExpressionVisitor, Visitor {
     void addDeclarations() {
         for (Declaration decl : this.program.declarations) {
             writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
-			variable_names.add(decl.vname);
+			// variable_names.add(decl.vname);
         }
-		for (Declaration decl: this.program.other_declarations) {
-            writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
-		}
+		// for (Declaration decl: this.program.other_declarations) {
+        //     writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
+		// }
     }
 
     void addStatements() throws Exception {
 	    // All the statements go into the run() function, which is called from main()
 		// Event name map
-		println("char const* reverse_map[" + this.program.eventNameMap.size() + "];");
-		for (Pair<String, Integer> pair: this.program.eventNameMap.values()) {
-			println("reverse_map["+pair.getSecond()+"]="+"\""+pair.getFirst()+"\";");
-		}
+		// println("char const* reverse_map[" + this.program.eventNameMap.size() + "];");
+		// for (Pair<String, Integer> pair: this.program.eventNameMap.values()) {
+		// 	println("reverse_map["+pair.getSecond()+"]="+"\""+pair.getFirst()+"\";");
+		// }
 
         println("void run(int * events, int N){");
         enter_nest();
@@ -110,8 +110,19 @@ public class ProgramToCpp implements ExpressionVisitor, Visitor {
 
     // visitor methods:
 
+	private static boolean checkIfInputExpr (Expression expr) {
+		if (expr instanceof FunctionCall) {
+			FunctionCall call_expr = (FunctionCall) expr;
+			return call_expr.name.name.equals ("input");
+		}
+		return false;
+	}
+
     public void visitAssignmentStatement(AssignmentStatement x) throws Exception {
         // writer.print ("assignment\n");
+		if (ProgramToCpp.checkIfInputExpr(x.rhs)) {
+			return;
+		}
         x.lhs.visit(this);
         this.print(" = ");
         x.rhs.visit(this);
@@ -149,6 +160,9 @@ public class ProgramToCpp implements ExpressionVisitor, Visitor {
     }
 
     public void visitFunctionCall(FunctionCall x) throws Exception {
+		if (x.name.name.equals ("input")) {
+			return;
+		}
 		startln (x.name.name);
 		print("(");
 		int n = x.argumentList.size();
@@ -227,6 +241,12 @@ public class ProgramToCpp implements ExpressionVisitor, Visitor {
     }
 
     public void visitUnaryExpression(UnaryExpression x) throws Exception {
+		if (x.operator == UnaryExpression.Operator.NOT) {
+			println("!");
+		}
+		println("(");
+		x.expression.visit(this);
+		println(")");
     }
 
     public void visitWhileStatement(WhileStatement x) throws Exception {

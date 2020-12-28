@@ -244,7 +244,8 @@ if (done.size() > 0) done.remove (done.size()-1);
 		LogManager logger = BasicLogManager.create(config);
 		ShutdownManager shutdown = ShutdownManager.create();
 		this._context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(), Solvers.SMTINTERPOL);
-		this._prover = this._context.newProverEnvironment(ProverOptions.GENERATE_MODELS);	}
+		this._prover = this._context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
+	}
 
 	boolean isSat (Expression expr) {
 		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(this._context);
@@ -263,32 +264,35 @@ if (done.size() > 0) done.remove (done.size()-1);
 		}
 	}
 
-	void stuckSpecification (List<Expression> guards, SETNode leaf) {
+	void stuckSpecification (List<Expression> args, SETNode leaf) {
 		// Path constraint would be valid, otherwise we wouldn't have reached this point
 		// For stuck stuckSpecification, none of the guards would be true
 		// if (!(g1 || g2 || g3)) then stuck
 
-		Expression expr = new BooleanConstant (false);
-		for (Expression guard: guards) {
-			expr = new BinaryExpression(expr, guard, "||");
-		}
-		expr = new UnaryExpression(expr, UnaryExpression.Operator.NOT);
-		
+		// Expression expr = new BooleanConstant (false);
+		// for (Expression guard: guards) {
+		// 	expr = new BinaryExpression(expr, guard, "||");
+		// }
+		// expr = new UnaryExpression(expr, UnaryExpression.Operator.NOT);
+	
+		Expression expr = args.get(0);
 		if (isSat(expr)) {
 			System.out.println ("---------------------------------------Specification stuck--------------------------------");
 		}
 	}
 
-	void nonDeterminism (List<Expression> guards, SETNode leaf) {
+	void nonDeterminism (List<Expression> args, SETNode leaf) {
 		// 2 or more guards are active simultaneously
 		// (g1 ^ g2) V (g2 ^ g3) V (g3 ^ g1)
 		// g1 + g2 + g3 ... gn > 1
-		Expression expr = new BooleanConstant (false);
-		for (Expression guard: guards) {
-			expr = new BinaryExpression(expr, guard, "+");
-		}
 
-		expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
+		// Expression expr = new BooleanConstant (false);
+		// for (Expression guard: guards) {
+		// 	expr = new BinaryExpression(expr, guard, "+");
+		// }
+
+		// expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
+		Expression expr = args.get(0);
 		if (isSat (expr)) {
 			System.out.println ("Non Deterministic state found");
 		}

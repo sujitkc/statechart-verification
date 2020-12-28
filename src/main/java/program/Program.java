@@ -8,8 +8,8 @@ import utilities.*;
 
 public class Program {
   public final String name;
-  public final DeclarationList declarations; // State declarations only
-  public DeclarationList other_declarations; // Other declarations (everything except State declarations): relavant to translation process
+  public final DeclarationList declarations; // Non-symbolic declarations only
+  public DeclarationList other_declarations; // relevant to translation process
   public final List<Type> types;
   public final List<FunctionDeclaration> functionDeclarations;
   public HashMap<String, Pair<String, Integer>> eventNameMap;

@@ -72,6 +72,8 @@ public class S2P {
 		int rep = 0; // To represent individual events as integer values
 		for (String event: _statechart.events) {
 			Declaration decl = new Declaration(event, new TypeName("int"), false);
+			decl.setType(this._intType);
+			_program.declarations.add(decl);
 
 			Name lhs = new Name(event);
 			lhs.setDeclaration(decl);
@@ -95,6 +97,7 @@ public class S2P {
 		for (State state: _statechart.states) {
 			Declaration decl = new Declaration(state.name, new TypeName("int"), false);
 			decl.setType (this._intType);
+			_program.declarations.add(decl);
 
 			Name lhs = new Name (state.name);
 			lhs.setDeclaration(decl);
@@ -134,7 +137,17 @@ public class S2P {
 			// Instrumentation
 			// stuck specification
 			if (guard_list.size() > 0) {
-				FunctionCall stuck_spec_call = new FunctionCall(stuck_spec_name, guard_list);
+				// !((g1||g2||g3||false))
+				Expression ors = new BooleanConstant(false);
+				for (Expression guard: guard_list) {
+					ors = new BinaryExpression(ors, guard, "||");
+				}
+
+				Expression not_of_ors = new UnaryExpression(ors, UnaryExpression.Operator.NOT);
+				ArrayList<Expression> args = new ArrayList<>();
+				args.add(not_of_ors);
+
+				FunctionCall stuck_spec_call = new FunctionCall(stuck_spec_name, args);
 				ExpressionStatement call_stmt = new ExpressionStatement(stuck_spec_call);
 				state_equals_then.add(call_stmt);
 			} else {
@@ -143,7 +156,17 @@ public class S2P {
 
 			// Non Determinism
 			if (guard_list.size () > 1) { // With a single/no transition, Non Determinism is not possible
-				FunctionCall non_det_call = new FunctionCall(non_det_name, guard_list);
+		Expression expr = new BooleanConstant (false);
+		for (Expression guard: guard_list) {
+			expr = new BinaryExpression(expr, guard, "+");
+		}
+
+		expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
+
+		ArrayList<Expression> args = new ArrayList<>();
+		args.add(expr);
+
+				FunctionCall non_det_call = new FunctionCall(non_det_name, args);
 				ExpressionStatement call_stmt = new ExpressionStatement(non_det_call);
 				state_equals_then.add(call_stmt);
 			}
