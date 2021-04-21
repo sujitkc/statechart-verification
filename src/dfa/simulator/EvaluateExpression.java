@@ -6,17 +6,17 @@ import ast.*;
 
 /* EvaluateExpression class - Contains all the static methods required to evaluate expressions - regular or binary. */
 public class EvaluateExpression{
-    public static Expression evaluate(Expression e){
+    public static Expression evaluate(Expression e, ExecutionState eState){
         try 
         {
             if(e instanceof BinaryExpression)
-                return evaluateBinaryExpression((BinaryExpression)e);
+                return evaluateBinaryExpression((BinaryExpression)e, eState);
             else if(e instanceof Name)
-                return Simulator.eState.getValue(((Name)e).getDeclaration());
+                return eState.getValue(((Name)e).getDeclaration());
             else if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
                 return e;
             else if(e instanceof FunctionCall)
-                return evaluateFunction((FunctionCall)e);
+                return evaluateFunction((FunctionCall)e, eState);
             else
                 return null;
         }
@@ -28,7 +28,7 @@ public class EvaluateExpression{
     }
 
     // Implementation to take input as a function call
-    public static Expression evaluateFunction(FunctionCall f){
+    public static Expression evaluateFunction(FunctionCall f, ExecutionState eState){
         // Evaluate the input function
         if(f.getName().equals("input")){
             System.out.print("User Input: ");
@@ -40,21 +40,21 @@ public class EvaluateExpression{
     }
 
     /* Implementation to evaluate binary expressions */
-    public static Expression evaluateBinaryExpression(BinaryExpression e){
+    public static Expression evaluateBinaryExpression(BinaryExpression e, ExecutionState eState){
         Expression lhs = null;
         Expression rhs = null;
-        if(isConstantExpression(e.left))
+        if(isConstantExpression(e.left, eState))
           lhs = e.left;
         else if(e.left instanceof Name)
-          lhs =  Simulator.eState.getValue(((Name)e.left).getDeclaration());
+          lhs =  eState.getValue(((Name)e.left).getDeclaration());
         else
-          lhs = evaluateBinaryExpression((BinaryExpression)e.left);
-        if(isConstantExpression(e.right))
+          lhs = evaluateBinaryExpression((BinaryExpression)e.left, eState);
+        if(isConstantExpression(e.right, eState))
           rhs = e.right;
         else if(e.right instanceof Name)
-          rhs = Simulator.eState.getValue(((Name)e.right).getDeclaration());
+          rhs = eState.getValue(((Name)e.right).getDeclaration());
         else
-          rhs = evaluateBinaryExpression((BinaryExpression)e.right);
+          rhs = evaluateBinaryExpression((BinaryExpression)e.right, eState);
         
         // for boolean 
         if(e.operator.equals("&&") && lhs instanceof BooleanConstant)
@@ -91,7 +91,7 @@ public class EvaluateExpression{
     }
 
     // takes an epression and asserts whether it is of a constant type or not
-    static boolean isConstantExpression(Expression e) 
+    static boolean isConstantExpression(Expression e, ExecutionState eState) 
     {
       if(e instanceof BooleanConstant || e instanceof IntegerConstant || e instanceof StringLiteral)
         return true;

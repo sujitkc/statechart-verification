@@ -20,7 +20,7 @@ import java_cup.runtime.Symbol;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
-import simulator.Simulator;
+import simulator.ExhaustiveSimulator;
 
 import ast.State;
 import ast.Statechart;
@@ -38,8 +38,7 @@ public class TestFrontEnd {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    //String input = "/home/advait/statechart-verification/src/dfa/data/sim_rough.stb";
-    String input = "data/course.stb";
+    String input = "data/DoctorDashboard.stb";
 
 
     try {
@@ -69,7 +68,7 @@ public class TestFrontEnd {
       e.printStackTrace();
     }
     try{
-      new Simulator(statechart);
+      new ExhaustiveSimulator(statechart);
     }
     catch(Exception e){
       System.out.println("Error in Simulation");

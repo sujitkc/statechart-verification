@@ -17,6 +17,8 @@ public class ExecutionState
     private Queue<String> eventQueue                              = new LinkedList<String>();
     private Map<State, State> stateHistory                        = new HashMap<State, State>();
     private Map<State, Map<Declaration, Expression>> valueHistory = new HashMap<State, Map<Declaration, Expression>>();
+    private ArrayList<Transition> validTransitions                = new ArrayList<Transition>();
+    private int transitions = 0;
 
     public ExecutionState(Statechart st)
     {
@@ -29,11 +31,33 @@ public class ExecutionState
             this.populate(s);
           }
         }
+    }
 
-       /* for(String e : st.events)
-        {
-            this.eventQueue.add(e);
-        }*/
+    public void addTransition(Transition t)
+    {
+        this.validTransitions.add(t);
+    }
+
+    public ArrayList<Transition> getValidTransitions()
+    {
+        return this.validTransitions;
+    }
+
+    public Transition getValidTransition()
+    {
+        Transition output = this.validTransitions.get(0);
+        this.validTransitions.remove(0);
+        return output;
+    }
+
+    public void incrementPerformedTransitions()
+    {
+        this.transitions++;
+    }
+
+    public int getNumberOfPerformedTransition()
+    {
+        return this.transitions;
     }
 
     public void addEvent(String e)
@@ -68,7 +92,7 @@ public class ExecutionState
 
     public Expression getValue(Declaration d)
     {
-        return EvaluateExpression.evaluate(this.valueEnvironment.get(d));
+        return EvaluateExpression.evaluate(this.valueEnvironment.get(d), this);
     }
 
     public void setHistoryState(State s, State c)

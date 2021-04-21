@@ -5,30 +5,29 @@ import java.util.ArrayList;
 import ast.*;
 //
 
-public class Simulator {
+public class ExhaustiveSimulator {
 
   // necessary for simulator
   private Statechart statechart = null;
-  public static ExecutionState eState;
+  public static ArrayList<ExecutionState> eStates = new ArrayList<ExecutionState>();
   public SimulationMode simulationMode;
 
   private static ArrayList<Transition> validTransitions = new ArrayList<Transition>();
 
-  public Simulator(Statechart statechart) throws Exception
+  public ExhaustiveSimulator(Statechart statechart) throws Exception
   {
     try 
     {
       this.statechart = statechart;
-
-      eState = new ExecutionState(statechart); 
-	    for (String e : this.statechart.events)
-        eState.addEvent(e);
-        
-        this.simulationMode = new PreEventInSteps(this.statechart);
-  
-        new SymbolicEngine(this.statechart);
-
+      ExecutionState eState = new ExecutionState(statechart); 
+      eStates.add(eState);
+      this.simulationMode = new RandomEventInSteps(this.statechart);
+      while(!eStates.isEmpty())
+      {
+        eState = eStates.get(0);
+        eStates.remove(0);
         this.simulationMode.simulate(eState);
+      }
     }
     catch (Exception e)
     {
@@ -39,7 +38,7 @@ public class Simulator {
 
   // takes a state and returns the atomic state for it (in the process, it also executes all the entry statements for the states lying in the path)
   // also takes care of whether the state has a history tag or not
-  public static State get_atomic_state(State state, int tag) throws Exception
+  public static State get_atomic_state(State state, int tag, ExecutionState eState) throws Exception
   {
     State init = state;
     try 
@@ -47,7 +46,7 @@ public class Simulator {
       if(tag == 1)
       {
         eState.enterState(init);                       // enters the state
-        ExecuteStatement.executeStatement(init.entry); // execute the entry statement
+        ExecuteStatement.executeStatement(init.entry, eState); // execute the entry statement
       }
       else
       {
@@ -61,11 +60,11 @@ public class Simulator {
       {
         if((init.maintainsHisotry()).value)          // if the state maintains history
         {
-          return get_atomic_state(eState.getHistoryState(init), tag);
+          return get_atomic_state(eState.getHistoryState(init), tag, eState);
         }
         else                                         // if the state does not maintain history
         {
-          return get_atomic_state(init.states.get(0), tag);
+          return get_atomic_state(init.states.get(0), tag, eState);
         }
       }
     }
@@ -83,7 +82,7 @@ public class Simulator {
   // c) when it gets to the lowest upper bound, it executes the action associated with the transition
   // d) bubbles down to the destination state from the lowest upper bound
   // e) while bubbling down, it executes all the entry statements for the states in the path
-  public static void performTransition(Transition t, State curr, Statechart statechart) throws Exception
+  public static void performTransition(Transition t, State curr, Statechart statechart, ExecutionState eState) throws Exception
   {
     try
     {
@@ -93,13 +92,12 @@ public class Simulator {
       State current = curr;
       while(!current.equals(lub)) // bubbles up to lowest upper bound
       {
-        ExecuteStatement.executeStatement(current.exit);
+        ExecuteStatement.executeStatement(current.exit, eState);
         eState.exitState(current);
         current = current.getSuperstate();
       }
       
-      ExecuteStatement.executeStatement(t.action); // executes the transition action
-    
+      ExecuteStatement.executeStatement(t.action, eState); // executes the transition action
       ArrayList<State> path = new ArrayList<State>();
       current = destination;
       while(!current.equals(lub)) // bubbles down to the destnation state
@@ -111,14 +109,15 @@ public class Simulator {
       while(i != 0)
       {
         eState.enterState(path.get(i));
-        ExecuteStatement.executeStatement(path.get(i).entry);
+        ExecuteStatement.executeStatement(path.get(i).entry, eState);
         i --;
       }
       if(i == 0)
       {
         eState.enterState(t.getDestination());
-        ExecuteStatement.executeStatement(t.getDestination().entry);
+        ExecuteStatement.executeStatement(t.getDestination().entry, eState);
       }
+      eState.incrementPerformedTransitions();
     }
     catch (Exception e)
     {
@@ -127,15 +126,19 @@ public class Simulator {
   }
 
   // takes a state as the input and returns a valid transition (if available) with the input state as the source state
-  public static Transition get_valid_transition(State curr, State fix, int i, Transition output, String event, Statechart statechart) throws Exception 
+  public static Transition get_valid_transition(State curr, State fix, int i, Transition output, String event, Statechart statechart, ExecutionState eState) throws Exception 
   {
     try
     {
+      if(!eState.getValidTransitions().isEmpty())
+      {
+        return eState.getValidTransition();
+      }
       for(Transition t : curr.transitions)
       {
         try
         {
-            if(((BooleanConstant)EvaluateExpression.evaluate(t.guard)).value && eState.presentInConfiguration(t.getSource()) && t.trigger.equals(event))
+            if(((BooleanConstant)EvaluateExpression.evaluate(t.guard, eState)).value && eState.presentInConfiguration(t.getSource()))
             {
               output = t;
               i++;
@@ -157,7 +160,7 @@ public class Simulator {
       }
       if(!curr.equals(statechart))
       {
-        return get_valid_transition(curr.getSuperstate(), fix, i, output, event, statechart);
+        return get_valid_transition(curr.getSuperstate(), fix, i, output, event, statechart, eState);
       }
       else
       {
@@ -166,21 +169,25 @@ public class Simulator {
           if(event.equals("null")) // if no viable transition is found
           {
             System.out.println("No Viable Transition! Halting Simulation...");
-            ExecuteStatement.executeStatement(new HaltStatement());
+            ExecuteStatement.executeStatement(new HaltStatement(), eState);
           }
           else                    // if no viable transition is found for the current event, we re-reun the entire search with null event
           {
-            return get_valid_transition(fix, fix, i, output, "null", statechart);
+            return get_valid_transition(fix, fix, i, output, "null", statechart, eState);
           }
         }
         else if(i > 1)
         {
           System.out.println("Non Determinism Detected At State: " + curr.name);
-          System.out.println("Halting Simulation...");
+          // System.out.println("Halting Simulation...");
           System.out.println("List of valid transitions are: ");
           for(Transition t : validTransitions)
+          {
             System.out.println("->\t" + t.name); 
-          ExecuteStatement.executeStatement(new HaltStatement());
+            eState.addTransition(t);
+          }
+          return eState.getValidTransition();
+          // ExecuteStatement.executeStatement(new HaltStatement());
         }
         else
         {

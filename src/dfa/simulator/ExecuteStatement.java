@@ -5,20 +5,20 @@ import ast.*;
 /* ExectueStatement class - Contains all the static methods to execute different types of statements : assignment, conditional, while-loops and expressions.*/
 public class ExecuteStatement 
 {
-    public static void executeStatement(Statement statement) throws Exception 
+    public static void executeStatement(Statement statement, ExecutionState eState) throws Exception 
     {
         try 
         {
           if(statement instanceof StatementList)
-            executeStatementList(statement);
+            executeStatementList(statement, eState);
           else if(statement instanceof AssignmentStatement)
-            executeAssignmentStatement((AssignmentStatement)statement);
+            executeAssignmentStatement((AssignmentStatement)statement, eState);
           else if(statement instanceof IfStatement)
-            executeConditionalStatement((IfStatement)statement);
+            executeConditionalStatement((IfStatement)statement, eState);
           else if(statement instanceof WhileStatement)
-            executeWhileStatement((WhileStatement)statement);
+            executeWhileStatement((WhileStatement)statement, eState);
           else if(statement instanceof ExpressionStatement){
-            EvaluateExpression.evaluate(((ExpressionStatement)statement).expression);
+            EvaluateExpression.evaluate(((ExpressionStatement)statement).expression, eState);
           }
           // I still do not completely understand what the next 2 statements do, right now the behavior is defined by my rudimentary understanding
           else if(statement instanceof SkipStatement) 
@@ -39,11 +39,11 @@ public class ExecuteStatement
     }
 
     /* Implementation for executing assignment statement */
-    private static void executeAssignmentStatement(AssignmentStatement assignment) throws Exception
+    private static void executeAssignmentStatement(AssignmentStatement assignment, ExecutionState eState) throws Exception
     {
       try {
       Declaration variableDeclaration = assignment.lhs.getDeclaration();
-      Simulator.eState.setValue(variableDeclaration, EvaluateExpression.evaluate(assignment.rhs));
+      eState.setValue(variableDeclaration, EvaluateExpression.evaluate(assignment.rhs, eState));
       }
       catch (Exception e)
       {
@@ -52,19 +52,19 @@ public class ExecuteStatement
     }
 
     /* Implementation for executing a list of statements */
-    private static void executeStatementList(Statement statement) throws Exception
+    private static void executeStatementList(Statement statement, ExecutionState eState) throws Exception
     {
         if(statement instanceof StatementList)
         {
           List<Statement> st_list = ((StatementList)statement).getStatements();
           for(Statement st : st_list)
-            executeStatementList(st);
+            executeStatementList(st, eState);
         }
         else 
         {
           try 
           {
-            executeStatement(statement); 
+            executeStatement(statement, eState); 
           }
           catch (Exception e)
           {
@@ -75,7 +75,7 @@ public class ExecuteStatement
   
   
   /* Implementation for executing conditional statements */
-  private static void executeConditionalStatement(IfStatement c) throws Exception
+  private static void executeConditionalStatement(IfStatement c, ExecutionState eState) throws Exception
   {
     try 
     {
@@ -83,17 +83,17 @@ public class ExecuteStatement
       if(c.condition instanceof BooleanConstant)
       {
         if(((BooleanConstant)c.condition).value)
-          executeStatement(c.then_body);
+          executeStatement(c.then_body, eState);
         else
-          executeStatement(c.else_body);
+          executeStatement(c.else_body, eState);
       }
       else if(c.condition instanceof BinaryExpression)
       {
-        Expression e = EvaluateExpression.evaluate((BinaryExpression)c.condition);
+        Expression e = EvaluateExpression.evaluate((BinaryExpression)c.condition, eState);
         if(((BooleanConstant)e).value)
-          executeStatement(c.then_body);
+          executeStatement(c.then_body, eState);
         else
-          executeStatement(c.else_body);
+          executeStatement(c.else_body, eState);
       }   
     }
     catch (Exception e)
@@ -103,7 +103,7 @@ public class ExecuteStatement
   }
 
   // evaluate expression - I am not sure on how much we need this
-  private static void executeWhileStatement(WhileStatement w) throws Exception
+  private static void executeWhileStatement(WhileStatement w, ExecutionState eState) throws Exception
   {
     // the condition would either be a straight-forward constant (in an infinite loop like scenarios) or a binary expression
     try
@@ -112,18 +112,18 @@ public class ExecuteStatement
       {
         if(((BooleanConstant)w.condition).value)
         {
-          executeStatement(w.body);
-          executeStatement(w);
+          executeStatement(w.body, eState);
+          executeStatement(w, eState);
         }
       }
       else if(w.condition instanceof BinaryExpression)
       {
         //Expression e = evaluateBinaryExpression((BinaryExpression)w.condition);
-        Expression e = EvaluateExpression.evaluate((BinaryExpression)w.condition);
+        Expression e = EvaluateExpression.evaluate((BinaryExpression)w.condition, eState);
         if(((BooleanConstant)e).value)
         {
-          executeStatement(w.body);
-          executeStatement(w);
+          executeStatement(w.body, eState);
+          executeStatement(w, eState);
         }
       }
           return ;
