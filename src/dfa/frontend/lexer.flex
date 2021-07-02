@@ -53,6 +53,9 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 <YYINITIAL>"events"         { /* System.out.println("events");       */ return new Symbol(sym.EVENTS, yyline, yycolumn, null);     }
 <YYINITIAL>"functions"      { /* System.out.println("functions");    */ return new Symbol(sym.FUNCTIONS, yyline, yycolumn, null);  }
 <YYINITIAL>"HISTORY"        {                                           return new Symbol(sym.HISTORY, yyline, yycolumn, null);    }
+<YYINITIAL>"SHELL"          {                                           return new Symbol(sym.SHELL, yyline, yycolumn, null);      }
+<YYINITIAL>"REGION"         {                                           return new Symbol(sym.REGION, yyline, yycolumn, null);     }
+<YYINITIAL>"FIN"            {                                           return new Symbol(sym.FIN, yyline, yycolumn, null);        }
 
 <YYINITIAL>"."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT, yyline, yycolumn, null);        }
 <YYINITIAL>"#"              { /* System.out.println("HASH");         */ return new Symbol(sym.HASH, yyline, yycolumn, null);       }

@@ -628,6 +628,23 @@ public class Typechecker {
         ". Should be placed in state " + lub.name + " but placed in state " +
         transition.getState().name + ".");
     }
+    if(transition.getDestination().isRegionState().value)
+    {
+      throw new Exception("Typechecking failed for transition : " + transition.name +
+        ". Its destination is a REGION state.");
+    }
+    if(transition.getDestination().isFinalState().value & !transition.getSource().isRegionState().value)
+    {
+      throw new Exception("Typechecking failed for transition : " + transition.name);
+    }
+    if(transition.getDestination().isFinalState().value & transition.getSource().isRegionState().value)
+    {
+      lub = this.statechart.lub(transition.getSource(), transition.getDestination());
+      if(lub != transition.getDestination().getSuperstate())
+      {
+        throw new Exception("Typechecking failed for transition : " + transition.name);
+      }
+    }
     this.typecheckTrigger(transition.trigger);
     this.typecheckGuard(transition.guard, transition.getReadEnvironment());
     this.typecheckStatement(transition.action,
@@ -666,8 +683,52 @@ public class Typechecker {
     }
   }
 
+  private void typecheckConcurrency(State state) throws Exception {
+    if(!state.isShellState().value) // REGION state and FINAL state can only reside in a parent SHELL state
+    {
+      for(State s : state.states)
+      {
+        if(s.isRegionState().value)
+        {
+          throw new Exception("REGION State: '" + s.name + "' in state " + state.name + " (which is not a SHELL state)");
+        }
+        else if(s.isFinalState().value)
+        {
+          throw new Exception("FINAL State: '" + s.name + "' in state " + state.name + " (which is not a SHELL state)");
+        }
+      }
+    }
+    else // SHELL state can only have REGION states or FINAL states
+    {
+      int num_of_final_states = 0; // SHELL states should have exactly one FINAL state
+      for(State s : state.states)
+      {
+        if((!s.isRegionState().value) & (!s.isFinalState().value))
+        {
+          throw new Exception("State: '" + s.name + "' in state " + state.name + " (which is a SHELL state)");
+        }
+        else if(s.isFinalState().value)
+        {
+          num_of_final_states++;
+        }
+      }
+      // checking for exactly one final state
+      if(num_of_final_states < 1)
+      {
+        throw new Exception("State: " + state.name + " has no FINAL states");
+      }
+      else if(num_of_final_states > 1)
+      {
+        throw new Exception("State: " + state.name + " has multiple FINAL states");
+      }
+    }
+  }
+
   private void typecheckState(State state) throws Exception {
     checkNameDuplication(state);
+
+    // checking aspects related to concurrency
+    typecheckConcurrency(state);
 
     Environment env = state.getEnvironment();
     Environment emptyEnv = Environment.emptyEnvironment;
