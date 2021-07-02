@@ -12,9 +12,13 @@ public class State {
   public final Statement entry;
   public final Statement exit;
   public final BooleanConstant history;
+  public final BooleanConstant shell;
+  public final BooleanConstant region;
+  public final BooleanConstant fin;
+  
 
-  protected Statechart statechart = null;
-  protected State superstate = null;
+  protected Statechart  statechart  = null;
+  protected State       superstate  = null;
   protected Environment environment = null;
 
 
@@ -25,7 +29,10 @@ public class State {
       Statement         exit,
       List<State>       states,
       List<Transition>  transitions,
-      BooleanConstant   history) {
+      BooleanConstant   history,
+      BooleanConstant   region,
+      BooleanConstant   shell,
+      BooleanConstant   fin) {
 
     this.name         = name;
     this.declarations = declarations;
@@ -34,6 +41,9 @@ public class State {
     this.states       = states;
     this.transitions  = transitions;
     this.history      = history;
+    this.shell        = shell;
+    this.region       = region;
+    this.fin          = fin;
 
     for(State st : this.states) {
       st.setSuperstate(this);
@@ -148,6 +158,18 @@ public class State {
 
   public BooleanConstant maintainsHisotry() {
     return this.history;
+  }
+
+  public BooleanConstant isShellState() {
+    return this.shell;
+  }
+
+  public BooleanConstant isRegionState() {
+    return this.region;
+  }
+
+  public BooleanConstant isFinalState() {
+    return this.fin;
   }
 
   public String toString() {
