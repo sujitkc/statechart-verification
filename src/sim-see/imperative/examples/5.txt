@@ -1,0 +1,16 @@
+{
+int x;
+boolean y;
+}
+{
+x := input_int;
+
+if(y) then {
+  x := x + 1;  
+}
+else {
+  x := x - 1;
+  x := x - 10;  
+}
+x := x + 20;
+}

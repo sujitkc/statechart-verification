@@ -1,0 +1,7 @@
+{
+int x;
+boolean y;
+}
+{
+x := input_int;
+}

@@ -1,0 +1,585 @@
+   0  $accept : %entry% $end
+
+   1  prog : decls stmt
+
+   2  decls : LBRACE nonemptydecls RBRACE
+   3        | LBRACE RBRACE
+
+   4  nonemptydecls : nonemptydecls decl
+   5                | decl
+
+   6  decl : TYPE ID SEMICOLON
+
+   7  stmts : nonemptystmts
+   8        |
+
+   9  nonemptystmts : nonemptystmts stmt
+  10                | stmt
+
+  11  stmt : ID ASSIGN expr SEMICOLON
+  12       | IF expr THEN stmt ELSE stmt
+  13       | LBRACE stmts RBRACE
+
+  14  expr : ID
+  15       | INTEGER
+  16       | BOOLEAN
+  17       | expr ADD expr
+  18       | expr SUBTRACT expr
+  19       | expr AND expr
+  20       | expr OR expr
+  21       | NOT expr
+  22       | expr EQ expr
+  23       | LPAREN expr RPAREN
+  24       | INPUT
+
+  25  %entry% : '\001' prog
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . prog  (25)
+
+	LBRACE  shift 3
+	.  error
+
+	prog  goto 4
+	decls  goto 5
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	decls : LBRACE . nonemptydecls RBRACE  (2)
+	decls : LBRACE . RBRACE  (3)
+
+	RBRACE  shift 6
+	TYPE  shift 7
+	.  error
+
+	nonemptydecls  goto 8
+	decl  goto 9
+
+
+state 4
+	%entry% : '\001' prog .  (25)
+
+	.  reduce 25
+
+
+state 5
+	prog : decls . stmt  (1)
+
+	LBRACE  shift 10
+	IF  shift 11
+	ID  shift 12
+	.  error
+
+	stmt  goto 13
+
+
+state 6
+	decls : LBRACE RBRACE .  (3)
+
+	.  reduce 3
+
+
+state 7
+	decl : TYPE . ID SEMICOLON  (6)
+
+	ID  shift 14
+	.  error
+
+
+state 8
+	decls : LBRACE nonemptydecls . RBRACE  (2)
+	nonemptydecls : nonemptydecls . decl  (4)
+
+	RBRACE  shift 15
+	TYPE  shift 7
+	.  error
+
+	decl  goto 16
+
+
+state 9
+	nonemptydecls : decl .  (5)
+
+	.  reduce 5
+
+
+state 10
+	stmt : LBRACE . stmts RBRACE  (13)
+	stmts : .  (8)
+
+	LBRACE  shift 10
+	IF  shift 11
+	ID  shift 12
+	RBRACE  reduce 8
+
+	stmt  goto 17
+	stmts  goto 18
+	nonemptystmts  goto 19
+
+
+state 11
+	stmt : IF . expr THEN stmt ELSE stmt  (12)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 26
+
+
+state 12
+	stmt : ID . ASSIGN expr SEMICOLON  (11)
+
+	ASSIGN  shift 27
+	.  error
+
+
+state 13
+	prog : decls stmt .  (1)
+
+	.  reduce 1
+
+
+state 14
+	decl : TYPE ID . SEMICOLON  (6)
+
+	SEMICOLON  shift 28
+	.  error
+
+
+state 15
+	decls : LBRACE nonemptydecls RBRACE .  (2)
+
+	.  reduce 2
+
+
+state 16
+	nonemptydecls : nonemptydecls decl .  (4)
+
+	.  reduce 4
+
+
+state 17
+	nonemptystmts : stmt .  (10)
+
+	.  reduce 10
+
+
+state 18
+	stmt : LBRACE stmts . RBRACE  (13)
+
+	RBRACE  shift 29
+	.  error
+
+
+state 19
+	stmts : nonemptystmts .  (7)
+	nonemptystmts : nonemptystmts . stmt  (9)
+
+	LBRACE  shift 10
+	IF  shift 11
+	ID  shift 12
+	RBRACE  reduce 7
+
+	stmt  goto 30
+
+
+state 20
+	expr : LPAREN . expr RPAREN  (23)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 31
+
+
+state 21
+	expr : NOT . expr  (21)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 32
+
+
+state 22
+	expr : INTEGER .  (15)
+
+	.  reduce 15
+
+
+state 23
+	expr : ID .  (14)
+
+	.  reduce 14
+
+
+state 24
+	expr : BOOLEAN .  (16)
+
+	.  reduce 16
+
+
+state 25
+	expr : INPUT .  (24)
+
+	.  reduce 24
+
+
+state 26
+	stmt : IF expr . THEN stmt ELSE stmt  (12)
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+
+	THEN  shift 33
+	ADD  shift 34
+	SUBTRACT  shift 35
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	.  error
+
+
+state 27
+	stmt : ID ASSIGN . expr SEMICOLON  (11)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 39
+
+
+state 28
+	decl : TYPE ID SEMICOLON .  (6)
+
+	.  reduce 6
+
+
+state 29
+	stmt : LBRACE stmts RBRACE .  (13)
+
+	.  reduce 13
+
+
+state 30
+	nonemptystmts : nonemptystmts stmt .  (9)
+
+	.  reduce 9
+
+
+state 31
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+	expr : LPAREN expr . RPAREN  (23)
+
+	RPAREN  shift 40
+	ADD  shift 34
+	SUBTRACT  shift 35
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	.  error
+
+
+32: shift/reduce conflict (shift 36, reduce 21) on EQ
+state 32
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : NOT expr .  (21)
+	expr : expr . EQ expr  (22)
+
+	EQ  shift 36
+	RPAREN  reduce 21
+	SEMICOLON  reduce 21
+	THEN  reduce 21
+	ADD  reduce 21
+	SUBTRACT  reduce 21
+	AND  reduce 21
+	OR  reduce 21
+
+
+state 33
+	stmt : IF expr THEN . stmt ELSE stmt  (12)
+
+	LBRACE  shift 10
+	IF  shift 11
+	ID  shift 12
+	.  error
+
+	stmt  goto 41
+
+
+state 34
+	expr : expr ADD . expr  (17)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 42
+
+
+state 35
+	expr : expr SUBTRACT . expr  (18)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 43
+
+
+state 36
+	expr : expr EQ . expr  (22)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 44
+
+
+state 37
+	expr : expr AND . expr  (19)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 45
+
+
+state 38
+	expr : expr OR . expr  (20)
+
+	LPAREN  shift 20
+	NOT  shift 21
+	INTEGER  shift 22
+	ID  shift 23
+	BOOLEAN  shift 24
+	INPUT  shift 25
+	.  error
+
+	expr  goto 46
+
+
+state 39
+	stmt : ID ASSIGN expr . SEMICOLON  (11)
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+
+	SEMICOLON  shift 47
+	ADD  shift 34
+	SUBTRACT  shift 35
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	.  error
+
+
+state 40
+	expr : LPAREN expr RPAREN .  (23)
+
+	.  reduce 23
+
+
+state 41
+	stmt : IF expr THEN stmt . ELSE stmt  (12)
+
+	ELSE  shift 48
+	.  error
+
+
+42: shift/reduce conflict (shift 36, reduce 17) on EQ
+state 42
+	expr : expr . ADD expr  (17)
+	expr : expr ADD expr .  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+
+	SUBTRACT  shift 35
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	RPAREN  reduce 17
+	SEMICOLON  reduce 17
+	THEN  reduce 17
+	ADD  reduce 17
+
+
+43: shift/reduce conflict (shift 36, reduce 18) on EQ
+state 43
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr SUBTRACT expr .  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	RPAREN  reduce 18
+	SEMICOLON  reduce 18
+	THEN  reduce 18
+	ADD  reduce 18
+	SUBTRACT  reduce 18
+
+
+44: shift/reduce conflict (shift 34, reduce 22) on ADD
+44: shift/reduce conflict (shift 35, reduce 22) on SUBTRACT
+44: shift/reduce conflict (shift 36, reduce 22) on EQ
+44: shift/reduce conflict (shift 37, reduce 22) on AND
+44: shift/reduce conflict (shift 38, reduce 22) on OR
+state 44
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+	expr : expr EQ expr .  (22)
+
+	ADD  shift 34
+	SUBTRACT  shift 35
+	EQ  shift 36
+	AND  shift 37
+	OR  shift 38
+	RPAREN  reduce 22
+	SEMICOLON  reduce 22
+	THEN  reduce 22
+
+
+45: shift/reduce conflict (shift 36, reduce 19) on EQ
+state 45
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr AND expr .  (19)
+	expr : expr . OR expr  (20)
+	expr : expr . EQ expr  (22)
+
+	EQ  shift 36
+	OR  shift 38
+	RPAREN  reduce 19
+	SEMICOLON  reduce 19
+	THEN  reduce 19
+	ADD  reduce 19
+	SUBTRACT  reduce 19
+	AND  reduce 19
+
+
+46: shift/reduce conflict (shift 36, reduce 20) on EQ
+state 46
+	expr : expr . ADD expr  (17)
+	expr : expr . SUBTRACT expr  (18)
+	expr : expr . AND expr  (19)
+	expr : expr . OR expr  (20)
+	expr : expr OR expr .  (20)
+	expr : expr . EQ expr  (22)
+
+	EQ  shift 36
+	RPAREN  reduce 20
+	SEMICOLON  reduce 20
+	THEN  reduce 20
+	ADD  reduce 20
+	SUBTRACT  reduce 20
+	AND  reduce 20
+	OR  reduce 20
+
+
+state 47
+	stmt : ID ASSIGN expr SEMICOLON .  (11)
+
+	.  reduce 11
+
+
+state 48
+	stmt : IF expr THEN stmt ELSE . stmt  (12)
+
+	LBRACE  shift 10
+	IF  shift 11
+	ID  shift 12
+	.  error
+
+	stmt  goto 49
+
+
+state 49
+	stmt : IF expr THEN stmt ELSE stmt .  (12)
+
+	.  reduce 12
+
+
+State 32 contains 1 shift/reduce conflict.
+State 42 contains 1 shift/reduce conflict.
+State 43 contains 1 shift/reduce conflict.
+State 44 contains 5 shift/reduce conflicts.
+State 45 contains 1 shift/reduce conflict.
+State 46 contains 1 shift/reduce conflict.
+
+
+31 terminals, 10 nonterminals
+26 grammar rules, 50 states
