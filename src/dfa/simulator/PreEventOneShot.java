@@ -13,7 +13,7 @@ public class PreEventOneShot implements SimulationMode
     {
         try
         {
-            System.out.println("\n\n\n Beginning Simulation... \n\n\n");                                     
+            System.out.println("\n\n\nBeginning Simulation... \n\n\n");                                     
             System.out.println("Initial Statechart Map: " + eState.generate_summary());   // prints the initial state
             State curr = Simulator.get_atomic_state((State)statechart, 1);                // gets to the atomic-state (i.e., this is like the start state for the statechart)
             int counter = 0;

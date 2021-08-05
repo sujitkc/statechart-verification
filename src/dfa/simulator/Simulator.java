@@ -24,7 +24,8 @@ public class Simulator {
 	    for (String e : this.statechart.events)
         eState.addEvent(e);
         
-        this.simulationMode = new PreEventInSteps(this.statechart);
+        // this.simulationMode = new PreEventInSteps(this.statechart);
+        this.simulationMode = new UserEventInSteps(this.statechart);
   
         new SymbolicEngine(this.statechart);
 
