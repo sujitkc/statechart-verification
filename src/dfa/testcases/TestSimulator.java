@@ -39,7 +39,8 @@ public class TestSimulator {
     Typechecker typechecker;
 
     Statechart statechart = null;
-    String input = "data/curfew_structs_minimal.txt";
+    //String input = "data/curfew_structs_minimal.txt";
+	String input="data/ParkAssist.stb";
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {

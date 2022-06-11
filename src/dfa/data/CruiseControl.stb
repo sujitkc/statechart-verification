@@ -1,0 +1,242 @@
+// Evaluates the behavior for when History is maintained
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  CruiseControl{
+  
+  events {
+	e;
+	No_event;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+	Error;
+  }
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  CC_Enabled : boolean : local;
+//  FollowDist : int : local;
+//  AccelPedal :int: local;
+  
+  entry : {
+	BoolTRUE:=true;
+	BoolFALSE:=false;
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  state CC{
+	SHELL
+	BrakePedal : int : local;
+	CC_Engaged : boolean : local;
+	TargetSpeed : int : local;
+	Speed:int:local;
+
+	state LogicControl{
+	REGION
+	
+	entry:{
+		CC_Enabled:=true;
+	}
+	exit:{}
+		state Disabled{
+			entry:{}
+			exit:{}
+		}
+		state Fail{
+			entry:{}
+			exit:{}
+		}
+		state Enabled{
+			PRNDL_In:int:local;
+			Const3:int:local;
+			Const40:int:local;
+			entry:{
+				Const3:=3;
+				Const40:=40;
+			}
+			exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				set_Throttle :int:local;
+				FollowDist :int:local;
+				
+				entry:{}
+				exit:{}
+				state Coasting{
+					entry:{}
+					exit:{}
+				}
+				state Accelerating{
+					entry:{}
+					exit:{}
+				}
+				transition t20{
+					source: CruiseControl.CC.LogicControl.Enabled.Engaged.Coasting;
+					destination: CruiseControl.CC.LogicControl.Enabled.Engaged.Accelerating;
+					trigger: e;
+					guard:(FollowDist>50) && (Speed<TargetSpeed);
+					action:{set_Throttle=TargetSpeed-Speed;}
+				}
+				transition t21{
+					source: CruiseControl.CC.LogicControl.Enabled.Engaged.Accelerating;
+					destination: CruiseControl.CC.LogicControl.Enabled.Engaged.Coasting;
+					trigger: e;
+					guard:(FollowDist<=50) || (Speed>=TargetSpeed);
+					action:{}
+				}
+			}
+			transition t18{
+				source: CruiseControl.CC.LogicControl.Enabled.Disengaged;
+				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=Const40) && (PRNDL_In=Const3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition t37{
+				source: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				destination: CruiseControl.CC.LogicControl.Enabled.Disengaged;
+				trigger: e;
+				guard:(Speed<Const40) || (PRNDL_In!=Const3);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition t19{
+				source: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				destination: CruiseControl.CC.LogicControl.Enabled.Override;
+				trigger: Cancel;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition t24{
+				source: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				destination: CruiseControl.CC.LogicControl.Enabled.Override;
+				trigger: e;
+				guard:(BrakePedal>0);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition t25{
+				source: CruiseControl.CC.LogicControl.Enabled.Override;
+				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition t26{
+				source: CruiseControl.CC.LogicControl.Enabled.Override;
+				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
+				trigger: ResumeCoastIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			
+		}
+		transition t22{
+				source: CruiseControl.CC.LogicControl.Disabled;
+				destination: CruiseControl.CC.LogicControl.Enabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolTRUE);
+				action:{TargetSpeed:=0;}
+		}
+		transition t23{
+				source: CruiseControl.CC.LogicControl.Enabled;
+				destination: CruiseControl.CC.LogicControl.Disabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolFALSE);
+				action:{TargetSpeed:=0;CC_Engaged:=BoolFALSE;}
+		}
+		transition t26{
+				source: CruiseControl.CC.LogicControl.Enabled;
+				destination: CruiseControl.CC.LogicControl.Disabled;
+				trigger: Error;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+		}
+	}
+	state SpeedSetting{
+		REGION
+		entry:{}
+		exit:{}
+			state IncSpeed{
+				entry:{}
+				exit:{}
+			}
+			state DecSpeed{
+				entry:{}
+				exit:{}
+			}
+			state HoldSpeed{
+				entry:{}
+				exit:{}
+			}
+		transition t27{
+				source: CruiseControl.CC.SpeedSetting.DecSpeed;
+				destination: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				trigger: ResumeCoastOut;
+				guard:(true);
+				action:{}
+		}
+		transition t28{
+				source: CruiseControl.CC.SpeedSetting.IncSpeed;
+				destination: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>0)||(CC_Engaged=BoolFALSE);
+				action:{}
+		}
+		transition t30{
+				source: CruiseControl.CC.SpeedSetting.DecSpeed;
+				destination: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>0)||(CC_Engaged=BoolFALSE);
+				action:{}
+		}
+		transition t31{
+				source: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				destination: CruiseControl.CC.SpeedSetting.IncSpeed;
+				trigger: SetAccelIn;
+				guard:(CC_Engaged=BoolTRUE);
+				action:{TargetSpeed:=Speed;}
+		}
+		transition t32{
+				source: CruiseControl.CC.SpeedSetting.IncSpeed;
+				destination: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				trigger: SetAccelOut;
+				guard:(true);
+				action:{}
+		}
+		transition t33{
+				source: CruiseControl.CC.SpeedSetting.IncSpeed;
+				destination: CruiseControl.CC.SpeedSetting.IncSpeed;
+				trigger: No_event;
+				guard:(TargetSpeed<100);
+				action:{TargetSpeed:=TargetSpeed+1;}
+		}
+		transition t34{
+				source: CruiseControl.CC.SpeedSetting.DecSpeed;
+				destination: CruiseControl.CC.SpeedSetting.DecSpeed;
+				trigger: No_event;
+				guard:(TargetSpeed>0);
+				action:{TargetSpeed:=TargetSpeed-1;}
+		}
+		transition t35{
+				source: CruiseControl.CC.SpeedSetting.HoldSpeed;
+				destination: CruiseControl.CC.SpeedSetting.DecSpeed;
+				trigger: ResumeCoastIn;
+				guard:(CC_Engaged=BoolTRUE);
+				action:{TargetSpeed:=Speed;}
+		}
+		
+		
+		
+	}
+	
+  }
+}

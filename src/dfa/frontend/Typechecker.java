@@ -713,14 +713,14 @@ public class Typechecker {
         }
       }
       // checking for exactly one final state
-      if(num_of_final_states < 1)
+      /*if(num_of_final_states < 1)
       {
         throw new Exception("State: " + state.name + " has no FINAL states");
       }
       else if(num_of_final_states > 1)
       {
         throw new Exception("State: " + state.name + " has multiple FINAL states");
-      }
+      }*/
     }
   }
 

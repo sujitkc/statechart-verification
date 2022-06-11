@@ -1,0 +1,36 @@
+statechart sc {
+events{
+e;
+}
+entry:{}
+exit:{}
+  state s1 {
+	SHELL
+	x:int:local;
+	state R1{
+		REGION
+		x:int:local;
+	}
+	state R2{
+		REGION
+		x:int:local;
+	}
+	state fin{
+		REGION
+	}
+  }
+
+  state s2 {
+	x:int:local;
+  }
+
+  
+  	transition t19{
+    source: sc.s1;
+    destination: sc.s2;
+    trigger: e;
+    guard:true;
+    action:{}
+    }
+
+}

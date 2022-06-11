@@ -96,7 +96,8 @@ terminal Symbol
     TRUE, FALSE,                                         /* Constants                */
     STRUCT, TYPES, TYPE,                                 /* User defined types       */
     FUNCTIONS,                                           /* Functions                */
-    HISTORY, SHELL, REGION, FIN
+ /*   HISTORY, SHELL, REGION, FIN*/
+	HISTORY, SHELL, REGION
     ;
 
 precedence nonassoc LE, LT, EQ, NE, GE, GT;
@@ -360,7 +361,7 @@ state ::=
     :}
   ;
 
-state ::= 
+/*state ::= 
     STATE IDENTIFIER:id LBRACE
       FIN
       decl_list:dlist
@@ -371,7 +372,7 @@ state ::=
     {:
       RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(true));
     :}
-  ;
+  ;*/
 
 state ::= 
     STATE IDENTIFIER:id LBRACE

@@ -1,0 +1,110 @@
+// Evaluates the behavior for when History is maintained
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  ParkAssist{
+  
+  events {
+	e;
+	Next;
+	No_event;
+	Error;
+  }
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  PA_Enabled : boolean : local;
+  PA_HVI : int : local;
+  Speed: int: local;
+  entry : {
+	BoolTRUE:=true;
+	BoolFALSE:=false;
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state Fail{
+		entry:{}
+		exit:{}
+	}
+	state Disabled{
+		entry:{}
+		exit:{}
+	}
+	state Enabled{
+		entry:{}
+		exit:{}
+			state Idle{
+				entry:{}
+				exit:{}
+			}
+			state Searching{
+				entry:{}
+				exit:{}
+			}
+			state Prompting{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				entry:{}
+				exit:{}
+				state SwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state SwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state Center{
+					entry:{}
+					exit:{}
+				}
+				state Stop1{
+					entry:{}
+					exit:{}
+				}
+				state Stop2{
+					entry:{}
+					exit:{}
+				}
+			}
+			state Abort{
+					entry:{}
+					exit:{}
+			}
+	}
+	
+	transition t29{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition t20{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition t33{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition t35{
+		source: ParkAssist.Enabled.Engaged.Stop2;
+		destination: ParkAssist.Disabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+}
