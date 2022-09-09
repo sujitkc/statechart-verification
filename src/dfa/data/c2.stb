@@ -1,0 +1,38 @@
+//atomic default-test - multi level
+statechart  c1{
+  
+  events {
+	e;
+	No_event;
+	Error;
+  }
+  entry : {
+    }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state c12{
+		entry:{}
+		exit:{}
+        state c11{
+		    entry:{}
+		    exit:{}
+            state c131{
+		entry:{}
+		exit:{}
+        state c132{
+		    entry:{}
+		    exit:{}
+	    }
+        }
+        }
+    }
+    
+    state c13{
+		entry:{}
+		exit:{}
+        
+	}
+}

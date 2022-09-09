@@ -12,9 +12,19 @@ public class ConStaBLSimulator{
         {
             
             this.statechart=statechart;
-            this.activeConfiguration=new Configuration();
-            this.sourceConfiguration=new Configuration();
-            this.destConfiguration=new Configuration();
+            ArrayList<State> astate=new ArrayList<State>();
+            //add the main statechart
+            astate.add(this.statechart);
+            //recursively get the atomic state of the statechart
+            astate.addAll(this.getDefaultAtomicSubState(astate));
+            //remove statechart from the list and retain only the atomic states.
+            astate.remove(this.statechart);
+            
+            System.out.println("Atomic substates are :"+ astate);
+
+            this.activeConfiguration=new Configuration(astate);
+            this.sourceConfiguration=new Configuration(null);
+            this.destConfiguration=new Configuration(null);
             
             /* adding events into the queue */
             this.eventQueue.add("init");
@@ -26,17 +36,40 @@ public class ConStaBLSimulator{
             //this.statechart=augumentStatechart();   
             // I will work on augumenting later...
 
-            System.out.println(this.statechart);         
+            //System.out.println(this.statechart);         
             System.out.println("Event Queue : "+this.eventQueue.toString());
             //String e;
+            
+
             for(String e : eventQueue){
                 takeTransition(e);
             }
             
         
         }
+        public List<State> getDefaultAtomicSubState(ArrayList<State> substate){
+            ArrayList<State> returnsubstates=new ArrayList<State>();
+            int i=0, count=0;
+            
+            for(i=0;i<substate.size();i++){
+            //    System.out.println("size :"+(substate.get(i)).states.size());
+    
+                if((substate.get(i)).states.size()!=0)
+                    returnsubstates.add(i,(substate.get(i)).states.get(0));
+                else
+                    returnsubstates.add(i,substate.get(i));
+            }
+            //System.out.println("returnsubstates :"+returnsubstates);
+            
+            if(returnsubstates.equals(substate))
+                return returnsubstates;
+            else
+                return getDefaultAtomicSubState(returnsubstates);
+
+        }
         public void takeTransition(String e){
             System.out.println("Taking transition for the event : "+ e);
+
         }
         public Statechart augumentStatechart(){
                 //Creating a Dummy state

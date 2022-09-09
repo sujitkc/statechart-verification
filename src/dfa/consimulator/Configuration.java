@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class Configuration{
     ArrayList<State> activestates;
-    public Configuration(){
-        activestates=new ArrayList<State>();
+    public Configuration(ArrayList<State> activestates){
+        this.activestates=activestates;
     }
 
 }
