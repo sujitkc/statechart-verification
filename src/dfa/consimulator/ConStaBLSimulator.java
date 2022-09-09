@@ -55,7 +55,13 @@ public class ConStaBLSimulator{
             //    System.out.println("size :"+(substate.get(i)).states.size());
     
                 if((substate.get(i)).states.size()!=0)
-                    returnsubstates.add(i,(substate.get(i)).states.get(0));
+                {
+                    if(substate.get(i) instanceof ast.Shell)
+                        returnsubstates.addAll(i,(substate.get(i)).states);
+                    else    
+                        returnsubstates.add(i,(substate.get(i)).states.get(0));
+                
+                }
                 else
                     returnsubstates.add(i,substate.get(i));
             }

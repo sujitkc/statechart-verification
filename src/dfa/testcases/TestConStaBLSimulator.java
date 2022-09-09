@@ -40,7 +40,7 @@ public class TestConStaBLSimulator {
 
     Statechart statechart = null;
     //String input = "data/curfew_structs_minimal.txt";
-	String input="data/CruiseControl.stb";
+	String input="data/c3.stb";
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {
