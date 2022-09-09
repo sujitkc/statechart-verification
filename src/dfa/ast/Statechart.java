@@ -49,6 +49,8 @@ public class Statechart extends State {
     }
 
     this.initialiseTransitions();
+    
+    
   }
 
   private void addType(Type t) {

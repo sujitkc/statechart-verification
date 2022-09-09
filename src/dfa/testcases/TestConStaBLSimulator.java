@@ -77,6 +77,8 @@ public class TestConStaBLSimulator {
     }
     catch(Exception e) {
       System.out.println("Something Went Wrong!\n");
+      e.printStackTrace();
+     
       System.exit(1);
     }
   }

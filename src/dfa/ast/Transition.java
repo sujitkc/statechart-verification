@@ -46,6 +46,7 @@ public class Transition {
     this.action          = action;
   }
 
+
   public State getSource() {
     return this.source;
   }
@@ -129,12 +130,20 @@ public class Transition {
   }
 
   public String toString() {
-    String s = "\ntransition " + this.name + "{\n";
-    s += "source : " + this.source.getFullName() + "\n";
-    s += "destination : " + this.destination.getFullName() + "\n";
-    s += "guard : " + this.guard + "\n";
-    s += "action : " + this.action + "\n";
-    s += "\n}\n";
-    return s;
+    String s="";
+    try{
+      s += "\ntransition " + this.name + "{\n";
+      s += "source : " + this.source.getFullName() + "\n";
+      s += "destination : " + this.destination.getFullName() + "\n";
+      s += "guard : " + this.guard + "\n";
+      s += "action : " + this.action + "\n";
+      s += "\n}\n";
+      return s;
+    }
+    catch(Exception e){
+      e.printStackTrace();
+      return s;
+    }
+    
   }
 }

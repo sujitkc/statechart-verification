@@ -4,6 +4,9 @@ import ast.*;
 import java.util.ArrayList;
 
 public class Configuration{
-    ArrayList<State> activestates=new ArrayList<State>();
+    ArrayList<State> activestates;
+    public Configuration(){
+        activestates=new ArrayList<State>();
+    }
 
 }
