@@ -633,7 +633,7 @@ public class Typechecker {
       throw new Exception("Typechecking failed for transition : " + transition.name +
         ". Its destination is a REGION state.");
     }
-    if(transition.getDestination().isFinalState().value & !transition.getSource().isRegionState().value)
+    /*if(transition.getDestination().isFinalState().value & !transition.getSource().isRegionState().value)
     {
       throw new Exception("Typechecking failed for transition : " + transition.name);
     }
@@ -644,7 +644,7 @@ public class Typechecker {
       {
         throw new Exception("Typechecking failed for transition : " + transition.name);
       }
-    }
+    }*/
     this.typecheckTrigger(transition.trigger);
     this.typecheckGuard(transition.guard, transition.getReadEnvironment());
     this.typecheckStatement(transition.action,
@@ -692,15 +692,15 @@ public class Typechecker {
         {
           throw new Exception("REGION State: '" + s.name + "' in state " + state.name + " (which is not a SHELL state)");
         }
-        else if(s.isFinalState().value)
+        /*else if(s.isFinalState().value)
         {
           throw new Exception("FINAL State: '" + s.name + "' in state " + state.name + " (which is not a SHELL state)");
-        }
+        }*/
       }
     }
     else // SHELL state can only have REGION states or FINAL states
     {
-      int num_of_final_states = 0; // SHELL states should have exactly one FINAL state
+      /*int num_of_final_states = 0; // SHELL states should have exactly one FINAL state
       for(State s : state.states)
       {
         if((!s.isRegionState().value) & (!s.isFinalState().value))
@@ -711,7 +711,7 @@ public class Typechecker {
         {
           num_of_final_states++;
         }
-      }
+      }*/
       // checking for exactly one final state
       /*if(num_of_final_states < 1)
       {

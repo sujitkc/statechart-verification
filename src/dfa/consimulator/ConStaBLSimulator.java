@@ -80,9 +80,6 @@ public class ConStaBLSimulator{
                 List<State>       states=new ArrayList<State>();
                 List<Transition>  transitions=new ArrayList<Transition>();
                 BooleanConstant   history=new BooleanConstant(false);
-                BooleanConstant   region=new BooleanConstant(false);
-                BooleanConstant   shell=new BooleanConstant(false);
-                BooleanConstant   fin=new BooleanConstant(false);
                 State dummy=new State(
                     name,
                     declarations,
@@ -90,10 +87,8 @@ public class ConStaBLSimulator{
                     exit,
                     states,
                     transitions,
-                    history,
-                    region,
-                    shell,
-                    fin);
+                    history
+                    );
                 dummy.setStatechart(null);
                 //Dummy state creation ends
                 this.statechart.states.add(dummy);

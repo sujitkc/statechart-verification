@@ -12,9 +12,9 @@ public class State {
   public final Statement entry;
   public final Statement exit;
   public final BooleanConstant history;
-  public final BooleanConstant shell;
-  public final BooleanConstant region;
-  public final BooleanConstant fin;
+  //public final BooleanConstant shell;
+  //public final BooleanConstant region;
+  //public final BooleanConstant fin;
   
 
   protected Statechart  statechart  = null;
@@ -29,11 +29,11 @@ public class State {
       Statement         exit,
       List<State>       states,
       List<Transition>  transitions,
-      BooleanConstant   history,
-      BooleanConstant   region,
+      BooleanConstant   history
+     ) {
+/* BooleanConstant   region,
       BooleanConstant   shell,
-      BooleanConstant   fin) {
-
+      BooleanConstant   fin*/
     this.name         = name;
     this.declarations = declarations;
     this.entry        = entry;
@@ -41,9 +41,9 @@ public class State {
     this.states       = states;
     this.transitions  = transitions;
     this.history      = history;
-    this.shell        = shell;
-    this.region       = region;
-    this.fin          = fin;
+    //this.shell        = shell;
+    //this.region       = region;
+    //this.fin          = fin;
 
     for(State st : this.states) {
       st.setSuperstate(this);
@@ -161,16 +161,22 @@ public class State {
   }
 
   public BooleanConstant isShellState() {
-    return this.shell;
+    if(this instanceof ast.Shell)
+      return new BooleanConstant(true);
+    else
+      return new BooleanConstant(false);
   }
 
   public BooleanConstant isRegionState() {
-    return this.region;
+    if(this.getSuperstate() instanceof ast.Shell)
+      return new BooleanConstant(true);
+    else
+      return new BooleanConstant(false);
   }
 
-  public BooleanConstant isFinalState() {
+  /*public BooleanConstant isFinalState() {
     return this.fin;
-  }
+  }*/
 
   public String toString() {
     String s = "\nstate " + this.name + "{\n";

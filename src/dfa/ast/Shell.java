@@ -4,22 +4,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class Statechart extends State {
+public class Shell extends State {
 
-  public final List<Type> types = new ArrayList<Type>();
-  public final List<String> events;
-  public final List<FunctionDeclaration> functionDeclarations;
-
-  public Statechart(
+ 
+  public Shell(
       String                    name,
-      List<Type>                moreTypes,
-      List<String>              events,
       DeclarationList           declarations,
       Statement                 entry,
       Statement                 exit,
-      List<FunctionDeclaration> functionDeclarations,
       List<State>               states,
-      List<Transition>          transitions,
       BooleanConstant           history
       
       ) throws Exception {
@@ -28,39 +21,13 @@ public class Statechart extends State {
       BooleanConstant           fin
 */
   //  super(name, declarations, entry, exit, states, transitions, history, region, shell, fin);
-  super(name, declarations, entry, exit, states, transitions, history);
+  super(name, declarations, entry, exit, states, new ArrayList<Transition>(), history);
 
-    this.addType(new BasicType("int"));
-    this.addType(new BasicType("boolean"));
-    this.addType(new BasicType("string"));
-
-    for(Type t : moreTypes) {
-      this.addType(t);
-    }
-
-    this.events = events;
-    this.functionDeclarations = functionDeclarations;
-
-    this.statechart = null;
-    for(State s : this.states) {
-      s.setStatechart(this);
-    }
-
-    for(Transition t : this.transitions) {
-      t.setStatechart(this);
-    }
-
-    this.initialiseTransitions();
     
     
   }
 
-  private void addType(Type t) {
-    if((this.types.contains(t)) == false) {
-      this.types.add(t);
-    }
-  }
-
+ 
   public State lub(State s1, State s2) {
     List<State> a1 = s1.getAllSuperstates();
     List<State> a2 = s2.getAllSuperstates();
@@ -86,19 +53,9 @@ public class Statechart extends State {
   }
 
   public String toString() {
-    String s = "startchart " + this.name + " {\n";
+    String s = "shell " + this.name + " {\n";
 
-    s += "types {\n";
-    for(Type t : this.types) {
-      s += t.toString();
-    }
-    s += "}\n";
-
-    s += "events {\n";
-    for(String event : this.events) {
-      s += "\t" + event + ";\n";
-    }
-    s += "}\n";
+    
 
     if(this.declarations != null) {
       for(Declaration d : this.declarations) {
@@ -109,11 +66,6 @@ public class Statechart extends State {
     s += "\nentry : " + this.entry + "\n"; 
     s += "\nexit : " + this.exit + "\n";
 
-    s += "functions {\n";
-    for(FunctionDeclaration fdec : this.functionDeclarations) {
-      s += fdec.toString() + ";\n";
-    }
-    s += "}\n";
     for(State st : this.states) {
       s += st.toString();
     }

@@ -133,7 +133,7 @@ statechart ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(false),  new ast.BooleanConstant(false),  new ast.BooleanConstant(false),  new ast.BooleanConstant(false));
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(false));
     :}
   ;
 
@@ -149,7 +149,7 @@ statechart ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(true),  new ast.BooleanConstant(false),  new ast.BooleanConstant(false),  new ast.BooleanConstant(false));
+      RESULT = new ast.Statechart(id, tlist, el, dlist, en, ex, fdecls, st, tr,  new ast.BooleanConstant(true));
     :}
   ;
 
@@ -343,74 +343,31 @@ state ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(true), new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(false));
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(true));
     :}
   ;
 
 state ::= 
-    STATE IDENTIFIER:id LBRACE
+    SHELL IDENTIFIER:id LBRACE
       HISTORY
-      REGION
       decl_list:dlist
       entry_clause:en
       exit_clause:ex
-      states:st transitions:tr
+      states:st 
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(true), new ast.BooleanConstant(false), new ast.BooleanConstant(true), new ast.BooleanConstant(false));
+      RESULT = new ast.Shell(id, dlist, en, ex, st,  new ast.BooleanConstant(true));
     :}
   ;
-
-/*state ::= 
-    STATE IDENTIFIER:id LBRACE
-      FIN
-      decl_list:dlist
-      entry_clause:en
-      exit_clause:ex
-      states:st transitions:tr
-    RBRACE
-    {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(true));
-    :}
-  ;*/
-
 state ::= 
-    STATE IDENTIFIER:id LBRACE
-      REGION
+    SHELL IDENTIFIER:id LBRACE
       decl_list:dlist
       entry_clause:en
       exit_clause:ex
-      states:st transitions:tr
+      states:st 
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(true), new ast.BooleanConstant(false), new ast.BooleanConstant(false));
-    :}
-  ;
-
-state ::= 
-    STATE IDENTIFIER:id LBRACE
-      SHELL
-      decl_list:dlist
-      entry_clause:en
-      exit_clause:ex
-      states:st transitions:tr
-    RBRACE
-    {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(true), new ast.BooleanConstant(false));
-    :}
-  ;
-
-state ::= 
-    STATE IDENTIFIER:id LBRACE
-      SHELL
-      REGION
-      decl_list:dlist
-      entry_clause:en
-      exit_clause:ex
-      states:st transitions:tr
-    RBRACE
-    {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(true), new ast.BooleanConstant(true), new ast.BooleanConstant(false));
+      RESULT = new ast.Shell(id, dlist, en, ex, st,  new ast.BooleanConstant(true));
     :}
   ;
 
@@ -422,9 +379,10 @@ state ::=
       states:st transitions:tr
     RBRACE
     {:
-      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(false), new ast.BooleanConstant(false));
+      RESULT = new ast.State(id, dlist, en, ex, st, tr,  new ast.BooleanConstant(false));
     :}
   ;
+
 
 entry_clause ::=
     ENTRY COLON statement:a

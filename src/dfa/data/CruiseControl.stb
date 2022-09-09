@@ -27,15 +27,15 @@ statechart  CruiseControl{
   functions {
   input<||>() : int;
   }
-  state CC{
-	SHELL
+  shell CC{
+	
 	BrakePedal : int : local;
 	CC_Engaged : boolean : local;
 	TargetSpeed : int : local;
 	Speed:int:local;
 
 	state LogicControl{
-	REGION
+	//REGION
 	
 	entry:{
 		CC_Enabled:=true;
@@ -162,7 +162,7 @@ statechart  CruiseControl{
 		}
 	}
 	state SpeedSetting{
-		REGION
+		//REGION
 		entry:{}
 		exit:{}
 			state IncSpeed{

@@ -39,6 +39,7 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 <YYINITIAL>"else"           { /* System.out.println("else");         */ return new Symbol(sym.ELSE, yyline, yycolumn, null);       }
 <YYINITIAL>"statechart"     { /* System.out.println("statechart");   */ return new Symbol(sym.STATECHART, yyline, yycolumn, null); }
 <YYINITIAL>"state"          { /* System.out.println("state");        */ return new Symbol(sym.STATE, yyline, yycolumn, null);      }
+<YYINITIAL>"shell"          { /* System.out.println("shell state");        */ return new Symbol(sym.SHELL, yyline, yycolumn, null);      }
 <YYINITIAL>"transition"     { /* System.out.println("transition");   */ return new Symbol(sym.TRANSITION, yyline, yycolumn, null); }
 <YYINITIAL>"source"         { /* System.out.println("source");       */ return new Symbol(sym.SRC, yyline, yycolumn, null);        }
 <YYINITIAL>"destination"    { /* System.out.println("destination");  */ return new Symbol(sym.DEST, yyline, yycolumn, null);       }
@@ -53,8 +54,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 <YYINITIAL>"events"         { /* System.out.println("events");       */ return new Symbol(sym.EVENTS, yyline, yycolumn, null);     }
 <YYINITIAL>"functions"      { /* System.out.println("functions");    */ return new Symbol(sym.FUNCTIONS, yyline, yycolumn, null);  }
 <YYINITIAL>"HISTORY"        {                                           return new Symbol(sym.HISTORY, yyline, yycolumn, null);    }
-<YYINITIAL>"SHELL"          {                                           return new Symbol(sym.SHELL, yyline, yycolumn, null);      }
-<YYINITIAL>"REGION"         {                                           return new Symbol(sym.REGION, yyline, yycolumn, null);     }
+//<YYINITIAL>"SHELL"          {                                           return new Symbol(sym.SHELL, yyline, yycolumn, null);      }
+//<YYINITIAL>"REGION"         {                                           return new Symbol(sym.REGION, yyline, yycolumn, null);     }
 /*<YYINITIAL>"FIN"            {                                           return new Symbol(sym.FIN, yyline, yycolumn, null);        }*/
 
 <YYINITIAL>"."              { /* System.out.println("DOT");          */ return new Symbol(sym.DOT, yyline, yycolumn, null);        }
