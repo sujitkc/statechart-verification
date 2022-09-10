@@ -28,8 +28,8 @@ import ast.Statechart;
 import ast.Transition;
 import ast.Environment;
 import ast.Declaration;
-import ast.Name;
-import consimulator.*;
+import ast.*;
+import constabl.*;
 public class TestConStaBLSimulator {
 
   @Test

@@ -51,7 +51,7 @@ public class ConStaBLSimulator{
         }
         public List<State> getDefaultAtomicSubState(ArrayList<State> substate){
             ArrayList<State> returnsubstates=new ArrayList<State>();
-            int i=0, count=0;
+            int i=0;
             
             for(i=0;i<substate.size();i++){
             //    System.out.println("size :"+(substate.get(i)).states.size());
@@ -90,8 +90,13 @@ public class ConStaBLSimulator{
                     allTransitionsInConfiguration.addAll(sup.transitions);                    
                 }
             }
+            System.out.println("Source states found : ");
+            for(State s:allSourceStatesInConfiguration){
+                System.out.println(s.name);
+            }
             System.out.println("All transitions found: "+allTransitionsInConfiguration);
             for(Transition t: allTransitionsInConfiguration){
+                //System.out.println("source state : "+ t.getSource().name + "in "+ allSourceStatesInConfiguration);
                 if(allSourceStatesInConfiguration.contains(t.getSource())){
                     System.out.println("match found");
                 }

@@ -44,12 +44,12 @@ statechart  c4{
             entry:{}
             exit:{}
         }    
-        state c132{
+        state c133{
             entry:{}
             exit:{}
         }
     transition t16{
-	source: c4.c13;
+	source: c4.c12;
     destination: c4.c12;
     trigger: e;
     guard:(true);
@@ -58,14 +58,14 @@ statechart  c4{
     
 	}
     transition t17{
-	source: c4.c13;
+	source: c4.c12;
     destination: c4.c12;
     trigger: e;
     guard:(true);
     action:{}
 	}
     transition t18{
-	source: c4.c13;
+	source: c4.c12;
     destination: c4.c12;
     trigger: e;
     guard:(true);
