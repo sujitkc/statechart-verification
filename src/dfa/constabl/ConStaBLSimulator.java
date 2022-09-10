@@ -47,9 +47,18 @@ public class ConStaBLSimulator{
                 System.out.println("Selected event : "+e);
                 ArrayList<Transition> activeTransitions=findTransitions(e,activeConfiguration);
                 System.out.println(activeTransitions);
+                for(Transition t:activeTransitions){
+                    //For each transition, identify its source and destination and compute the program
+                    //case 1 - two transitions are from a state and its ancestor
+                    //case 2 - two transitions are from different regions of a shell state
+                }
             }
             
+
         
+        }
+        public State getLUB_Source_Ancestor(){
+            return null;
         }
         public List<State> getDefaultAtomicSubState(ArrayList<State> substate){
             ArrayList<State> returnsubstates=new ArrayList<State>();
