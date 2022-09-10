@@ -1,4 +1,4 @@
-package actionprogram;
+package constabl.actionprogram;
 
 import ast.*;
 

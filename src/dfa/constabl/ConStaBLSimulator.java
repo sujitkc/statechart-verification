@@ -1,5 +1,7 @@
-package consimulator;
+package constabl;
 import ast.*;
+import constabl.consimulator.Configuration;
+
 import java.util.*;
 
 public class ConStaBLSimulator{
@@ -42,7 +44,7 @@ public class ConStaBLSimulator{
             
 
             for(String e : eventQueue){
-                takeTransition(e);
+                findTransitions(e,activeConfiguration);
             }
             
         
@@ -73,9 +75,31 @@ public class ConStaBLSimulator{
                 return getDefaultAtomicSubState(returnsubstates);
 
         }
+        public void findTransitions(String e, Configuration c){
+            System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
+            ArrayList<Transition> allTransitionsInConfiguration=new ArrayList<Transition>();
+            ArrayList<State> allSourceStatesInConfiguration=new ArrayList<State>();
+            allSourceStatesInConfiguration.addAll(c.activestates);
+            // adding all the superstates of the states in the current configuration
+            for(State s:c.activestates){
+                allTransitionsInConfiguration.addAll(s.transitions);
+                ArrayList<State> superstates=new ArrayList<State>();
+                superstates.addAll(s.getAllSuperstates());
+                allSourceStatesInConfiguration.addAll(superstates);  
+                for(State sup:superstates){
+                    allTransitionsInConfiguration.addAll(sup.transitions);                    
+                }
+            }
+            System.out.println("All transitions found: "+allTransitionsInConfiguration);
+            for(Transition t: allTransitionsInConfiguration){
+                if(allSourceStatesInConfiguration.contains(t.getSource())){
+                    System.out.println("match found");
+                }
+            }
+        }
         public void takeTransition(String e){
             System.out.println("Taking transition for the event : "+ e);
-
+            
         }
         public Statechart augumentStatechart(){
                 //Creating a Dummy state

@@ -29,7 +29,7 @@ constabl-lp:
 
 constabl-build:
 	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:./;
-	javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java consimulator/*.java consimulator/actionprogram/*.java testcases/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:./;
+	javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java constabl/*.java constabl/actionprogram/*.java constabl/consimulator/*.java constabl/actionprogram/*.java testcases/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:./;
 
 constabl-test:
 	javac -Xlint:-unchecked -d classes testcases/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:./;

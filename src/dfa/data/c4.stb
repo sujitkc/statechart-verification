@@ -1,0 +1,74 @@
+//transitions under configuration - one transition
+statechart  c4{
+  
+  events {
+	e;
+	No_event;
+	Error;
+  }
+  entry : {
+    }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state c12{
+		entry:{}
+		exit:{}
+        state c11{
+		    entry:{}
+		    exit:{}
+            state c131{
+		entry:{}
+		exit:{}
+        state c132{
+		    entry:{}
+		    exit:{}
+	    }
+        transition t15{
+	source: c4.c13;
+    destination: c4.c12;
+    trigger: e;
+    guard:(true);
+    action:{}
+	}
+        }
+        }
+    }
+    
+    state c13{
+		entry:{}
+		exit:{}
+        state c131{
+            entry:{}
+            exit:{}
+        }    
+        state c132{
+            entry:{}
+            exit:{}
+        }
+    transition t16{
+	source: c4.c13;
+    destination: c4.c12;
+    trigger: e;
+    guard:(true);
+    action:{}
+	}
+    
+	}
+    transition t17{
+	source: c4.c13;
+    destination: c4.c12;
+    trigger: e;
+    guard:(true);
+    action:{}
+	}
+    transition t18{
+	source: c4.c13;
+    destination: c4.c12;
+    trigger: e;
+    guard:(true);
+    action:{}
+	}
+}
