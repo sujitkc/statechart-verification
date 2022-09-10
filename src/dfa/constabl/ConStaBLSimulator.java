@@ -44,7 +44,9 @@ public class ConStaBLSimulator{
             
 
             for(String e : eventQueue){
-                findTransitions(e,activeConfiguration);
+                System.out.println("Selected event : "+e);
+                ArrayList<Transition> activeTransitions=findTransitions(e,activeConfiguration);
+                System.out.println(activeTransitions);
             }
             
         
@@ -75,10 +77,13 @@ public class ConStaBLSimulator{
                 return getDefaultAtomicSubState(returnsubstates);
 
         }
-        public void findTransitions(String e, Configuration c){
+        public ArrayList<Transition> findTransitions(String e, Configuration c){
             System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
             ArrayList<Transition> allTransitionsInConfiguration=new ArrayList<Transition>();
             ArrayList<State> allSourceStatesInConfiguration=new ArrayList<State>();
+            
+            ArrayList<Transition> selectedTransitions=new ArrayList<Transition>();
+            
             allSourceStatesInConfiguration.addAll(c.activestates);
             // adding all the superstates of the states in the current configuration
             for(State s:c.activestates){
@@ -90,17 +95,19 @@ public class ConStaBLSimulator{
                     allTransitionsInConfiguration.addAll(sup.transitions);                    
                 }
             }
-            System.out.println("Source states found : ");
-            for(State s:allSourceStatesInConfiguration){
+            //System.out.println("Source states found : ");
+            /*for(State s:allSourceStatesInConfiguration){
                 System.out.println(s.name);
-            }
-            System.out.println("All transitions found: "+allTransitionsInConfiguration);
+            }*/
+            //System.out.println("All transitions found: "+allTransitionsInConfiguration);
             for(Transition t: allTransitionsInConfiguration){
                 //System.out.println("source state : "+ t.getSource().name + "in "+ allSourceStatesInConfiguration);
-                if(allSourceStatesInConfiguration.contains(t.getSource())){
-                    System.out.println("match found");
+                if(allSourceStatesInConfiguration.contains(t.getSource())&&t.trigger.equals(e))
+                {
+                    selectedTransitions.add(t);
                 }
             }
+            return selectedTransitions;
         }
         public void takeTransition(String e){
             System.out.println("Taking transition for the event : "+ e);

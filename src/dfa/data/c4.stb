@@ -51,7 +51,7 @@ statechart  c4{
     transition t16{
 	source: c4.c12;
     destination: c4.c12;
-    trigger: e;
+    trigger: e1;
     guard:(true);
     action:{}
 	}
@@ -60,7 +60,7 @@ statechart  c4{
     transition t17{
 	source: c4.c12;
     destination: c4.c12;
-    trigger: e;
+    trigger: e1;
     guard:(true);
     action:{}
 	}

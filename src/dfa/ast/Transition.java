@@ -135,6 +135,7 @@ public class Transition {
       s += "\ntransition " + this.name + "{\n";
       s += "source : " + this.source.getFullName() + "\n";
       s += "destination : " + this.destination.getFullName() + "\n";
+      s += "trigger : " + this.trigger + "\n";
       s += "guard : " + this.guard + "\n";
       s += "action : " + this.action + "\n";
       s += "\n}\n";
