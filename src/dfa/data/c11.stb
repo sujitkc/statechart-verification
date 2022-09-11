@@ -1,0 +1,68 @@
+//c9>C>A,B
+//c9>C>A>A1,A2
+//c9>C>B>B1,B2
+
+//transition t1 out from A1 to C
+//transition t2 out from B1 to C
+statechart  c9{
+  
+  events {
+	e;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	shell Sh{
+		entry:{}
+		exit:{}
+	    state A{
+		    entry:{}
+		    exit:{}
+            state A1{
+                entry:{}
+                exit:{}
+            }
+            state A2{
+                entry:{}
+                exit:{}
+            }
+
+        }
+        state B{
+		    entry:{}
+		    exit:{}
+            state B1{
+                entry:{}
+                exit:{}
+            }
+            state B2{
+                entry:{}
+                exit:{}
+            }
+
+	    }
+    }
+
+    state C{
+        entry:{}
+		exit:{}
+	    
+    }
+    transition t1{
+        source: c5.Sh.A.A1;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    transition t2{
+        source: c5.Sh.B.B1;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    
+}

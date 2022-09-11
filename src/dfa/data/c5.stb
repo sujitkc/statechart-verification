@@ -1,0 +1,44 @@
+//c5>B>A
+//c5>C
+//transition t1 out from B
+//transition t2 out from A
+statechart  c5{
+  
+  events {
+	e;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state B{
+		entry:{}
+		exit:{}
+	    state A{
+		    entry:{}
+		    exit:{}
+	    }
+    }
+
+    state C{
+        entry:{}
+		exit:{}
+	    
+    }
+    transition t1{
+        source: c5.B;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    transition t2{
+        source: c5.B.A;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    
+}

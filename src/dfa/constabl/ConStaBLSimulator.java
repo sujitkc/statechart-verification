@@ -47,12 +47,28 @@ public class ConStaBLSimulator{
                 System.out.println("Selected event : "+e);
                 ArrayList<Transition> activeTransitions=findTransitions(e,activeConfiguration);
                 System.out.println(activeTransitions);
+                
+                ArrayList<State> activeStates=new ArrayList<State>();
                 for(Transition t:activeTransitions){
                     //For each transition, identify its source and destination and compute the program
                     //case 1 - two transitions are from a state and its ancestor
                     //case 2 - two transitions are from different regions of a shell state
+                    activeStates.add(t.getSource());
                 }
+                for(State s: activeStates){
+                    ArrayList<State> ancestorStates=new ArrayList<State>();
+                    ancestorStates.addAll(s.getAllSuperstates());
+                    ancestorStates.retainAll(activeStates);
+                    if(ancestorStates.size()!=0){
+                        System.out.println("Non Determinism Detected between outgoing transitions of two states :" +s.name+" and "+ ancestorStates);
+                        System.exit(0);
+                    }
+                    //if(checkStates.contains(s.getAllSuperstates()))
+                }
+
             }
+
+
             
 
         
