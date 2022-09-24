@@ -125,18 +125,36 @@ public class ConStaBLSimulator{
         
         }
         public void computeExitExecutionSequence(Configuration config, State LUB){
-            if(config.activestates.size()>0){
+            if(config.activestates.size()>1){
                 ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                 for(State exitstate:config.activestates){
                     SequentialExecutionSequence ses=new SequentialExecutionSequence();
-                    ses.stateList.addAll(exitUntilShell(exitstate, ses.stateList));
+                    ses.stateList.addAll(exitUntilShell(exitstate, new ArrayList<State>()));
                     ces.sequencelist.add(ses);
                 }
+                exitExecutionSequence.add(ces);
             }
+            else{
+                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                ses.stateList.addAll(exitUntilLub(config.activestates.get(0), LUB, ses.stateList));
+                exitExecutionSequence.add(ses);
+            }
+            System.out.println("Execution Sequence : "+exitExecutionSequence);
+
         }
         public ArrayList<State> exitUntilShell(State s, ArrayList<State> returnList){
 
             if(s instanceof ast.Shell)
+                return returnList;
+            else{
+                System.out.println("Adding : "+s.getFullName());
+                returnList.add(s);
+                return exitUntilShell(s.getSuperstate(), returnList);
+            }
+        }
+        public ArrayList<State> exitUntilLub(State s, State lub, ArrayList<State> returnList){
+
+            if(s == lub)
                 return returnList;
             else{
                 returnList.add(s);

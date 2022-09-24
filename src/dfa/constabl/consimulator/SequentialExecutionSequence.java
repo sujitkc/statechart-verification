@@ -6,9 +6,10 @@ import java.util.ArrayList;
 public class SequentialExecutionSequence extends ExecutionSequence{
     public ArrayList<State> stateList=new ArrayList<State>();
     public String toString(){
-        String s="";
-        
-        return s;
+        String s="{ ";
+        for(State ses: stateList)
+            s+=ses.getFullName()+", ";
+        return s+" }\n";
     }
     public void addState(State s){
         this.stateList.add(s);
