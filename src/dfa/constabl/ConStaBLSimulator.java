@@ -60,8 +60,36 @@ public class ConStaBLSimulator{
                 * List of states to be entered - Ancestor(d) ---- down until the dest(t)
                 */
                 /* Taking one transition and performing the test*/
-                if(activeTransitions.size()>0)
-                    System.out.println("Identified for event :"+e+" : transition :"+activeTransitions.get(0));
+                if(activeTransitions.size()>0){
+                        Transition t=activeTransitions.get(0);
+                        //Identifying all the states that the transition should sequentially exit
+                        State lub=t.lub();
+
+                        System.out.println("identified lub : "+lub.getFullName());
+                       
+                        //Current configuration of the statemachine
+                        State s = t.getSource();
+                        List<State> exitstates=new ArrayList<State>();
+                        boolean shellexitflag=false;
+                        while(s!=lub){
+                            //exitstates.add(s);
+                            s = s.getSuperstate();
+                            if(s instanceof ast.Shell)
+                                shellexitflag=true;
+                        }
+                        
+                        if(shellexitflag){
+                            System.out.println(" Shell exit has to happen");
+                            for(State active : this.activeConfiguration.activestates)
+                                System.out.println("Active configuration : "+active.name);
+                        }
+
+                        System.out.println("Identified for event :"+e+" : transition :"+t.name);
+                        System.out.println("Exit the states : ");
+                        for(State exitstate:exitstates)
+                            System.out.print(exitstate.name+", ");
+
+                    }
                 for(Transition t:activeTransitions){
                     //For each transition, identify its source and destination and compute the program
                     //case 1 - two transitions are from a state and its ancestor

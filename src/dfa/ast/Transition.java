@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Transition {
   public  final String     name;
@@ -46,6 +47,22 @@ public class Transition {
     this.action          = action;
   }
 
+ public State lub() {
+    List<State> a1 = source.getAllSuperstates();
+    List<State> a2 = destination.getAllSuperstates();
+    State cca = null;
+    while(a1.size() != 0 && a2.size() != 0) {
+      if(a1.get(0).equals(a2.get(0))) {
+        cca = a1.get(0);
+        a1.remove(0);
+        a2.remove(0);
+      }
+      else {
+        break;
+      }
+    }
+    return cca;
+  }
 
   public State getSource() {
     return this.source;

@@ -84,7 +84,14 @@ public class Statechart extends State {
     }
     return null;
   }
-
+  public State getStateByName(String name) {
+    for(State s : this.states) {
+      if(s.name.equals(name)) {
+        return s;
+      }
+    }
+    return null;
+  }
   public String toString() {
     String s = "startchart " + this.name + " {\n";
 

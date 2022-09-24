@@ -37,13 +37,13 @@ statechart  c5{
                 entry:{}
                 exit:{}
             }
-            transition t1{
+            /*transition t1{
                 source: c5.Sh.A.A1.A11;
                 destination: c5.Sh.A.A2;
                 trigger: e1;
                 guard:(true);
                 action:{}
-	        }
+	        }*/
         }
         state B{
 		    entry:{}
@@ -88,6 +88,11 @@ statechart  c5{
 		exit:{}
 	    
     }
-    
-    
+    transition t1{
+        source: c5.Sh.A.A1.A11;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
 }

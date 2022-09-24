@@ -6,7 +6,7 @@
 statechart  c4{
   
   events {
-	e2;
+	e1;
 	No_event;
 	Error;
   }
@@ -31,7 +31,7 @@ statechart  c4{
                 transition t15{
                     source: c4.c12.c11.c111;
                     destination: c4.c12;
-                    trigger: e2;
+                    trigger: e1;
                     guard:(true);
                     action:{}
                 }
