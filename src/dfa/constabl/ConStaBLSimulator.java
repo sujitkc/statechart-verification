@@ -1,6 +1,6 @@
 package constabl;
 import ast.*;
-import constabl.consimulator.Configuration;
+import constabl.consimulator.*;
 
 import java.util.*;
 
@@ -9,7 +9,9 @@ public class ConStaBLSimulator{
      private Configuration activeConfiguration;
      private Configuration sourceConfiguration, destConfiguration;
      private Queue<String> eventQueue = new LinkedList<String>();
-
+     private List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
+     private List<ExecutionSequence> entryExecutionSequence=new ArrayList<ExecutionSequence>();
+     
       public ConStaBLSimulator(Statechart statechart) throws Exception
         {
             
@@ -62,33 +64,38 @@ public class ConStaBLSimulator{
                 /* Taking one transition and performing the test*/
                 if(activeTransitions.size()>0){
                         Transition t=activeTransitions.get(0);
+                        computeExitExecutionSequence(activeConfiguration, t.lub());
                         //Identifying all the states that the transition should sequentially exit
                         State lub=t.lub();
 
-                        System.out.println("identified lub : "+lub.getFullName());
+                        //System.out.println("identified lub : "+lub.getFullName());
                        
                         //Current configuration of the statemachine
                         State s = t.getSource();
-                        List<State> exitstates=new ArrayList<State>();
                         boolean shellexitflag=false;
                         while(s!=lub){
                             //exitstates.add(s);
                             s = s.getSuperstate();
-                            if(s instanceof ast.Shell)
+                            if(s instanceof ast.Shell){
                                 shellexitflag=true;
+                                break;
+                            }
+                                
                         }
                         
                         if(shellexitflag){
-                            System.out.println(" Shell exit has to happen");
-                            for(State active : this.activeConfiguration.activestates)
+                            System.out.println("Shell exit has to happen");
+                            for(State active : this.activeConfiguration.activestates){
                                 System.out.println("Active configuration : "+active.name);
+                                
+                            }
                         }
 
                         System.out.println("Identified for event :"+e+" : transition :"+t.name);
-                        System.out.println("Exit the states : ");
+                        /*System.out.println("Exit the states : ");
                         for(State exitstate:exitstates)
                             System.out.print(exitstate.name+", ");
-
+                        */
                     }
                 for(Transition t:activeTransitions){
                     //For each transition, identify its source and destination and compute the program
@@ -116,6 +123,25 @@ public class ConStaBLSimulator{
             
 
         
+        }
+        public void computeExitExecutionSequence(Configuration config, State LUB){
+            if(config.activestates.size()>0){
+                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                for(State exitstate:config.activestates){
+                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                    ses.stateList.addAll(exitUntilShell(exitstate, ses.stateList));
+                    ces.sequencelist.add(ses);
+                }
+            }
+        }
+        public ArrayList<State> exitUntilShell(State s, ArrayList<State> returnList){
+
+            if(s instanceof ast.Shell)
+                return returnList;
+            else{
+                returnList.add(s);
+                return exitUntilShell(s.getSuperstate(), returnList);
+            }
         }
         public State getLUB_Source_Ancestor(){
             return null;
