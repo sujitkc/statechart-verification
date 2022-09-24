@@ -9,7 +9,7 @@ public class SequentialExecutionSequence extends ExecutionSequence{
         String s="{ ";
         for(State ses: stateList)
             s+=ses.getFullName()+", ";
-        return s+" }\n";
+        return s+" } ";
     }
     public void addState(State s){
         this.stateList.add(s);

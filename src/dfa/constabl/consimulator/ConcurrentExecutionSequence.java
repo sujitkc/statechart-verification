@@ -9,7 +9,7 @@ public class ConcurrentExecutionSequence extends ExecutionSequence{
         String s="[ ";
         for(SequentialExecutionSequence ses: sequencelist)
             s+=ses.toString()+", ";
-        return s+" ]\n";
+        return s+" ]";
     }
 
 }
