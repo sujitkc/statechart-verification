@@ -44,20 +44,36 @@ public class ConStaBLSimulator{
             
 
             for(String e : eventQueue){
-                System.out.println("Selected event : "+e);
+                //System.out.println("Selected event : "+e);
                 ArrayList<Transition> activeTransitions=findTransitions(e,activeConfiguration);
-                System.out.println("Transitions identified: "+activeTransitions);
+                //System.out.println("Transitions identified: "+activeTransitions);
                 
                 ArrayList<State> activeStates=new ArrayList<State>();
+                /*
+                Method to find the Sequence of states to be exited and Sequence of states to be entered of each transition.
+                * Given a transition or a destination state - to dynamically bubble down to that state, we need to keep track of the state, as well as whether the state we are currently entering into is one of its ancestors.
+                * If the state that we chose to enter into is not one of the ancestor of destination, we need to pick another state in that OR combination
+                * But this is not so easy to achieve because of the complexity. Consider destination of a transition is a state which is the 100th in the sequence of a parent that you are currently entering - this blows up the check needed
+                * So we need to approach this in bottomup fashion
+                * ofcourse we have an LUB function that gives the state which the transition is contained in.
+                * List of states to be exited - current config --- up until Ancestor(src(t))<LUB
+                * List of states to be entered - Ancestor(d) ---- down until the dest(t)
+                */
+                /* Taking one transition and performing the test*/
+                if(activeTransitions.size()>0)
+                    System.out.println("Identified for event :"+e+" : transition :"+activeTransitions.get(0));
                 for(Transition t:activeTransitions){
                     //For each transition, identify its source and destination and compute the program
                     //case 1 - two transitions are from a state and its ancestor
                     //case 2 - two transitions are from different regions of a shell state
                     activeStates.add(t.getSource());
                 }
+
+                //System.out.println("Active states are : "+activeStates);
                 for(State s: activeStates){
                     ArrayList<State> ancestorStates=new ArrayList<State>();
                     ancestorStates.addAll(s.getAllSuperstates());
+
                     ancestorStates.retainAll(activeStates);
                     if(ancestorStates.size()!=0){
                         System.out.println("Non Determinism Detected between outgoing transitions of two states :" +s.name+" and "+ ancestorStates);
@@ -103,7 +119,7 @@ public class ConStaBLSimulator{
 
         }
         public ArrayList<Transition> findTransitions(String e, Configuration c){
-            System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
+            //System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
             ArrayList<Transition> allTransitionsInConfiguration=new ArrayList<Transition>();
             ArrayList<State> allSourceStatesInConfiguration=new ArrayList<State>();
             
