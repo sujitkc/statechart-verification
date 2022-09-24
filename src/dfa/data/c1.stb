@@ -1,4 +1,6 @@
 //atomic default-test - one level
+//test case - simulation:
+//only states - on init, the default state c12 is entered
 statechart  c1{
   
   events {

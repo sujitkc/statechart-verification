@@ -46,7 +46,7 @@ public class ConStaBLSimulator{
             for(String e : eventQueue){
                 System.out.println("Selected event : "+e);
                 ArrayList<Transition> activeTransitions=findTransitions(e,activeConfiguration);
-                System.out.println(activeTransitions);
+                System.out.println("Transitions identified: "+activeTransitions);
                 
                 ArrayList<State> activeStates=new ArrayList<State>();
                 for(Transition t:activeTransitions){

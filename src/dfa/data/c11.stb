@@ -1,13 +1,15 @@
 //c9>C>A,B
-//c9>C>A>A1,A2
-//c9>C>B>B1,B2
+//c9>C
+//A>A1,A2
+//B>B1,B2
 
 //transition t1 out from A1 to C
 //transition t2 out from B1 to C
-statechart  c9{
+statechart  c5{
   
   events {
 	e;
+    e1;
   }
   entry : {}
   exit  : {} 

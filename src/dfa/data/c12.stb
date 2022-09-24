@@ -4,10 +4,11 @@
 
 //transition t1 out from A1 to A2
 //transition t2 out from B1 to B2
-statechart  c9{
+statechart  c5{
   
   events {
 	e;
+    e1;
   }
   entry : {}
   exit  : {} 

@@ -1,14 +1,16 @@
 //transitions under configuration - one transition
+// depending on the active state and the event the transition to be chosen
+// c11a and e2 - t15 is chosen
+// c11a and e1 - t17 is chosen
+
 statechart  c4{
   
   events {
-	e;
+	e2;
 	No_event;
 	Error;
   }
-  entry : {
-    }
-
+  entry : {}
   exit  : {} 
   functions {
   input<||>() : int;
@@ -19,21 +21,21 @@ statechart  c4{
         state c11{
 		    entry:{}
 		    exit:{}
-            state c131{
-		entry:{}
-		exit:{}
-        state c132{
-		    entry:{}
-		    exit:{}
-	    }
-        transition t15{
-	source: c4.c13;
-    destination: c4.c12;
-    trigger: e;
-    guard:(true);
-    action:{}
-	}
-        }
+            state c111{
+                entry:{}
+                exit:{}
+                state c11a{ //active
+                    entry:{}
+                    exit:{}
+                }
+                transition t15{
+                    source: c4.c12.c11.c111;
+                    destination: c4.c12;
+                    trigger: e2;
+                    guard:(true);
+                    action:{}
+                }
+            }
         }
     }
     
@@ -48,27 +50,27 @@ statechart  c4{
             entry:{}
             exit:{}
         }
-    transition t16{
-	source: c4.c12;
-    destination: c4.c12;
-    trigger: e1;
-    guard:(true);
-    action:{}
-	}
+        transition t16{
+        source: c4.c12;
+        destination: c4.c12;
+        trigger: e1;
+        guard:(true);
+        action:{}
+        }
     
 	}
-    transition t17{
-	source: c4.c12;
-    destination: c4.c12;
-    trigger: e1;
-    guard:(true);
-    action:{}
-	}
-    transition t18{
-	source: c4.c12;
-    destination: c4.c12;
-    trigger: e;
-    guard:(true);
-    action:{}
-	}
-}
+        transition t17{
+        source: c4.c12;
+        destination: c4.c12;
+        trigger: e1;
+        guard:(true);
+        action:{}
+        }
+        transition t18{
+        source: c4.c12;
+        destination: c4.c12;
+        trigger: e;
+        guard:(true);
+        action:{}
+        }
+    }

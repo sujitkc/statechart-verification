@@ -8,6 +8,7 @@ statechart  c9{
   
   events {
 	e;
+    e1;
   }
   entry : {}
   exit  : {} 
@@ -41,7 +42,14 @@ statechart  c9{
                 entry:{}
                 exit:{}
             }
-
+            //adding this transition will give typechecking error because - no transition can have a shell state as its LUB
+            /*transition t1{
+                source: c9.Sh.B.B1;
+                destination: c9.Sh.B.B2;
+                trigger: e1;
+                guard:(true);
+                action:{}
+            }*/
 	    }
     }
 
@@ -51,15 +59,15 @@ statechart  c9{
 	    
     }
     transition t1{
-        source: c5.Sh.A.A1;
-        destination: c5.C;
+        source: c9.Sh.A.A1;
+        destination: c9.C;
         trigger: e1;
         guard:(true);
         action:{}
 	}
     transition t2{
-        source: c5.Sh.A;
-        destination: c5.C;
+        source: c9.Sh.A;
+        destination: c9.C;
         trigger: e1;
         guard:(true);
         action:{}

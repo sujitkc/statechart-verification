@@ -6,6 +6,7 @@ statechart  c5{
   
   events {
 	e;
+  e1;
   }
   entry : {}
   exit  : {} 
@@ -22,9 +23,8 @@ statechart  c5{
     }
 
     state C{
-        entry:{}
-		exit:{}
-	    
+      entry:{}
+		   exit:{}
     }
     transition t1{
         source: c5.B;
@@ -32,13 +32,13 @@ statechart  c5{
         trigger: e1;
         guard:(true);
         action:{}
-	}
+	  }
     transition t2{
         source: c5.B.A;
         destination: c5.C;
         trigger: e1;
         guard:(true);
         action:{}
-	}
+	  }
     
 }

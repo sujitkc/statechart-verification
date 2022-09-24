@@ -1,10 +1,10 @@
-//c9>C>A,B
-//c9>C>A>A1,A2
-//c9>C>B>B1,B2
+//c9>Sh>A,B
+//c9>Sh>A(composite)>A1(atomic),A2(atomic)
+//c9>Sh>B(composite)>B1(atomic),B2(atomic)
 
 //transition t1 out from A to C
 //transition t2 out from B to C
-statechart  c9{
+statechart  c5{
   
   events {
 	e;

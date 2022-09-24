@@ -23,9 +23,8 @@ statechart  c5{
     }
 
     state C{
-        entry:{}
-		exit:{}
-	    
+      entry:{}
+		  exit:{}
     }
     transition t1{
         source: c5.B;

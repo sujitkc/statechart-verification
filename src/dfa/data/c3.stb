@@ -1,4 +1,6 @@
 //atomic default-test - multi level
+//test case - simulation:
+//Shell state within  a shell state - on init, recursive entry and states marked as active to become active
 statechart  c3{
   
   events {
@@ -19,46 +21,45 @@ statechart  c3{
         state c11{
 		    entry:{}
 		    exit:{}
-        shell c131{
-            entry:{}
-            exit:{}
-            state c132{
-                entry:{}
-                exit:{}
-                state c1321{
-                entry:{}
-                exit:{}
-                    
-                }
-            }
-            state c133{
-                entry:{}
-                exit:{}
-                state c1331{
-                entry:{}
-                exit:{}
-                state c13311{
+                shell c131{
                     entry:{}
                     exit:{}
-                    shell cshell1{
+                    state c1311{
                         entry:{}
                         exit:{}
-                        state a{
-                            entry:{}
-                            exit:{}
-                            
-                        }
-                         state b{
-                            entry:{}
-                            exit:{}
-                            
+                        state c13111{ //active
+                        entry:{}
+                        exit:{}                            
                         }
                     }
+                    state c1312{
+                        entry:{}
+                        exit:{}
+                        state c13121{
+                            entry:{}
+                            exit:{}
+                            state c131211{
+                                entry:{}
+                                exit:{}
+                                shell cshell1{
+                                entry:{}
+                                exit:{}
+                                state a{ //active
+                                    entry:{}
+                                    exit:{}
+                                    
+                                }
+                                state b{  //active
+                                    entry:{}
+                                    exit:{}
+                                    
+                                }
+                            }
+                        }
+                    }    
                 }
-                }    
-            }
 
-        }
+            }
         }
     }
     

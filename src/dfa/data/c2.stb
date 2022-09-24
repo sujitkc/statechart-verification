@@ -1,4 +1,6 @@
 //atomic default-test - multi level
+//test case - simulation:
+//only states - on init, the default state c132 is entered
 statechart  c2{
   
   events {
@@ -20,13 +22,13 @@ statechart  c2{
 		    entry:{}
 		    exit:{}
             state c131{
-		entry:{}
-		exit:{}
-        state c132{
-		    entry:{}
-		    exit:{}
-	    }
-        }
+				entry:{}
+				exit:{}
+				state c132{
+					entry:{}
+					exit:{}
+				}
+        	}
         }
     }
     
