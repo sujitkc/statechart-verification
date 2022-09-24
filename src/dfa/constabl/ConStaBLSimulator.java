@@ -129,12 +129,21 @@ public class ConStaBLSimulator{
                 ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                 for(State exitstate:config.activestates){
                     SequentialExecutionSequence ses=new SequentialExecutionSequence();
-                    ses.stateList.addAll(exitUntilShell(exitstate, new ArrayList<State>()));
+                    ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     ces.sequencelist.add(ses);
                 }
                 exitExecutionSequence.add(ces);
+                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                State shellState=(ces.sequencelist.get(0)).stateList.get((ces.sequencelist.get(0)).stateList.size()-1).getSuperstate();
+                System.out.println("Shell state : "+shellState.getFullName());
+             
+                ses.stateList.addAll(exitUntilLub(shellState, LUB, new ArrayList<State>()));
+                System.out.println("ses.statelist : "+ses.stateList.size());
+                
+                exitExecutionSequence.add(ses);
             }
             else{
+                System.out.println("inside else");
                 SequentialExecutionSequence ses=new SequentialExecutionSequence();
                 ses.stateList.addAll(exitUntilLub(config.activestates.get(0), LUB, ses.stateList));
                 exitExecutionSequence.add(ses);
@@ -147,18 +156,18 @@ public class ConStaBLSimulator{
             if(s instanceof ast.Shell)
                 return returnList;
             else{
-                System.out.println("Adding : "+s.getFullName());
+                System.out.println("Adding (until shell) : "+s.getFullName());
                 returnList.add(s);
                 return exitUntilShell(s.getSuperstate(), returnList);
             }
         }
         public ArrayList<State> exitUntilLub(State s, State lub, ArrayList<State> returnList){
-
+            System.out.println("Adding (until lub) : "+s.getFullName()+(s == lub));
             if(s == lub)
                 return returnList;
             else{
                 returnList.add(s);
-                return exitUntilShell(s.getSuperstate(), returnList);
+                return exitUntilLub(s.getSuperstate(),lub, returnList);
             }
         }
         public State getLUB_Source_Ancestor(){
