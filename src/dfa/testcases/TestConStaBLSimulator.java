@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.BufferedReader;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,16 +32,29 @@ import ast.Declaration;
 import ast.*;
 import constabl.*;
 public class TestConStaBLSimulator {
+      String inputfile="";
 
+  public TestConStaBLSimulator(){
+    try{
+      inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    }catch(Exception e){
+
+    }
+    
+  }
   @Test
   public void testSimulator() {
+
+    
     System.out.println("Hello front end.");
 
     Typechecker typechecker;
 
     Statechart statechart = null;
     //String input = "data/curfew_structs_minimal.txt";
-	String input="data/c5.stb";
+	   //String input="data/c5.stb";
+    String input="data/"+inputfile;
+    System.out.println("Reading file : "+ input);
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {
