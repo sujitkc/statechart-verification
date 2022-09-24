@@ -1,6 +1,6 @@
 package constabl.actionprogram;
 import ast.*;
 
-public abstract class ExitProgramPoint extends ProgramPoint{
+public class ExitBeginProgramPoint extends ExitProgramPoint{
     State s;
 }
