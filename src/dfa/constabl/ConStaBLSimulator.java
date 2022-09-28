@@ -65,13 +65,14 @@ public class ConStaBLSimulator{
                 if(activeTransitions.size()>0){
                         Transition t=activeTransitions.get(0);
                         computeExitExecutionSequence(activeConfiguration, t.lub());
+                        executeAction(exitExecutionSequence);
                         //Identifying all the states that the transition should sequentially exit
-                        State lub=t.lub();
+                        //State lub=t.lub();
 
                         //System.out.println("identified lub : "+lub.getFullName());
                        
                         //Current configuration of the statemachine
-                        State s = t.getSource();
+                        /*State s = t.getSource();
                         boolean shellexitflag=false;
                         while(s!=lub){
                             //exitstates.add(s);
@@ -89,7 +90,7 @@ public class ConStaBLSimulator{
                                 System.out.println("Active configuration : "+active.name);
                                 
                             }
-                        }
+                        }*/
 
                         System.out.println("Identified for event :"+e+" : transition :"+t.name);
                         /*System.out.println("Exit the states : ");
@@ -127,11 +128,15 @@ public class ConStaBLSimulator{
         public void computeExitExecutionSequence(Configuration config, State LUB){
             if(config.activestates.size()>1){
                 ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                ArrayList<State> shellparents=new ArrayList<State>();
+                
                 for(State exitstate:config.activestates){
                     SequentialExecutionSequence ses=new SequentialExecutionSequence();
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
+                    shellparents.add(ses.stateList.get(ses.stateList.size()-1));
                     ces.sequencelist.add(ses);
                 }
+                
                 exitExecutionSequence.add(ces);
                 SequentialExecutionSequence ses=new SequentialExecutionSequence();
                 State shellState=(ces.sequencelist.get(0)).stateList.get((ces.sequencelist.get(0)).stateList.size()-1).getSuperstate();
@@ -170,9 +175,21 @@ public class ConStaBLSimulator{
                 return exitUntilLub(s.getSuperstate(),lub, returnList);
             }
         }
-        public State getLUB_Source_Ancestor(){
-            return null;
+
+        public void executeAction(List<ExecutionSequence> exseq){
+            System.out.println("Execution sequence is from Execute Action method is : "+exseq);
+            List<Statement> readySet=new ArrayList<Statement>;
+            for (ExecutionSequence ex: exseq){
+                if(ex instanceof ConcurrentExecutionSequence){
+                    
+                }
+                else{
+
+                }
+            }
         }
+
+      
         public List<State> getDefaultAtomicSubState(ArrayList<State> substate){
             ArrayList<State> returnsubstates=new ArrayList<State>();
             int i=0;
