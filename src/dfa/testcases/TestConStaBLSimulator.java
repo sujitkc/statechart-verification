@@ -87,7 +87,7 @@ public class TestConStaBLSimulator {
       // creating a simulator
     try
     {
-      new ConStaBLSimulator(statechart);
+      new ConStaBLSimulator1(statechart);
     }
     catch(Exception e) {
       System.out.println("Something Went Wrong!\n");

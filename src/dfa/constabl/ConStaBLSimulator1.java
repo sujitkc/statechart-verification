@@ -2,15 +2,32 @@ package constabl;
 import ast.*;
 import java.util.*;
 import constabl.consimulator.*;
+import constabl.actionprogram.*;
+
 public class ConStaBLSimulator1 extends SimulStatechart{
     private Statechart statechart = null;
-    private ArrayList<String> eventQueue=null;
-    ConStaBLSimulator1(Statechart sc){
+    private List<String> eventQueue=null;
+    private Configuration activeconfig=null;
+    public ConStaBLSimulator1(Statechart sc){
         try{
             this.statechart=sc;
+
+            //Initializing the event queue
+            this.eventQueue=new ArrayList<String>();
             this.eventQueue.add("init");
             this.eventQueue.add("e1");
             this.eventQueue.add("e2");
+
+            //initializing the configuration
+            ProgramPoint statechartentry=new EntryBeginProgramPoint();
+            statechartentry.s
+            this.activeconfig=new Configuration();
+
+            System.out.println("Starting concurrent simulation");
+            
+            while(String event : eventQueue){
+                consumeEvent(,event)
+            }
         }
         catch(Exception e){
             e.printStackTrace();
@@ -23,7 +40,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     {
         List<Transition> identifiedTransitions=new ArrayList<Transition>();
         try{
-
+            
         }
         catch(Exception e){
             e.printStackTrace();

@@ -10,6 +10,9 @@ public class Configuration{
     public Configuration(ArrayList<State> activestates){
         this.activestates=activestates;
     }
+    public Configuration(List<ProgramPoint> activeProgramPoint){
+        this.activestates=activestates;
+    }
     /*public ArrayList<State> completeConfiguration(){
 
     }*/

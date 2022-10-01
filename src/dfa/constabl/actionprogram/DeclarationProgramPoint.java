@@ -1,7 +1,7 @@
 package constabl.actionprogram;
 import ast.*;
 
-public class EntryEndProgramPoint extends EntryProgramPoint{
+public class DeclarationProgramPoint extends ProgramPoint{
     State state;
     public void setState(State s){
         this.state=s;
