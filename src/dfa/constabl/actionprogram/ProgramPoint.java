@@ -7,7 +7,7 @@ public abstract class ProgramPoint{
     public void setEnvironment(Environment env){
         this.env=env;
     }
-    public void getEnvironment(){
+    public Environment getEnvironment(){
         return this.env;
     }
 }

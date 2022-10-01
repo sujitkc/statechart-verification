@@ -27,8 +27,8 @@ public class ConStaBLSimulator{
             System.out.println("Atomic substates are :"+ astate);
 
             this.activeConfiguration=new Configuration(astate);
-            this.sourceConfiguration=new Configuration(null);
-            this.destConfiguration=new Configuration(null);
+            this.sourceConfiguration=new Configuration(new ArrayList<State>());
+            this.destConfiguration=new Configuration(new ArrayList<State>());
             
             /* adding events into the queue */
             this.eventQueue.add("init");

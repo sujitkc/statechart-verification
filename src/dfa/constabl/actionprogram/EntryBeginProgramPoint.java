@@ -2,7 +2,9 @@ package constabl.actionprogram;
 import ast.*;
 
 public class EntryBeginProgramPoint extends EntryProgramPoint{
+    
     State state;
+    public EntryBeginProgramPoint(){}
     public void setState(State s){
         this.state=s;
     }
