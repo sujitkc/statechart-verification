@@ -1,0 +1,105 @@
+//c9>C>A,B
+//c9>C>A>A1>A11
+//c9>C>A>A2
+//c9>C>B>B1
+//c9>C>B>B2>B21,B22
+
+//transition t1 out from A11 to A2
+//transition t2 out from B1 to B22
+//transition t3 out from B1 to B2
+
+statechart  c5{
+  
+  events {
+	e;
+    e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  state Aprior{
+    entry:{}
+    exit:{}
+shell Sh{
+		entry:{}
+		exit:{}
+	    state A{
+		    entry:{}
+		    exit:{}
+            state A1{
+                entry:{}
+                exit:{}
+                state A11{
+                    entry:{}
+                    exit:{}
+                }   
+            }
+            state A2{
+                entry:{}
+                exit:{}
+            }
+            /*transition t1{
+                source: c5.Sh.A.A1.A11;
+                destination: c5.Sh.A.A2;
+                trigger: e1;
+                guard:(true);
+                action:{}
+	        }*/
+        }
+        state B{
+		    entry:{}
+		    exit:{}
+            state B1{
+                entry:{}
+                exit:{}
+            }
+            state B2{
+                entry:{}
+                exit:{}
+                state B21{
+                    entry:{}
+                    exit:{}
+                }
+                state B22{
+                    entry:{}
+                    exit:{}
+                }
+
+            }
+            transition t2{
+                source: c5.Aprior.Sh.B.B1;
+                destination: c5.Aprior.Sh.B.B2;
+                trigger: e1;
+                guard:(true);
+                action:{}
+            }
+            transition t3{
+                source: c5.Aprior.Sh.B.B1;
+                destination: c5.Aprior.Sh.B.B2.B22;
+                trigger: e1;
+                guard:(true);
+                action:{}
+            }
+
+	    }
+    }
+
+
+  }
+	
+
+    state C{
+        entry:{}
+		exit:{}
+	    
+    }
+    transition t1{
+        source: c5.Aprior.Sh.A.A1.A11;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+}
