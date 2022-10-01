@@ -129,13 +129,22 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
                     
             }
+            System.out.println("Active list size :"+activeStates.size());
             ExecutionSequence exsequence;
-            if(activeStates.size()==0){
+            if(activeStates.size()==1){
                 exsequence=new SequentialExecutionSequence();
+                State state=activeStates.get(0);
+                Statement statements=state.entry;
+                if(statements instanceof StatementList){
+                    for(Statement st:((StatementList)statements).getStatements()){
+                        System.out.println("==="+st);
+                    }
+                }
                // exsequence.add()
             }
             else{
                 exsequence=new ConcurrentExecutionSequence();
+
             }
             System.out.println(getDefaultAtomicSubStateSequence(activeStates, exsequence));
 
