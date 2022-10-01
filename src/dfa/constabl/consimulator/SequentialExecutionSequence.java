@@ -1,12 +1,13 @@
 package constabl.consimulator;
 
 import ast.*;
-import java.util.ArrayList;
+import java.util.*;
+import constabl.actionprogram.*;
 
 public class SequentialExecutionSequence extends ExecutionSequence{
     public ArrayList<State> stateList=new ArrayList<State>();
-    public StatementList seqStatements=new StatementList();
-    
+    protected List<ProgramPoint> points=new ArrayList<ProgramPoint>();
+    protected ConcurrentExecutionSequence next=null;
     public String toString(){
         String s="{ ";
         for(State ses: stateList)
@@ -15,6 +16,21 @@ public class SequentialExecutionSequence extends ExecutionSequence{
     }
     public void addState(State s){
         this.stateList.add(s);
+ 
     }
-
+    public void setNextCES(ConcurrentExecutionSequence ces){
+        this.next=ces;
+    }
+    public ConcurrentExecutionSequence getNextCES(){
+        return this.next;
+    }
+    public void setProgramPointSequence(List<ProgramPoint> p){
+        this.points=p;
+    }
+    public List<ProgramPoint> getProgramPointSequence(){
+        return this.points;
+    }
+    public void addProgramPoint(ProgramPoint p){
+        this.points.add(p);
+    }
 }

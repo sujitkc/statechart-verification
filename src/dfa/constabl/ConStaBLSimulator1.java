@@ -121,6 +121,23 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     {
         ExecutionSequence actionSequence=new ExecutionSequence();
         try{
+            ArrayList<State> activeStates=new ArrayList<State>();
+            for(ProgramPoint p:currentconfig.getProgramPoints()){
+                if(p instanceof DotProgramPoint){
+                    State stateToEnter=((DotProgramPoint)p).getState();
+                    activeStates.add(stateToEnter);
+                }
+                    
+            }
+            ExecutionSequence exsequence;
+            if(activeStates.size()==0){
+                exsequence=new SequentialExecutionSequence();
+               // exsequence.add()
+            }
+            else{
+                exsequence=new ConcurrentExecutionSequence();
+            }
+            System.out.println(getDefaultAtomicSubStateSequence(activeStates, exsequence));
 
         }
         catch(Exception e){
@@ -128,5 +145,52 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         return actionSequence;
     }
+    public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionSequence executionSequence){
+            
+            ExecutionSequence currentSequence=executionSequence;
+            ArrayList<State> returnsubstates=new ArrayList<State>();
+            
+            for(State s:substate){
+                if(s instanceof ast.Shell){
+                    if(currentSequence instanceof SequentialExecutionSequence){
+                        
+                    }
+                    if(currentSequence instanceof ConcurrentExecutionSequence){
+                        
+                    }
+                }
+                else if(s.states.size()>0){ //composite state
+
+                }
+                else{ //atomic state
+
+                }
+            }
+
+            for(int i=0;i<substate.size();i++){
+            
+                    if(substate.get(i) instanceof ast.Shell){
+
+                        returnsubstates.addAll(i,(substate.get(i)).states);
+                    }
+                    else if((substate.get(i)).states.size()!=0){    
+                        ArrayList<State> child=new ArrayList<State>();
+                        child.add((substate.get(i)).states.get(0));
+                        returnsubstates.add(i,getDefaultAtomicSubStateSequence(child,currentSequence).get(0));
+                        //returnsubstates.add(i,(substate.get(i)).states.get(0));
+
+                    }
+                    else{
+                        // it is an atomic state -- add as it is
+                        returnsubstates.add(i,substate.get(i));
+                    }
+            }
+             
+            if(returnsubstates.equals(substate))
+                return returnsubstates;
+            else
+                return getDefaultAtomicSubStateSequence(returnsubstates, executionSequence);
+
+        }
 
 }

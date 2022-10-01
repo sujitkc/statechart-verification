@@ -135,7 +135,7 @@ public class ConStaBLSimulator{
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     shellparents.add(ses.stateList.get(ses.stateList.size()-1));
                     for (State s:ses.stateList){
-                        ses.seqStatements.add(s.exit);
+                        //ses.seqStatements.add(s.exit);
                     }
                     ces.sequencelist.add(ses);
                 }

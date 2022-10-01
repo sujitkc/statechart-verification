@@ -12,7 +12,7 @@ Concurrent sequence - set of composite sequences.
  */
 
 public class ExecutionSequence{
-    
+    public ExecutionSequence next;
     public String toString(){
         String s="";
         
