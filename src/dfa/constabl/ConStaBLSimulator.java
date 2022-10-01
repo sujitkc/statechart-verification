@@ -134,6 +134,9 @@ public class ConStaBLSimulator{
                     SequentialExecutionSequence ses=new SequentialExecutionSequence();
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     shellparents.add(ses.stateList.get(ses.stateList.size()-1));
+                    for (State s:ses.stateList){
+                        ses.seqStatements.add(s.exit);
+                    }
                     ces.sequencelist.add(ses);
                 }
                 
@@ -178,10 +181,12 @@ public class ConStaBLSimulator{
 
         public void executeAction(List<ExecutionSequence> exseq){
             System.out.println("Execution sequence is from Execute Action method is : "+exseq);
-            List<Statement> readySet=new ArrayList<Statement>;
+            List<Statement> readySet=new ArrayList<Statement>();
             for (ExecutionSequence ex: exseq){
                 if(ex instanceof ConcurrentExecutionSequence){
-                    
+                    //for(SequentialExecutionSequence ses : ex){
+                       // readySet.add();
+                    //}
                 }
                 else{
 

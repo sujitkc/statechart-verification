@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class SequentialExecutionSequence extends ExecutionSequence{
     public ArrayList<State> stateList=new ArrayList<State>();
+    public StatementList seqStatements=new StatementList();
+    
     public String toString(){
         String s="{ ";
         for(State ses: stateList)
