@@ -86,7 +86,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 System.out.println("tinit : "+initialExecutionSequence);
             }
             else{
-
+                
             }
         }
         catch(Exception e){
