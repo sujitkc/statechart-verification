@@ -101,7 +101,7 @@ statechart  c9{
     transition t2{
         source: c9.Sh.A;
         destination: c9.C;
-        trigger: e1;
+        trigger: e2;
         guard:(true);
         action:{}
 	}

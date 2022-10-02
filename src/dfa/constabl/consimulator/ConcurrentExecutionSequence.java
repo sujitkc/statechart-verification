@@ -5,7 +5,7 @@ import java.util.*;
 
 public class ConcurrentExecutionSequence extends ExecutionSequence{
     public List<SequentialExecutionSequence> sequencelist =new ArrayList<SequentialExecutionSequence>();
-
+    public SequentialExecutionSequence next=null;
     public String toString(){
         String s="[ ";
         for(ExecutionSequence ses: sequencelist)
@@ -26,6 +26,12 @@ public class ConcurrentExecutionSequence extends ExecutionSequence{
             }
         }
         return returnSequence;
+    }
+    public boolean hasNext(){
+        if(next==null)
+            return false;
+        else
+            return true;
     }
 
 }

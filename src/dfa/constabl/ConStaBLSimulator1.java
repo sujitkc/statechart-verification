@@ -65,6 +65,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 for(Transition t:transitions)
                     System.out.print(t.name+", ");
                 System.out.println();
+                identifiedTransitions.addAll(transitions);
+                findNonDeterminism(identifiedTransitions);
             }
         }
         catch(Exception e){
@@ -73,7 +75,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return identifiedTransitions;
 
     }
-    
+
      public ArrayList<Transition> findTransitions( Configuration c, String e){
             
             System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
@@ -110,7 +112,28 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
             return selectedTransitions;
         }
+        public void findNonDeterminism(List<Transition> activeTransitions){
+             List<State> activeStates=new ArrayList<State>();
+             for(Transition t:activeTransitions){
+                    //For each transition, identify its source and destination and compute the program
+                    //case 1 - two transitions are from a state and its ancestor
+                    //case 2 - two transitions are from different regions of a shell state
+                    activeStates.add(t.getSource());
+                }
 
+                //System.out.println("Active states are : "+activeStates);
+                for(State s: activeStates){
+                    ArrayList<State> ancestorStates=new ArrayList<State>();
+                    ancestorStates.addAll(s.getAllSuperstates());
+
+                    ancestorStates.retainAll(activeStates);
+                    if(ancestorStates.size()!=0){
+                        System.out.println("Non Determinism Detected between outgoing transitions of two states :" +s.name+" and ");
+                        System.exit(0);
+                    }
+                    //if(checkStates.contains(s.getAllSuperstates()))
+                }
+        }
     public Configuration takeTransition(Configuration currentconfig, Transition t)
     {
         System.out.println("Take Transition : "+t.name);
@@ -130,7 +153,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 config=new Configuration(newconfig.programpoints);
             }
             else{
-                
+                //Compute ExitActionSequence
+                ExecutionSequence exitSequence=computeExitExecutionSequence(currentconfig,t.lub());
+                //Compute TransitionSequence
+
+                //Compute EntryActionSequence
             }
         }
         catch(Exception e){
@@ -263,6 +290,20 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     //     }
     //     return actionSequence;
     // }
+    public ExecutionSequence computeExitActionSequence(Configuration config, Transition trans){
+        ExecutionSequence returnsequence=null;
+        if(config.programpoints.size()==1){
+            //Sequential execution in progress
+            SequentialExecutionSequence ses=new SequentialExecutionSequence();
+
+        }
+        else{
+            //Concurrent execution in progress
+            ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+
+        }
+        return returnsequence;
+    }
 
     public ExecutionSequence computeActionDefaultEntryForState(Configuration currentconfig, State entryState, ExecutionSequence actionSequence)
     {
@@ -356,7 +397,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             return actionSequence;
 
     }
-    public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionSequence executionSequence){
+   /* public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionSequence executionSequence){
             
             ExecutionSequence currentSequence=executionSequence;
             ArrayList<State> returnsubstates=new ArrayList<State>();
@@ -402,6 +443,63 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             else
                 return getDefaultAtomicSubStateSequence(returnsubstates, executionSequence);
 
+        }*/
+         public ExecutionSequence computeExitExecutionSequence(Configuration config, State LUB){
+            // List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
+            if(config.activestates.size()>1){
+                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                ArrayList<State> shellparents=new ArrayList<State>();
+                
+                for(State exitstate:config.activestates){
+                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                    ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
+                    shellparents.add(ses.stateList.get(ses.stateList.size()-1));
+                    for (State s:ses.stateList){
+                        //ses.seqStatements.add(s.exit);
+                    }
+                    ces.sequencelist.add(ses);
+                }
+                
+                //exitExecutionSequence.add(ces);
+                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                State shellState=(ces.sequencelist.get(0)).stateList.get((ces.sequencelist.get(0)).stateList.size()-1).getSuperstate();
+                System.out.println("Shell state : "+shellState.getFullName());
+             
+                ses.stateList.addAll(exitUntilLub(shellState, LUB, new ArrayList<State>()));
+                System.out.println("ses.statelist : "+ses.stateList.size());
+                
+                //exitExecutionSequence.add(ses);
+                ces.next=ses;
+                return ces;
+            }
+            else{
+                System.out.println("inside else");
+                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                ses.stateList.addAll(exitUntilLub(config.activestates.get(0), LUB, ses.stateList));
+                //exitExecutionSequence.add(ses);
+                return ses;
+            }
+            //System.out.println("Execution Sequence : "+exitExecutionSequence);
+
+        }
+        public ArrayList<State> exitUntilShell(State s, ArrayList<State> returnList){
+
+            if(s instanceof ast.Shell)
+                return returnList;
+            else{
+                System.out.println("Adding (until shell) : "+s.getFullName());
+                returnList.add(s);
+                return exitUntilShell(s.getSuperstate(), returnList);
+            }
+        }
+        public ArrayList<State> exitUntilLub(State s, State lub, ArrayList<State> returnList){
+            System.out.println("Adding (until lub) : "+s.getFullName()+(s == lub));
+            if(s == lub)
+                return returnList;
+            else{
+                returnList.add(s);
+                return exitUntilLub(s.getSuperstate(),lub, returnList);
+            }
         }
 
 }
