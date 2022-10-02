@@ -85,7 +85,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             allSourceStatesInConfiguration.addAll(c.getActiveStates());
             // adding all the superstates of the states in the current configuration
             for(State s:c.getActiveStates()){
-                System.out.println("State : "+s);
+                //System.out.println("State : "+s);
                 if(s.transitions!=null)
                      allTransitionsInConfiguration.addAll(s.transitions);
                 ArrayList<State> superstates=new ArrayList<State>();
@@ -104,7 +104,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //System.out.println("source state : "+ t.getSource().name + "in "+ allSourceStatesInConfiguration);
                 if(allSourceStatesInConfiguration.contains(t.getSource())&&t.trigger.equals(e))
                 {
-                    selectedTransitions.add(t);
+                    if(!selectedTransitions.contains(t))
+                        selectedTransitions.add(t);
                 }
             }
             return selectedTransitions;
