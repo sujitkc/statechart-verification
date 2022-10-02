@@ -6,8 +6,8 @@ import constabl.actionprogram.*;
 
 public class SequentialExecutionSequence extends ExecutionSequence{
     public ArrayList<State> stateList=new ArrayList<State>();
-    protected List<ProgramPoint> points=new ArrayList<ProgramPoint>();
-    protected ConcurrentExecutionSequence next=null;
+    public List<ProgramPoint> points=new ArrayList<ProgramPoint>();
+    public ConcurrentExecutionSequence next=null;
     public String toString(){
         String s=" ";
         for(ProgramPoint p: points)
@@ -34,5 +34,11 @@ public class SequentialExecutionSequence extends ExecutionSequence{
     }
     public void addProgramPoint(ProgramPoint p){
         this.points.add(p);
+    }
+    public boolean hasNext(){
+        if(next==null)
+            return false;
+        else
+            return true;
     }
 }

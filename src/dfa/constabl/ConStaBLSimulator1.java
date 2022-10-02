@@ -29,13 +29,14 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             System.out.println("Starting concurrent simulation");
             
             for(String event : eventQueue){
+
                 List<Transition> transitionList=consumeEvent(activeconfig,event);
                 
                 //send transition list to detect non-determinism
                 //detectNonDeterminism(transitionList);
 
                 for(Transition t: transitionList){
-                    takeTransition(activeconfig,t);
+                    activeconfig=takeTransition(activeconfig,t);
                 }
 
             }
@@ -49,7 +50,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     
     public  List<Transition> consumeEvent(Configuration currentconfig, String event)
     {
-        System.out.println("Consume event : "+event);
+        System.out.println("Consume event : "+event +" : Config : "+currentconfig);
         List<Transition> identifiedTransitions=new ArrayList<Transition>();
         try{
             if(event.equals(tinit)){
@@ -59,7 +60,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
             else{
                 //find transitions
-
+                List<Transition> transitions=findTransitions(currentconfig,event);
+                System.out.print("Transitions found: ");
+                for(Transition t:transitions)
+                    System.out.print(t.name+", ");
+                System.out.println();
             }
         }
         catch(Exception e){
@@ -69,6 +74,41 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
     }
     
+     public ArrayList<Transition> findTransitions( Configuration c, String e){
+            
+            System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
+            ArrayList<Transition> allTransitionsInConfiguration=new ArrayList<Transition>();
+            ArrayList<State> allSourceStatesInConfiguration=new ArrayList<State>();
+            
+            ArrayList<Transition> selectedTransitions=new ArrayList<Transition>();
+            
+            allSourceStatesInConfiguration.addAll(c.getActiveStates());
+            // adding all the superstates of the states in the current configuration
+            for(State s:c.getActiveStates()){
+                System.out.println("State : "+s);
+                if(s.transitions!=null)
+                     allTransitionsInConfiguration.addAll(s.transitions);
+                ArrayList<State> superstates=new ArrayList<State>();
+                superstates.addAll(s.getAllSuperstates());
+                allSourceStatesInConfiguration.addAll(superstates);  
+                for(State sup:superstates){
+                    allTransitionsInConfiguration.addAll(sup.transitions);                    
+                }
+            }
+            //System.out.println("Source states found : ");
+            /*for(State s:allSourceStatesInConfiguration){
+                System.out.println(s.name);
+            }*/
+            //System.out.println("All transitions found: "+allTransitionsInConfiguration);
+            for(Transition t: allTransitionsInConfiguration){
+                //System.out.println("source state : "+ t.getSource().name + "in "+ allSourceStatesInConfiguration);
+                if(allSourceStatesInConfiguration.contains(t.getSource())&&t.trigger.equals(e))
+                {
+                    selectedTransitions.add(t);
+                }
+            }
+            return selectedTransitions;
+        }
 
     public Configuration takeTransition(Configuration currentconfig, Transition t)
     {
@@ -84,6 +124,9 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
                 ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
                 System.out.println("tinit : "+initialExecutionSequence);
+                Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
+                System.out.println("Configuration :"+newconfig.programpoints);
+                config=new Configuration(newconfig.programpoints);
             }
             else{
                 
@@ -92,6 +135,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         catch(Exception e){
             e.printStackTrace();
         }
+        System.out.println("Return config : "+config);
         return config;
     }
 
@@ -112,13 +156,44 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     public Configuration executeAction(Configuration currentconfig, ExecutionSequence exseq)
     {
         Configuration config=currentconfig;
+         Configuration returnConfiguration=new Configuration();
         try{
+            System.out.println("Printing execute action method");
+            // perform executing the action in each step
 
+            // compute the new configuration
+
+            //System.out.println(exseq);
+           
+            if(exseq instanceof SequentialExecutionSequence){
+                System.out.println("SequentialExecutionSequence Detected");
+                if(((SequentialExecutionSequence)exseq).hasNext()){
+                    //has a concurrent executionsequence
+                    System.out.println("ConcurrentExecutionSequence Detected");
+
+                    ConcurrentExecutionSequence conexseq=((SequentialExecutionSequence)exseq).next;
+                    List<SequentialExecutionSequence> finalSeq=conexseq.getFinalProgramPointInSequence(conexseq, new ArrayList<SequentialExecutionSequence>());
+                    for(SequentialExecutionSequence ses:finalSeq){
+                        List<ProgramPoint> programpoints=((SequentialExecutionSequence)ses).points;
+                        //add the last program point in the sequence to the return configuration
+                        returnConfiguration.programpoints.add(programpoints.get(programpoints.size()-1));
+                       
+                    }
+                }
+                else{
+                    List<ProgramPoint> programpoints=((SequentialExecutionSequence)exseq).points;
+                    //add the last program point in the sequence to the return configuration
+                    returnConfiguration.programpoints.add(programpoints.get(programpoints.size()-1));
+                }
+            }
+            else if(exseq instanceof ConcurrentExecutionSequence){
+
+            }
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return config;
+        return returnConfiguration;
     }
 
     // public ExecutionSequence computeActionDefaultEntry(Configuration currentconfig, ArrayList<State> entryStates, ExecutionSequence actionSequence)
@@ -192,8 +267,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     {
         
         try{
-            
-           
+                       
            System.out.println("\n== entry states coming are : "+entryState.name);
            State state=entryState;
                 
@@ -257,9 +331,9 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         //Adding program points
                     if(actionSequence instanceof SequentialExecutionSequence){
                         if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name));
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name,state));
                         else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name));
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name,state));
                         else if(actionType.equals(ActionType.TRANSITION_ACTION))
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+state.name));
                         
@@ -270,9 +344,9 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                         }
 
                         if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryEndProgramPoint(actionType+"_End_"+state.name));
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryEndProgramPoint(actionType+"_End_"+state.name,state));
                         else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name));
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name,state));
                         else if(actionType.equals(ActionType.TRANSITION_ACTION))
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+state.name));
                         

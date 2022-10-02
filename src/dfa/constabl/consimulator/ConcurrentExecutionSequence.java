@@ -13,4 +13,19 @@ public class ConcurrentExecutionSequence extends ExecutionSequence{
         return s+" ]";
     }
 
+    public List<SequentialExecutionSequence> getFinalProgramPointInSequence(ConcurrentExecutionSequence conseq, List<SequentialExecutionSequence> returnSequence){
+        for(SequentialExecutionSequence ses:conseq.sequencelist){
+           
+            if(ses.hasNext()){
+                returnSequence.remove(ses);
+                getFinalProgramPointInSequence(ses.next,returnSequence);
+
+            }
+            else{
+                returnSequence.add(ses);
+            }
+        }
+        return returnSequence;
+    }
+
 }
