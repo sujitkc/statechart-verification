@@ -10,4 +10,7 @@ public class InternalProgramPoint extends ProgramPoint{
     {
         return this.state;
     }
+    public InternalProgramPoint(String name){
+        super(name);
+    }
 }

@@ -9,10 +9,12 @@ public class SequentialExecutionSequence extends ExecutionSequence{
     protected List<ProgramPoint> points=new ArrayList<ProgramPoint>();
     protected ConcurrentExecutionSequence next=null;
     public String toString(){
-        String s="{ ";
-        for(State ses: stateList)
-            s+=ses.getFullName()+", ";
-        return s+" } ";
+        String s=" ";
+        for(ProgramPoint p: points)
+            s+=p+" -> ";
+        if(next!=null)
+            s+=next;
+        return s+" ";
     }
     public void addState(State s){
         this.stateList.add(s);

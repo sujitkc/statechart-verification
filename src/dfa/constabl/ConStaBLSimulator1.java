@@ -23,7 +23,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             //DotProgramPoint initPoint=new DotProgramPoint();
             //statechartentry.setState(sc);
             List<ProgramPoint> initialProgramPoints=new ArrayList<ProgramPoint>();
-            initialProgramPoints.add(new DotProgramPoint());
+            initialProgramPoints.add(new DotProgramPoint("init"));
             this.activeconfig=new Configuration(initialProgramPoints);
 
             System.out.println("Starting concurrent simulation");
@@ -78,8 +78,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         try{
             if(t.name.equals(tinit)&&t.getSource()==null){
                 //Transition is going to initialize the statechart
-                ((DotProgramPoint)(currentconfig.getProgramPoints()).get(0)).setState(this.statechart);
-                computeActionDefaultEntry(currentconfig);
+                //((DotProgramPoint)(currentconfig.getProgramPoints()).get(0)).setState(this.statechart);
+                ArrayList<State> listofstates=new ArrayList<State>();
+                listofstates.add(this.statechart);
+               // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
+                ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
+                System.out.println(initialExecutionSequence);
             }
             else{
 
@@ -117,42 +121,152 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return config;
     }
 
-    public ExecutionSequence computeActionDefaultEntry(Configuration currentconfig)
-    {
-        ExecutionSequence actionSequence=new ExecutionSequence();
-        try{
-            ArrayList<State> activeStates=new ArrayList<State>();
-            for(ProgramPoint p:currentconfig.getProgramPoints()){
-                if(p instanceof DotProgramPoint){
-                    State stateToEnter=((DotProgramPoint)p).getState();
-                    activeStates.add(stateToEnter);
-                }
+    // public ExecutionSequence computeActionDefaultEntry(Configuration currentconfig, ArrayList<State> entryStates, ExecutionSequence actionSequence)
+    // {
+        
+    //     try{
+            
+           
+    //        System.out.println("\n== entry states coming are : ");
+    //        for(State s:entryStates){
+    //                     System.out.print(s.name+", ");
+    //                 }
+    //        System.out.println();
+           
+    //        ArrayList<State> inputstates=new ArrayList<State>();
+    //        inputstates.addAll(entryStates);
+           
+           
+            
+           
+    //        for(State state: inputstates){
+                
+    //             if(state instanceof ast.Shell){
+    //                 actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+    //                 actionSequence.next=new ConcurrentExecutionSequence();
+
+    //                 entryStates.addAll(state.getAllSubstates());
+    //                 entryStates.remove(state);
+    //                 System.out.print("Shell detected:  ");
                     
-            }
-            System.out.println("Active list size :"+activeStates.size());
-            ExecutionSequence exsequence;
-            if(activeStates.size()==1){
-                exsequence=new SequentialExecutionSequence();
-                State state=activeStates.get(0);
-                Statement statements=state.entry;
-                if(statements instanceof StatementList){
-                    for(Statement st:((StatementList)statements).getStatements()){
-                        System.out.println("==="+st);
+    //                 for(State s:entryStates){
+    //                     System.out.print(s.name+", ");
+    //                 }
+    //                 //return computeActionDefaultEntry(currentconfig,entryStates);
+    //             }else if(state.getAllSubstates().size()>0){
+    //                 actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+
+    //                 entryStates.add(state.getAllSubstates().get(0));
+    //                 entryStates.remove(state);
+    //                 System.out.print("Composite detected:  ");
+    //                 for(State s:entryStates){
+    //                     System.out.print(s.name+", ");
+    //                 }
+                    
+
+    //                 //return computeActionDefaultEntry(currentconfig,entryStates);
+    //             }
+    //             else{
+    //                 actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+
+    //                 System.out.println("Atomic detected:  "+state.name);
+                    
+    //                 //return actionSequence;
+    //             }
+    //        }
+    //        if(inputstates.equals(entryStates)){
+    //             return actionSequence;
+    //        }
+    //        else{
+    //            return computeActionDefaultEntry(currentconfig,entryStates,actionSequence);
+    //         }
+          
+    //     }
+    //     catch(Exception e){
+    //         e.printStackTrace();
+    //     }
+    //     return actionSequence;
+    // }
+
+    public ExecutionSequence computeActionDefaultEntryForState(Configuration currentconfig, State entryState, ExecutionSequence actionSequence)
+    {
+        
+        try{
+            
+           
+           System.out.println("\n== entry states coming are : "+entryState.name);
+           State state=entryState;
+                
+                if(state instanceof ast.Shell){
+                    System.out.print("Shell detected:  ");
+                    
+                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+                    if(actionSequence instanceof SequentialExecutionSequence){
+                        ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                        List<State> newEntryStates=state.getAllSubstates();
+                                       
+                            for(State s:newEntryStates){
+                                    System.out.print(s.name+", ");
+                                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                                    ses=(SequentialExecutionSequence)computeActionDefaultEntryForState(currentconfig,s,ses);
+                                    ces.sequencelist.add(ses);
+                             }
+
+                        ((SequentialExecutionSequence)actionSequence).setNextCES(ces);
+
                     }
+                    else{
+                        System.out.println("Entry from one concurrent state to another is detected : yet to handle" );
+                    }
+                        
+                    
+                    
+                }else if(state.getAllSubstates().size()>0){
+                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+
+                    //entryStates.add(state.getAllSubstates().get(0));
+                    //entryStates.remove(state);
+                    System.out.println("Composite detected:  "+state.name);
+                    computeActionDefaultEntryForState(currentconfig,state.getAllSubstates().get(0),actionSequence);
+                    
+
+                    
                 }
-               // exsequence.add()
-            }
-            else{
-                exsequence=new ConcurrentExecutionSequence();
+                else{
+                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
 
+                    System.out.println("Atomic detected:  "+state.name);
+                    
+                    //return actionSequence;
+                }
+           
+           if(state==entryState){
+                return actionSequence;
+           }
+           else{
+               return computeActionDefaultEntryForState(currentconfig,entryState,actionSequence);
             }
-            System.out.println(getDefaultAtomicSubStateSequence(activeStates, exsequence));
-
+          
         }
         catch(Exception e){
             e.printStackTrace();
         }
         return actionSequence;
+    }
+    public ExecutionSequence addProgramPointsForStateEntry(ExecutionSequence actionSequence, State state){
+        //Adding program points
+                    if(actionSequence instanceof SequentialExecutionSequence){
+                        ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint("NB_"+state.name));
+                        for(Statement stmt:((StatementList)state.entry).getStatements()){
+                            System.out.println("Statement detected : "+stmt);
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
+                        
+                        }
+                        ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint("NE_"+state.name));
+                        
+                    }
+            return actionSequence;
+
     }
     public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionSequence executionSequence){
             

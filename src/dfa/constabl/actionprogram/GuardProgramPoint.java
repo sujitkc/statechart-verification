@@ -10,4 +10,7 @@ public class GuardProgramPoint extends ProgramPoint{
     {
         return this.transition;
     }
+    public GuardProgramPoint(String name){
+        super(name);
+    }
 }

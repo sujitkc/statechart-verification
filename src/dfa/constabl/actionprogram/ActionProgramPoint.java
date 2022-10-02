@@ -10,4 +10,7 @@ public abstract class ActionProgramPoint extends ProgramPoint{
     {
         return this.transition;
     }
+    public ActionProgramPoint(String name){
+        super(name);
+    }
 }

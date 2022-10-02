@@ -10,4 +10,7 @@ public class EntryEndProgramPoint extends EntryProgramPoint{
     // {
     //     return this.state;
     // }
+    public EntryEndProgramPoint(String name){
+        super(name);
+    }
 }

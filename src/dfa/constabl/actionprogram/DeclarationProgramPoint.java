@@ -10,4 +10,7 @@ public class DeclarationProgramPoint extends ProgramPoint{
     {
         return this.state;
     }
+    public DeclarationProgramPoint(String name){
+        super(name);
+    }
 }

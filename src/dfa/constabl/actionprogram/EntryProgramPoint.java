@@ -10,4 +10,7 @@ public abstract class EntryProgramPoint extends ProgramPoint{
     {
         return this.state;
     }
+     public EntryProgramPoint(String name){
+        super(name);
+    }
 }

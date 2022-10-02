@@ -28,6 +28,26 @@ statechart  c9{
                     x:=1;
                     }
                 exit:{}
+                shell sh1{
+                    entry:{}
+		            exit:{}
+                    state sh1_a{
+                        entry:{}
+		                exit:{}
+                        state sh1_a_a1{
+                        entry:{}
+		                exit:{}
+                        }
+                    }
+                    state sh1_b{
+                        entry:{}
+		                exit:{}
+                        state sh1_b_b1{
+                        entry:{}
+		                exit:{}
+                        }
+                    }
+                }
             }
             state A2{
                 entry:{}

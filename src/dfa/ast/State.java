@@ -126,6 +126,11 @@ public class State {
     return null;
   }
 
+  public List<State> getAllSubstates() {
+    
+    return this.states;
+  }
+
   // returns the list of all superstates (this excluded), starting with the
   // top-level statechart.
   public List<State> getAllSuperstates() {

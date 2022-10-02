@@ -10,4 +10,7 @@ public class ExitBeginProgramPoint extends ExitProgramPoint{
     // {
     //     return this.state;
     // }
+    public ExitBeginProgramPoint(String name){
+        super(name);
+    }
 }
