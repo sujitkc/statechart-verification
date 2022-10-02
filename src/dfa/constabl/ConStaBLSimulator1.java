@@ -83,7 +83,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 listofstates.add(this.statechart);
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
                 ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
-                System.out.println(initialExecutionSequence);
+                System.out.println("tinit : "+initialExecutionSequence);
             }
             else{
 
