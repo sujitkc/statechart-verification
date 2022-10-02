@@ -200,7 +200,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 if(state instanceof ast.Shell){
                     System.out.print("Shell detected:  ");
                     
-                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+                    actionSequence=addProgramPoints(actionSequence,state, ActionType.STATE_ENTRY_ACTION);
                     if(actionSequence instanceof SequentialExecutionSequence){
                         ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                         List<State> newEntryStates=state.getAllSubstates();
@@ -222,7 +222,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     
                     
                 }else if(state.getAllSubstates().size()>0){
-                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+                    actionSequence=addProgramPoints(actionSequence,state, ActionType.STATE_ENTRY_ACTION);
 
                     //entryStates.add(state.getAllSubstates().get(0));
                     //entryStates.remove(state);
@@ -233,7 +233,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     
                 }
                 else{
-                    actionSequence=addProgramPointsForStateEntry(actionSequence,state);
+                    actionSequence=addProgramPoints(actionSequence,state,ActionType.STATE_ENTRY_ACTION);
 
                     System.out.println("Atomic detected:  "+state.name);
                     
@@ -253,16 +253,29 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         return actionSequence;
     }
-    public ExecutionSequence addProgramPointsForStateEntry(ExecutionSequence actionSequence, State state){
+    public ExecutionSequence addProgramPoints(ExecutionSequence actionSequence, State state, String actionType){
         //Adding program points
                     if(actionSequence instanceof SequentialExecutionSequence){
-                        ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint("NB_"+state.name));
+                        if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name));
+                        else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name));
+                        else if(actionType.equals(ActionType.TRANSITION_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+state.name));
+                        
                         for(Statement stmt:((StatementList)state.entry).getStatements()){
                             System.out.println("Statement detected : "+stmt);
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
                         
                         }
-                        ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint("NE_"+state.name));
+
+                        if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryEndProgramPoint(actionType+"_End_"+state.name));
+                        else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name));
+                        else if(actionType.equals(ActionType.TRANSITION_ACTION))
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+state.name));
+                        
                         
                     }
             return actionSequence;
