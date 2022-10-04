@@ -8,7 +8,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     private Statechart statechart = null;
     private List<String> eventQueue=null;
     private Configuration activeconfig=null;
-    private final String tinit="tinit";
+    private final String tinit=EventQueue.tinit;
 
     public ConStaBLSimulator1(Statechart sc){
         try{
@@ -139,6 +139,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
     public Configuration takeTransition(Configuration currentconfig, Transition t)
     {
+        System.out.println("*********************************");
+        
         System.out.println("Take Transition : "+t.name);
         Configuration config=currentconfig;
  

@@ -3,7 +3,7 @@ import java.util.*;
 public class EventQueue{
 
    public static ArrayList<String> eventQueue=new ArrayList<String>();
-   private final String tinit="tinit";
+   public static final String tinit="tinit";
    
     public EventQueue(){
         
