@@ -11,11 +11,15 @@ statechart  c9{
     e1;
     e2;
   }
+  x:int:local;
+  y:int:local;
+
   entry : {}
   exit  : {} 
   functions {
   input<||>() : int;
   }
+  
 	shell Sh{
 		entry:{}
 		exit:{}
@@ -97,12 +101,12 @@ statechart  c9{
         destination: c9.C;
         trigger: e1;
         guard:(true);
-        action:{}
+        action:{x:=1;y:=1;}
 	}
     transition t2{
         source: c9.Sh.A;
         destination: c9.C;
-        trigger: e1;
+        trigger: e2;
         guard:(true);
         action:{}
 	}

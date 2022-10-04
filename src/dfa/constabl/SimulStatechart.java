@@ -12,7 +12,7 @@ public abstract class SimulStatechart{
 
     public abstract Configuration takeTransition(Configuration currentconfig, Transition t);
   
-    public abstract ExecutionSequence computeAction(Configuration currentconfig, Transition t);
+    //public abstract ExecutionSequence computeAction(Configuration currentconfig, Transition t);
   
     public abstract Configuration executeAction(Configuration currentconfig, ExecutionSequence exseq);
 

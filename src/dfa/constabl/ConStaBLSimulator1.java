@@ -143,9 +143,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         Configuration config=currentconfig;
  
         try{
+            System.out.println("Transition : "+t.name +" : Configuration : "+config);
             if(t.name.equals(tinit)&&t.getSource()==null){
                 //Transition is going to initialize the statechart
                 //((DotProgramPoint)(currentconfig.getProgramPoints()).get(0)).setState(this.statechart);
+                
                 ArrayList<State> listofstates=new ArrayList<State>();
                 listofstates.add(this.statechart);
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
@@ -157,9 +159,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
             else{
                 //Compute ExitActionSequence
+
                 ExecutionSequence exitSequence=computeExitExecutionSequence(currentconfig,t.lub());
                 //Compute TransitionSequence
-
+                ExecutionSequence transitionActionSequence=computeTransitionActionSequence(t);
+                
                 //Compute EntryActionSequence
             }
         }
@@ -171,11 +175,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     }
 
 
-    public ExecutionSequence computeAction(Configuration currentconfig, Transition t)
+    public ExecutionSequence computeTransitionActionSequence(Transition t)
     {
-        ExecutionSequence actionSequence=new ExecutionSequence();
+        SequentialExecutionSequence actionSequence=new SequentialExecutionSequence();
         try{
-
+                actionSequence=(SequentialExecutionSequence)addProgramPoints(actionSequence,null,t, ActionType.TRANSITION_ACTION);
+                System.out.println("Transition action sequence : "+actionSequence);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -319,7 +324,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 if(state instanceof ast.Shell){
                     System.out.print("Shell detected:  ");
                     
-                    actionSequence=addProgramPoints(actionSequence,state, ActionType.STATE_ENTRY_ACTION);
+                    actionSequence=addProgramPoints(actionSequence,state,null, ActionType.STATE_ENTRY_ACTION);
                     if(actionSequence instanceof SequentialExecutionSequence){
                         ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                         List<State> newEntryStates=state.getAllSubstates();
@@ -341,7 +346,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     
                     
                 }else if(state.getAllSubstates().size()>0){
-                    actionSequence=addProgramPoints(actionSequence,state, ActionType.STATE_ENTRY_ACTION);
+                    actionSequence=addProgramPoints(actionSequence,state,null, ActionType.STATE_ENTRY_ACTION);
 
                     //entryStates.add(state.getAllSubstates().get(0));
                     //entryStates.remove(state);
@@ -352,7 +357,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     
                 }
                 else{
-                    actionSequence=addProgramPoints(actionSequence,state,ActionType.STATE_ENTRY_ACTION);
+                    actionSequence=addProgramPoints(actionSequence,state,null,ActionType.STATE_ENTRY_ACTION);
 
                     System.out.println("Atomic detected:  "+state.name);
                     
@@ -372,17 +377,24 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         return actionSequence;
     }
-    public ExecutionSequence addProgramPoints(ExecutionSequence actionSequence, State state, String actionType){
+    public ExecutionSequence addProgramPoints(ExecutionSequence actionSequence, State state, Transition t, String actionType){
         //Adding program points
+                    StatementList stmtlist=null;
                     if(actionSequence instanceof SequentialExecutionSequence){
-                        if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
+                        if(actionType.equals(ActionType.STATE_ENTRY_ACTION)){
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name,state));
-                        else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
+                            stmtlist=(StatementList)state.entry;
+                        }   
+                        else if(actionType.equals(ActionType.STATE_EXIT_ACTION)){
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name,state));
-                        else if(actionType.equals(ActionType.TRANSITION_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+state.name));
-                        
-                        for(Statement stmt:((StatementList)state.entry).getStatements()){
+                            stmtlist=(StatementList)state.exit;
+                        }  
+                        else if(actionType.equals(ActionType.TRANSITION_ACTION)){
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+t.name));
+                            stmtlist=(StatementList)t.action;
+                        }
+                            
+                        for(Statement stmt:stmtlist.getStatements()){
                             System.out.println("Statement detected : "+stmt);
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
                         
@@ -393,7 +405,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                         else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
                             ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name,state));
                         else if(actionType.equals(ActionType.TRANSITION_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+state.name));
+                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+t.name));
                         
                         
                     }
@@ -449,11 +461,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }*/
          public ExecutionSequence computeExitExecutionSequence(Configuration config, State LUB){
             // List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
-            if(config.activestates.size()>1){
+            if(config.getActiveStates().size()>1){
                 ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                 ArrayList<State> shellparents=new ArrayList<State>();
                 
-                for(State exitstate:config.activestates){
+                for(State exitstate:config.getActiveStates()){
                     SequentialExecutionSequence ses=new SequentialExecutionSequence();
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     shellparents.add(ses.stateList.get(ses.stateList.size()-1));
