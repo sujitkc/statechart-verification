@@ -12,11 +12,19 @@ Concurrent sequence - set of composite sequences.
  */
 
 public class ExecutionSequence{
-   
+    public ArrayList<State> stateList=null;
+
+    public ExecutionSequence next=null;
     public String toString(){
         String s="";
         
         return s;
+    }
+    public boolean hasNext(){
+        if(next==null)
+            return false;
+        else
+            return true;
     }
    
 

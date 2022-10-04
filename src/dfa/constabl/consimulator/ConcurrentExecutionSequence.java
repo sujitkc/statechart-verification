@@ -4,7 +4,7 @@ import ast.*;
 import java.util.*;
 
 public class ConcurrentExecutionSequence extends ExecutionSequence{
-    public List<SequentialExecutionSequence> sequencelist =new ArrayList<SequentialExecutionSequence>();
+    public List<ExecutionSequence> sequencelist =new ArrayList<ExecutionSequence>();
     public SequentialExecutionSequence next=null;
     public String toString(){
         String s="[ ";
@@ -14,15 +14,16 @@ public class ConcurrentExecutionSequence extends ExecutionSequence{
     }
 
     public List<SequentialExecutionSequence> getFinalProgramPointInSequence(ConcurrentExecutionSequence conseq, List<SequentialExecutionSequence> returnSequence){
-        for(SequentialExecutionSequence ses:conseq.sequencelist){
+        for(ExecutionSequence ses:conseq.sequencelist){
            
             if(ses.hasNext()){
                 returnSequence.remove(ses);
-                getFinalProgramPointInSequence(ses.next,returnSequence);
+                if(ses.next instanceof ConcurrentExecutionSequence)
+                    getFinalProgramPointInSequence((ConcurrentExecutionSequence)ses.next,returnSequence);
 
             }
             else{
-                returnSequence.add(ses);
+                returnSequence.add((SequentialExecutionSequence)ses);
             }
         }
         return returnSequence;

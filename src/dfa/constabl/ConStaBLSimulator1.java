@@ -462,8 +462,30 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
         }*/
          public ExecutionSequence computeExitExecutionSequence(Configuration config, State LUB){
+            System.out.println("Computing Exit execution sequence");
+            ExecutionSequence es=null;
+            ArrayList<State> activestates=config.getActiveStates();
+            if(activestates.size()>1){
+                //concurrent execution going on
+                //multiple execution sequences should be calculated
+            }
+            else{
+                //single state to exit - 
+                //is it possible to exit a shell state when number of program points is 1? - No
+                //contained within OR state, so computeSequenceUntilLUB can be used to find a sequence?
+                State s=activestates.get(0);
+                es=computeSequenceUntilLUB(s, LUB, new SequentialExecutionSequence());
+                System.out.println(es);            
+            }
+        return es;
+         
+         }
+         
+         public ExecutionSequence computeExitExecutionSequenceOld(Configuration config, State LUB){
+         
             // List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
             if(config.getActiveStates().size()>1){
+                //concurrent execution ongoing..
                 ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
                 ArrayList<State> shellparents=new ArrayList<State>();
                 
@@ -517,6 +539,15 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 returnList.add(s);
                 return exitUntilLub(s.getSuperstate(),lub, returnList);
             }
+        }
+        public SequentialExecutionSequence computeSequenceUntilLUB(State s, State lub, SequentialExecutionSequence ses){
+            if(s == lub)
+                return ses;
+            else{
+                ses=(SequentialExecutionSequence)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
+                return computeSequenceUntilLUB(s.getSuperstate(),lub, ses);
+            }
+
         }
 
 }

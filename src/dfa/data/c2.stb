@@ -7,7 +7,10 @@ statechart  c2{
 	e;
 	No_event;
 	Error;
+	e1;
   }
+  x:int:local;
+  y:int:local;
   entry : {
     }
 
@@ -26,7 +29,7 @@ statechart  c2{
 				exit:{}
 				state c132{
 					entry:{}
-					exit:{}
+					exit:{x:=2;y:=2;}
 				}
         	}
         }
@@ -36,5 +39,12 @@ statechart  c2{
 		entry:{}
 		exit:{}
         
+	}
+	transition t2{
+        source: c2.c12;
+        destination: c2.c13;
+        trigger: e1;
+        guard:(true);
+        action:{x:=1;y:=1;}
 	}
 }
