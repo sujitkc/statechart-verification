@@ -21,7 +21,7 @@ public class ExecutionSequence{
         return s;
     }
     public boolean hasNext(){
-        if(next==null)
+        if(this.next==null)
             return false;
         else
             return true;

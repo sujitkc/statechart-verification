@@ -8,6 +8,9 @@ public class SequentialExecutionSequence extends ExecutionSequence{
     public ArrayList<State> stateList=new ArrayList<State>();
     public List<ProgramPoint> points=new ArrayList<ProgramPoint>();
     public ConcurrentExecutionSequence next=null;
+    public ProgramPoint getLastProgramPoint(){
+        return this.points.get(this.points.size()-1);
+    }
     public String toString(){
         String s=" ";
         for(ProgramPoint p: points)
@@ -35,8 +38,10 @@ public class SequentialExecutionSequence extends ExecutionSequence{
     public void addProgramPoint(ProgramPoint p){
         this.points.add(p);
     }
+    @Override
     public boolean hasNext(){
-        if(next==null)
+        System.out.println("Next : "+this.next);
+        if(this.next==null)
             return false;
         else
             return true;

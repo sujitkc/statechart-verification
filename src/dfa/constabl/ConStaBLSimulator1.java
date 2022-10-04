@@ -137,6 +137,51 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     //if(checkStates.contains(s.getAllSuperstates()))
                 }
         }
+    public ExecutionSequence iterateSequence(ExecutionSequence exseq){
+        System.out.println("Iterate : "+exseq.getClass());
+        if(exseq.hasNext()){
+            System.out.println("Hello : ");
+            return iterateSequence(exseq.next);
+        }
+        else if(exseq==null) {
+            System.out.println("Hello Else If: "+exseq);
+            return null;
+        }
+        else{
+             System.out.println("Hello Else: "+exseq);
+             return exseq;
+        }
+            
+    }
+    public Configuration computeConfiguration(ExecutionSequence exseq, Configuration config){
+        //System.out.println("computeConfiguration : " +exseq);
+         iterateSequence(exseq);
+         if(exseq!=null&&exseq.next!=null){
+            System.out.println("Inside if :"+exseq.next);
+    
+            return computeConfiguration(exseq.next, config);
+        }
+        else{
+            System.out.println("inside else : "+exseq.getClass()+ exseq.next);
+            if(exseq instanceof SequentialExecutionSequence){
+                config.programpoints.add(((SequentialExecutionSequence)exseq).getLastProgramPoint());
+                System.out.println("inside "+config);
+
+                //return config;
+                 }
+            else if(exseq instanceof ConcurrentExecutionSequence){
+                for(ExecutionSequence es: ((ConcurrentExecutionSequence)exseq).sequencelist){
+                        System.out.println("es : "+es);
+                        //config.programpoints.add((computeConfiguration(es, config)).getLastProgramPoint());
+                        return computeConfiguration(es, config);
+                }
+            }
+            
+        }
+        System.out.println(config);
+
+        return config;
+    }
     public Configuration takeTransition(Configuration currentconfig, Transition t)
     {
         System.out.println("*********************************");
@@ -155,7 +200,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
                 ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
                 System.out.println("tinit : "+initialExecutionSequence);
-                Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
+                Configuration newconfig=computeConfiguration(initialExecutionSequence,new Configuration());
+                //Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
                 System.out.println("Configuration after tinit:"+newconfig.programpoints);
                 config=new Configuration(newconfig.programpoints);
             }
@@ -189,7 +235,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         return actionSequence;
     }
-
+    
+    public Configuration computeEntryExecutionSequence(){
+        Configuration config=null;
+        return config;
+    }
 
     public Configuration executeAction(Configuration currentconfig, ExecutionSequence exseq)
     {
@@ -468,6 +518,20 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             if(activestates.size()>1){
                 //concurrent execution going on
                 //multiple execution sequences should be calculated
+                //CASE 1 - all program points belong to same shell state
+                    //* Exit until shell and then create a sequential execution sequence as next
+                //CASE 2 - program points belong to different shell states
+                    //* Group the program points to the shell states and compute the exit sequences
+                // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
+                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
+                if(shellAncestors.size()==1){
+                    System.out.println("Single shell ancestor");
+                }
+                else{
+                    System.out.println("Multiple shell ancestor");
+                }
+               // if(this.statechart.lub)
             }
             else{
                 //single state to exit - 

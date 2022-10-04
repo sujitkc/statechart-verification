@@ -3,7 +3,8 @@ package ast;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
-
+import java.util.Set;
+import java.util.HashSet;
 public class Statechart extends State {
 
   public final List<Type> types = new ArrayList<Type>();
@@ -77,7 +78,28 @@ public class Statechart extends State {
     }
     return cca;
   }
+public State findShellAncestor(State state){
+  List<State> a1 = state.getAllSuperstates();
+  for(State a : a1){
+    if( a instanceof ast.Shell){
+      return a;
+    }
+  }
+  return null;
+}
+public Set<State> shellLubofStates(List<State> states) {
+    Set<State> ancestors=new HashSet<State>();
+        System.out.println("Ancestors : ");
 
+    for(State s : states){
+      State sh=findShellAncestor(s);
+      
+      ancestors.add(sh);
+    }
+    for(State s:ancestors)
+      System.out.print(s.name+", ");
+    return ancestors;
+  }
   public State nameToState(Name name) {
     if(this.name.equals(name.name.get(0))) {
       return this.nameToState(name, 0);
