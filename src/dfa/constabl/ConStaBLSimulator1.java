@@ -9,15 +9,18 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     private List<String> eventQueue=null;
     private Configuration activeconfig=null;
     private final String tinit="tinit";
+
     public ConStaBLSimulator1(Statechart sc){
         try{
+            EventQueue eq=new EventQueue();
             this.statechart=sc;
 
             //Initializing the event queue
             this.eventQueue=new ArrayList<String>();
-            this.eventQueue.add(tinit);
-            this.eventQueue.add("e1");
-            this.eventQueue.add("e2");
+            this.eventQueue.addAll(eq.eventQueue);
+            //this.eventQueue.add(tinit);
+            //this.eventQueue.add("e1");
+            //this.eventQueue.add("e2");
 
             //initializing the configuration
             //DotProgramPoint initPoint=new DotProgramPoint();
@@ -149,7 +152,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
                 System.out.println("tinit : "+initialExecutionSequence);
                 Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
-                System.out.println("Configuration :"+newconfig.programpoints);
+                System.out.println("Configuration after tinit:"+newconfig.programpoints);
                 config=new Configuration(newconfig.programpoints);
             }
             else{

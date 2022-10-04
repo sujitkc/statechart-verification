@@ -9,6 +9,7 @@ statechart  c9{
   events {
 	e;
     e1;
+    e2;
   }
   entry : {}
   exit  : {} 
@@ -101,7 +102,7 @@ statechart  c9{
     transition t2{
         source: c9.Sh.A;
         destination: c9.C;
-        trigger: e2;
+        trigger: e1;
         guard:(true);
         action:{}
 	}
