@@ -200,6 +200,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
                 ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
                 System.out.println("tinit : "+initialExecutionSequence);
+                getNextReadySet(null, initialExecutionSequence);
                 Configuration newconfig=computeConfiguration(initialExecutionSequence,new Configuration());
                 //Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
                 System.out.println("Configuration after tinit:"+newconfig.programpoints);
@@ -611,6 +612,24 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ses=(SequentialExecutionSequence)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
                 return computeSequenceUntilLUB(s.getSuperstate(),lub, ses);
             }
+
+        }
+
+        public List<ProgramPoint> getNextReadySet(List<ProgramPoint> currentpoints, ExecutionSequence exseq){
+            System.out.println("Calculating ready set :");
+            List<ProgramPoint> returnPoints=new ArrayList<ProgramPoint>();
+            if(currentpoints==null)
+            {
+                if(exseq instanceof SequentialExecutionSequence){
+                    System.out.println("seqeuntial execution sequence found");
+                    returnPoints.add(exseq.programpoints.get(0));
+                }
+                else if(exseq instanceof ConcurrentExecutionSequence){
+                    System.out.println("concurrent execution sequence found");
+
+                } 
+            }
+            return null;
 
         }
 
