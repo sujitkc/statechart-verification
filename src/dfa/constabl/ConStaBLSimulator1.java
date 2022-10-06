@@ -224,7 +224,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     }
 
 
-    public ExecutionBlock computeTransitionActionSequence(Transition t)
+    public ExecutionBlock computeTransitionActionSeLab@123(Transition t)
     {
         SequentialExecutionBlock actionSequence=new SequentialExecutionBlock();
         try{
@@ -513,12 +513,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
         }*/
          public ExecutionBlock computeExitExecutionBlock(Configuration config, State LUB){
-            System.out.println("Computing Exit execution sequence");
+            System.out.println("Computing Exit execution block");
             ExecutionBlock es=null;
             ArrayList<State> activestates=config.getActiveStates();
             if(activestates.size()>1){
                 //concurrent execution going on
-                //multiple execution sequences should be calculated
+                //multiple execution blocks should be calculated
                 //CASE 1 - all program points belong to same shell state
                     //* Exit until shell and then create a sequential execution sequence as next
                 //CASE 2 - program points belong to different shell states
