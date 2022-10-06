@@ -4,7 +4,7 @@ import ast.*;
 import java.util.*;
 
 public class ConcurrentExecutionBlock extends ExecutionBlock{
-    public List<ExecutionBlock> sequencelist =new ArrayList<ExecutionBlock>();
+    public List<SequentialExecutionBlock> sequencelist =new ArrayList<SequentialExecutionBlock>();
     public SequentialExecutionBlock next=null;
     public String toString(){
         String s="[ ";

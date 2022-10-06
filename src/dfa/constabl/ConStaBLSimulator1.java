@@ -174,10 +174,15 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     if(ces.next!=null)
                         return computeConfiguration(ces.next, config);
                     else{
-                        for(ExecutionBlock es: ces.sequencelist){
+                        for(SequentialExecutionBlock es: ces.sequencelist){
                             System.out.println("es : "+es);
-                            //config.programpoints.add((computeConfiguration(es, config)).getLastProgramPoint());
-                            return computeConfiguration(es, config);
+                            for(ProgramPoint p : (computeConfiguration(es, config)).programpoints)
+                            {
+                                if(!config.programpoints.contains(p))
+                                    config.programpoints.add(p);
+                            }
+                            
+                            //return computeConfiguration(es, config);
                         }    
                     }
                 }
