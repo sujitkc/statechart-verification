@@ -137,7 +137,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     //if(checkStates.contains(s.getAllSuperstates()))
                 }
         }
-    public ExecutionSequence iterateSequence(ExecutionSequence exseq){
+    public ExecutionBlock iterateSequence(ExecutionBlock exseq){
         System.out.println("Iterate : "+exseq.getClass());
         if(exseq.hasNext()){
             System.out.println("Hello : ");
@@ -153,7 +153,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
             
     }
-    public Configuration computeConfiguration(ExecutionSequence exseq, Configuration config){
+    public Configuration computeConfiguration(ExecutionBlock exseq, Configuration config){
         //System.out.println("computeConfiguration : " +exseq);
          //iterateSequence(exseq);
          if(exseq!=null&&exseq.next!=null){
@@ -163,14 +163,14 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         else{
             System.out.println("inside else : "+exseq.getClass()+ exseq.next);
-            if(exseq instanceof SequentialExecutionSequence){
-                config.programpoints.add(((SequentialExecutionSequence)exseq).getLastProgramPoint());
+            if(exseq instanceof SequentialExecutionBlock){
+                config.programpoints.add(((SequentialExecutionBlock)exseq).getLastProgramPoint());
                 System.out.println("inside "+config);
 
                 //return config;
                  }
-            else if(exseq instanceof ConcurrentExecutionSequence){
-                for(ExecutionSequence es: ((ConcurrentExecutionSequence)exseq).sequencelist){
+            else if(exseq instanceof ConcurrentExecutionBlock){
+                for(ExecutionBlock es: ((ConcurrentExecutionBlock)exseq).sequencelist){
                         System.out.println("es : "+es);
                         //config.programpoints.add((computeConfiguration(es, config)).getLastProgramPoint());
                         return computeConfiguration(es, config);
@@ -197,21 +197,21 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 
                 ArrayList<State> listofstates=new ArrayList<State>();
                 listofstates.add(this.statechart);
-               // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionSequence());
-                ExecutionSequence initialExecutionSequence=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionSequence());
-                System.out.println("tinit : "+initialExecutionSequence);
-                getNextReadySet(null, initialExecutionSequence);
-                Configuration newconfig=computeConfiguration(initialExecutionSequence,new Configuration());
-                //Configuration newconfig=executeAction(currentconfig,initialExecutionSequence);
+               // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionBlock());
+                ExecutionBlock initialExecutionBlock=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionBlock());
+                System.out.println("tinit : "+initialExecutionBlock);
+                getNextReadySet(null, initialExecutionBlock);
+                Configuration newconfig=computeConfiguration(initialExecutionBlock,new Configuration());
+                //Configuration newconfig=executeAction(currentconfig,initialExecutionBlock);
                 System.out.println("Configuration after tinit:"+newconfig.programpoints);
                 config=new Configuration(newconfig.programpoints);
             }
             else{
                 //Compute ExitActionSequence
 
-                ExecutionSequence exitSequence=computeExitExecutionSequence(currentconfig,t.lub());
+                ExecutionBlock exitSequence=computeExitExecutionBlock(currentconfig,t.lub());
                 //Compute TransitionSequence
-                ExecutionSequence transitionActionSequence=computeTransitionActionSequence(t);
+                ExecutionBlock transitionActionSequence=computeTransitionActionSequence(t);
                 
                 //Compute EntryActionSequence
             }
@@ -224,11 +224,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     }
 
 
-    public ExecutionSequence computeTransitionActionSequence(Transition t)
+    public ExecutionBlock computeTransitionActionSequence(Transition t)
     {
-        SequentialExecutionSequence actionSequence=new SequentialExecutionSequence();
+        SequentialExecutionBlock actionSequence=new SequentialExecutionBlock();
         try{
-                actionSequence=(SequentialExecutionSequence)addProgramPoints(actionSequence,null,t, ActionType.TRANSITION_ACTION);
+                actionSequence=(SequentialExecutionBlock)addProgramPoints(actionSequence,null,t, ActionType.TRANSITION_ACTION);
                 System.out.println("Transition action sequence : "+actionSequence);
         }
         catch(Exception e){
@@ -237,12 +237,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return actionSequence;
     }
     
-    public Configuration computeEntryExecutionSequence(){
+    public Configuration computeEntryExecutionBlock(){
         Configuration config=null;
         return config;
     }
 
-    public Configuration executeAction(Configuration currentconfig, ExecutionSequence exseq)
+    public Configuration executeAction(Configuration currentconfig, ExecutionBlock exseq)
     {
         Configuration config=currentconfig;
          Configuration returnConfiguration=new Configuration();
@@ -254,28 +254,28 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
             //System.out.println(exseq);
            
-            if(exseq instanceof SequentialExecutionSequence){
-                System.out.println("SequentialExecutionSequence Detected");
-                if(((SequentialExecutionSequence)exseq).hasNext()){
-                    //has a concurrent executionsequence
-                    System.out.println("ConcurrentExecutionSequence Detected");
+            if(exseq instanceof SequentialExecutionBlock){
+                System.out.println("SequentialExecutionBlock Detected");
+                if(((SequentialExecutionBlock)exseq).hasNext()){
+                    //has a concurrent ExecutionBlock
+                    System.out.println("ConcurrentExecutionBlock Detected");
 
-                    ConcurrentExecutionSequence conexseq=((SequentialExecutionSequence)exseq).next;
-                    List<SequentialExecutionSequence> finalSeq=conexseq.getFinalProgramPointInSequence(conexseq, new ArrayList<SequentialExecutionSequence>());
-                    for(SequentialExecutionSequence ses:finalSeq){
-                        List<ProgramPoint> programpoints=((SequentialExecutionSequence)ses).points;
+                    ConcurrentExecutionBlock conexseq=((SequentialExecutionBlock)exseq).next;
+                    List<SequentialExecutionBlock> finalSeq=conexseq.getFinalProgramPointInSequence(conexseq, new ArrayList<SequentialExecutionBlock>());
+                    for(SequentialExecutionBlock ses:finalSeq){
+                        List<ProgramPoint> programpoints=((SequentialExecutionBlock)ses).points;
                         //add the last program point in the sequence to the return configuration
                         returnConfiguration.programpoints.add(programpoints.get(programpoints.size()-1));
                        
                     }
                 }
                 else{
-                    List<ProgramPoint> programpoints=((SequentialExecutionSequence)exseq).points;
+                    List<ProgramPoint> programpoints=((SequentialExecutionBlock)exseq).points;
                     //add the last program point in the sequence to the return configuration
                     returnConfiguration.programpoints.add(programpoints.get(programpoints.size()-1));
                 }
             }
-            else if(exseq instanceof ConcurrentExecutionSequence){
+            else if(exseq instanceof ConcurrentExecutionBlock){
 
             }
         }
@@ -285,7 +285,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return returnConfiguration;
     }
 
-    // public ExecutionSequence computeActionDefaultEntry(Configuration currentconfig, ArrayList<State> entryStates, ExecutionSequence actionSequence)
+    // public ExecutionBlock computeActionDefaultEntry(Configuration currentconfig, ArrayList<State> entryStates, ExecutionBlock actionSequence)
     // {
         
     //     try{
@@ -307,7 +307,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 
     //             if(state instanceof ast.Shell){
     //                 actionSequence=addProgramPointsForStateEntry(actionSequence,state);
-    //                 actionSequence.next=new ConcurrentExecutionSequence();
+    //                 actionSequence.next=new ConcurrentExecutionBlock();
 
     //                 entryStates.addAll(state.getAllSubstates());
     //                 entryStates.remove(state);
@@ -351,22 +351,22 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     //     }
     //     return actionSequence;
     // }
-    public ExecutionSequence computeExitActionSequence(Configuration config, Transition trans){
-        ExecutionSequence returnsequence=null;
+    public ExecutionBlock computeExitActionSequence(Configuration config, Transition trans){
+        ExecutionBlock returnsequence=null;
         if(config.programpoints.size()==1){
             //Sequential execution in progress
-            SequentialExecutionSequence ses=new SequentialExecutionSequence();
+            SequentialExecutionBlock ses=new SequentialExecutionBlock();
 
         }
         else{
             //Concurrent execution in progress
-            ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+            ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
 
         }
         return returnsequence;
     }
 
-    public ExecutionSequence computeActionDefaultEntryForState(Configuration currentconfig, State entryState, ExecutionSequence actionSequence)
+    public ExecutionBlock computeActionDefaultEntryForState(Configuration currentconfig, State entryState, ExecutionBlock actionSequence)
     {
         
         try{
@@ -378,18 +378,18 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     System.out.print("Shell detected:  ");
                     
                     actionSequence=addProgramPoints(actionSequence,state,null, ActionType.STATE_ENTRY_ACTION);
-                    if(actionSequence instanceof SequentialExecutionSequence){
-                        ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                    if(actionSequence instanceof SequentialExecutionBlock){
+                        ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
                         List<State> newEntryStates=state.getAllSubstates();
                                        
                             for(State s:newEntryStates){
                                     System.out.print(s.name+", ");
-                                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
-                                    ses=(SequentialExecutionSequence)computeActionDefaultEntryForState(currentconfig,s,ses);
+                                    SequentialExecutionBlock ses=new SequentialExecutionBlock();
+                                    ses=(SequentialExecutionBlock)computeActionDefaultEntryForState(currentconfig,s,ses);
                                     ces.sequencelist.add(ses);
                              }
 
-                        ((SequentialExecutionSequence)actionSequence).setNextCES(ces);
+                        ((SequentialExecutionBlock)actionSequence).setNextCES(ces);
 
                     }
                     else{
@@ -430,52 +430,52 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         return actionSequence;
     }
-    public ExecutionSequence addProgramPoints(ExecutionSequence actionSequence, State state, Transition t, String actionType){
+    public ExecutionBlock addProgramPoints(ExecutionBlock actionSequence, State state, Transition t, String actionType){
         //Adding program points
                     StatementList stmtlist=null;
-                    if(actionSequence instanceof SequentialExecutionSequence){
+                    if(actionSequence instanceof SequentialExecutionBlock){
                         if(actionType.equals(ActionType.STATE_ENTRY_ACTION)){
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name,state));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new EntryBeginProgramPoint(actionType+"_Begin_"+state.name,state));
                             stmtlist=(StatementList)state.entry;
                         }   
                         else if(actionType.equals(ActionType.STATE_EXIT_ACTION)){
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name,state));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new ExitBeginProgramPoint(actionType+"_Begin_"+state.name,state));
                             stmtlist=(StatementList)state.exit;
                         }  
                         else if(actionType.equals(ActionType.TRANSITION_ACTION)){
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+t.name));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new ActionBeginProgramPoint(actionType+"_Begin_"+t.name));
                             stmtlist=(StatementList)t.action;
                         }
                             
                         for(Statement stmt:stmtlist.getStatements()){
                             System.out.println("Statement detected : "+stmt);
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
                         
                         }
 
                         if(actionType.equals(ActionType.STATE_ENTRY_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new EntryEndProgramPoint(actionType+"_End_"+state.name,state));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new EntryEndProgramPoint(actionType+"_End_"+state.name,state));
                         else if(actionType.equals(ActionType.STATE_EXIT_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name,state));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new ExitEndProgramPoint(actionType+"_End_"+state.name,state));
                         else if(actionType.equals(ActionType.TRANSITION_ACTION))
-                            ((SequentialExecutionSequence)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+t.name));
+                            ((SequentialExecutionBlock)actionSequence).addProgramPoint(new ActionEndProgramPoint(actionType+"_End_"+t.name));
                         
                         
                     }
             return actionSequence;
 
     }
-   /* public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionSequence executionSequence){
+   /* public List<State> getDefaultAtomicSubStateSequence(ArrayList<State> substate, ExecutionBlock ExecutionBlock){
             
-            ExecutionSequence currentSequence=executionSequence;
+            ExecutionBlock currentSequence=ExecutionBlock;
             ArrayList<State> returnsubstates=new ArrayList<State>();
             
             for(State s:substate){
                 if(s instanceof ast.Shell){
-                    if(currentSequence instanceof SequentialExecutionSequence){
+                    if(currentSequence instanceof SequentialExecutionBlock){
                         
                     }
-                    if(currentSequence instanceof ConcurrentExecutionSequence){
+                    if(currentSequence instanceof ConcurrentExecutionBlock){
                         
                     }
                 }
@@ -509,12 +509,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             if(returnsubstates.equals(substate))
                 return returnsubstates;
             else
-                return getDefaultAtomicSubStateSequence(returnsubstates, executionSequence);
+                return getDefaultAtomicSubStateSequence(returnsubstates, ExecutionBlock);
 
         }*/
-         public ExecutionSequence computeExitExecutionSequence(Configuration config, State LUB){
+         public ExecutionBlock computeExitExecutionBlock(Configuration config, State LUB){
             System.out.println("Computing Exit execution sequence");
-            ExecutionSequence es=null;
+            ExecutionBlock es=null;
             ArrayList<State> activestates=config.getActiveStates();
             if(activestates.size()>1){
                 //concurrent execution going on
@@ -524,7 +524,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //CASE 2 - program points belong to different shell states
                     //* Group the program points to the shell states and compute the exit sequences
                 // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
-                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
                 Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
                 if(shellAncestors.size()==1){
                     System.out.println("Single shell ancestor");
@@ -539,23 +539,23 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //is it possible to exit a shell state when number of program points is 1? - No
                 //contained within OR state, so computeSequenceUntilLUB can be used to find a sequence?
                 State s=activestates.get(0);
-                es=computeSequenceUntilLUB(s, LUB, new SequentialExecutionSequence());
+                es=computeSequenceUntilLUB(s, LUB, new SequentialExecutionBlock());
                 System.out.println(es);            
             }
         return es;
          
          }
          
-         public ExecutionSequence computeExitExecutionSequenceOld(Configuration config, State LUB){
+         public ExecutionBlock computeExitExecutionBlockOld(Configuration config, State LUB){
          
-            // List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
+            // List<ExecutionBlock> exitExecutionBlock=new ArrayList<ExecutionBlock>();
             if(config.getActiveStates().size()>1){
                 //concurrent execution ongoing..
-                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
                 ArrayList<State> shellparents=new ArrayList<State>();
                 
                 for(State exitstate:config.getActiveStates()){
-                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                    SequentialExecutionBlock ses=new SequentialExecutionBlock();
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     shellparents.add(ses.stateList.get(ses.stateList.size()-1));
                     for (State s:ses.stateList){
@@ -564,26 +564,26 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     ces.sequencelist.add(ses);
                 }
                 
-                //exitExecutionSequence.add(ces);
-                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                //exitExecutionBlock.add(ces);
+                SequentialExecutionBlock ses=new SequentialExecutionBlock();
                 State shellState=(ces.sequencelist.get(0)).stateList.get((ces.sequencelist.get(0)).stateList.size()-1).getSuperstate();
                 System.out.println("Shell state : "+shellState.getFullName());
              
                 ses.stateList.addAll(exitUntilLub(shellState, LUB, new ArrayList<State>()));
                 System.out.println("ses.statelist : "+ses.stateList.size());
                 
-                //exitExecutionSequence.add(ses);
+                //exitExecutionBlock.add(ses);
                 ces.next=ses;
                 return ces;
             }
             else{
                 System.out.println("inside else");
-                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                SequentialExecutionBlock ses=new SequentialExecutionBlock();
                 ses.stateList.addAll(exitUntilLub(config.activestates.get(0), LUB, ses.stateList));
-                //exitExecutionSequence.add(ses);
+                //exitExecutionBlock.add(ses);
                 return ses;
             }
-            //System.out.println("Execution Sequence : "+exitExecutionSequence);
+            //System.out.println("Execution Sequence : "+exitExecutionBlock);
 
         }
         public ArrayList<State> exitUntilShell(State s, ArrayList<State> returnList){
@@ -605,26 +605,26 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 return exitUntilLub(s.getSuperstate(),lub, returnList);
             }
         }
-        public SequentialExecutionSequence computeSequenceUntilLUB(State s, State lub, SequentialExecutionSequence ses){
+        public SequentialExecutionBlock computeSequenceUntilLUB(State s, State lub, SequentialExecutionBlock ses){
             if(s == lub)
                 return ses;
             else{
-                ses=(SequentialExecutionSequence)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
+                ses=(SequentialExecutionBlock)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
                 return computeSequenceUntilLUB(s.getSuperstate(),lub, ses);
             }
 
         }
 
-        public List<ProgramPoint> getNextReadySet(List<ProgramPoint> currentpoints, ExecutionSequence exseq){
+        public List<ProgramPoint> getNextReadySet(List<ProgramPoint> currentpoints, ExecutionBlock exseq){
             System.out.println("Calculating ready set :");
             List<ProgramPoint> returnPoints=new ArrayList<ProgramPoint>();
             if(currentpoints==null)
             {
-                if(exseq instanceof SequentialExecutionSequence){
+                if(exseq instanceof SequentialExecutionBlock){
                     System.out.println("seqeuntial execution sequence found");
-                    //returnPoints.add((SequentialExecutionSequence)exseq.programpoints.get(0));
+                    //returnPoints.add((SequentialExecutionBlock)exseq.programpoints.get(0));
                 }
-                else if(exseq instanceof ConcurrentExecutionSequence){
+                else if(exseq instanceof ConcurrentExecutionBlock){
                     System.out.println("concurrent execution sequence found");
 
                 } 

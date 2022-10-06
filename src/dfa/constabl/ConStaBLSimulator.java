@@ -9,8 +9,8 @@ public class ConStaBLSimulator{
      private Configuration activeConfiguration;
      private Configuration sourceConfiguration, destConfiguration;
      private Queue<String> eventQueue = new LinkedList<String>();
-     private List<ExecutionSequence> exitExecutionSequence=new ArrayList<ExecutionSequence>();
-     private List<ExecutionSequence> entryExecutionSequence=new ArrayList<ExecutionSequence>();
+     private List<ExecutionBlock> exitExecutionBlock=new ArrayList<ExecutionBlock>();
+     private List<ExecutionBlock> entryExecutionBlock=new ArrayList<ExecutionBlock>();
      
       public ConStaBLSimulator(Statechart statechart) throws Exception
         {
@@ -64,8 +64,8 @@ public class ConStaBLSimulator{
                 /* Taking one transition and performing the test*/
                 if(activeTransitions.size()>0){
                         Transition t=activeTransitions.get(0);
-                        computeExitExecutionSequence(activeConfiguration, t.lub());
-                        executeAction(exitExecutionSequence);
+                        computeExitExecutionBlock(activeConfiguration, t.lub());
+                        executeAction(exitExecutionBlock);
                         //Identifying all the states that the transition should sequentially exit
                         //State lub=t.lub();
 
@@ -125,13 +125,13 @@ public class ConStaBLSimulator{
 
         
         }
-        public void computeExitExecutionSequence(Configuration config, State LUB){
+        public void computeExitExecutionBlock(Configuration config, State LUB){
             if(config.activestates.size()>1){
-                ConcurrentExecutionSequence ces=new ConcurrentExecutionSequence();
+                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
                 ArrayList<State> shellparents=new ArrayList<State>();
                 
                 for(State exitstate:config.activestates){
-                    SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                    SequentialExecutionBlock ses=new SequentialExecutionBlock();
                     ses.stateList.addAll(exitUntilShell(exitstate,  new ArrayList<State>()));
                     shellparents.add(ses.stateList.get(ses.stateList.size()-1));
                     for (State s:ses.stateList){
@@ -140,23 +140,23 @@ public class ConStaBLSimulator{
                     ces.sequencelist.add(ses);
                 }
                 
-                exitExecutionSequence.add(ces);
-                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                exitExecutionBlock.add(ces);
+                SequentialExecutionBlock ses=new SequentialExecutionBlock();
                 State shellState=(ces.sequencelist.get(0)).stateList.get((ces.sequencelist.get(0)).stateList.size()-1).getSuperstate();
                 System.out.println("Shell state : "+shellState.getFullName());
              
                 ses.stateList.addAll(exitUntilLub(shellState, LUB, new ArrayList<State>()));
                 System.out.println("ses.statelist : "+ses.stateList.size());
                 
-                exitExecutionSequence.add(ses);
+                exitExecutionBlock.add(ses);
             }
             else{
                 System.out.println("inside else");
-                SequentialExecutionSequence ses=new SequentialExecutionSequence();
+                SequentialExecutionBlock ses=new SequentialExecutionBlock();
                 ses.stateList.addAll(exitUntilLub(config.activestates.get(0), LUB, ses.stateList));
-                exitExecutionSequence.add(ses);
+                exitExecutionBlock.add(ses);
             }
-            System.out.println("Execution Sequence : "+exitExecutionSequence);
+            System.out.println("Execution Sequence : "+exitExecutionBlock);
 
         }
         public ArrayList<State> exitUntilShell(State s, ArrayList<State> returnList){
@@ -179,12 +179,12 @@ public class ConStaBLSimulator{
             }
         }
 
-        public void executeAction(List<ExecutionSequence> exseq){
+        public void executeAction(List<ExecutionBlock> exseq){
             System.out.println("Execution sequence is from Execute Action method is : "+exseq);
             List<Statement> readySet=new ArrayList<Statement>();
-            for (ExecutionSequence ex: exseq){
-                if(ex instanceof ConcurrentExecutionSequence){
-                    //for(SequentialExecutionSequence ses : ex){
+            for (ExecutionBlock ex: exseq){
+                if(ex instanceof ConcurrentExecutionBlock){
+                    //for(SequentialExecutionBlock ses : ex){
                        // readySet.add();
                     //}
                 }
