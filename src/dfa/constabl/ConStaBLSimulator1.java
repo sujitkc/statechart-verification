@@ -155,7 +155,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     }
     public Configuration computeConfiguration(ExecutionSequence exseq, Configuration config){
         //System.out.println("computeConfiguration : " +exseq);
-         iterateSequence(exseq);
+         //iterateSequence(exseq);
          if(exseq!=null&&exseq.next!=null){
             System.out.println("Inside if :"+exseq.next);
     
@@ -622,7 +622,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             {
                 if(exseq instanceof SequentialExecutionSequence){
                     System.out.println("seqeuntial execution sequence found");
-                    returnPoints.add(exseq.programpoints.get(0));
+                    //returnPoints.add((SequentialExecutionSequence)exseq.programpoints.get(0));
                 }
                 else if(exseq instanceof ConcurrentExecutionSequence){
                     System.out.println("concurrent execution sequence found");
