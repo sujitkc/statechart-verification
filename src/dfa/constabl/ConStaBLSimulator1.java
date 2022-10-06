@@ -245,6 +245,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ExecutionBlock transitionActionSequence=computeTransitionAction(t);
                 System.out.println ("Transition Action Sequence : "+transitionActionSequence);
                 //Compute EntryActionSequence
+                 ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
+                
             }
         }
         catch(Exception e){
@@ -268,10 +270,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return actionSequence;
     }
     
-    public Configuration computeEntryExecutionBlock(){
-        Configuration config=null;
-        return config;
-    }
+    
 
     public Configuration executeAction(Configuration currentconfig, ExecutionBlock exseq)
     {
@@ -558,7 +557,52 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
             }
             System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
+
+            if(activestates.size()>1){
+                //concurrent execution going on
+                //multiple execution blocks should be calculated
+                //CASE 1 - all program points belong to same shell state
+                    //* Exit until shell and then create a sequential execution sequence as next
+                //CASE 2 - program points belong to different shell states
+                    //* Group the program points to the shell states and compute the exit sequences
+                // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
+                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
+                Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
+                if(shellAncestors.size()==1){
+                    System.out.println("Single shell ancestor");
+                }
+                else{
+                    System.out.println("Multiple shell ancestor");
+                }
+               // if(this.statechart.lub)
+            }
+            else{
+                //single state to exit - 
+                //is it possible to exit a shell state when number of program points is 1? - No
+                //contained within OR state, so computeSequenceUntilLUB can be used to find a sequence?
+                State s=activestates.get(0);
+                es=computeSequenceUntilLUB(s, LUB, new SequentialExecutionBlock());
+                System.out.println(es);            
+            }
+        return es;
+         
+         }
+
+         public ExecutionBlock computeEntryExecutionBlock(Configuration config, State LUB){
+            System.out.println("Computing Entry execution block");
+            ExecutionBlock es=null;
+            ArrayList<State> activestates=config.getActiveStates();
+            State exitancesestor=null;
             
+            for(State s: LUB.states){
+               // System.out.println("LUB :"+s.name);
+                for(State as:activestates){
+                    if(as.getAllSuperstates().contains(s))
+                        exitancesestor=s;
+                }
+            }
+            System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
+
             if(activestates.size()>1){
                 //concurrent execution going on
                 //multiple execution blocks should be calculated
