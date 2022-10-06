@@ -154,14 +154,38 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             
     }
     public Configuration computeConfiguration(ExecutionBlock exseq, Configuration config){
-        //System.out.println("computeConfiguration : " +exseq);
+        System.out.println("computeConfiguration : " +config);
          //iterateSequence(exseq);
-         if(exseq!=null&&exseq.next!=null){
-            System.out.println("Inside if :"+exseq.next);
-    
-            return computeConfiguration(exseq.next, config);
+         if(exseq!=null){
+           
+            
+        
+                if(exseq instanceof SequentialExecutionBlock){
+                     System.out.println("Inside ses :");
+                    SequentialExecutionBlock ses=(SequentialExecutionBlock)exseq;
+                    if(ses.next!=null)
+                        return computeConfiguration(ses.next, config);
+                    else 
+                        config.programpoints.add(ses.getLastProgramPoint());
+                }
+                else if(exseq instanceof ConcurrentExecutionBlock){
+                     System.out.println("Inside ces :");
+                    ConcurrentExecutionBlock ces=(ConcurrentExecutionBlock)exseq;
+                    if(ces.next!=null)
+                        return computeConfiguration(ces.next, config);
+                    else{
+                        for(ExecutionBlock es: ces.sequencelist){
+                            System.out.println("es : "+es);
+                            //config.programpoints.add((computeConfiguration(es, config)).getLastProgramPoint());
+                            return computeConfiguration(es, config);
+                        }    
+                    }
+                }
+
+            
+                
         }
-        else{
+    /*    else{
             System.out.println("inside else : "+exseq.getClass()+ exseq.next);
             if(exseq instanceof SequentialExecutionBlock){
                 config.programpoints.add(((SequentialExecutionBlock)exseq).getLastProgramPoint());
@@ -177,8 +201,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
             }
             
-        }
-        System.out.println(config);
+        }*/
+        //System.out.println(config);
 
         return config;
     }
@@ -198,9 +222,9 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ArrayList<State> listofstates=new ArrayList<State>();
                 listofstates.add(this.statechart);
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionBlock());
-                ExecutionBlock initialExecutionBlock=computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionBlock());
+                SequentialExecutionBlock initialExecutionBlock=(SequentialExecutionBlock)computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionBlock());
                 System.out.println("tinit : "+initialExecutionBlock);
-                getNextReadySet(null, initialExecutionBlock);
+                //getNextReadySet(null, initialExecutionBlock);
                 Configuration newconfig=computeConfiguration(initialExecutionBlock,new Configuration());
                 //Configuration newconfig=executeAction(currentconfig,initialExecutionBlock);
                 System.out.println("Configuration after tinit:"+newconfig.programpoints);
@@ -211,7 +235,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
                 ExecutionBlock exitSequence=computeExitExecutionBlock(currentconfig,t.lub());
                 //Compute TransitionSequence
-                ExecutionBlock transitionActionSequence=computeTransitionActionSequence(t);
+                ExecutionBlock transitionActionSequence=computeTransitionAction(t);
                 
                 //Compute EntryActionSequence
             }
@@ -224,7 +248,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     }
 
 
-    public ExecutionBlock computeTransitionActionSeLab@123(Transition t)
+    public ExecutionBlock computeTransitionAction(Transition t)
     {
         SequentialExecutionBlock actionSequence=new SequentialExecutionBlock();
         try{
@@ -418,6 +442,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
            
            if(state==entryState){
+                System.out.println("ActionSequence.next : "+actionSequence.next); 
                 return actionSequence;
            }
            else{

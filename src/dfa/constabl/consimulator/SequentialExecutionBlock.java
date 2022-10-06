@@ -16,7 +16,7 @@ public class SequentialExecutionBlock extends ExecutionBlock{
         for(ProgramPoint p: points)
             s+=p+" -> ";
         if(next!=null)
-            s+=next;
+            s+="Found next: "+next;
         return s+" ";
     }
     public void addState(State s){

@@ -11,7 +11,7 @@ Composite sequence - set of states, or set of composite sequences, or composite 
 Concurrent sequence - set of composite sequences. 
  */
 
-public class ExecutionBlock{
+public abstract class ExecutionBlock{
     public ArrayList<State> stateList=null;
 
     public ExecutionBlock next=null;
@@ -21,6 +21,7 @@ public class ExecutionBlock{
         return s;
     }
     public boolean hasNext(){
+        System.out.println("Calling super class function");
         if(this.next==null)
             return false;
         else
