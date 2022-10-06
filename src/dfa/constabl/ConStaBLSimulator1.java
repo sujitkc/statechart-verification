@@ -53,6 +53,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     
     public  List<Transition> consumeEvent(Configuration currentconfig, String event)
     {
+        System.out.println("\n==============================");
         System.out.println("Consume event : "+event +" : Config : "+currentconfig);
         List<Transition> identifiedTransitions=new ArrayList<Transition>();
         try{
@@ -215,11 +216,11 @@ public class ConStaBLSimulator1 extends SimulStatechart{
     {
         System.out.println("*********************************");
         
-        System.out.println("Take Transition : "+t.name);
+        //System.out.println("Take Transition : "+t.name);
         Configuration config=currentconfig;
  
         try{
-            System.out.println("Transition : "+t.name +" : Configuration : "+config);
+            System.out.println("Take Transition : "+t.name +" : Configuration : "+config);
             if(t.name.equals(tinit)&&t.getSource()==null){
                 //Transition is going to initialize the statechart
                 //((DotProgramPoint)(currentconfig.getProgramPoints()).get(0)).setState(this.statechart);
@@ -232,7 +233,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //getNextReadySet(null, initialExecutionBlock);
                 Configuration newconfig=computeConfiguration(initialExecutionBlock,new Configuration());
                 //Configuration newconfig=executeAction(currentconfig,initialExecutionBlock);
-                System.out.println("Configuration after tinit:"+newconfig.programpoints);
+                //System.out.println("Configuration after tinit:"+newconfig.programpoints);
                 config=new Configuration(newconfig.programpoints);
             }
             else{
