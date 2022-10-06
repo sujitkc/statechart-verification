@@ -154,14 +154,14 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             
     }
     public Configuration computeConfiguration(ExecutionBlock exseq, Configuration config){
-        System.out.println("computeConfiguration : " +config);
+        //System.out.println("computeConfiguration : " +config);
          //iterateSequence(exseq);
          if(exseq!=null){
            
             
         
                 if(exseq instanceof SequentialExecutionBlock){
-                     System.out.println("Inside ses :");
+                     //System.out.println("Inside ses :");
                     SequentialExecutionBlock ses=(SequentialExecutionBlock)exseq;
                     if(ses.next!=null)
                         return computeConfiguration(ses.next, config);
@@ -169,13 +169,13 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                         config.programpoints.add(ses.getLastProgramPoint());
                 }
                 else if(exseq instanceof ConcurrentExecutionBlock){
-                     System.out.println("Inside ces :");
+                     //System.out.println("Inside ces :");
                     ConcurrentExecutionBlock ces=(ConcurrentExecutionBlock)exseq;
                     if(ces.next!=null)
                         return computeConfiguration(ces.next, config);
                     else{
                         for(SequentialExecutionBlock es: ces.sequencelist){
-                            System.out.println("es : "+es);
+                            //System.out.println("es : "+es);
                             for(ProgramPoint p : (computeConfiguration(es, config)).programpoints)
                             {
                                 if(!config.programpoints.contains(p))
@@ -447,7 +447,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
            
            if(state==entryState){
-                System.out.println("ActionSequence.next : "+actionSequence.next); 
+                //System.out.println("ActionSequence.next : "+actionSequence.next); 
                 return actionSequence;
            }
            else{
