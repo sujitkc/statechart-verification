@@ -8,7 +8,7 @@ public class SequentialExecutionBlock extends ExecutionBlock{
     public ArrayList<State> stateList=new ArrayList<State>();
     public List<ProgramPoint> points=new ArrayList<ProgramPoint>();
     public ConcurrentExecutionBlock next=null;
-    public ProgramPoint getLastProgramPoint(){
+    public ProgramPoint getLastProgramPoint() {
         return this.points.get(this.points.size()-1);
     }
     public String toString(){

@@ -1,7 +1,7 @@
 //c9>C>A,B
 //c9>C>A>A1,A2
 //c9>C>B>B1,B2
-//nested shell
+//shell not nested
 //transition t1 out from A1 to C
 //transition t2 out from A to C
 statechart  c9{
@@ -33,7 +33,7 @@ statechart  c9{
                     x:=2;
                     }
                 exit:{}
-                shell sh1{
+                state sh1{
                     entry:{
                         x:=3;
                     x:=4;
