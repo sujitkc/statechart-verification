@@ -245,7 +245,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ExecutionBlock transitionActionSequence=computeTransitionAction(t);
                 System.out.println ("Transition Action Sequence : "+transitionActionSequence);
                 //Compute EntryActionSequence
-                 ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
+                 //ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
                 
             }
         }
@@ -566,13 +566,37 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //CASE 2 - program points belong to different shell states
                     //* Group the program points to the shell states and compute the exit sequences
                 // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
-                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
-                Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
-                if(shellAncestors.size()==1){
+                ArrayList<SequentialExecutionBlock> seslist=new ArrayList<SequentialExecutionBlock>();
+                for(State s : activestates){
+                    State shellancestor=getShellAncestor(s);
+
+                    seslist.add(computeSequenceUntilLUB(s, shellancestor, new SequentialExecutionBlock()));
+
+                }
+                List<State> shellAncestorsList=new ArrayList<State>();
+                for(SequentialExecutionBlock seb:seslist){
+                    State state=((ExitEndProgramPoint)seb.getLastProgramPoint()).getState();
+                    State shellparent=state.getSuperstate();
+                    //if(!shellAncestorsList.contains(shellparent))
+                        shellAncestorsList.add(shellparent);
+
+                }
+                Set<State> shellAncestorsSet=new HashSet<State>();
+                shellAncestorsSet.addAll(shellAncestorsList);
+                System.out.println(" Shell list size: "+shellAncestorsList.size()+" : "+shellAncestorsSet.size());
+                System.out.println("Sequence identified is : "+seslist);
+
+                if(shellAncestorsSet.size()==1){
                     System.out.println("Single shell ancestor");
+                    ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
+                    ces.sequencelist.addAll(seslist);
+                    ces.next=computeSequenceUntilLUB(shellAncestorsList.get(0), LUB, new SequentialExecutionBlock());
                 }
                 else{
-                    System.out.println("Multiple shell ancestor");
+                    System.out.println("Multiple shell ancestor : ");
+                    for(State shell: shellAncestorsList){
+                        System.out.println(shell.name);
+                    }
                 }
                // if(this.statechart.lub)
             }
@@ -587,7 +611,13 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         return es;
          
          }
-
+        public State getShellAncestor(State s){
+            if(s instanceof ast.Shell){
+                return s;
+            }
+            else
+                return getShellAncestor(s.getSuperstate());
+        }
          public ExecutionBlock computeEntryExecutionBlock(Configuration config, State LUB){
             System.out.println("Computing Entry execution block");
             ExecutionBlock es=null;
@@ -602,7 +632,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
             }
             System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
-            computeCompleteStateConfiguration(activestates,exitancesestor);
+            //computeCompleteStateConfiguration(activestates,exitancesestor);
             if(activestates.size()>1){
                 //concurrent execution going on
                 //multiple execution blocks should be calculated
@@ -612,6 +642,8 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     //* Group the program points to the shell states and compute the exit sequences
                 // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
                 ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
+                
+
                 Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
                 if(shellAncestors.size()==1){
                     System.out.println("Single shell ancestor");
@@ -683,6 +715,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 return exitUntilShell(s.getSuperstate(), returnList);
             }
         }
+        
         public ArrayList<State> exitUntilLub(State s, State lub, ArrayList<State> returnList){
             System.out.println("Adding (until lub) : "+s.getFullName()+(s == lub));
             if(s == lub)
@@ -721,8 +754,13 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         }
         public void computeCompleteStateConfiguration(List<State> activestates, State ancestor){
             if(activestates.size()==1){
-                SequentialExecutionBlock ses=new SequentialExecutionBlock()
+                SequentialExecutionBlock ses=new SequentialExecutionBlock();
                 
+                
+                
+            }
+            else{
+
             }
         }
 
