@@ -602,7 +602,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
             }
             System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
-
+            computeCompleteStateConfiguration(activestates,exitancesestor);
             if(activestates.size()>1){
                 //concurrent execution going on
                 //multiple execution blocks should be calculated
@@ -718,6 +718,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
             return null;
 
+        }
+        public void computeCompleteStateConfiguration(List<State> activestates, State ancestor){
+            if(activestates.size()==1){
+                SequentialExecutionBlock ses=new SequentialExecutionBlock()
+                
+            }
         }
 
 }
