@@ -591,11 +591,25 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                     ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
                     ces.sequencelist.addAll(seslist);
                     ces.next=computeSequenceUntilLUB(shellAncestorsList.get(0), LUB, new SequentialExecutionBlock());
+                    return ces;
                 }
                 else{
                     System.out.println("Multiple shell ancestor : ");
-                    for(State shell: shellAncestorsList){
-                        System.out.println(shell.name);
+                    //yet to be implemented
+                    String prevshellname=shellAncestorsList.get(0).name;
+                    ConcurrentExecutionBlock ceb=new ConcurrentExecutionBlock();
+                    for(int i=0;i<shellAncestorsList.size();i++){
+                        State shell = shellAncestorsList.get(i);
+                        if(shell.name.equals(prevshellname)){
+                            System.out.println("same shell detected :"+shell.name);
+                            ceb.sequencelist.add(seslist.get(i));
+                            
+                        }
+                        else{
+                            System.out.println("different shell detected :"+shell.name);
+                            
+                        }
+                        prevshellname=shell.name;
                     }
                 }
                // if(this.statechart.lub)
