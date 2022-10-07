@@ -245,7 +245,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 ExecutionBlock transitionActionSequence=computeTransitionAction(t);
                 System.out.println ("Transition Action Sequence : "+transitionActionSequence);
                 //Compute EntryActionSequence
-                 //ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
+                 ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
                 
             }
         }

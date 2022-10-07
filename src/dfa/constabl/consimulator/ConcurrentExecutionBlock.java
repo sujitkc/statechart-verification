@@ -10,7 +10,10 @@ public class ConcurrentExecutionBlock extends ExecutionBlock{
         String s="[ ";
         for(ExecutionBlock ses: sequencelist)
             s+=ses.toString()+" || ";
-        return s+" ]";
+        s+=" ]";
+        if(next!=null)
+            s+=next;
+        return s;
     }
 
     public List<SequentialExecutionBlock> getFinalProgramPointInSequence(ConcurrentExecutionBlock conseq, List<SequentialExecutionBlock> returnSequence){
