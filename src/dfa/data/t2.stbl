@@ -1,0 +1,21 @@
+// Atomic to Atomic Transitions
+statechart sc {
+    events {
+	random;
+    }
+    state a {
+	x: int ;
+    }
+
+    state b {
+	y: int;
+    }
+
+    transition t1 {
+	source: sc.a;
+	destination: sc.b;
+	trigger: random;
+	guard: true;
+	action: {}
+    }
+}
