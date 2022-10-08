@@ -30,7 +30,12 @@ TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
 EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 
 %%
+<YYINITIAL>{intconst}       {
+                    /* System.out.println("INTCONST");     */ 
 
+                    Integer n = Integer.parseInt(yytext());
+                    return new Symbol(sym.INTCONST, yyline, yycolumn, n);
+                 }
 <YYINITIAL>"entry"          { /* System.out.println("entry");        */ return new Symbol(sym.ENTRY, yyline, yycolumn, null);      }
 <YYINITIAL>"exit"           { /* System.out.println("exit");         */ return new Symbol(sym.EXIT, yyline, yycolumn, null);       }
 //"String"         { /* System.out.println("String");       */ return new Symbol(sym.STRING, yyline, yycolumn, null);     }
@@ -89,12 +94,7 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 
 <YYINITIAL>{identifier}     { /* System.out.println("identifier = " + yytext()); */ 
                                                  return new Symbol(sym.IDENTIFIER, yyline, yycolumn, yytext());    }
-<YYINITIAL>{intconst}       {
-                    /* System.out.println("INTCONST");     */ 
 
-                    Integer n = Integer.parseInt(yytext());
-                    return new Symbol(sym.INTCONST, yyline, yycolumn, n);
-                 }
 <YYINITIAL>{WhiteSpace}     { /* do nothing */}
 /* comments */
 <YYINITIAL>{Comment}                      { /* ignore */ }

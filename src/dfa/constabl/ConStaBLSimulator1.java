@@ -760,7 +760,6 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 }
                 else if(exseq instanceof ConcurrentExecutionBlock){
                     System.out.println("concurrent execution sequence found");
-
                 } 
             }
             return null;

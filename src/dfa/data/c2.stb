@@ -29,7 +29,7 @@ statechart  c2{
 				exit:{}
 				state c132{
 					entry:{}
-					exit:{x:=2;y:=2;}
+					exit:{x:= -1;y:=2;}
 				}
         	}
         }
