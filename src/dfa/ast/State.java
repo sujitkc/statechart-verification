@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 public class State {
 
-  public final String name;
+  public String name;
+  public String uniqueName;
+
   public final List<State> states;
   public final List<Transition> transitions;
   public final DeclarationList declarations;
@@ -54,6 +56,9 @@ public class State {
     this.declarations.setState(this);
   }
 
+  public void setName (String name) {
+      this.name = name;
+  }
 
   public String getFullName() {
     if(this.superstate == null) {
@@ -209,5 +214,12 @@ public class State {
     s += maintainsHisotry();
     s += "}\n";
     return s;    
+  }
+
+  public String getUniqueName () {
+    return this.uniqueName;
+  }
+  public void setUniqueName (String name) {
+    this.uniqueName = name;
   }
 }

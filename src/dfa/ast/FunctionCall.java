@@ -2,6 +2,8 @@ package ast;
 
 import java.util.List;
 
+import visitor.Visitor;
+
 public class FunctionCall extends Expression {
   public final FunctionName name;
   public List<Expression> argumentList;
@@ -30,5 +32,9 @@ public class FunctionCall extends Expression {
       s += arg.toString() + ", ";
     }
     return s + ") : " + this.type;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitFunctionCall(this);
   }
 }

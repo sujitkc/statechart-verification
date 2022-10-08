@@ -1,6 +1,9 @@
 package ast;
 
 import java.util.List;
+
+import visitor.Visitor;
+
 import java.util.ArrayList;
 
 public class WhileStatement extends Statement {
@@ -24,5 +27,9 @@ public class WhileStatement extends Statement {
 
   public String toString() {
     return "\nwhile(" + this.condition + ")" + this.body;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitWhileStatement(this);
   }
 }

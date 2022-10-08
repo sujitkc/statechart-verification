@@ -1,5 +1,7 @@
 package ast;
 
+import visitor.Visitor;
+
 public class Declaration {
   public final String vname;
   public final ScopeName scope;
@@ -58,5 +60,9 @@ public class Declaration {
 
   public void setDeclarationList(DeclarationList declarationList) {
     this.declarationList = declarationList;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitDeclaration(this);
   }
 }

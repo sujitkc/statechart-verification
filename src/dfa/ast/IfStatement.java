@@ -2,6 +2,8 @@ package ast;
 
 import java.util.List;
 
+import visitor.Visitor;
+
 public class IfStatement extends Statement {
   public final Expression condition;
   public final Statement then_body;
@@ -27,5 +29,9 @@ public class IfStatement extends Statement {
 
   public String toString() {
     return "\nif(" + this.condition + ")" + this.then_body + "\nelse\n" + this.else_body;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitIfStatement(this);
   }
 }

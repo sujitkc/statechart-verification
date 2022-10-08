@@ -1,5 +1,7 @@
 package ast;
 
+import visitor.Visitor;
+
 public abstract class Expression {
 /*
   public enum Operator {
@@ -29,5 +31,10 @@ public abstract class Expression {
 
   public void setType(Type type) {
     this.type = type;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    System.out.println(this.toString());
+    this.visit(visitor);
   }
 }

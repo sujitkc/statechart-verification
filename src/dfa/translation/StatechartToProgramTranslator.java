@@ -158,7 +158,7 @@ public class StatechartToProgramTranslator {
 			  state_var_name.setType(this.intType);
 			  state_var_name.setDeclaration(this.stateVarDeclaration);
 
-			  Name destName = new Name (stateNameMap.get (t.destination.getFullName()));
+			  Name destName = new Name (stateNameMap.get (t.getDestination().getFullName()));
 			  Statement statechange_stmt = new AssignmentStatement(state_var_name, destName);
 			  StatementList stmt_list = new StatementList();
 			  stmt_list.add(t.action);

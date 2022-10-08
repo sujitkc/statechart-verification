@@ -1,6 +1,9 @@
 package ast;
 
 import java.util.List;
+
+import visitor.Visitor;
+
 import java.util.ArrayList;
 
 public class StatementList extends Statement {
@@ -47,5 +50,11 @@ public class StatementList extends Statement {
     }
     s += "}\n";
     return s;
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    for (Statement stmt: this.statements) {
+      stmt.visit (visitor);
+    }
   }
 }

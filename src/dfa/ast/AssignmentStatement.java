@@ -1,6 +1,9 @@
 package ast;
 
 import java.util.List;
+
+import visitor.Visitor;
+
 import java.util.ArrayList;
 
 public class AssignmentStatement extends InstructionStatement {
@@ -14,5 +17,9 @@ public class AssignmentStatement extends InstructionStatement {
 
   public String toString() {
     return (this.lhs.toString() + " := " + this.rhs.toString() + ";\n");
+  }
+
+  public void visit (Visitor visitor) throws Exception {
+    visitor.visitAssignmentStatement(this);
   }
 }
