@@ -4,14 +4,14 @@ statechart sc {
 		ev1;
 	}
     state a {
-		x: int ;
+		x: int :local;
 
 		state b {
-		    x: int;
+		    x: int:local;
 
 		    state c {
-				x: boolean;
-				y: int;
+				x: boolean:local;
+				y: int:local;
 		    }
 		}
     }

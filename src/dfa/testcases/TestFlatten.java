@@ -1,5 +1,6 @@
 package testcases;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -33,11 +34,23 @@ import metric.Metric;
 
 public class TestFlatten {
 
+  String inputfile="";
+  public TestFlatten(){
+    
+
+    try{
+      inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    }catch(Exception e){
+
+    }
+    
+  }
   @Test
   public void testFlatten() {
 
     Typechecker typechecker;
-    String input = "data/curfew1.txt";
+    //String input = "data/curfew1.txt";
+    String input="data/"+inputfile;
     Statechart statechart = null;
     try {
       Parser parser = new FrontEnd(input).getParser();    

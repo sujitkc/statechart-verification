@@ -173,7 +173,8 @@ class Globaliser extends Translator {
       this.globaliseStatement(statechart.exit),
       statechart.functionDeclarations,
       newStates,
-      newTransitions
+      newTransitions,
+      new BooleanConstant(false)
     );
     (new Typechecker(flattenedSC)).typecheck();
 
@@ -195,7 +196,8 @@ class Globaliser extends Translator {
       this.globaliseStatement(state.entry),
       this.globaliseStatement(state.exit),
       newStates,
-      newTransitions
+      newTransitions,
+      state.history
     );
   }
 
@@ -419,7 +421,8 @@ class TransitionAtomiser extends Translator {
       new StatementList(),
       statechart.functionDeclarations,
       newStates,
-      newTransitions
+      newTransitions,
+      statechart.history
     );
     (new Typechecker(newStatechart)).typecheck();
 
@@ -438,7 +441,8 @@ class TransitionAtomiser extends Translator {
       new StatementList(),
       new StatementList(),
       newStates,
-      newTransitions
+      newTransitions,
+      state.history
     );
   }
 }
@@ -463,7 +467,8 @@ class HierarchyPurger extends Translator {
         istate.entry,
         istate.exit,
         new ArrayList<State>(),
-        new ArrayList<Transition>()
+        new ArrayList<Transition>(),
+        istate.history
       )
     );
     for(State s : atomicStates) {
@@ -475,7 +480,8 @@ class HierarchyPurger extends Translator {
           s.entry,
           s.exit,
           new ArrayList<State>(),
-          new ArrayList<Transition>()
+          new ArrayList<Transition>(),
+          s.history
         )
       );
     }
@@ -507,7 +513,8 @@ class HierarchyPurger extends Translator {
       new StatementList(),
       statechart.functionDeclarations,
       newStates,
-      newTransitions
+      newTransitions,
+      statechart.history
     );
     (new Typechecker(newStatechart)).typecheck();
     return newStatechart;
