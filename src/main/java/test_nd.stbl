@@ -1,0 +1,25 @@
+statechart sc {
+	events {
+		e2;
+		e1;
+	}
+	state A {}
+	state B {}
+	state C {}
+
+	transition t1 {
+		source: sc.A;
+		destination: sc.B;
+		trigger: e1;
+		guard: true;
+		action: {}
+	}
+
+	transition t2 {
+		source: sc.B;
+		destination: sc.C;
+		trigger: e2;
+		guard: x > 10;
+		action: {}
+	}
+}
