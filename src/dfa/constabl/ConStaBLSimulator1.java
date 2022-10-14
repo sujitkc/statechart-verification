@@ -12,12 +12,12 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
     public ConStaBLSimulator1(Statechart sc){
         try{
-            EventQueue eq=new EventQueue();
+           
             this.statechart=sc;
 
             //Initializing the event queue
             this.eventQueue=new ArrayList<String>();
-            this.eventQueue.addAll(eq.eventQueue);
+            this.eventQueue.addAll(EventQueue.eventQueue);
             //this.eventQueue.add(tinit);
             //this.eventQueue.add("e1");
             //this.eventQueue.add("e2");

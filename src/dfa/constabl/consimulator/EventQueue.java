@@ -7,9 +7,9 @@ public class EventQueue{
    
     public EventQueue(){
         
-         this.eventQueue.add(tinit);
-         this.eventQueue.add("e1");
-         this.eventQueue.add("e2");
+         eventQueue.add(tinit);
+         eventQueue.add("e1");
+         eventQueue.add("e2");
         
     }
 }
