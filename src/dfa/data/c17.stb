@@ -1,0 +1,128 @@
+//c9>C>A,B
+//c9>C>A>A1,A2
+//c9>C>B>B1,B2
+//shell not nested
+//transition t1 out from A1 to C
+//transition t2 out from A to C
+statechart  c9{
+  
+  events {
+	e;
+    e1;
+    e2;
+  }
+  x:int:local;
+  y:int:local;
+
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  
+	shell Sh{
+		entry:{}
+		exit:{}
+	    state A{
+		    entry:{}
+		    exit:{}
+            state A1{
+                x:int:local;
+                entry:{
+                    x:=1;
+                    x:=2;
+                    }
+                exit:{}
+                state sh1{
+                    entry:{
+                        x:=3;
+                    x:=4;
+                    }
+		            exit:{}
+                    state sh1_a{
+                        entry:{
+                            x:=5;
+                            x:=6;
+                        }
+		                exit:{}
+                        state sh1_a_a1{
+                        entry:{
+                            x:=7;
+                            x:=8;
+                        }
+		                exit:{}
+                        }
+                        state sh1_a_a2{
+                        entry:{
+                            x:=7;
+                            x:=8;
+                        }
+		                exit:{}
+                        }
+                        transition t1{
+                            source: c9.Sh.A.A1.sh1.sh1_a.sh1_a_a1;
+                            destination: c9.Sh.A.A1.sh1.sh1_a.sh1_a_a2;
+                            trigger: e1;
+                            guard:(true);
+                            action:{}
+                            }
+                    }
+                    state sh1_b{
+                        entry:{}
+		                exit:{}
+                        state sh1_b_b1{
+                        entry:{}
+		                exit:{}
+                        }
+                    }
+                }
+            }
+            state A2{
+                entry:{}
+                exit:{}
+            }
+
+        }
+        state B{
+		    entry:{}
+		    exit:{}
+            state B1{
+                entry:{}
+                exit:{}
+            }
+            state B2{
+                entry:{}
+                exit:{}
+            }
+            //adding this transition will give typechecking error because - no transition can have a shell state as its LUB
+            /*transition t1{
+                source: c9.Sh.B.B1;
+                destination: c9.Sh.B.B2;
+                trigger: e1;
+                guard:(true);
+                action:{}
+            }*/
+	    }
+    }
+
+    state C{
+        entry:{}
+		exit:{}
+	    
+    }
+    transition t2{
+        source: c9.Sh.A.A2;
+        destination: c9.C;
+        trigger: e1;
+        guard:(true);
+        action:{x:=1;y:=1;}
+	}
+    transition t3{
+        source: c9.Sh.B;
+        destination: c9.C;
+        trigger: e2;
+        guard:(true);
+        action:{}
+	}
+    
+}
