@@ -2,7 +2,7 @@ package constabl.consimulator;
 import java.util.*;
 public class EventQueue{
 
-   public static ArrayList<String> eventQueue=new ArrayList<String>();
+   public ArrayList<String> eventQueue=new ArrayList<String>();
    public static final String tinit="tinit";
    
     public EventQueue(){

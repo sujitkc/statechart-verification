@@ -16,8 +16,9 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             this.statechart=sc;
 
             //Initializing the event queue
+            EventQueue eq=new EventQueue();
             this.eventQueue=new ArrayList<String>();
-            this.eventQueue.addAll(EventQueue.eventQueue);
+            this.eventQueue.addAll(eq.eventQueue);
             //this.eventQueue.add(tinit);
             //this.eventQueue.add("e1");
             //this.eventQueue.add("e2");
@@ -29,18 +30,17 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             initialProgramPoints.add(new DotProgramPoint("init"));
             this.activeconfig=new Configuration(initialProgramPoints);
 
-            System.out.println("Starting concurrent simulation");
+            System.out.println("Starting concurrent simulation for events : "+ eventQueue);
             
             for(String event : eventQueue){
 
                 List<Transition> transitionList=consumeEvent(activeconfig,event);
-                
-                //send transition list to detect non-determinism
-                //detectNonDeterminism(transitionList);
-
-                for(Transition t: transitionList){
+                             
+                activeconfig=takeTransitions(activeconfig,transitionList);
+                /*for(Transition t: transitionList){
                     activeconfig=takeTransition(activeconfig,t);
-                }
+                }*/
+
 
             }
         }
@@ -212,16 +212,18 @@ public class ConStaBLSimulator1 extends SimulStatechart{
 
         return config;
     }
-    public Configuration takeTransition(Configuration currentconfig, Transition t)
+    public Configuration takeTransitions(Configuration currentconfig, List<Transition> tlist)
     {
         System.out.println("*********************************");
         
-        //System.out.println("Take Transition : "+t.name);
+        System.out.println("Take Transition : ");
+        for(Transition t:tlist)
+            System.out.print(t.name);
         Configuration config=currentconfig;
  
         try{
-            System.out.println("Take Transition : "+t.name +" : Configuration : "+config);
-            if(t.name.equals(tinit)&&t.getSource()==null){
+            System.out.println(" : Configuration : "+config);
+            if(tlist.size()==1&&tlist.get(0).name.equals(tinit)&&tlist.get(0).getSource()==null){
                 //Transition is going to initialize the statechart
                 //((DotProgramPoint)(currentconfig.getProgramPoints()).get(0)).setState(this.statechart);
                 
@@ -238,14 +240,15 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
             else{
                 //Compute ExitActionSequence
-
+                Transition t=tlist.get(0); // still concurrent transitions not handled
                 ExecutionBlock exitSequence=computeExitExecutionBlock(currentconfig,t.lub());
                 System.out.println ("Exit Sequence : "+exitSequence);
                 //Compute TransitionSequence -- Done
                 ExecutionBlock transitionActionSequence=computeTransitionAction(t);
                 System.out.println ("Transition Action Sequence : "+transitionActionSequence);
+                
                 //Compute EntryActionSequence
-                 ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub());
+                 ExecutionBlock entrySequence=computeEntryExecutionBlock(currentconfig,t.lub(), t.getDestination());
                 
             }
         }
@@ -546,9 +549,10 @@ public class ConStaBLSimulator1 extends SimulStatechart{
          public ExecutionBlock computeExitExecutionBlock(Configuration config, State LUB){
             System.out.println("Computing Exit execution block");
             ExecutionBlock es=null;
+
             ArrayList<State> activestates=config.getActiveStates();
-            State exitancesestor=null;
             
+            State exitancesestor=null;
             for(State s: LUB.states){
                // System.out.println("LUB :"+s.name);
                 for(State as:activestates){
@@ -556,6 +560,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                         exitancesestor=s;
                 }
             }
+            if(exitancesestor!=null)
             System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
 
             if(activestates.size()>1){
@@ -632,50 +637,25 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             else
                 return getShellAncestor(s.getSuperstate());
         }
-         public ExecutionBlock computeEntryExecutionBlock(Configuration config, State LUB){
+         public ExecutionBlock computeEntryExecutionBlock(Configuration config, State LUB, State destState){
             System.out.println("Computing Entry execution block");
-            ExecutionBlock es=null;
-            ArrayList<State> activestates=config.getActiveStates();
-            State exitancesestor=null;
+            SequentialExecutionBlock seb=new SequentialExecutionBlock();
             
-            for(State s: LUB.states){
-               // System.out.println("LUB :"+s.name);
-                for(State as:activestates){
-                    if(as.getAllSuperstates().contains(s))
-                        exitancesestor=s;
-                }
-            }
-            System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
-            //computeCompleteStateConfiguration(activestates,exitancesestor);
-            if(activestates.size()>1){
-                //concurrent execution going on
-                //multiple execution blocks should be calculated
-                //CASE 1 - all program points belong to same shell state
-                    //* Exit until shell and then create a sequential execution sequence as next
-                //CASE 2 - program points belong to different shell states
-                    //* Group the program points to the shell states and compute the exit sequences
-                // In both CASE1 and CASE 2 - output is a concurrent execution sequence with a sequential execution sequence up until the lub
-                ConcurrentExecutionBlock ces=new ConcurrentExecutionBlock();
+            List<State> statesToEnter=destState.getAllSuperstates();
+            
+            statesToEnter.removeAll(LUB.getAllSuperstates());
+            statesToEnter.remove(LUB);
+            
+            for(State s:statesToEnter){
+                System.out.println(s.name + " to be entered");
                 
-
-                Set<State> shellAncestors=this.statechart.shellLubofStates(activestates);
-                if(shellAncestors.size()==1){
-                    System.out.println("Single shell ancestor");
-                }
-                else{
-                    System.out.println("Multiple shell ancestor");
-                }
-               // if(this.statechart.lub)
+                seb.points.addAll(((SequentialExecutionBlock)addProgramPoints(seb,s,null, ActionType.STATE_ENTRY_ACTION)).points);
+            
             }
-            else{
-                //single state to exit - 
-                //is it possible to exit a shell state when number of program points is 1? - No
-                //contained within OR state, so computeSequenceUntilLUB can be used to find a sequence?
-                State s=activestates.get(0);
-                es=computeSequenceUntilLUB(s, LUB, new SequentialExecutionBlock());
-                System.out.println(es);            
-            }
-        return es;
+            System.out.println(seb);
+            seb=(SequentialExecutionBlock)computeActionDefaultEntryForState(config,destState,seb);
+            System.out.println(seb);          
+        return seb;
          
          }
          
@@ -740,7 +720,10 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             }
         }
         public SequentialExecutionBlock computeSequenceUntilLUB(State s, State lub, SequentialExecutionBlock ses){
-            if(s == lub)
+            //System.out.println("State : "+s.name);
+            //System.out.println("lub : "+lub.name);
+            
+            if(s == lub || s==null)
                 return ses;
             else{
                 ses=(SequentialExecutionBlock)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           

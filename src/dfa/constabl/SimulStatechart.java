@@ -10,7 +10,7 @@ public abstract class SimulStatechart{
     public abstract List<Transition> consumeEvent(Configuration currentconfig, String event);
     
 
-    public abstract Configuration takeTransition(Configuration currentconfig, Transition t);
+    public abstract Configuration takeTransitions(Configuration currentconfig, List<Transition> tlist);
   
     //public abstract ExecutionBlock computeAction(Configuration currentconfig, Transition t);
   
