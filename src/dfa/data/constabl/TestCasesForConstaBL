@@ -4,9 +4,27 @@ constabl/<<filename>>.stbl
 
 The first set of test cases is to construct the sequential blocks as intended in ConStabL
 
-### Testing init event with sequential statements
-tie1.stbl - Only statechart SC 
-tie2.stbl - Statechart SC with atomic default substate 
-tie3.stbl - Statechart SC with composite default substate
-tie4.stbl - Statechart SC with shell default substate
-tie5.stbl - Statechart SC with nested shell default substate
+### Testing init event with sequential statements inside entry blocks
+test1.stbl - Only statechart SC 
+test2.stbl - Statechart SC with atomic default substate 
+test3.stbl - Statechart SC with composite default substate
+test4.stbl - Statechart SC with shell default substate
+test5.stbl - Statechart SC with nested shell default substate
+
+### Testing Exit from states - through event e1 - guard true
+test6.stbl - exit from substate of statechart SC - atomic to atomic - X;A;N - pass
+test7.stbl - exit from substate of statechart SC - atomic to composite- X;A;N - pass
+test8.stbl - exit from substate of statechart SC - atomic to shell- X;A;N - pass
+========
+test7.stbl - exit from substate of statechart SC - composite
+test8.stbl - exit from substate of statechart SC - shell
+test9.stbl - exit from substate of statechart SC - substate of composite
+test10.stbl - exit from substate of statechart SC - substate of shell (region)
+test11.stbl - exit from substate of statechart SC - substate of region (composite)
+test12.stbl - exit from substate of statechart SC - substate of region (atomic)
+test13.stbl - exit from substate of statechart SC - substate of region (shell)
+test14.stbl - exit from substate of statechart SC - substate of region (substate of shell)
+
+
+
+
