@@ -1,0 +1,12 @@
+
+### Inputfile.txt
+constabl/<<filename>>.stbl
+
+The first set of test cases is to construct the sequential blocks as intended in ConStabL
+
+### Testing init event with sequential statements
+tie1.stbl - Only statechart SC 
+tie2.stbl - Statechart SC with atomic default substate 
+tie3.stbl - Statechart SC with composite default substate
+tie4.stbl - Statechart SC with shell default substate
+tie5.stbl - Statechart SC with nested shell default substate

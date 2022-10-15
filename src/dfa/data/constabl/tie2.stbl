@@ -1,0 +1,29 @@
+statechart  sc{
+ 
+  events {
+	e;
+  }
+  x:int:local;
+  y:int:local;
+  entry : {
+    x:=0;
+    y:=0;
+  }
+  exit  : {
+    x:=1;
+    y:=1;
+  } 
+  functions {
+  input<||>() : int;
+  }
+    state A{
+        z:int:local;
+        entry:{
+            z:=0;
+        }
+        exit:{
+            z:=1;
+        }
+    }
+
+}

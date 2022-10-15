@@ -35,8 +35,10 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             for(String event : eventQueue){
 
                 List<Transition> transitionList=consumeEvent(activeconfig,event);
-                             
+                // take transitions only when found
+                if(transitionList.size()>0){             
                 activeconfig=takeTransitions(activeconfig,transitionList);
+                }
                 /*for(Transition t: transitionList){
                     activeconfig=takeTransition(activeconfig,t);
                 }*/
@@ -65,7 +67,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
             else{
                 //find transitions
                 List<Transition> transitions=findTransitions(currentconfig,event);
-                System.out.print("Transitions found: ");
+                System.out.print(transitions.size()+" Transitions found - ");
                 for(Transition t:transitions)
                     System.out.print(t.name+", ");
                 System.out.println();
@@ -238,7 +240,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 //System.out.println("Configuration after tinit:"+newconfig.programpoints);
                 currentconfig=new Configuration(newconfig.programpoints);
             }
-            else{
+            else {
                 //Compute ExitActionSequence
                 Transition t=tlist.get(0); // still concurrent transitions not handled
                 ExecutionBlock exitSequence=computeExitExecutionBlock(currentconfig,t.lub());
@@ -404,7 +406,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
         
         try{
                        
-           System.out.println("\n== entry states coming are : "+entryState.name);
+           System.out.println("\n== entering state : "+entryState.name);
            State state=entryState;
                 
                 if(state instanceof ast.Shell){
@@ -445,7 +447,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                 else{
                     actionSequence=addProgramPoints(actionSequence,state,null,ActionType.STATE_ENTRY_ACTION);
 
-                    System.out.println("Atomic detected:  "+state.name);
+                    //System.out.println("Atomic detected:  "+state.name);
                     
                     //return actionSequence;
                 }
@@ -482,7 +484,7 @@ public class ConStaBLSimulator1 extends SimulStatechart{
                         }
                             
                         for(Statement stmt:stmtlist.getStatements()){
-                            System.out.println("Statement detected : "+stmt);
+                            //System.out.println("Statement detected : "+stmt);
                             ((SequentialExecutionBlock)actionSequence).addProgramPoint(new StatementProgramPoint(stmt.toString()));
                         
                         }

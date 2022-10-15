@@ -1,0 +1,78 @@
+statechart  sc{
+ 
+  events {
+	e;
+  }
+  x:int:local;
+  y:int:local;
+  entry : {
+    x:=0;
+    y:=0;
+  }
+  exit  : {
+    x:=1;
+    y:=1;
+  } 
+  functions {
+  input<||>() : int;
+  }
+    shell A{
+        z:int:local;
+        entry:{
+            z:=0;
+        }
+        exit:{
+            z:=1;
+        }
+        state A1{
+            k:int:local;
+            entry:{
+                k:=0;
+            }
+            exit:{
+                k:=1;
+            }
+        }
+        state A2{
+            k:int:local;
+            entry:{
+                k:=3;
+            }
+            exit:{
+                k:=4;
+            }
+            shell B{
+                z1:int:local;
+                entry:{
+                    z1:=0;
+                }
+                exit:{
+                    z1:=1;
+                }
+                state B1{
+                    k1:int:local;
+                    entry:{
+                        k1:=7;
+                    }
+                    exit:{
+                        k1:=8;
+                    }
+                }
+                state B2{
+                    m:int:local;
+                    entry:{
+                        m:=9;
+                    }
+                    exit:{
+                        m:=10;
+                    }
+                }
+        }
+
+
+
+
+        }
+    }
+
+}
