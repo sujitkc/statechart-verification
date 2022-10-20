@@ -1,0 +1,106 @@
+statechart  sc{
+ 
+  events {
+	e1;
+  }
+  x:int:local;
+  y:int:local;
+  entry : {
+    x:=0;
+    y:=0;
+  }
+  exit  : {
+    x:=1;
+    y:=1;
+  } 
+  functions {
+  input<||>() : int;
+  }
+   state A{
+        entry:{
+            x:=2;
+            y:=2;
+        }
+        exit:{
+            x:=4;
+            y:=4;
+        }
+        state A1{
+          entry:{
+              x:=21;
+              y:=21;
+          }
+          exit:{
+              x:=41;
+              y:=41;
+          }
+        }
+    }
+    shell B{
+        entry:{
+            x:=3;
+            y:=3;
+        }
+        exit:{
+            x:=5;
+            y:=5;
+        }
+        state B1{
+          entry:{
+              x:=111;
+              y:=111;
+          }
+          exit:{
+              x:=221;
+              y:=221;
+          }
+          shell B11{
+            entry:{
+              x:=1111;
+              y:=1111;
+            }
+            exit:{
+              x:=2211;
+              y:=2211;
+            }
+            state B11_R1{
+              entry:{
+                x:=0;
+                y:=0;
+              }
+              exit:{
+                x:=1;
+                y:=1;
+              }
+              state B11_R1_A{
+               entry:{x:=3;y:=3;}
+               exit:{x:=4;y:=5;} 
+              }
+              state B11_R1_B{
+               entry:{x:=4;y:=4;}
+               exit:{x:=5;y:=6;} 
+              }
+            }
+          }
+        }
+        state B2{
+          entry:{
+              x:=112;
+              y:=112;
+          }
+          exit:{
+              x:=222;
+              y:=222;
+          }
+        }
+    }
+    transition t1{
+        source: sc.A.A1;
+        destination: sc.B;
+        trigger: e1;
+        guard:(true);
+        action:{x:=10;y:=10;}
+	  }
+  }
+
+
