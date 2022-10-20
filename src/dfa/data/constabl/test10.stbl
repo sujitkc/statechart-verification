@@ -1,0 +1,58 @@
+statechart  sc{
+ 
+  events {
+	e1;
+  }
+  x:int:local;
+  y:int:local;
+  entry : {
+    x:=0;
+    y:=0;
+  }
+  exit  : {
+    x:=1;
+    y:=1;
+  } 
+  functions {
+  input<||>() : int;
+  }
+   state A{
+        entry:{
+            x:=2;
+            y:=2;
+        }
+        exit:{
+            x:=4;
+            y:=4;
+        }
+        state A1{
+          entry:{
+              x:=21;
+              y:=21;
+          }
+          exit:{
+              x:=41;
+              y:=41;
+          }
+        }
+    }
+    state B{
+        entry:{
+            x:=3;
+            y:=3;
+        }
+        exit:{
+            x:=5;
+            y:=5;
+        }
+    }
+    transition t1{
+        source: sc.A;
+        destination: sc.B;
+        trigger: e1;
+        guard:(true);
+        action:{x:=10;y:=10;}
+	  }
+  }
+
+

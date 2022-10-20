@@ -11,10 +11,19 @@ test3.stbl - Statechart SC with composite default substate
 test4.stbl - Statechart SC with shell default substate
 test5.stbl - Statechart SC with nested shell default substate
 
-### Testing Exit from states - through event e1 - guard true
+### Testing Exit from atomic states of SC - through event e1 - guard true
 test6.stbl - exit from substate of statechart SC - atomic to atomic - X;A;N - pass
 test7.stbl - exit from substate of statechart SC - atomic to composite- X;A;N - pass
 test8.stbl - exit from substate of statechart SC - atomic to shell- X;A;N - pass
+test9.stbl - exit from substate of statechart SC - atomic to shell within shell- X;A;N - yet to test
+
+### Testing Exit from composite states of SC- through event e1 - guard true
+test10.stbl - exit from substate of statechart SC - composite to atomic - X;A;N - pass
+test11.stbl - exit from substate of statechart SC - composite to composite- X;A;N - pass
+test12.stbl - exit from substate of statechart SC - composite to shell- X;A;N - pass
+test13.stbl - exit from substate of statechart SC - composite to shell within shell- X;A;N - yet to test
+
+
 ========
 test7.stbl - exit from substate of statechart SC - composite
 test8.stbl - exit from substate of statechart SC - shell
