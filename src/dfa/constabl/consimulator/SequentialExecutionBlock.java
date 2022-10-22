@@ -46,4 +46,24 @@ public class SequentialExecutionBlock extends ExecutionBlock{
         else
             return true;
     }
+    public ProgramPoint getNextProgramPoint(ProgramPoint p){
+        int index=this.points.indexOf(p);
+        ProgramPoint returnPoint=null;
+        if((index+1)<this.points.size() && this.points.get(index+1)!=null){
+            returnPoint=this.points.get(index+1);
+            return returnPoint;
+        }
+        else if(this.next!=null){
+            for(SequentialExecutionBlock seb: this.next.sequencelist){
+                if(seb.points.contains(p)){
+                    returnPoint=seb.points.get(index+1);
+                    return returnPoint;
+                }
+            }
+                
+        }
+
+        return returnPoint;
+    }
+    
 }

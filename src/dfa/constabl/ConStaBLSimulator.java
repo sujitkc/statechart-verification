@@ -234,7 +234,8 @@ public class ConStaBLSimulator extends SimulStatechart{
                // computeActionDefaultEntry(currentconfig, listofstates,new SequentialExecutionBlock());
                 SequentialExecutionBlock initialExecutionBlock=(SequentialExecutionBlock)computeActionDefaultEntryForState(currentconfig, this.statechart,new SequentialExecutionBlock());
                 System.out.println("tinit : "+initialExecutionBlock);
-                ConstaBLActionExecutor.executeAction(currentconfig, initialExecutionBlock);
+                ConstaBLActionExecutor.readyProgramPoints.add(initialExecutionBlock.points.get(0));
+                ConstaBLActionExecutor.executeAction(initialExecutionBlock,initialExecutionBlock.points.get(0));
                 Configuration newconfig=computePartialConfiguration(initialExecutionBlock,new Configuration());
                 //Configuration newconfig=executeAction(currentconfig,initialExecutionBlock);
                 //System.out.println("Configuration after tinit:"+newconfig.programpoints);
@@ -252,6 +253,7 @@ public class ConStaBLSimulator extends SimulStatechart{
                  ExecutionBlock entryBlock=computeEntryExecutionBlock(new SequentialExecutionBlock(),currentconfig,t.lub(), t.getDestination());
                  System.out.println ("Entry Execution Block : "+entryBlock);
                  
+                 //ConstaBLActionExecutor.executeAction(exitBlock,null);
                 
             }
         }
