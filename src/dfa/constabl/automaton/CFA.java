@@ -33,5 +33,12 @@ public class CFA {
         }
         return nextLocation;
     }
+    public String toString(){
+        String str="";
+        for(Edge edge:edges){
+            str+=edge+"\n";
+        }
+        return str;
+    }
     
 }

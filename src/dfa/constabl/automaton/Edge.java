@@ -35,4 +35,9 @@ public class Edge {
     public void setStmt(Statement stmt) {
         this.stmt = stmt;
     }
+    public String toString(){
+        String str="";
+        str+=name+" : "+source+"---"+stmt+"---->"+dest;
+        return str;
+    }
 }

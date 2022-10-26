@@ -19,4 +19,9 @@ public class Location {
     public void setProgramPoint(ProgramPoint p) {
         this.p = p;
     }
+    public String toString(){
+        String str="";
+        str+=name+" : "+p;
+        return str;
+    }
 }
