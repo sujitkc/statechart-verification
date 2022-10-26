@@ -2,7 +2,7 @@ package constabl.automaton;
 
 import java.util.*;
 import ast.*;
-public class CCFG implements Graph{
+public class CCFG{
     public List<CFG> getCfglist() {
         return cfglist;
     }
@@ -17,7 +17,7 @@ public class CCFG implements Graph{
     }
     List<CFG> cfglist;
     CFG next;
-    public List<Statement> getReadyStatement(List<Statement> current){
+    /*public List<Statement> getReadyStatement(List<Statement> current){
         List<Statement> returnList=new ArrayList<Statement>();
         for(int i=0;i<cfglist.size();i++){
             CFG cfg=cfglist.get(i);
@@ -33,5 +33,5 @@ public class CCFG implements Graph{
                 returnList.addAll(returnstmt);
         }
         return returnList;
-    }
+    }*/
 }

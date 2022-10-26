@@ -1,8 +1,8 @@
 package constabl.automaton;
 import ast.*;
 import java.util.*;
-public class CFG implements Graph{
-    public Statement stmt;
+public class CFG{
+/*     public Statement stmt;
     public void setStmt(Statement stmt) {
         this.stmt = stmt;
     }
@@ -39,5 +39,5 @@ public class CFG implements Graph{
         else{
             return null;
         }
-    }
+    } */
 }
