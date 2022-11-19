@@ -32,7 +32,7 @@ public class ConstaBLActionExecutor {
                 point=chooseRandom();
                 readyProgramPoints.add(((SequentialExecutionBlock)eblock).getNextProgramPoint(point));
                 
-                executeAction(eblock, point);
+                //executeAction(eblock, point);
             }else if( eblock instanceof ConcurrentExecutionBlock){
                 System.out.println("hello");
             }
