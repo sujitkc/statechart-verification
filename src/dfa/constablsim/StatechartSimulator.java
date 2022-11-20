@@ -61,23 +61,29 @@ public class StatechartSimulator extends Simulator {
                     
                     //actionSequence=addProgramPoints(actionSequence,state,null, ActionType.STATE_ENTRY_ACTION);
                     actionBlock=StatementToCFA.convertToCFA(state.entry, actionBlock);
-                    actionBlock.addSuccessor(actionBlock.getFinalNode(), new Fork(), null);
+                    System.out.println("action block cfa 1: "+actionBlock);
+                    Fork f=new Fork();
+                    actionBlock.addSuccessor(actionBlock.getFinalNode(),f );
                     List<State> newEntryStates=state.getAllSubstates();
                     for(State s:newEntryStates){
                         System.out.print(s.name+", ");
                         //this is wrong
                         actionBlock=computeActionDefaultEntryForState(currentconfig,s,actionBlock);
-                        
+                        System.out.println("action block cfa 2: "+actionBlock);
+
                     }
-                    actionBlock.addSuccessor(actionBlock.getFinalNode(), new Join(), null);
-                 
+                    actionBlock.addSuccessor(actionBlock.getFinalNode(), new Join());
+                    System.out.println("action block cfa 2: "+actionBlock);
                   
                     
                     
                 }else if(state.getAllSubstates().size()>0){
                     
                     System.out.println("Composite detected:  "+state.name);
+                    actionBlock=StatementToCFA.convertToCFA(state.entry, actionBlock);
                     computeActionDefaultEntryForState(currentconfig,state.getAllSubstates().get(0),actionBlock);
+                    
+                    System.out.println("action block cfa composite: "+actionBlock);
                     //actionBlock.addAll(computeActionDefaultEntryForState(currentconfig,state.getAllSubstates().get(0),actionBlock));
                     
 
@@ -86,6 +92,10 @@ public class StatechartSimulator extends Simulator {
                 else{
                     //found atomic state
                     System.out.println("Atomic detected:  "+state.name);
+                    //actionBlock=computeActionDefaultEntryForState(currentconfig,state.getAllSubstates().get(0),actionBlock);
+                    actionBlock=StatementToCFA.convertToCFA(state.entry, actionBlock);
+                    System.out.println("action block cfa composite: "+actionBlock);
+
                     activeconfig.addState(state);
                    // actionSequence=addProgramPoints(actionSequence,state,null,ActionType.STATE_ENTRY_ACTION);
 

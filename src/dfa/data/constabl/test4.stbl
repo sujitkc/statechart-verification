@@ -32,6 +32,15 @@ statechart  sc{
             exit:{
                 k:=1;
             }
+            state A11{
+                    m:int:local;
+                entry:{
+                    m:=0;
+                }
+                exit:{
+                    m:=1;
+                }
+            }
         }
         state A2{
             k:int:local;
@@ -40,6 +49,15 @@ statechart  sc{
             }
             exit:{
                 k:=4;
+            }
+            state A11{
+                    m:int:local;
+                entry:{
+                    m:=0;
+                }
+                exit:{
+                    m:=1;
+                }
             }
         }
     }

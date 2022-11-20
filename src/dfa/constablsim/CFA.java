@@ -3,30 +3,15 @@ import java.util.*;
 import ast.*;
 import constablsim.ast.*;
 public class CFA {
-    Set<Edge> edges=new HashSet<Edge>();
+    //Set<Edge> edges=new HashSet<Edge>();
     Set<Node> nodes=new HashSet<Node>();
     Node start;
     Node end;
-    public void addSuccessor(Node a, Node b, Statement stmt){
-        Edge e=new Edge(a.name+"-"+b.name, a, b, stmt);
-        edges.add(e);
+    public void addSuccessor(Node a, Node b){
+        a.addNext(b);
     }
-    public Set<Edge> getSuccessors(Node a){
-        Set<Edge> returnSet=new HashSet<Edge>();
-        for(Edge e:edges){
-            if(e.getSource()==a)
-                returnSet.add(e);
-        }
-        return returnSet;
-    }
-    public Set<Edge> getEdges() {
-        return edges;
-    }
-    public void setEdges(Set<Edge> edges) {
-        this.edges = edges;
-    }
-    public void addEdge(Edge edge){
-        this.edges.add(edge);
+    public Set<Node> getSuccessors(Node a){
+        return a.next;
     }
     public Set<Node> getNodes() {
         return nodes;
@@ -50,11 +35,18 @@ public class CFA {
         this.end = end;
     }
     public Node getFinalNode(){
-        Node finalnode=new Node();
-        for(Edge e:edges){
-            
+        
+        return this.end;
+    }
+    public String toString(){
+        String str="";
+        for(Node n:nodes){
+            str+=n;
         }
-        return finalnode;
+        
+        //    n=n.next
+        return str;
+        
     }
 
 }
