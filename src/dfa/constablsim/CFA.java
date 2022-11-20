@@ -25,11 +25,17 @@ public class CFA {
     public void setEdges(Set<Edge> edges) {
         this.edges = edges;
     }
+    public void addEdge(Edge edge){
+        this.edges.add(edge);
+    }
     public Set<Node> getNodes() {
         return nodes;
     }
     public void setNodes(Set<Node> nodes) {
         this.nodes = nodes;
+    }
+    public void addNode(Node node){
+        this.nodes.add(node);
     }
     public Node getStart() {
         return start;
@@ -43,6 +49,12 @@ public class CFA {
     public void setEnd(Node end) {
         this.end = end;
     }
-    
+    public Node getFinalNode(){
+        Node finalnode=new Node();
+        for(Edge e:edges){
+            
+        }
+        return finalnode;
+    }
 
 }

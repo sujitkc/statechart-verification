@@ -4,34 +4,33 @@ import ast.*;
 import constablsim.ast.*;
 public abstract class StatementToCFA {
     
-    public static CFA convertToCFA(StatementList stmtList){
-        //initialize
-        CFA cfa=new CFA();
-        Set<Edge> edges=new HashSet<Edge>();
-        Set<Node> nodes=new HashSet<Node>();
-        Node prevloc;
-        Node nextloc;
-        int i=1;
+    public static CFA convertToCFA(Statement stmtList, CFA prevCFA){
+        CFA cfa;
 
-        //yet to do -- evaluate the statement and store program point
-        prevloc=new Node();
-        nodes.add(prevloc);
+        //initialize prevloc
+        
+        Node prevloc;
+        if(prevCFA==null){
+            prevloc=new NullNode();
+            cfa=new CFA();
+            cfa.addNode(prevloc);
+        }
+        else{
+            prevloc=prevCFA.getFinalNode();
+            cfa=prevCFA;
+        }        
         //StmtList2CFA
-        for(Statement stmt: stmtList.getStatements()){
-            
+        for(int i=0;i<((StatementList)stmtList).getStatements().size();i++){
+            Statement stmt=((StatementList)stmtList).getStatements().get(i);
             //yet to do -- evaluate the statement and store program point
-            i++;
-            nextloc=new Node();
-            nodes.add(nextloc);
+            Node nextloc=new Node();
+            cfa.addNode(nextloc);
             Edge newEdge=new Edge("edge"+(i-1)+"_"+i, prevloc, nextloc, stmt);
-            edges.add(newEdge);
+            cfa.addEdge(newEdge);
             prevloc=nextloc;
 
         }
-
-        // add all the edges and locations and return
-        cfa.setEdges(edges);
-        cfa.setNodes(nodes);
         return cfa;
     }
+    
 }

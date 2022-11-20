@@ -31,6 +31,7 @@ import ast.Environment;
 import ast.Declaration;
 import ast.*;
 import constabl.*;
+import constablsim.StatechartSimulator;
 public class TestConStaBLSimulator {
       String inputfile="";
 
@@ -87,7 +88,8 @@ public class TestConStaBLSimulator {
       // creating a simulator
     try
     {
-      new ConStaBLSimulator(statechart);
+      //new ConStaBLSimulator(statechart);
+      new StatechartSimulator(statechart);
     }
     catch(Exception e) {
       System.out.println("Something Went Wrong!\n");

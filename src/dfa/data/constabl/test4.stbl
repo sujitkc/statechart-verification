@@ -39,7 +39,7 @@ statechart  sc{
                 k:=3;
             }
             exit:{
-                k:=g;
+                k:=4;
             }
         }
     }
