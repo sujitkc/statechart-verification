@@ -1,5 +1,5 @@
 package constablsim.ast.connectors;
-
+import constablsim.ast.*;
 public class Connector extends Block{
     public String name;
    

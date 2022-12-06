@@ -4,7 +4,7 @@ import constablsim.ast.*;
 import java.util.*;
 public class CodeSimulator extends Simulator{
     public void execute(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
-        List<CFA> newcfalist=new ArrayList<cfalist>();
+        List<CFA> newcfalist=new ArrayList<CFA>();
         newcfalist.addAll(cfalist);
         //printing current CFA list
         System.out.println("Executing code... cfa : " +cfalist.size()+ " : fork : "+forklist.size()+" : Join : "+joinlist.size()+" : Seq :"+seqlist.size());
@@ -74,12 +74,13 @@ public class CodeSimulator extends Simulator{
                 while(prev!=null){
                     if(prev instanceof java.util.List){
                         System.out.println("multiple paths found - choosing first one");
-                        prev=prev.get(0);
+                        prev=((java.util.List<Block>)prev).get(0);
                     }
                     if(prev instanceof constablsim.ast.connectors.Fork){
-                        if((constablsim.ast.connectors.Fork)prev.equals(sq))
+                        if(((constablsim.ast.connectors.Fork)prev).equals(sq)){
                         returnList.add(cfa);
-                        prev=prev.prev;
+                        prev=((constablsim.ast.connectors.Fork)prev).getPrev();
+                        }
                     }
                     
                 }
