@@ -25,11 +25,16 @@ public class CFA {
     public Connector getPrev(){
         return this.prev;
     }
-    public void addSuccessor(Node a, Node b){
-        a.addNext(b);
+    public void addPredecessor(Node a, Node b){
+        a.addPrev(b);
     }
     public Set<Node> getSuccessors(Node a){
-        return a.next;
+        Set<Node> returnnodes=new HashSet<Node>();
+        for(Node n:nodes){
+            if(n.prev!=null && n.prev.contains(a))
+                returnnodes.add(n);
+        }
+        return returnnodes;
     }
     public Set<Node> getNodes() {
         return nodes;

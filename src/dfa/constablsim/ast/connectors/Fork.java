@@ -6,6 +6,7 @@ public class Fork extends Connector{
     CFA prev=null;
     public String name;
     public Fork(String name){
+        super(name);
         this.name=name;
     }
     public CFA getPrev(){
@@ -15,9 +16,7 @@ public class Fork extends Connector{
         this.prev=cfa;
     }
     
-    public Fork(){
-
-    }
+    
     public String toString(){
         String str;
         str="Fork : "+this.name +" : Prev : { "+this.prev+" }";

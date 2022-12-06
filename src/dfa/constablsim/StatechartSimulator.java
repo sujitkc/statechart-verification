@@ -8,10 +8,7 @@ public class StatechartSimulator extends Simulator {
     private Statechart statechart = null;
     private List<String> eventQueue=null;
     private Configuration activeconfig=new Configuration();
-    private List<CFA> cfalist=new ArrayList<CFA>();
-    private List<Fork> forklist=new ArrayList<Fork>();
-    private List<Join> joinlist=new ArrayList<Join>();
-    private List<Seq> seqlist=new ArrayList<Seq>();
+    
     
     EventQueue eq=new EventQueue();
     private final String tinit=EventQueue.tinit;
@@ -61,15 +58,9 @@ public class StatechartSimulator extends Simulator {
                     currentconfig=computeDefaultEntry(currentconfig);
                 // for the stable config
                     computeDefaultEntry(currentconfig);
-                //printing current CFA list
-                for(CFA cfa: cfalist)
-                    System.out.println(cfa);
-                for(Fork cfa: forklist)
-                    System.out.println(cfa);
-                for(Join cfa: joinlist)
-                    System.out.println(cfa);
-                for(Seq cfa: seqlist)
-                    System.out.println(cfa);
+                
+                CodeSimulator cs=new CodeSimulator();
+                cs.execute(cfalist, forklist, joinlist, seqlist);
                 
             }
             else{
@@ -82,35 +73,37 @@ public class StatechartSimulator extends Simulator {
         Configuration newconfig=new Configuration();
         for (State entryState : currentconfig.getCurrentStates()){
             if(entryState instanceof ast.Shell){
-                System.out.println( "Shell state : "+entryState.name);
-                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.name+"_N");
-                Seq f=getSeqfromList(entryState.getSuperstate().name);
+                System.out.println( "Shell state : "+entryState.getFullName());
+                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
+                Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
                 cfa.addPrev(f);
                 cfalist.add(cfa);  
                 newconfig.addAllState(entryState.states);          
             }
             else if(entryState.states.size()>0){
-                System.out.println( "Composite state : "+entryState.name);
-                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.name+"_N");
+                System.out.println( "Composite state : "+entryState.getFullName());
+                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
                 if(entryState instanceof ast.Statechart){
                     //do nothing
+                    Seq s=getSeqfromList("start");
+                    cfa.addPrev(s);
                 }
                 else if(entryState.getSuperstate() instanceof ast.Shell){
-                    Fork f=getForkfromList(entryState.getSuperstate().name);
+                    Fork f=getForkfromList(entryState.getSuperstate().getFullName());
                     cfa.addPrev(f);
                 }
                 else{
                     //System.out.println()
-                    Seq f=getSeqfromList((entryState.getSuperstate()).name);
-                    cfa.addPrev(f);
+                    Seq s=getSeqfromList((entryState.getSuperstate()).getFullName());
+                    cfa.addPrev(s);
                 }
                 cfalist.add(cfa); 
                 newconfig.addState(entryState.states.get(0)); 
             }
             else{
-                System.out.println( "Atomic state : "+entryState.name);
-                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.name+"_N");
-                Seq f=getSeqfromList(entryState.getSuperstate().name);
+                System.out.println( "Atomic state : "+entryState.getFullName());
+                CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
+                Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
                 cfa.addPrev(f);
                 cfalist.add(cfa);
             }
@@ -120,45 +113,7 @@ public class StatechartSimulator extends Simulator {
         return newconfig;
         
     }
-    public Fork getForkfromList(String name){
-        for(int i=0;i<forklist.size();i++){
-            if(forklist.get(i).name.equals(name))
-                return forklist.get(i);
-        }
-        Fork f=new Fork(name);
-        CFA cfa = getCFAfromList(name+"_N");
-        f.setPrev(cfa);
-        forklist.add(f);
-        return f;
-    }
-    public Seq getSeqfromList(String name){
-        for(int i=0;i<seqlist.size();i++){
-            if(seqlist.get(i).name.equals(name))
-                return seqlist.get(i);
-        }
-        Seq s=new Seq(name);
-        CFA cfa = getCFAfromList(name+"_N");
-        s.setPrev(cfa);
-        seqlist.add(s);
-        return s;
-    }
-    public Join getJoinfromList(String name){
-        for(int i=0;i<joinlist.size();i++){
-            if(joinlist.get(i).name.equals(name))
-                return joinlist.get(i);
-        }
-        Join s=new Join(name);
-        joinlist.add(s);
-        return s;
-    }
-    public CFA getCFAfromList(String name){
-        for(int i=0;i<cfalist.size();i++){
-            if(cfalist.get(i).name.equals(name))
-                return cfalist.get(i);
-        }
-       
-        return null;
-    }
+  
     // public CFA computeCFADefaultEntry(Configuration currentconfig, State entryState)
     // {      
     //     try{                  

@@ -6,6 +6,7 @@ public class Seq extends Connector{
     CFA prev=null;
     public String name;
     public Seq(String name){
+        super(name);
         this.name=name;
     }
     public CFA getPrev(){
@@ -13,10 +14,6 @@ public class Seq extends Connector{
     }
     public void setPrev(CFA cfa){
         this.prev=cfa;
-    }
-
-    public Seq(){
-
     }
     public String toString(){
         String str;

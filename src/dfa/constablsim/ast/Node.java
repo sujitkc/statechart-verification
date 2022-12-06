@@ -4,16 +4,16 @@ import java.util.*;
 public class Node {
     public String name;
     public Statement stmt;
-    public Set<Node> next=null;
+    public Set<Node> prev=null;
     public Node(){}
     public Node(String name, Statement stmt){
         this.name=name;
         this.stmt=stmt;
     }
-    public void addNext(Node node){
-        if(this.next==null)
-            next=new HashSet<Node>();
-        this.next.add(node);
+    public void addPrev(Node node){
+        if(this.prev==null)
+            prev=new HashSet<Node>();
+        this.prev.add(node);
     }
     public Statement getStmt() {
         return stmt;
