@@ -1,6 +1,6 @@
 package constablsim.ast.connectors;
 
-public class Connector{
+public class Connector extends Block{
     public String name;
    
    

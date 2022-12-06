@@ -3,7 +3,7 @@ import java.util.*;
 import ast.*;
 import constablsim.ast.*;
 import constablsim.ast.connectors.*;
-public class CFA {
+public class CFA extends Block{
     //Set<Edge> edges=new HashSet<Edge>();
     public CFA(String name){
         this.name=name;
