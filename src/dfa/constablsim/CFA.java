@@ -2,11 +2,29 @@ package constablsim;
 import java.util.*;
 import ast.*;
 import constablsim.ast.*;
+import constablsim.ast.connectors.*;
 public class CFA {
     //Set<Edge> edges=new HashSet<Edge>();
+    public CFA(String name){
+        this.name=name;
+    }
+    String name;
+    public String getName(){
+        return name;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
     Set<Node> nodes=new HashSet<Node>();
     Node start;
     Node end;
+    Connector prev=null;
+    public void addPrev(Connector c){
+        this.prev=c;
+    }
+    public Connector getPrev(){
+        return this.prev;
+    }
     public void addSuccessor(Node a, Node b){
         a.addNext(b);
     }
@@ -39,7 +57,7 @@ public class CFA {
         return this.end;
     }
     public String toString(){
-        String str="";
+        String str=" CFA : "+this.name+" : Prev : "+this.prev+" : Nodes : ";
         for(Node n:nodes){
             str+=n;
         }

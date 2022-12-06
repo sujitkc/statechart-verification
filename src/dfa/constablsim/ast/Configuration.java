@@ -8,6 +8,13 @@ public class Configuration {
         currentStates=new ArrayList<State>();
         currentEnvironments=new ArrayList<Environment>();
     }
+    public boolean isStable(){
+        for(State s :currentStates){
+            if(s.states.size()>0)
+                return false;
+        }
+        return true;
+    }
     public List<State> getCurrentStates() {
         return currentStates;
     }
@@ -16,6 +23,9 @@ public class Configuration {
     }
     public void addState(State s) {
         this.currentStates.add(s);
+    }
+    public void addAllState(List<State> s) {
+        this.currentStates.addAll(s);
     }
     public List<Environment> getCurrentEnvironments() {
         return currentEnvironments;

@@ -4,21 +4,9 @@ import ast.*;
 import constablsim.ast.*;
 public abstract class StatementToCFA {
     
-    public static CFA convertToCFA(Statement stmtList, CFA prevCFA){
-        CFA cfa;
-
-        //initialize prevloc
-        
-        Node prevloc;
-        if(prevCFA==null){
-            prevloc=new NullNode();
-            cfa=new CFA();
-            cfa.addNode(prevloc);
-        }
-        else{
-            prevloc=prevCFA.getFinalNode();
-            cfa=prevCFA;
-        }        
+    public static CFA convertToCFA(Statement stmtList, String name){
+        CFA cfa=new CFA(name);
+        Node prevloc=null;
         //StmtList2CFA
         for(int i=0;i<((StatementList)stmtList).getStatements().size();i++){
             Statement stmt=((StatementList)stmtList).getStatements().get(i);
