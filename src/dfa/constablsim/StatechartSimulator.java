@@ -30,11 +30,11 @@ public class StatechartSimulator extends Simulator {
         List<Transition> identifiedTransitions=new ArrayList<Transition>();
         Transition initTransition=new Transition(tinit,null,null,null,null,null);
         identifiedTransitions.add(initTransition);
-        computeCFA();
+        //computeCFA();
         computeCode(activeconfig,identifiedTransitions);
     }
     public void computeCFA(){
-        System.out.println("Computing CFAs... YTI ");
+        System.out.println("Computing CFAs... ");
         /* yet to be implemented */
     }
     public void consumeEvent(String event){
@@ -60,7 +60,9 @@ public class StatechartSimulator extends Simulator {
                     computeDefaultEntry(currentconfig);
                 
                 CodeSimulator cs=new CodeSimulator();
-                cs.execute(cfalist, forklist, joinlist, seqlist);
+                Seq sq=getSeqfromList("start");
+                CFA startCFA=getNextCFAtoSeqConnector(cfalist,sq);
+                cs.execute(startCFA, cfalist, forklist, joinlist, seqlist);
                 
             }
             else{
