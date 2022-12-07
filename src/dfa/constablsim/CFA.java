@@ -62,13 +62,14 @@ public class CFA{
         return this.end;
     }
     public String toString(){
-        String str=" CFA : "+this.name+" : Prev : "+this.prev+" : Nodes : ";
+        String str=" << CFA-"+this.name+" with Nodes : [";
         for(Node n:nodes){
-            str+=n;
+            str+=n+", ";
         }
-        
+        str+=" ]";
+        //str+=" with Prev : "+this.prev+">> ";
         //    n=n.next
-        return str;
+        return str.replace("\n", "");
         
     }
 

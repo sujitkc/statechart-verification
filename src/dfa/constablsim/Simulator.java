@@ -2,11 +2,26 @@ package constablsim;
 import constablsim.ast.connectors.*;
 import constablsim.ast.*;
 import java.util.*;
+import ast.*;
+
 public class Simulator {
      List<CFA> cfalist=new ArrayList<CFA>();
      List<Fork> forklist=new ArrayList<Fork>();
      List<Join> joinlist=new ArrayList<Join>();
      List<Seq> seqlist=new ArrayList<Seq>();
+     public Simulator(){
+       
+    }
+    public Simulator(Statechart sc){
+       
+    }
+     public Simulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
+        this.cfalist.addAll(cfalist);
+        this.forklist.addAll(forklist);
+        this.joinlist.addAll(joinlist);
+        this.seqlist.addAll(seqlist);
+        
+     }
      public void simulate(){}
      public Fork getForkfromList(String name){
           for(int i=0;i<forklist.size();i++){
@@ -49,12 +64,12 @@ public class Simulator {
       }
       public CFA getNextCFAtoSeqConnector(List<CFA> cfalist, Seq sq){
         
-        System.out.println("seq node : "+sq);
+        System.out.println("seq node : "+sq.name);
         for(CFA cfa: cfalist){
             if(cfa.getPrev()!=null){
                 // System.out.println("Equality C : "+(cfa.getPrev()).equals(sq));
                 if((cfa.getPrev()).equals(sq)){
-                    System.out.println("found a start cfa : "+cfa.name);
+                    //System.out.println("found a start cfa : "+cfa.name);
                     //System.out.println(cfa);
                     return cfa;
                 }
@@ -64,7 +79,7 @@ public class Simulator {
     }
     public List<CFA> getNextCFAtoForkConnector(List<CFA> cfalist, Fork sq){
         List<CFA> returnList=new ArrayList<CFA>();
-        System.out.println("seq node : "+sq);
+        System.out.println("fork node : "+sq);
         for(CFA cfa: cfalist){
             if(cfa.getPrev()!=null){
                 if((cfa.getPrev()).equals(sq)){

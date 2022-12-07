@@ -59,10 +59,10 @@ public class StatechartSimulator extends Simulator {
                 // for the stable config
                     computeDefaultEntry(currentconfig);
                 
-                CodeSimulator cs=new CodeSimulator();
+                CodeSimulator cs=new CodeSimulator(cfalist, forklist, joinlist, seqlist);
                 Seq sq=getSeqfromList("start");
                 CFA startCFA=getNextCFAtoSeqConnector(cfalist,sq);
-                cs.execute(startCFA, cfalist, forklist, joinlist, seqlist);
+                cs.execute(startCFA);
                 
             }
             else{
