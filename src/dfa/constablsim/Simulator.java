@@ -105,6 +105,13 @@ public class Simulator {
         }
         return null;
     }
+    public State getShellAncestor(State s){
+        if(s instanceof ast.Shell){
+            return s;
+        }
+        else
+            return getShellAncestor(s.getSuperstate());
+    }
 }
 
 // public List<CFA> getAllSuccessorCFAtoForkConnector(List<CFA> cfalist, Fork sq){

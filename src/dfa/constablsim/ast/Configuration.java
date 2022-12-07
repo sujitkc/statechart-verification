@@ -18,6 +18,14 @@ public class Configuration {
     public List<State> getCurrentStates() {
         return currentStates;
     }
+    public String getCurrentStatesName() {
+        String str="[";
+        for(State s:currentStates){
+            str+=s.getFullName()+",";
+        }
+        str+="]";
+        return str;
+    }
     public void setCurrentStates(List<State> currentStates) {
         this.currentStates = currentStates;
     }

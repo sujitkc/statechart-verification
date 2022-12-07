@@ -46,7 +46,10 @@ public class StatechartSimulator extends Simulator {
                 System.out.print(t.name+", ");
             System.out.println();
             findNonDeterminism(transitions);
-    
+            //if no non determinism detected
+            if(transitions.size()>0){             
+                activeconfig=takeTransitions(activeconfig,transitions);
+                }
         //computeCode
 
     }
@@ -63,7 +66,7 @@ public class StatechartSimulator extends Simulator {
                 Seq sq=getSeqfromList("start");
                 CFA startCFA=getNextCFAtoSeqConnector(cfalist,sq);
                 cs.execute(startCFA);
-                
+                activeconfig=currentconfig;
             }
             else{
                 
@@ -179,7 +182,9 @@ public class StatechartSimulator extends Simulator {
     // }
     public ArrayList<Transition> findTransitions( Configuration c, String e){
             
-        System.out.println("Finding the transitions suitable for event : "+e + " for configuration : "+c);
+        String str="Finding the transitions suitable for event : "+e + " for configuration : "+c.getCurrentStatesName();
+        
+        System.out.println(str);
         ArrayList<Transition> allTransitionsInConfiguration=new ArrayList<Transition>();
         ArrayList<State> allSourceStatesInConfiguration=new ArrayList<State>();
         
@@ -234,5 +239,105 @@ public class StatechartSimulator extends Simulator {
                 }
                 //if(checkStates.contains(s.getAllSuperstates()))
             }
+    }
+    public Configuration takeTransitions(Configuration currentconfig, List<Transition> tlist)
+    {
+        System.out.println("*********************************");
+        cfalist.clear();
+        forklist.clear();
+        joinlist.clear();
+        seqlist.clear();
+        System.out.println("Take Transition : ");
+        for(Transition t:tlist)
+            System.out.print(t.name);
+        Configuration config=currentconfig;
+        
+        try{
+            Transition t=tlist.get(0); // still concurrent transitions not handled
+            System.out.println(" : Configuration : "+config.getCurrentStatesName());
+            Connector con;
+            if(tlist.size()>0)
+                con=new Fork("start");
+            else
+                con=new Seq("start");
+                //Compute ExitCFAList
+                computeExitCFAList(currentconfig,t.lub());
+                //ExecutionBlock exitBlock=computeExitExecutionBlock(currentconfig,t.lub());
+                //System.out.println ("Exit Execution Block : "+exitBlock);
+                //Compute TransitionBlock -- Done
+                //ExecutionBlock transitionActionBlock=computeTransitionAction(t);
+                //System.out.println ("Transition Action Sequence : "+transitionActionBlock);
+                //Compute EntryActionBlock
+                 //ExecutionBlock entryBlock=computeEntryExecutionBlock(new SequentialExecutionBlock(),currentconfig,t.lub(), t.getDestination());
+                // System.out.println ("Entry Execution Block : "+entryBlock);
+                 
+                 //ConstaBLActionExecutor.executeAction(exitBlock,null);
+                
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("Return config : "+config);
+        return currentconfig;
+    }
+    public void computeExitCFAList(Configuration config, State LUB){
+    
+      
+
+        List<State> activestates=config.getCurrentStates();
+        
+        State exitancesestor=null;
+        for(State s: LUB.states){
+           // System.out.println("LUB :"+s.name);
+            for(State as:activestates){
+                if(as.getAllSuperstates().contains(s))
+                    exitancesestor=s;
+            }
+        }
+        if(exitancesestor!=null)
+            System.out.println("Exit Ancestor LUB-1 :"+exitancesestor.name);
+
+        if(activestates.size()>1){
+            Fork f=new Fork("start");
+            State shellancestor=getShellAncestor(activestates.get(0));
+            for(State s : activestates){
+                
+                computeSequenceUntilLUB(s, shellancestor);
+                
+            }
+            Join j=getJoinfromList(shellancestor.name);
+            for(State s : shellancestor.states)
+                j.addPrev(getCFAfromList(s.name+"_X"));
+            // This is not completed    
+        }
+        else{
+            //single state to exit - 
+            //is it possible to exit a shell state when number of program points is 1? - No
+            //contained within OR state, so computeSequenceUntilLUB can be used to find a sequence?
+            State s=activestates.get(0);
+            computeSequenceUntilLUB(s, LUB);
+            //System.out.println(es);            
+        }
+    
+     
+     }
+     public void computeSequenceUntilLUB(State s, State lub){
+        //System.out.println("State : "+s.name);
+        //System.out.println("lub : "+lub.name);
+        
+        if(s == lub || s==null)
+            return;
+        else{
+            Seq seq=new Seq(s.name);
+            seq.setPrev(getCFAfromList(s.name+"_X"));
+            CFA cfa=StatementToCFA.convertToCFA(s.exit,s.name+"_X");
+            cfa.addPrev(seq);
+            cfalist.add(cfa);
+            seqlist.add(seq);
+           // ses=(SequentialExecutionBlock)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
+            computeSequenceUntilLUB(s.getSuperstate(),lub);
+        }
+
     }
 }

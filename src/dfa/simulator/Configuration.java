@@ -1,13 +1,13 @@
 package simulator;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import ast.*;
 
 public class Configuration{
     private ArrayList<State> config = new ArrayList<State>();
     private ArrayList<ArrayList<State>> concurrentConfig = new ArrayList<ArrayList<State>>();
-    private boolean concurrentExecution = False;
+    private boolean concurrentExecution = false;
 
     public ArrayList<State> getConfig()
     {
@@ -43,8 +43,9 @@ public class Configuration{
     {
         if(!this.concurrentExecution)
         {
-            this.concurrentExecution = True;
-            ArrayList<State> allSuperStates = states.get(0).getAllSuperstates();
+            this.concurrentExecution = true;
+            ArrayList<State> allSuperStates = new ArrayList<State>();
+            allSuperStates.addAll(states.get(0).getAllSuperstates());
             for(State s : states)
             {
                 this.concurrentConfig.add(allSuperStates);
@@ -53,7 +54,7 @@ public class Configuration{
         }
         else
         {
-            ArrayList<State> allSuperStates = states.get(0).getAllSuperstates();
+            List<State> allSuperStates = states.get(0).getAllSuperstates();
             
         }
 

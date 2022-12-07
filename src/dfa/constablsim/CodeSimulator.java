@@ -2,6 +2,7 @@ package constablsim;
 import constablsim.ast.connectors.*;
 import constablsim.ast.*;
 import java.util.*;
+import simulator.ExecuteStatement;
 public class CodeSimulator extends Simulator{
     
 
@@ -45,8 +46,11 @@ public class CodeSimulator extends Simulator{
         while(cfa.getSuccessors(node)!=null&&cfa.getSuccessors(node).size()!=0){    
             //System.out.println("Printing successors : "+cfa.getSuccessors(node));                    
             node=cfa.getSuccessors(node).iterator().next();
+            
             System.out.println("Executing  Node : {"+(node.toString()).replace("\n", "")+"}");
+
+            //ExectueStatement.executeStatement(node.stmt);
         }
     }
-
+    
 }
