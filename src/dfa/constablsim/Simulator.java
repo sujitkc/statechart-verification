@@ -74,34 +74,7 @@ public class Simulator {
         }
         return returnList;
     }
-    public List<CFA> getAllSuccessorCFAtoForkConnector(List<CFA> cfalist, Fork sq){
-        List<CFA> returnList=new ArrayList<CFA>();
-        System.out.println("seq node : "+sq);
-        for(CFA cfa: cfalist){
-            //if CFA has an ancestor fork - then add it
-            //how to find the ancestor?
-            //first find the prev connector of the CFA 
-                //if it is start node - exclude
-                //if it is join node - exclude (because in one transition - both fork and join is not possible)
-                // if it is a seq node -- then navigate to check if there is an edge between fork n seq
-                // if it is a fork node -- then navigate to check if there is an edge between fork n seq
-                Block prev=cfa.prev;
-                while(prev!=null){
-                    if(prev instanceof java.util.List){
-                        System.out.println("multiple paths found - choosing first one");
-                        prev=((java.util.List<Block>)prev).get(0);
-                    }
-                    if(prev instanceof constablsim.ast.connectors.Fork){
-                        if(((constablsim.ast.connectors.Fork)prev).equals(sq)){
-                        returnList.add(cfa);
-                        prev=((constablsim.ast.connectors.Fork)prev).getPrev();
-                        }
-                    }
-                    
-                }
-        }
-        return returnList;
-    }
+    
     public Connector getNextConnectorNode(CFA cfa, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
         for(Fork f: forklist){
             if(f.getPrev()!=null && f.getPrev().equals(cfa))
@@ -118,3 +91,32 @@ public class Simulator {
         return null;
     }
 }
+
+// public List<CFA> getAllSuccessorCFAtoForkConnector(List<CFA> cfalist, Fork sq){
+    //     List<CFA> returnList=new ArrayList<CFA>();
+    //     System.out.println("seq node : "+sq);
+    //     for(CFA cfa: cfalist){
+    //         //if CFA has an ancestor fork - then add it
+    //         //how to find the ancestor?
+    //         //first find the prev connector of the CFA 
+    //             //if it is start node - exclude
+    //             //if it is join node - exclude (because in one transition - both fork and join is not possible)
+    //             // if it is a seq node -- then navigate to check if there is an edge between fork n seq
+    //             // if it is a fork node -- then navigate to check if there is an edge between fork n seq
+    //             Block prev=cfa.prev;
+    //             while(prev!=null){
+    //                 if(prev instanceof java.util.List){
+    //                     System.out.println("multiple paths found - choosing first one");
+    //                     prev=((java.util.List<Block>)prev).get(0);
+    //                 }
+    //                 if(prev instanceof constablsim.ast.connectors.Fork){
+    //                     if(((constablsim.ast.connectors.Fork)prev).equals(sq)){
+    //                     returnList.add(cfa);
+    //                     prev=((constablsim.ast.connectors.Fork)prev).getPrev();
+    //                     }
+    //                 }
+                    
+    //             }
+    //     }
+    //     return returnList;
+    // }
