@@ -41,13 +41,13 @@ public class CodeSimulator extends Simulator{
     public void executeCFA(CFA cfa){
         System.out.println("===============");
         System.out.println("Executing CFA : "+ cfa.toString().replace("\n", ""));
-        Node node=cfa.getStart();
+        CFANode node=cfa.getStart();
         //System.out.println("start node :"+node);
         while(cfa.getSuccessors(node)!=null&&cfa.getSuccessors(node).size()!=0){    
             //System.out.println("Printing successors : "+cfa.getSuccessors(node));                    
             node=cfa.getSuccessors(node).iterator().next();
             
-            System.out.println("Executing  Node : {"+(node.toString()).replace("\n", "")+"}");
+            System.out.println("Executing  CFANode : {"+(node.toString()).replace("\n", "")+"}");
 
             //ExectueStatement.executeStatement(node.stmt);
         }

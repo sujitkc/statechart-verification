@@ -15,9 +15,9 @@ public class CFA{
     public void setName(String name){
         this.name=name;
     }
-    Set<Node> nodes=new HashSet<Node>();
-    Node start;
-    Node end;
+    Set<CFANode> nodes=new HashSet<CFANode>();
+    CFANode start;
+    CFANode end;
     Connector prev=null;
     public void addPrev(Connector c){
         this.prev=c;
@@ -25,45 +25,43 @@ public class CFA{
     public Connector getPrev(){
         return this.prev;
     }
-    public void addPredecessor(Node a, Node b){
-        a.addPrev(b);
-    }
-    public Set<Node> getSuccessors(Node a){
-        Set<Node> returnnodes=new HashSet<Node>();
-        for(Node n:nodes){
+   
+    public Set<CFANode> getSuccessors(CFANode a){
+        Set<CFANode> returnnodes=new HashSet<CFANode>();
+        for(CFANode n:nodes){
             if(n.prev!=null && n.prev.contains(a))
                 returnnodes.add(n);
         }
         return returnnodes;
     }
-    public Set<Node> getNodes() {
+    public Set<CFANode> getNodes() {
         return nodes;
     }
-    public void setNodes(Set<Node> nodes) {
+    public void setNodes(Set<CFANode> nodes) {
         this.nodes = nodes;
     }
-    public void addNode(Node node){
+    public void addNode(CFANode node){
         this.nodes.add(node);
     }
-    public Node getStart() {
+    public CFANode getStart() {
         return start;
     }
-    public void setStart(Node start) {
+    public void setStart(CFANode start) {
         this.start = start;
     }
-    public Node getEnd() {
+    public CFANode getEnd() {
         return end;
     }
-    public void setEnd(Node end) {
+    public void setEnd(CFANode end) {
         this.end = end;
     }
-    public Node getFinalNode(){
+    public CFANode getFinalNode(){
         
         return this.end;
     }
     public String toString(){
         String str=" << CFA-"+this.name+" with Nodes : [";
-        for(Node n:nodes){
+        for(CFANode n:nodes){
             str+=n+", ";
         }
         str+=" ]";

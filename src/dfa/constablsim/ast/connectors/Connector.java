@@ -1,6 +1,6 @@
 package constablsim.ast.connectors;
 import constablsim.ast.*;
-public class Connector{
+public class Connector extends CodeNode{
     public String name;
    
    

@@ -1,18 +1,18 @@
 package constablsim.ast;
 import ast.*;
 import java.util.*;
-public class Node {
+public class CFANode {
     public String name;
     public Statement stmt;
-    public Set<Node> prev=null;
-    public Node(){}
-    public Node(String name, Statement stmt){
+    public Set<CFANode> prev=null;
+    public CFANode(){}
+    public CFANode(String name, Statement stmt){
         this.name=name;
         this.stmt=stmt;
     }
-    public void addPrev(Node node){
+    public void addPrev(CFANode node){
         if(this.prev==null)
-            prev=new HashSet<Node>();
+            prev=new HashSet<CFANode>();
         this.prev.add(node);
     }
     public Statement getStmt() {
