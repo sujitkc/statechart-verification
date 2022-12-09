@@ -5,10 +5,7 @@ import java.util.*;
 import ast.*;
 
 public class Simulator {
-     /*List<CFA> cfalist=new ArrayList<CFA>();
-     List<Fork> forklist=new ArrayList<Fork>();
-     List<Join> joinlist=new ArrayList<Join>();
-     List<Seq> seqlist=new ArrayList<Seq>();*/
+     
      List<CodeNode> codenodelist=new ArrayList<CodeNode>();
      public Simulator(){
        
@@ -16,18 +13,16 @@ public class Simulator {
     public Simulator(Statechart sc){
        
     }
-    //  public Simulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
-    //     this.cfalist.addAll(cfalist);
-    //     this.forklist.addAll(forklist);
-    //     this.joinlist.addAll(joinlist);
-    //     this.seqlist.addAll(seqlist);
-        
-    //  }
+    
     public Simulator(List<CodeNode> codenodelist){
         this.codenodelist.addAll(codenodelist);
         
      }
-     public void simulate(){}
+     public void simulate(){
+        // This has to toggle between statechart simulator and code simulator
+        // what shd it do?!
+
+     }
      public int getJoinCount(){
         int count=0;
         for(CodeNode c: codenodelist){
@@ -71,6 +66,7 @@ public class Simulator {
           codenodelist.add(f);
           return f;
       }
+
       public Seq getSeqfromList(String name){
           for(int i=0;i<codenodelist.size();i++){
               if(codenodelist.get(i) instanceof constablsim.ast.connectors.Seq && (codenodelist.get(i)).name.equals(name))
@@ -99,7 +95,28 @@ public class Simulator {
          
           return null;
       }
-     /* public CFA getNextCFAtoSeqConnector(List<CFA> cfalist, Seq sq){
+     
+    public List<CodeNode> getNextNode(CodeNode currentNode){
+        List<CodeNode> returnList=new ArrayList<CodeNode>();
+        System.out.println("current node : "+currentNode);
+        for(CodeNode codenode: codenodelist){
+            if(codenode.getPrev()!=null){
+                if((codenode.getPrev()).contains(currentNode)){
+                    returnList.add(codenode);
+                }
+            }
+        }
+        return returnList;
+    }
+    public State getShellAncestor(State s){
+        if(s instanceof ast.Shell){
+            return s;
+        }
+        else
+            return getShellAncestor(s.getSuperstate());
+    }
+}
+/* public CFA getNextCFAtoSeqConnector(List<CFA> cfalist, Seq sq){
         
         System.out.println("seq node : "+sq.name);
         for(CFA cfa: cfalist){
@@ -144,27 +161,6 @@ public class Simulator {
         }
         return null;
     }*/
-
-    public List<CodeNode> getNextNode(CodeNode currentNode){
-        List<CodeNode> returnList=new ArrayList<CodeNode>();
-        System.out.println("current node : "+currentNode);
-        for(CodeNode codenode: codenodelist){
-            if(codenode.getPrev()!=null){
-                if((codenode.getPrev()).contains(currentNode)){
-                    returnList.add(codenode);
-                }
-            }
-        }
-        return returnList;
-    }
-    public State getShellAncestor(State s){
-        if(s instanceof ast.Shell){
-            return s;
-        }
-        else
-            return getShellAncestor(s.getSuperstate());
-    }
-}
 
 // public List<CFA> getAllSuccessorCFAtoForkConnector(List<CFA> cfalist, Fork sq){
     //     List<CFA> returnList=new ArrayList<CFA>();

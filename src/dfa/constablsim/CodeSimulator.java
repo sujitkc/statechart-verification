@@ -6,11 +6,7 @@ import simulator.ExecuteStatement;
 public class CodeSimulator extends Simulator{
     
 
-    /*public CodeSimulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
-                super(cfalist,forklist,joinlist,seqlist);
-                System.out.println("CFA list composed... cfa : " +cfalist.size()+ " : fork : "+forklist.size()+" : Join : "+joinlist.size()+" : Seq :"+seqlist.size());
-
-    }*/
+   
     public CodeSimulator(List<CodeNode> codenodelist){
         super(codenodelist);
         System.out.println("CodeNode list composed... cfa : " +getCFACount()+ " : fork : "+getForkCount()+" : Join : "+getJoinCount()+" : Seq :"+getSeqCount());
