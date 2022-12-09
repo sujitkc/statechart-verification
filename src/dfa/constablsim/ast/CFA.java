@@ -1,11 +1,11 @@
-package constablsim;
+package constablsim.ast;
 import java.util.*;
 import ast.*;
-import constablsim.ast.*;
 import constablsim.ast.connectors.*;
-public class CFA{
+public class CFA extends CodeNode{
     //Set<Edge> edges=new HashSet<Edge>();
     public CFA(String name){
+         super(name);
         this.name=name;
     }
     String name;
@@ -18,13 +18,13 @@ public class CFA{
     Set<CFANode> nodes=new HashSet<CFANode>();
     CFANode start;
     CFANode end;
-    Connector prev=null;
-    public void addPrev(Connector c){
-        this.prev=c;
-    }
-    public Connector getPrev(){
-        return this.prev;
-    }
+    // Connector prev=null;
+    // public void addPrev(Connector c){
+    //     this.prev=c;
+    // }
+    // public Connector getPrev(){
+    //     return this.prev;
+    // }
    
     public Set<CFANode> getSuccessors(CFANode a){
         Set<CFANode> returnnodes=new HashSet<CFANode>();

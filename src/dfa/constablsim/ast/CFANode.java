@@ -1,12 +1,13 @@
 package constablsim.ast;
 import ast.*;
 import java.util.*;
-public class CFANode {
+public class CFANode{
     public String name;
     public Statement stmt;
     public Set<CFANode> prev=null;
     public CFANode(){}
     public CFANode(String name, Statement stmt){
+        
         this.name=name;
         this.stmt=stmt;
     }

@@ -62,9 +62,12 @@ public class StatechartSimulator extends Simulator {
                 // for the stable config
                     computeDefaultEntry(currentconfig);
                 
-                CodeSimulator cs=new CodeSimulator(cfalist, forklist, joinlist, seqlist);
+                //CodeSimulator cs=new CodeSimulator(cfalist, forklist, joinlist, seqlist);
+                CodeSimulator cs=new CodeSimulator(codenodelist);
                 Seq sq=getSeqfromList("start");
-                CFA startCFA=getNextCFAtoSeqConnector(cfalist,sq);
+                //CFA startCFA=getNextCFAtoSeqConnector(cfalist,sq);
+                List<CodeNode> nodelist=getNextNode(sq);
+                CFA startCFA=(CFA)nodelist.get(0);
                 cs.execute(startCFA);
                 activeconfig=currentconfig;
             }
@@ -82,7 +85,8 @@ public class StatechartSimulator extends Simulator {
                 CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
                 Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
                 cfa.addPrev(f);
-                cfalist.add(cfa);  
+                //cfalist.add(cfa);  
+                codenodelist.add(cfa);
                 newconfig.addAllState(entryState.states);          
             }
             else if(entryState.states.size()>0){
@@ -102,7 +106,8 @@ public class StatechartSimulator extends Simulator {
                     Seq s=getSeqfromList((entryState.getSuperstate()).getFullName());
                     cfa.addPrev(s);
                 }
-                cfalist.add(cfa); 
+                //cfalist.add(cfa); 
+                codenodelist.add(cfa);
                 newconfig.addState(entryState.states.get(0)); 
             }
             else{
@@ -110,7 +115,8 @@ public class StatechartSimulator extends Simulator {
                 CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
                 Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
                 cfa.addPrev(f);
-                cfalist.add(cfa);
+                //cfalist.add(cfa);
+                codenodelist.add(cfa);
             }
 
         }
@@ -243,10 +249,11 @@ public class StatechartSimulator extends Simulator {
     public Configuration takeTransitions(Configuration currentconfig, List<Transition> tlist)
     {
         System.out.println("*********************************");
-        cfalist.clear();
-        forklist.clear();
-        joinlist.clear();
-        seqlist.clear();
+        // cfalist.clear();
+        // forklist.clear();
+        // joinlist.clear();
+        // seqlist.clear();
+        codenodelist.clear();
         System.out.println("Take Transition : ");
         for(Transition t:tlist)
             System.out.print(t.name);
@@ -330,11 +337,13 @@ public class StatechartSimulator extends Simulator {
             return;
         else{
             Seq seq=new Seq(s.name);
-            seq.setPrev(getCFAfromList(s.name+"_X"));
+            seq.addPrev(getCFAfromList(s.name+"_X"));
             CFA cfa=StatementToCFA.convertToCFA(s.exit,s.name+"_X");
             cfa.addPrev(seq);
-            cfalist.add(cfa);
-            seqlist.add(seq);
+            //cfalist.add(cfa);
+            //seqlist.add(seq);
+            codenodelist.add(cfa);
+            codenodelist.add(seq);
            // ses=(SequentialExecutionBlock)addProgramPoints(ses,s,null, ActionType.STATE_EXIT_ACTION);           
             computeSequenceUntilLUB(s.getSuperstate(),lub);
         }

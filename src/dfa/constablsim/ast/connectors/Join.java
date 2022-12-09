@@ -1,27 +1,27 @@
 package constablsim.ast.connectors;
 import java.util.*;
-import constablsim.*;
+import constablsim.ast.*;
 public class Join extends Connector{
     
-    List<CFA> prev=new ArrayList<CFA>();
+   // List<CFA> prev=new ArrayList<CFA>();
     public String name;
     public Join(String name){
         super(name);
         this.name=name;
     }
-    public List<CFA> getPrev(){
-        return this.prev;
-    }
-    public void addPrev(CFA cfa){
+    // public List<CFA> getPrev(){
+    //     return this.prev;
+    // }
+    // public void addPrev(CFA cfa){
         
-        this.prev.add(cfa);
-    }
+    //     this.prev.add(cfa);
+    // }
 
     
     public String toString(){
         String str;
         str="Join : "+this.name +" : Prev : { ";
-        for(CFA cfa:this.prev)
+        for(CodeNode cfa:this.prev)
             str+=cfa+"; ";
         str+=" }";
         return str;

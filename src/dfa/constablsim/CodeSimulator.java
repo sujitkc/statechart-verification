@@ -6,9 +6,14 @@ import simulator.ExecuteStatement;
 public class CodeSimulator extends Simulator{
     
 
-    public CodeSimulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
+    /*public CodeSimulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
                 super(cfalist,forklist,joinlist,seqlist);
                 System.out.println("CFA list composed... cfa : " +cfalist.size()+ " : fork : "+forklist.size()+" : Join : "+joinlist.size()+" : Seq :"+seqlist.size());
+
+    }*/
+    public CodeSimulator(List<CodeNode> codenodelist){
+        super(codenodelist);
+        System.out.println("CodeNode list composed... cfa : " +getCFACount()+ " : fork : "+getForkCount()+" : Join : "+getJoinCount()+" : Seq :"+getSeqCount());
 
     }
     public void execute(CFA cfa){
@@ -17,19 +22,25 @@ public class CodeSimulator extends Simulator{
         
         if(cfa!=null)
             executeCFA(cfa);
+        List<CodeNode> nodelist=getNextNode(cfa);
         Connector con;
-        if((con=getNextConnectorNode(cfa, forklist, joinlist, seqlist))!=null){
+        
+        //=getNextConnectorNode(cfa, forklist, joinlist, seqlist)
+        if(nodelist!=null && nodelist.size()>0 && (con = (Connector)nodelist.get(0))!=null){
             if(con instanceof constablsim.ast.connectors.Seq){
                 //System.out.println("Seq found"); 
-                cfa=getNextCFAtoSeqConnector(cfalist,(Seq)con);
+                //cfa=getNextCFAtoSeqConnector(cfalist,(Seq)con);
+                nodelist=getNextNode((Seq)con);
+                cfa=(CFA)nodelist.get(0);
                 execute(cfa);
                 
              }
              else if(con instanceof constablsim.ast.connectors.Fork){
                 //System.out.println("Fork found"); 
-                List<CFA> cfas=getNextCFAtoForkConnector(cfalist,(Fork)con);
-                for(CFA concurrentcfa:cfas)
-                    execute(concurrentcfa);
+                //List<CFA> cfas=getNextCFAtoForkConnector(cfalist,(Fork)con);
+                List<CodeNode> cfas=getNextNode((Fork)con);
+                for(CodeNode concurrentcfa:cfas)
+                    execute((CFA)concurrentcfa);
             }
             else if(con instanceof constablsim.ast.connectors.Join){
                 System.out.println("Join found");

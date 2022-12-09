@@ -5,64 +5,101 @@ import java.util.*;
 import ast.*;
 
 public class Simulator {
-     List<CFA> cfalist=new ArrayList<CFA>();
+     /*List<CFA> cfalist=new ArrayList<CFA>();
      List<Fork> forklist=new ArrayList<Fork>();
      List<Join> joinlist=new ArrayList<Join>();
-     List<Seq> seqlist=new ArrayList<Seq>();
+     List<Seq> seqlist=new ArrayList<Seq>();*/
+     List<CodeNode> codenodelist=new ArrayList<CodeNode>();
      public Simulator(){
        
     }
     public Simulator(Statechart sc){
        
     }
-     public Simulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
-        this.cfalist.addAll(cfalist);
-        this.forklist.addAll(forklist);
-        this.joinlist.addAll(joinlist);
-        this.seqlist.addAll(seqlist);
+    //  public Simulator(List<CFA> cfalist, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
+    //     this.cfalist.addAll(cfalist);
+    //     this.forklist.addAll(forklist);
+    //     this.joinlist.addAll(joinlist);
+    //     this.seqlist.addAll(seqlist);
+        
+    //  }
+    public Simulator(List<CodeNode> codenodelist){
+        this.codenodelist.addAll(codenodelist);
         
      }
      public void simulate(){}
+     public int getJoinCount(){
+        int count=0;
+        for(CodeNode c: codenodelist){
+            if(c instanceof constablsim.ast.connectors.Join)
+                count++;
+        }
+        return count;
+     }
+     public int getForkCount(){
+        int count=0;
+        for(CodeNode c: codenodelist){
+            if(c instanceof constablsim.ast.connectors.Fork)
+                count++;
+        }
+        return count;
+     }
+     public int getSeqCount(){
+        int count=0;
+        for(CodeNode c: codenodelist){
+            if(c instanceof constablsim.ast.connectors.Seq)
+                count++;
+        }
+        return count;
+     }
+     public int getCFACount(){
+        int count=0;
+        for(CodeNode c: codenodelist){
+            if(c instanceof constablsim.ast.CFA)
+                count++;
+        }
+        return count;
+     }
      public Fork getForkfromList(String name){
-          for(int i=0;i<forklist.size();i++){
-              if(forklist.get(i).name.equals(name))
-                  return forklist.get(i);
+          for(int i=0;i<codenodelist.size();i++){
+              if(codenodelist.get(i) instanceof constablsim.ast.connectors.Fork && (codenodelist.get(i)).name.equals(name))
+                  return (Fork)codenodelist.get(i);
           }
           Fork f=new Fork(name);
           CFA cfa = getCFAfromList(name+"_N");
-          f.setPrev(cfa);
-          forklist.add(f);
+          f.addPrev(cfa);
+          codenodelist.add(f);
           return f;
       }
       public Seq getSeqfromList(String name){
-          for(int i=0;i<seqlist.size();i++){
-              if(seqlist.get(i).name.equals(name))
-                  return seqlist.get(i);
+          for(int i=0;i<codenodelist.size();i++){
+              if(codenodelist.get(i) instanceof constablsim.ast.connectors.Seq && (codenodelist.get(i)).name.equals(name))
+                  return (Seq)codenodelist.get(i);
           }
           Seq s=new Seq(name);
           CFA cfa = getCFAfromList(name+"_N");
-          s.setPrev(cfa);
-          seqlist.add(s);
+          s.addPrev(cfa);
+          codenodelist.add(s);
           return s;
       }
       public Join getJoinfromList(String name){
-          for(int i=0;i<joinlist.size();i++){
-              if(joinlist.get(i).name.equals(name))
-                  return joinlist.get(i);
+          for(int i=0;i<codenodelist.size();i++){
+              if(codenodelist.get(i) instanceof constablsim.ast.connectors.Join && (codenodelist.get(i)).name.equals(name))
+                  return (Join)codenodelist.get(i);
           }
           Join s=new Join(name);
-          joinlist.add(s);
+          codenodelist.add(s);
           return s;
       }
       public CFA getCFAfromList(String name){
-          for(int i=0;i<cfalist.size();i++){
-              if(cfalist.get(i).name.equals(name))
-                  return cfalist.get(i);
+          for(int i=0;i<codenodelist.size();i++){
+              if(codenodelist.get(i) instanceof constablsim.ast.CFA && (codenodelist.get(i)).name.equals(name))
+                  return (CFA)codenodelist.get(i);
           }
          
           return null;
       }
-      public CFA getNextCFAtoSeqConnector(List<CFA> cfalist, Seq sq){
+     /* public CFA getNextCFAtoSeqConnector(List<CFA> cfalist, Seq sq){
         
         System.out.println("seq node : "+sq.name);
         for(CFA cfa: cfalist){
@@ -89,6 +126,8 @@ public class Simulator {
         }
         return returnList;
     }
+
+
     
     public Connector getNextConnectorNode(CFA cfa, List<Fork> forklist, List<Join> joinlist, List<Seq> seqlist){
         for(Fork f: forklist){
@@ -104,6 +143,19 @@ public class Simulator {
                 return s;
         }
         return null;
+    }*/
+
+    public List<CodeNode> getNextNode(CodeNode currentNode){
+        List<CodeNode> returnList=new ArrayList<CodeNode>();
+        System.out.println("current node : "+currentNode);
+        for(CodeNode codenode: codenodelist){
+            if(codenode.getPrev()!=null){
+                if((codenode.getPrev()).contains(currentNode)){
+                    returnList.add(codenode);
+                }
+            }
+        }
+        return returnList;
     }
     public State getShellAncestor(State s){
         if(s instanceof ast.Shell){
