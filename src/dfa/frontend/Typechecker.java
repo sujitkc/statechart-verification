@@ -628,11 +628,11 @@ public class Typechecker {
         ". Should be placed in state " + lub.name + " but placed in state " +
         transition.getState().name + ".");
     }
-    if(transition.getDestination().isRegionState().value)
+   /* if(transition.getDestination().isRegionState().value)
     {
       throw new Exception("Typechecking failed for transition : " + transition.name +
         ". Its destination is a REGION state.");
-    }
+    } */
     /*if(transition.getDestination().isFinalState().value & !transition.getSource().isRegionState().value)
     {
       throw new Exception("Typechecking failed for transition : " + transition.name);
