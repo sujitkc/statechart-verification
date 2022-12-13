@@ -259,6 +259,53 @@ public class StatechartSimulator extends Simulator {
             }
         }
     }
+   /* public Configuration computeDefaultEntry(Configuration currentconfig)
+    {
+        Configuration newconfig=new Configuration();
+        for (State entryState : currentconfig.getCurrentStates()){
+            if(entryState instanceof ast.Shell){
+                System.out.println( "Shell state : "+entryState.getFullName());
+                // CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
+                // Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
+                // cfa.addPrev(f);
+                // //cfalist.add(cfa);  
+                // codenodelist.add(cfa);
+                newconfig.addAllState(entryState.states);          
+            }
+            else if(entryState.states.size()>0){
+                System.out.println( "Composite state : "+entryState.getFullName());
+                //CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
+                if(entryState instanceof ast.Statechart){
+                    //do nothing
+                    // Seq s=getSeqfromList("start");
+                    // cfa.addPrev(s);
+                }
+                else if(entryState.getSuperstate() instanceof ast.Shell){
+                    // Fork f=getForkfromList(entryState.getSuperstate().getFullName());
+                    // cfa.addPrev(f);
+                }
+                else{
+                    //System.out.println()
+                    // Seq s=getSeqfromList((entryState.getSuperstate()).getFullName());
+                    // cfa.addPrev(s);
+                }
+                //cfalist.add(cfa); 
+                //codenodelist.add(cfa);
+                newconfig.addState(entryState.states.get(0)); 
+            }
+            else{
+                System.out.println( "Atomic state : "+entryState.getFullName());
+                // CFA cfa=StatementToCFA.convertToCFA(entryState.entry, entryState.getFullName()+"_N");
+                // Seq f=getSeqfromList(entryState.getSuperstate().getFullName());
+                // cfa.addPrev(f);
+                // //cfalist.add(cfa);
+                // codenodelist.add(cfa);
+            }
+
+        }
+        //System.out.println()
+        return newconfig;
+    } */
     public Configuration computeDefaultEntry(Configuration currentconfig)
     {
         Configuration newconfig=new Configuration();
