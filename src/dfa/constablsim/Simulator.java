@@ -8,19 +8,23 @@ public class Simulator {
      
      List<CodeNode> codenodelist=new ArrayList<CodeNode>();
      public Simulator(){
+        System.out.println("inside default constructor");
        
     }
     public Simulator(Statechart sc){
-       
+        
     }
     
     public Simulator(List<CodeNode> codenodelist){
+        System.out.println("inside codenodelist constructor");
         this.codenodelist.addAll(codenodelist);
         
      }
+     
      public void simulate(){
         // This has to toggle between statechart simulator and code simulator
         // what shd it do?!
+        //This mainta
 
      }
      public int getJoinCount(){
