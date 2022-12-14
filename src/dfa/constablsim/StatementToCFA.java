@@ -5,7 +5,7 @@ import constablsim.ast.*;
 public abstract class StatementToCFA {
     
     public static CFA convertToCFA(Statement stmtList, String name){
-        System.out.println ("converting statement list to CFA : "+ name);
+        System.out.println ("converting statement to CFA : "+ name);
         CFA cfa=new CFA(name);
         CFANode prevloc=new CFANode("start-cfa-"+name,null);
         cfa.setStart(prevloc);
