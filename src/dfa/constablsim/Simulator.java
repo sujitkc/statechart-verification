@@ -7,9 +7,10 @@ import ast.*;
 public class Simulator {
      
      List<CodeNode> codenodelist=new ArrayList<CodeNode>();
+     List<CodeNode> execnodelist=new ArrayList<CodeNode>();
      public Simulator(){
         System.out.println("inside default constructor");
-       
+        
     }
     public Simulator(Statechart sc){
         

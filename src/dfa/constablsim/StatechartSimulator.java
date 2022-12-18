@@ -15,7 +15,7 @@ public class StatechartSimulator extends Simulator {
     public StatechartSimulator(Statechart sc){
         this.statechart=sc;
         computeCFA(sc);
-       // this.simulate();
+        this.simulate();
         
     }
     public void computeCFA(Statechart sc){
@@ -50,7 +50,7 @@ public class StatechartSimulator extends Simulator {
      public void traverseStates(State s){
         if(s.states.size()==0){
             //s is atomic
-            System.out.println("Computing cfa for the atomic state : "+s.name);
+            System.out.println("Computing cfa for the atomic state : "+s.getFullName());
             //compute CFA for entry
             /* 1. Create a seq node for entry begin (Statename_NB)
              * 2. Create a seq node for entry end (Statename_NE)
@@ -58,7 +58,7 @@ public class StatechartSimulator extends Simulator {
              * 4. Form link - Statename_NB -> statename_N -> statename_NE
              * 5. add all to the code node list
              */
-            CFA cfan=StatementToCFA.convertToCFA(s.entry, s.name+"_N");
+            CFA cfan=StatementToCFA.convertToCFA(s.entry, s.getFullName()+"_N");
 
             //  Seq snb=new Seq(s.name+"_NB");
             //  Seq sne=new Seq(s.name+"_NE");
@@ -75,7 +75,7 @@ public class StatechartSimulator extends Simulator {
              * 4. Form link - Statename_XB -> statename_X -> statename_XE
              * 5. add all to the code node list
              */
-            CFA cfax=StatementToCFA.convertToCFA(s.exit, s.name+"_X");   
+            CFA cfax=StatementToCFA.convertToCFA(s.exit, s.getFullName()+"_X");   
             //  Seq sxb=new Seq(s.name+"_XB");
             //  Seq sxe=new Seq(s.name+"_XE");
              
@@ -89,7 +89,7 @@ public class StatechartSimulator extends Simulator {
         }
         else{
             if(s instanceof ast.Shell){
-                System.out.println("Computing cfa for the shell state : "+s.name);
+                System.out.println("Computing cfa for the shell state : "+s.getFullName());
                 /*Shell state detected - entry compute nodes
                  * 1. Create a Seq node with name statename_NB
                  * 2. Create a Fork node with name statename_NE
@@ -97,7 +97,7 @@ public class StatechartSimulator extends Simulator {
                  * 4. form linkages - statename_NB -> statename_N -> statename_NE
                  * 
                  */
-                CFA cfan=StatementToCFA.convertToCFA(s.entry, s.name+"_N");
+                CFA cfan=StatementToCFA.convertToCFA(s.entry, s.getFullName()+"_N");
                     // Seq snb=new Seq(s.name+"_NB");
                     // Fork sne=new Fork(s.name+"_NE");
                     
@@ -113,7 +113,7 @@ public class StatechartSimulator extends Simulator {
                  * 4. form linkages - statename_XB -> statename_X -> statename_XE
                  * 5. add all to code nodelist
                  */
-                CFA cfax=StatementToCFA.convertToCFA(s.exit, s.name+"_X");
+                CFA cfax=StatementToCFA.convertToCFA(s.exit, s.getFullName()+"_X");
                     // Join sxb=new Join(s.name+"_XB");
                     // Seq sxe=new Seq(s.name+"_XE");
                   
@@ -125,7 +125,7 @@ public class StatechartSimulator extends Simulator {
 
             }
             else if(s.getSuperstate() instanceof ast.Shell){
-                System.out.println("Computing cfa for the region state : "+s.name);
+                System.out.println("Computing cfa for the region state : "+s.getFullName());
                 /*Region state detected - entry compute nodes
                  * 1. Create a Fork node with name s.superstate.name_NE
                  * 2. Create a Seq node with name statename_NE
@@ -133,7 +133,7 @@ public class StatechartSimulator extends Simulator {
                  * 4. form linkages - s.superstate.name_NE -> statename_N -> statename_NE
                  * 
                  */
-                CFA cfan=StatementToCFA.convertToCFA(s.entry, s.name+"_N");
+                CFA cfan=StatementToCFA.convertToCFA(s.entry, s.getFullName()+"_N");
 
                 //  Fork snb=new Fork((s.getSuperstate()).name+"_NB");
                 //  Seq sne=new Seq(s.name+"_NE");
@@ -149,7 +149,7 @@ public class StatechartSimulator extends Simulator {
               * 4. form linkages - statename_XB -> statename_X -> s.superstate.name_XB
               * 5. add all to code nodelist
               */
-              CFA cfax=StatementToCFA.convertToCFA(s.exit, s.name+"_X"); 
+              CFA cfax=StatementToCFA.convertToCFA(s.exit, s.getFullName()+"_X"); 
                     // Seq sxb=new Seq(s.name+"_XB");
                     // Join sxe=new Join((s.getSuperstate()).name+"_XB");
                     
@@ -170,7 +170,7 @@ public class StatechartSimulator extends Simulator {
              * 4. Form link - Statename_NB -> statename_N -> statename_NE
              * 5. add all to the code node list
              */
-            CFA cfan=StatementToCFA.convertToCFA(s.entry, s.name+"_N");
+            CFA cfan=StatementToCFA.convertToCFA(s.entry, s.getFullName()+"_N");
 
             //  Seq snb=new Seq(s.name+"_NB");
             //  Seq sne=new Seq(s.name+"_NE");
@@ -187,7 +187,7 @@ public class StatechartSimulator extends Simulator {
              * 4. Form link - Statename_XB -> statename_X -> statename_XE
              * 5. add all to the code node list
              */
-            CFA cfax=StatementToCFA.convertToCFA(s.exit, s.name+"_X");
+            CFA cfax=StatementToCFA.convertToCFA(s.exit, s.getFullName()+"_X");
 
             //  Seq sxb=new Seq(s.name+"_XB");
             //  Seq sxe=new Seq(s.name+"_XE");
@@ -254,7 +254,7 @@ public class StatechartSimulator extends Simulator {
                     computeDefaultEntry(currentconfig);
                 
                 //CodeSimulator cs=new CodeSimulator(cfalist, forklist, joinlist, seqlist);
-                simulateCode();
+                //simulateCode();
                 activeconfig=currentconfig;
             }
             else{
@@ -281,6 +281,7 @@ public class StatechartSimulator extends Simulator {
     }
     public Configuration computeDefaultEntry(Configuration currentconfig)
     {
+        System.out.println("inside compute default entry");
         Configuration newconfig=new Configuration();
         Connector initial;
         if((currentconfig.getCurrentStates()).size()>0){
@@ -535,13 +536,28 @@ public class StatechartSimulator extends Simulator {
                 sqbegin.addPrev(cfa);
                 Seq sqend=getSeqfromList(t.name+"_B");
                 
-                computeTransitionCFAList(sqbegin,sqend,currentconfig,t);
+                CFA transitionCFA=computeTransitionCFAList(sqbegin,sqend,currentconfig,t);
 
-                List<State> entrystatelist=computeEntryCFAList(t.lub(),t.getDestination());
-                System.out.println("Entry states :");
-                for(State s : entrystatelist){
-                    System.out.print(s.name+", ");
+                //computing the entry. finding the state that has to be recursively
+                System.out.println("Computing enter state : ");
+                State enterSuperState=null;
+                State dest=t.getDestination();
+                State LUB=t.lub();
+                for(State s : LUB.states){
+                    if(dest==s||(dest.getAllSuperstates()).contains(s)){
+                       
+                        enterSuperState=s;
+                        break;
+                    }
                 }
+                if(enterSuperState!=null)
+                System.out.println("Enter the state : "+enterSuperState.getFullName());
+                enterState(transitionCFA,enterSuperState, dest);
+        //            List<State> entrystatelist=computeEntryCFAList(t.lub(),t.getDestination());
+                //System.out.println("Entry states :");
+                //for(State s : entrystatelist){
+                //    System.out.print(s.name+", ");
+                //}
                 //ExecutionBlock exitBlock=computeExitExecutionBlock(currentconfig,t.lub());
                 //System.out.println ("Exit Execution Block : "+exitBlock);
                 //Compute TransitionBlock -- Done
@@ -561,7 +577,47 @@ public class StatechartSimulator extends Simulator {
         System.out.println("Return config : "+config);
         return currentconfig;
     }
-    public void computeTransitionCFAList(Seq seqbegin, Seq seqend, Configuration config, Transition t){
+    public void enterDefaultState(CFA prev, State s){
+        if((s.states).size()>0 && s instanceof ast.Shell){
+            for(State e:s.states){
+                System.out.println(e.getFullName());
+                enterDefaultState(prev,e);
+            }
+            
+        }
+        else if((s.states).size()>0){
+            State e=(s.states).get(0);
+            System.out.println(e.getFullName());
+            enterDefaultState(prev,e);
+        }
+        else{
+            System.out.println(s.getFullName());
+        }
+    }
+    public void enterState(CFA prev, State enterState, State destination){
+        System.out.println(enterState.name);
+        CFA cfa=getCFAfromList(enterState.getFullName()+"_N");
+        cfa.addPrev(prev);
+        execnodelist.add(cfa);
+        for(State s:enterState.states){
+            if(s==destination){
+                System.out.println(s.getFullName());
+                CFA cfa1=getCFAfromList(enterState.getFullName()+"_N");
+                cfa1.addPrev(prev);
+                execnodelist.add(cfa);
+                if((s.states).size()>0)
+                enterDefaultState(cfa, (s.states).get(0));
+
+            } 
+            else if((destination.getAllSuperstates()).contains(s)){
+                System.out.println(s.getFullName());
+
+                enterState(cfa,s,destination);
+                break;
+            }
+        }
+    }
+    public CFA computeTransitionCFAList(Seq seqbegin, Seq seqend, Configuration config, Transition t){
         CFA cfa=StatementToCFA.convertToCFA(t.action,t.name+"_A");
             cfa.addPrev(seqbegin);
             seqend.addPrev(cfa);
@@ -570,7 +626,9 @@ public class StatechartSimulator extends Simulator {
             codenodelist.add(cfa);
             codenodelist.add(seqbegin);
             codenodelist.add(seqend);
+            return cfa;
     }
+
     public List<State> computeEntryCFAList(State LUB, State destination){
         System.out.println("computeEntryCFAList");
         List<State> entryStates=new ArrayList<State>();
