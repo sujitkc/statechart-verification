@@ -531,12 +531,12 @@ public class StatechartSimulator extends Simulator {
                 State exitState=computeExitCFAList(currentconfig,t.lub());
                 //Compute transitionCFAList
                 System.out.println("Looking for cfa node : "+exitState.name+"_X");
-                CFA cfa=getCFAfromList(exitState.name+"_X");
-                Seq sqbegin=getSeqfromList(t.name+"_B");
-                sqbegin.addPrev(cfa);
-                Seq sqend=getSeqfromList(t.name+"_B");
+                CFA prevcfa=getCFAfromList(exitState.name+"_X");
+               // Seq sqbegin=getSeqfromList(t.name+"_B");
+               // sqbegin.addPrev(cfa);
+               // Seq sqend=getSeqfromList(t.name+"_B");
                 
-                CFA transitionCFA=computeTransitionCFAList(sqbegin,sqend,currentconfig,t);
+                CFA transitionCFA=computeTransitionCFAList(prevcfa,t);
 
                 //computing the entry. finding the state that has to be recursively
                 System.out.println("Computing enter state : ");
@@ -659,15 +659,16 @@ public class StatechartSimulator extends Simulator {
             }
         }*/
     }
-    public CFA computeTransitionCFAList(Seq seqbegin, Seq seqend, Configuration config, Transition t){
-        CFA cfa=StatementToCFA.convertToCFA(t.action,t.name+"_A");
-            cfa.addPrev(seqbegin);
-            seqend.addPrev(cfa);
+    public CFA computeTransitionCFAList(CFA prev, Transition t){
+            CFA cfa=StatementToCFA.convertToCFA(t.action,t.name+"_A");
+            cfa.addPrev(prev);
+            //seqend.addPrev(cfa);
             //cfalist.add(cfa);
             //seqlist.add(seq);
-            codenodelist.add(cfa);
-            codenodelist.add(seqbegin);
-            codenodelist.add(seqend);
+            //codenodelist.add(cfa);
+            //codenodelist.add(seqbegin);
+            //codenodelist.add(seqend);
+            execnodelist.add(cfa);
             return cfa;
     }
 
