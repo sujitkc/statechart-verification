@@ -553,6 +553,7 @@ public class StatechartSimulator extends Simulator {
                 if(enterSuperState!=null)
                 System.out.println("Enter the state : "+enterSuperState.getFullName());
                 enterState(transitionCFA,enterSuperState, dest);
+                System.out.println(execnodelist);
         //            List<State> entrystatelist=computeEntryCFAList(t.lub(),t.getDestination());
                 //System.out.println("Entry states :");
                 //for(State s : entrystatelist){
@@ -578,6 +579,16 @@ public class StatechartSimulator extends Simulator {
         return currentconfig;
     }
     public void enterDefaultState(CFA prev, State s){
+        CFA cfa=getCFAfromList(s.getFullName()+"_N");
+        if(prev!=null)
+        {
+            cfa.addPrev(prev);
+        }
+        else{
+            State sup=s.getSuperstate();
+            cfa.addPrev(getCFAfromList(sup.getFullName()+"_N"));
+        }
+        execnodelist.add(cfa);
         if((s.states).size()>0 && s instanceof ast.Shell){
             for(State e:s.states){
                 System.out.println(e.getFullName());
@@ -596,11 +607,10 @@ public class StatechartSimulator extends Simulator {
     }
     public void enterState(CFA prev, State enstate, State destination){
         
-        System.out.println(enstate.getFullName()+","+destination.getFullName());
+        System.out.println(enstate.getFullName());
         CFA cfa=getCFAfromList(enstate.getFullName()+"_N");
         if(prev!=null)
         {
-            
             cfa.addPrev(prev);
         }
         else{
@@ -608,8 +618,7 @@ public class StatechartSimulator extends Simulator {
             cfa.addPrev(getCFAfromList(s.getFullName()+"_N"));
         }
         execnodelist.add(cfa);
-        if(enstate==destination){
-            
+        if(enstate==destination){            
             if(destination.getSuperstate() instanceof ast.Shell){
                 State shellstate=destination.getSuperstate();
                 for(State s:shellstate.states){
@@ -625,17 +634,15 @@ public class StatechartSimulator extends Simulator {
             for(State s:enstate.states){
                 //System.out.println("substate of entrystate :"+s.name);
                 List<State> superstates=destination.getAllSuperstates();
-                for(State ss:superstates)
-                    System.out.println("superstate :"+ss.name);
                 if(superstates.contains(s)||s==destination){
                     newEnterState=s;
                     break;
                 }
             }
             
-                enterState(null,newEnterState, destination);
+                enterState(getCFAfromList(enstate.getFullName()+"_N"),newEnterState, destination);
         }
-        for(State s:enstate.states){
+        /*for(State s:enstate.states){
             if(s==destination){
                 System.out.println(s.getFullName());
                 CFA cfa1=getCFAfromList(enstate.getFullName()+"_N");
@@ -650,7 +657,7 @@ public class StatechartSimulator extends Simulator {
                 enterState(cfa,s,destination);
                 break;
             }
-        }
+        }*/
     }
     public CFA computeTransitionCFAList(Seq seqbegin, Seq seqend, Configuration config, Transition t){
         CFA cfa=StatementToCFA.convertToCFA(t.action,t.name+"_A");
