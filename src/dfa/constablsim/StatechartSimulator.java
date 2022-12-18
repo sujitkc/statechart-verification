@@ -710,7 +710,7 @@ public class StatechartSimulator extends Simulator {
             State shellancestor=getShellAncestor(activestates.get(0));
             for(State s : activestates){
                 
-                computeSequengit commit ceUntilLUB(s, shellancestor);
+                computeSequenceUntilLUB(s, shellancestor);
                 
             }
             Join j=getJoinfromList(shellancestor.name);
