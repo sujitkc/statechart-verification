@@ -592,14 +592,14 @@ public class StatechartSimulator extends Simulator {
         if((s.states).size()>0 && s instanceof ast.Shell){
             for(State e:s.states){
                 System.out.println(e.getFullName());
-                enterDefaultState(prev,e);
+                enterDefaultState(null,e);
             }
             
         }
         else if((s.states).size()>0){
             State e=(s.states).get(0);
             System.out.println(e.getFullName());
-            enterDefaultState(prev,e);
+            enterDefaultState(null,e);
         }
         else{
             System.out.println(s.getFullName());
