@@ -31,7 +31,7 @@ import ast.Environment;
 import ast.Declaration;
 import ast.*;
 import constabl.*;
-import constablsim.StatechartSimulator;
+import constabl.simulator.StatechartSimulator;
 public class TestConStaBLSimulator {
       String inputfile="";
 
@@ -89,6 +89,7 @@ public class TestConStaBLSimulator {
     try
     {
       //new ConStaBLSimulator(statechart);
+      //new StatechartSimulator(statechart);
       new StatechartSimulator(statechart);
     }
     catch(Exception e) {

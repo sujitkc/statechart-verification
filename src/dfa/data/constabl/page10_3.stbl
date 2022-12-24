@@ -118,6 +118,13 @@ statechart  sc{
         guard:(true);
         action:{x:=10;y:=10;}
 	  }
+     transition t2{
+        source: sc.B;
+        destination: sc.A1;
+        trigger: e2;
+        guard:(true);
+        action:{x:=10;y:=10;}
+	  }
     
   }
 
