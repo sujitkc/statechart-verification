@@ -2,6 +2,7 @@ statechart  sc{
  
   events {
 	e1;
+    e2;
   }
   x:int:local;
   y:int:local;

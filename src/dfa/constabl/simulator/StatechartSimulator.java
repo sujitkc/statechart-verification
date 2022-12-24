@@ -14,19 +14,7 @@ public class StatechartSimulator extends Simulator{
         super(sc);
         simulate();
     }
-    public void initialize(){
-        
-                // Configuration currentconfig=activeconfig;
-                // currentconfig.addState(statechart);
-                // while(!currentconfig.isStable())
-                //     currentconfig=enterDefaultState(currentconfig);
-                // // for the stable config
-                //     computeDefaultEntry(currentconfig);
-                
-                // //CodeSimulator cs=new CodeSimulator(cfalist, forklist, joinlist, seqlist);
-                // //simulateCode();
-                // activeconfig=currentconfig;
-    }
+    
     public void simulate(){
         enterDefaultState(null, statechart);
         for(String ev : eq.eventQueue){
@@ -115,9 +103,31 @@ public class StatechartSimulator extends Simulator{
     public void takeTransitions(Configuration currentconfig, List<Transition> tlist)
     {
         for(Transition t:tlist){
-            for(State s: currentconfig.getCurrentStates())
-                exitState(null, s, t.lub());
-            enterState(null, t.lub(), t.getDestination());
+
+            State lub=t.lub();
+            //exit state
+            State source=t.getSource();
+            List<State> exancestors=source.getAllSuperstates();
+            State exitancestor=null;
+            for(State s:exancestors){
+                if(!(s instanceof ast.Statechart)&&s.getSuperstate()==lub)
+                    exitancestor=s;
+            }
+            if(exitancestor==null) exitancestor=source;
+            for(State s: currentconfig.getCurrentStates()){
+                exitState(null, s, exitancestor);
+            }
+            //enter state
+            State dest=t.getDestination();
+            List<State> enancestors=dest.getAllSuperstates();
+            State entryancestor=null;
+            for(State s:enancestors){
+
+                if(!(s instanceof ast.Statechart) && s.getSuperstate()==lub)
+                    entryancestor=s;
+            }
+            if(entryancestor==null) entryancestor=dest;
+            enterState(null, entryancestor, dest);
         }
         //return null;
     }
