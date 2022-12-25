@@ -60,12 +60,13 @@ public class CFA extends CodeNode{
         return this.end;
     }
     public String toString(){
-        String str=" << CFA-"+this.name+" with Nodes : [";
-        for(CFANode n:nodes){
-            str+=n+", ";
-        }
-        str+=" ]";
-        //str+=" with Prev : "+this.prev+">> ";
+        String str=" << CFA-"+this.name;
+        // str+=" with Nodes : [";
+        // for(CFANode n:nodes){
+        //     str+=n+", ";
+        // }
+        // str+=" ]";
+        str+=" with Prev : "+this.getPrevNodeNames()+">> ";
         //    n=n.next
         return str.replace("\n", "");
         

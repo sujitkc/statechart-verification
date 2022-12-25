@@ -14,4 +14,10 @@ public class CodeNode{
         
         this.prev.add(cfa);
     }
+    public String getPrevNodeNames(){
+        String str="";
+        for(CodeNode n:this.prev)
+            str+=n.name+",";
+        return str;
+    }
 }
