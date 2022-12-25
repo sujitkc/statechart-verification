@@ -2,7 +2,7 @@ package constabl.ast;
 import ast.*;
 import java.util.*;
 public class Configuration {
-    List<State> currentStates;
+    public List<State> currentStates;
     List<Environment> currentEnvironments;
     public Configuration(){
         currentStates=new ArrayList<State>();

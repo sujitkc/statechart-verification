@@ -17,6 +17,7 @@ public class StatechartSimulator extends Simulator{
     
     public void simulate(){
         enterDefaultState(null, statechart);
+        System.out.println("Execute node list : "+execnodelist);
         for(String ev : eq.eventQueue){
             consumeEvent(ev);   
         }
@@ -95,12 +96,13 @@ public class StatechartSimulator extends Simulator{
             findNonDeterminism(transitions);
             //if no non determinism detected
             if(transitions.size()>0){   
-                    activeconfig.clearActiveStates();          
-                    takeTransitions(activeconfig,transitions);
+                             
+                    takeTransitions(transitions);
+                    
                 }
-
+                System.out.println("Execute node list : "+execnodelist);
     }
-    public void takeTransitions(Configuration currentconfig, List<Transition> tlist)
+    public void takeTransitions(List<Transition> tlist)
     {
         for(Transition t:tlist){
 
@@ -114,9 +116,12 @@ public class StatechartSimulator extends Simulator{
                     exitancestor=s;
             }
             if(exitancestor==null) exitancestor=source;
-            for(State s: currentconfig.getCurrentStates()){
+            System.out.println("calling activeconfig : "+activeconfig.getCurrentStatesName());
+            for(State s: activeconfig.getCurrentStates()){
+                
                 exitState(null, s, exitancestor);
             }
+            activeconfig.clearActiveStates();
             //enter state
             State dest=t.getDestination();
             List<State> enancestors=dest.getAllSuperstates();
@@ -146,6 +151,7 @@ public class StatechartSimulator extends Simulator{
         }
         execnodelist.add(cfa);
         CFA scfa=getCFAfromList(s.getFullName()+"_N", execnodelist);
+        
         if((s.states).size()>0 && s instanceof ast.Shell){
             
             for(State e:s.states){
@@ -160,7 +166,7 @@ public class StatechartSimulator extends Simulator{
             enterDefaultState(scfa,e);
         }
         else{
-            System.out.println("Compute configuration here");
+            //System.out.println("Add to configuration here");
             activeconfig.addState(s);
         }
     }
@@ -180,10 +186,15 @@ public class StatechartSimulator extends Simulator{
         }
         execnodelist.add(cfa);
         if(enstate==destination){            
-            if(destination.getSuperstate() instanceof ast.Shell){
+            if(destination instanceof ast.Shell){
+                for(State s:destination.states){
+                    enterDefaultState(getCFAfromList(destination.getFullName()+"_N", codenodelist), s);
+                }
+            }
+            else if(destination.getSuperstate() instanceof ast.Shell){
                 State shellstate=destination.getSuperstate();
                 for(State s:shellstate.states){
-                    enterDefaultState(getCFAfromList(shellstate.getFullName()+"_N", codenodelist), (destination.states).get(0));
+                    enterDefaultState(getCFAfromList(shellstate.getFullName()+"_N", codenodelist), s);
                 }
             }
             else if((destination.states).size()>0){
@@ -191,6 +202,12 @@ public class StatechartSimulator extends Simulator{
             }
         }
         else{
+            if(enstate instanceof ast.Shell){
+                for(State s:enstate.states){
+                    enterDefaultState(getCFAfromList(enstate.getFullName()+"_N", codenodelist), s);
+                }
+            }
+            else{
             State newEnterState=null;
             for(State s:enstate.states){
                 //System.out.println("substate of entrystate :"+s.name);
@@ -202,6 +219,7 @@ public class StatechartSimulator extends Simulator{
             }
             
                 enterState(getCFAfromList(enstate.getFullName()+"_N", codenodelist),newEnterState, destination);
+            }
         }
         
 
@@ -215,6 +233,7 @@ public class StatechartSimulator extends Simulator{
             //prev will be added later
         }
         execnodelist.add(cfa);
+        
         if(exstate!=exitancestor){
             exitState(cfa,exstate.getSuperstate(),exitancestor);
 
