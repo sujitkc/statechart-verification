@@ -122,6 +122,7 @@ public class StatechartSimulator extends Simulator{
                 exitState(null, s, exitancestor);
             }
             activeconfig.clearActiveStates();
+            
             //enter state
             State dest=t.getDestination();
             List<State> enancestors=dest.getAllSuperstates();

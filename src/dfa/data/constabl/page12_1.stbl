@@ -76,7 +76,7 @@ statechart  sc{
         
     }
     transition t1{
-        source: sc.A1.A11.A112;
+        source: sc.A1.A11.A111;
         destination: sc.B;
         trigger: e1;
         guard:(true);
