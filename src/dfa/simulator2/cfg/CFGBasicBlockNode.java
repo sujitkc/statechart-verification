@@ -6,12 +6,12 @@ public class CFGBasicBlockNode extends CFGNode {
 
   public CFGBasicBlockNode() {}
 
-	public void setSuccessor(CFGNode successor) {
+  public void setSuccessor(CFGNode successor) {
     this.successor = successor;
-		this.successor.addPredecessor(this);
-	}
+    this.successor.addPredecessor(this);
+  }
 
-	public CFGNode getSuccessor() {
-	  return this.successor;
-	}
+  public CFGNode getSuccessor() {
+    return this.successor;
+  }
 }

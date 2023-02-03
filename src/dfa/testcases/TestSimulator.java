@@ -40,7 +40,7 @@ public class TestSimulator {
 
     Statechart statechart = null;
     //String input = "data/curfew_structs_minimal.txt";
-	String input="data/LaneGuide.stb";
+  String input="data/LaneGuide.stb";
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
     try {

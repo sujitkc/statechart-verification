@@ -13,70 +13,70 @@ public class Tree<T>  {
   private final T root;
   private Map <T, Set<T>> map = new HashMap<>();
 
-	public Tree(T root) {
+  public Tree(T root) {
     this.root = root;
-		this.map.put(root, new HashSet<T>());
-	}
+    this.map.put(root, new HashSet<T>());
+  }
 
-	public void addChild(T parent, T child) throws Exception {
-	  if(this.map.keySet().contains(child) == true) {
+  public void addChild(T parent, T child) throws Exception {
+    if(this.map.keySet().contains(child) == true) {
       throw new Exception("Tree.addChild: child already exists - " + child.toString());
     }
-	  if(this.map.keySet().contains(parent) == false) {
+    if(this.map.keySet().contains(parent) == false) {
       this.map.put(parent, new HashSet<T>());
     }
-		this.map.get(parent).add(child);
-		this.map.put(child, new HashSet<T>());
-	}
+    this.map.get(parent).add(child);
+    this.map.put(child, new HashSet<T>());
+  }
 
-	public void addPath(List<T> path) throws Exception {
-		if(this.root != path.get(0)) {
+  public void addPath(List<T> path) throws Exception {
+    if(this.root != path.get(0)) {
       throw new Exception("Tree.addPath: invalid path - incompatible with root.");
-		}
-		if(path.size() == 1) {
-		  return;
-		}
-	  T currentNode = path.get(1);
+    }
+    if(path.size() == 1) {
+      return;
+    }
+    T currentNode = path.get(1);
     for(int i = 1; i < path.size(); i++) {
       if(currentNode != path.get(i)) {
-			  for(int j = i; j < path.size(); j++) {
+        for(int j = i; j < path.size(); j++) {
           this.addChild(path.get(j - 1), path.get(j));
         }
         return;
       }
-			else {
-			  currentNode = path.get(i);
-			}
- 		}
-	}
+      else {
+        currentNode = path.get(i);
+      }
+     }
+  }
 
   public Set<T> getChildren(T node) {
     return this.map.get(node);
-	}
+  }
 
   public T getParent(T node) throws Exception {
     if(this.map.keySet().contains(node) == false) {
       throw new Exception("Tree.getParent: child doesn't exist - " + node.toString());
-		}
-		for(T parent : this.map.keySet()) {
+    }
+    for(T parent : this.map.keySet()) {
       if(this.map.get(parent).contains(node)) {
-			  return parent;
-			}
-		}
+        return parent;
+      }
+    }
     throw new Exception("Tree.getParent: unknown error; parent not found - " + node.toString());
-	}
+  }
 
   public List<T> getAllAncestors(T node) throws Exception {
     if(node == this.root) {
-		  List<T> ancestors = new ArrayList<T>();
-			ancestors.add(node);
-			return ancestors;
-		}
-		T parent = this.getParent(node);
-		List<T> ancestors = this.getAllAncestors(parent);
-		ancestors.add(node);
-		return ancestors;
-	}
+      List<T> ancestors = new ArrayList<T>();
+      ancestors.add(node);
+      return ancestors;
+    }
+    T parent = this.getParent(node);
+    List<T> ancestors = this.getAllAncestors(parent);
+    ancestors.add(node);
+    return ancestors;
+  }
 
   public T lub(T a, T b) throws Exception {
     List<T> a1 = this.getAllAncestors(a);
@@ -93,43 +93,43 @@ public class Tree<T>  {
       }
     }
     return cca;
-	}
-
-	public T lub(Set<T> children) throws Exception {
-		if(children.size() < 2) {
-      throw new Exception("Tree.lub: children set has insufficient number of nodes.");
-		}
-    List<T> list = new ArrayList<>(children);
-		T cca = list.get(0);
-		for(int i = 1; i < list.size(); i++) {
-      cca = this.lub(cca, list.get(i));
-		}
-		return cca;
   }
 
-	public Tree<T> getSubtree(T node) throws Exception {
-	  Tree<T> tree = new Tree<>(node);
-    Queue<T> queue = new LinkedList<T>();
-		queue.add(node);
-		while(queue.isEmpty() == false) {
-      T currentNode = queue.remove();
-			for(T child : this.getChildren(currentNode)) {
-        tree.addChild(currentNode, child);
-				queue.add(child);
-      }
-		}
-		return tree;
-	}
+  public T lub(Set<T> children) throws Exception {
+    if(children.size() < 2) {
+      throw new Exception("Tree.lub: children set has insufficient number of nodes.");
+    }
+    List<T> list = new ArrayList<>(children);
+    T cca = list.get(0);
+    for(int i = 1; i < list.size(); i++) {
+      cca = this.lub(cca, list.get(i));
+    }
+    return cca;
+  }
 
-	public String toString() {
+  public Tree<T> getSubtree(T node) throws Exception {
+    Tree<T> tree = new Tree<>(node);
+    Queue<T> queue = new LinkedList<T>();
+    queue.add(node);
+    while(queue.isEmpty() == false) {
+      T currentNode = queue.remove();
+      for(T child : this.getChildren(currentNode)) {
+        tree.addChild(currentNode, child);
+      	queue.add(child);
+      }
+    }
+    return tree;
+  }
+
+  public String toString() {
     String s = "Tree ";
-		for(T node : this.map.keySet()) {
+    for(T node : this.map.keySet()) {
       s += node.toString() + " : ";
-			for(T child : this.map.get(node)) {
+      for(T child : this.map.get(node)) {
         s += child.toString() + ", ";
-			}
-			s += "\n";
-		}
-		return s;
-	}
+      }
+      s += "\n";
+    }
+    return s;
+  }
 }

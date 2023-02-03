@@ -19,16 +19,16 @@ public class TestSimulator2 {
   @Test
   public void testSimulator2() {
     System.out.println("Hello again Simulator2.");
-		List<String> strings = new ArrayList<>();
-		strings.add("x");
+    List<String> strings = new ArrayList<>();
+    strings.add("x");
     Name name = new Name(strings);
-		IntegerConstant i = new IntegerConstant(10);
+    IntegerConstant i = new IntegerConstant(10);
     AssignmentStatement s = new AssignmentStatement(name, i);
-		ASTToCFG converter = new ASTToCFG(s);
-		try {
-		  CFG cfg = converter.convert();
-			System.out.println(cfg);
-		}
-		catch(Exception e) {}
+    ASTToCFG converter = new ASTToCFG(s);
+    try {
+      CFG cfg = converter.convert();
+      System.out.println(cfg);
+    }
+    catch(Exception e) {}
   }
 }

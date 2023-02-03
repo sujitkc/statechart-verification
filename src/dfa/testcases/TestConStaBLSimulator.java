@@ -53,7 +53,7 @@ public class TestConStaBLSimulator {
 
     Statechart statechart = null;
     //String input = "data/curfew_structs_minimal.txt";
-	   //String input="data/c5.stb";
+     //String input="data/c5.stb";
     String input="data/"+inputfile;
     System.out.println("Reading file : "+ input);
     // String input = "data/s24.txt";

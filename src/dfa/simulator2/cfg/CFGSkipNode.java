@@ -4,5 +4,5 @@ public class CFGSkipNode extends CFGBasicBlockNode {
 
   public CFGSkipNode() {
     super();
-	}
+  }
 }

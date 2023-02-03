@@ -8,9 +8,9 @@ public class CFGAssignmentNode extends CFGBasicBlockNode {
   public CFGAssignmentNode(AssignmentStatement assignment) {
     super();
     this.assignment = assignment;
-	}
+  }
 
-	public String toString() {
+  public String toString() {
     return "CFGAssignmentNode " + this.assignment.toString();
-	}
+  }
 }
