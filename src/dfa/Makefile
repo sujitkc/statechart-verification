@@ -44,3 +44,13 @@ run: Analyser.java
 # javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java testcases/*.java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./"
 # javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./"
 # java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./" org.junit.runner.JUnitCore testcases.TestSimulator
+
+simulator2-build:
+	javac -Xlint:-unchecked -d classes ast/*.java simulator2/ASTToCFG.java simulator2/cfg/*.java testcases/TestSimulator2.java -cp ./lib/junit-4.8.1.jar:ast:classes:./;
+
+simulator2-test:
+	java -cp lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestSimulator2
+
+tree:
+	javac -Xlint:-unchecked -d classes simulator2/tree/*.java testcases/TestTree.java -cp ./lib/junit-4.8.1.jar:ast:classes:./;
+
