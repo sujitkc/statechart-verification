@@ -13,6 +13,7 @@ public class TestTree {
 
   @Test
   public void testTree1() {
+    System.out.println("testTree1 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -28,6 +29,7 @@ public class TestTree {
   @Test
   public void testAddPath1() {
   // Adding a path whose nodes are some there, but the path is longer than the existing path.
+    System.out.println("testAddPath1 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -46,6 +48,7 @@ public class TestTree {
   @Test
   public void testAddPath2() {
   // Adding a path whose nodes are all there, but the path is size 1.
+    System.out.println("testAddPath2 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -64,6 +67,7 @@ public class TestTree {
   @Test
   public void testAddPath3() {
   // Adding a path whose nodes are all there, but the path is longer than 1.
+    System.out.println("testAddPath3 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -81,7 +85,7 @@ public class TestTree {
 
   @Test
   public void testlub1() {
-  // Adding a path whose nodes are all there, but the path is longer than 1.
+    System.out.println("test_lub1 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -103,7 +107,7 @@ public class TestTree {
 
   @Test
   public void testlub2() {
-  // Adding a path whose nodes are all there, but the path is longer than 1.
+    System.out.println("test_lub2 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -126,7 +130,7 @@ public class TestTree {
 
   @Test
   public void test_getSubTree_1() {
-  // Adding a path whose nodes are all there, but the path is longer than 1.
+    System.out.println("test_getSubTree_1 ...");
     try {
       Tree<Integer> tree = new Tree<>(1);
       tree.addChild(1, 2);
@@ -141,6 +145,32 @@ public class TestTree {
       System.out.println("subtree(2) = " + tree.getSubtree(2));
       System.out.println("subtree(1) = " + tree.getSubtree(1));
       System.out.println("subtree(6) = " + tree.getSubtree(6));
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void test_getSlicedSubTree_1() {
+    System.out.println("test_getSlicedSubTree_1 ...");
+    try {
+      Tree<Integer> tree = new Tree<>(1);
+      tree.addChild(1, 2);
+      tree.addChild(1, 3);
+      tree.addChild(3, 4);
+      tree.addChild(2, 5);
+      tree.addChild(2, 7);
+      tree.addChild(5, 6);
+      tree.addChild(7, 8);
+      tree.addChild(7, 9);
+      tree.addChild(6, 10);
+      tree.addChild(6, 11);
+      tree.addChild(6, 12);
+      System.out.println(tree);
+      Integer[] a = {11, 12, 9};
+      Set<Integer> leaves = new HashSet<Integer>(Arrays.asList(a));
+      System.out.println("sliced tree (2, [11, 12, 9]) = " + tree.getSlicedSubtree(2, leaves));
     }
     catch(Exception e) {
       e.printStackTrace();

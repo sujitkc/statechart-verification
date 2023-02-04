@@ -36,18 +36,20 @@ public class Tree<T>  {
     if(path.size() == 1) {
       return;
     }
-    T currentNode = path.get(1);
     for(int i = 1; i < path.size(); i++) {
-      if(currentNode != path.get(i)) {
+      if(this.hasNode(path.get(i)) == false) {
         for(int j = i; j < path.size(); j++) {
           this.addChild(path.get(j - 1), path.get(j));
         }
         return;
       }
       else {
-        currentNode = path.get(i);
       }
      }
+  }
+
+  public boolean hasNode(T node) {
+    return this.map.keySet().contains(node);
   }
 
   public Set<T> getChildren(T node) {
@@ -115,10 +117,23 @@ public class Tree<T>  {
       T currentNode = queue.remove();
       for(T child : this.getChildren(currentNode)) {
         tree.addChild(currentNode, child);
-      	queue.add(child);
+        queue.add(child);
       }
     }
     return tree;
+  }
+
+  public Tree<T> getSlicedSubtree(T node, Set<T> leaves) throws Exception {
+    Tree<T> tree = this.getSubtree(node);
+    Set<List<T>> allAncestors = new HashSet<>();
+    for(T leaf : leaves) {
+      allAncestors.add(tree.getAllAncestors(leaf));
+    }
+    Tree<T> slicedTree = new Tree<>(node);
+    for(List<T> path : allAncestors) {
+      slicedTree.addPath(path);
+    }
+    return slicedTree;
   }
 
   public String toString() {

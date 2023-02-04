@@ -397,7 +397,7 @@ class TransitionAtomiser extends Translator {
             destinationName,
             t.trigger,
             t.guard,
-	    // TODO:
+      // TODO:
             flattenStatementList(action)
           )
         );

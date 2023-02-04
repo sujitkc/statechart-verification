@@ -24,12 +24,12 @@ public class ProgramToCpp implements Visitor {
         this.writer.print(what);
     }
 
-	void println (String what) {
-		this.writer.println(what);
-	}
+  void println (String what) {
+    this.writer.println(what);
+  }
     void startln(String what) {
         for (int space = 0; space < indent_level; space++) {
-			for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 4; i++)
             this.writer.print(" ");
         }
         this.writer.print(what);
@@ -41,21 +41,21 @@ public class ProgramToCpp implements Visitor {
     }
 
     public void translate() throws Exception {
-		addHeaders();
+    addHeaders();
         addTypes();
         addDeclarations();
         addStatements();
         writer.flush();
     }
 
-	public void addHeaders() {
-		println("#include <klee/klee.h>");
-		println("#include \"header.hh\"");
-	}
+  public void addHeaders() {
+    println("#include <klee/klee.h>");
+    println("#include \"header.hh\"");
+  }
     void addTypes() {
         this.typeNameMap.put("int", "int");
         this.typeNameMap.put("boolean", "bool");
-	    // TODO
+      // TODO
         for (Type type : this.program.types) {
         }
     }
@@ -67,21 +67,21 @@ public class ProgramToCpp implements Visitor {
     }
 
     void addStatements() throws Exception {
-	    // All the statements go into the run() function, which is called from main()
+      // All the statements go into the run() function, which is called from main()
         println("void run(int * events, int N){");
         enter_nest();
         // println("for (int i = 0; i < N; i++) {");
         // enter_nest();
-		// println("event = events[i];");
-		// Guaranteed to be a while
+    // println("event = events[i];");
+    // Guaranteed to be a while
         program.statements.visit(this);
         exit_nest();
         println("}");
 
         println("int main () {");
         enter_nest();
-		println("int N = 5; int events[N];");
-		println("klee_make_symbolic(events, sizeof events, \"events\");");
+    println("int N = 5; int events[N];");
+    println("klee_make_symbolic(events, sizeof events, \"events\");");
         println("run(events, N);");
         println("return 0;");
         println("}");
@@ -102,7 +102,7 @@ public class ProgramToCpp implements Visitor {
     }
 
     public void visitBinaryExpression(BinaryExpression expr) throws Exception {
-		print("(");
+    print("(");
         expr.left.visit(this);
         if (expr.operator == "=") {
             print("==");
@@ -110,7 +110,7 @@ public class ProgramToCpp implements Visitor {
             print(expr.operator);
         }
         expr.right.visit(this);
-		print(")");
+    print(")");
     }
 
     public void visitBooleanConstant(BooleanConstant x) throws Exception {
@@ -124,27 +124,27 @@ public class ProgramToCpp implements Visitor {
     }
 
     public void visitExpressionStatement(ExpressionStatement x) throws Exception {
-		x.expression.visit(this);
-		println(";");
+    x.expression.visit(this);
+    println(";");
     }
 
     public void visitFunctionCall(FunctionCall x) throws Exception {
-		startln (x.name.name);
-		print("(");
-		int n = x.argumentList.size();
-		for (Expression arg: x.argumentList) {
-			arg.visit (this);
-			n--;
-			if (n != 0) print(", ");
-		}
-		print(")");
+    startln (x.name.name);
+    print("(");
+    int n = x.argumentList.size();
+    for (Expression arg: x.argumentList) {
+      arg.visit (this);
+      n--;
+      if (n != 0) print(", ");
+    }
+    print(")");
     }
 
     public void visitFunctionDeclaration(FunctionDeclaration x) throws Exception {
     }
 
     public void visitFunctionName(FunctionName x) throws Exception {
-		startln(x.name);
+    startln(x.name);
     }
 
     public void visitHaltStatement(HaltStatement x) throws Exception {
@@ -183,9 +183,9 @@ public class ProgramToCpp implements Visitor {
     }
 
     public void visitStatementList(StatementList x) throws Exception {
-	    for (Statement stmt: x.getStatements()) {
+      for (Statement stmt: x.getStatements()) {
             stmt.visit(this);
-	    }
+      }
     }
 
     public void visitStringLiteral(StringLiteral x) throws Exception {
@@ -210,9 +210,9 @@ public class ProgramToCpp implements Visitor {
     }
 
     public void visitWhileStatement(WhileStatement x) throws Exception {
-		println("for (int i = 0; i < N; i++) {");
-		enter_nest();
-		println("event = events[i];");
+    println("for (int i = 0; i < N; i++) {");
+    enter_nest();
+    println("event = events[i];");
         x.body.visit(this);
         exit_nest();
         println("}");

@@ -21,7 +21,7 @@ public class Simulator {
       this.statechart = statechart;
 
       eState = new ExecutionState(statechart); 
-	    for (String e : this.statechart.events)
+      for (String e : this.statechart.events)
         eState.addEvent(e);
         
         // this.simulationMode = new PreEventInSteps(this.statechart);

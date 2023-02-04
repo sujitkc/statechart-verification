@@ -20,8 +20,8 @@ public class UserEventInSteps implements SimulationMode
             Scanner input = new Scanner(System.in); 
             int counter = 0;
             //Main-loop
-			
-			
+      
+      
             while(true)
             {
               String event = eState.getEvent();
