@@ -26,7 +26,7 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
 
   public SETExpressionVisitor(SETNode node, Type type) {
     this.mNode = node;
-    this.mContextType = type.toString();  	
+    this.mContextType = type.toString();    
   }
 
   @Override
@@ -71,11 +71,11 @@ public class SETExpressionVisitor implements IExprVisitor<Expression> {
       Random random = new Random ();
       int integer = random.nextInt();
       if (integer < 0) {
-      	integer = -1 * integer;
+        integer = -1 * integer;
       }
       String name = "symvar" + Integer.toString(integer);
       if (!names.contains(name)) {
-      	return name;
+        return name;
       }
     }
   }

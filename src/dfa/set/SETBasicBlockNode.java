@@ -29,7 +29,7 @@ public class SETBasicBlockNode extends SETNode implements ISETInstructionNode {
     
     if(IdGenerator.hasId(id)) {
       Exception e = new Exception("Can't construct SETBasicBlockNode : something with name '" + id + "' already exists.");
-      throw e;			
+      throw e;      
     }
     IdGenerator.addId(id);
     this.mId = id;
@@ -51,7 +51,7 @@ public class SETBasicBlockNode extends SETNode implements ISETInstructionNode {
     List<SETNode> list = new ArrayList<SETNode>();
     if(this.mOutgoingEdge != null) {
       if(this.mOutgoingEdge.getHead() != null) {
-      	list.add(this.mOutgoingEdge.getHead());
+        list.add(this.mOutgoingEdge.getHead());
       }
     }
     return list;
@@ -108,20 +108,20 @@ public class SETBasicBlockNode extends SETNode implements ISETInstructionNode {
     if(pred instanceof SETDecisionNode) {
       SETDecisionNode pr = (SETDecisionNode)pred;
       if(inEdge.equals(pr.getThenEdge())) {
-      	result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"and");
-      	//it was AndExpression
+        result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"and");
+        //it was AndExpression
       }
       else if(inEdge.equals(pr.getElseEdge())) {
-      	Expression and = this.mIncomingEdge.getTail().getPathPredicate();
-      	Expression l = and;
-      	Expression r = pr.getCondition();
-      	NotExpression not = new NotExpression(r.getProgram(), r);
-      	result = new BinaryExpression(r.getProgram(), l, not,"and");
-      	//it was AndExpression
+        Expression and = this.mIncomingEdge.getTail().getPathPredicate();
+        Expression l = and;
+        Expression r = pr.getCondition();
+        NotExpression not = new NotExpression(r.getProgram(), r);
+        result = new BinaryExpression(r.getProgram(), l, not,"and");
+        //it was AndExpression
       }
       else {
-      	Exception e = new Exception("SETBasicBlockNode.getPathPredicate : incoming edge not an outgoing edge of the predecessor.");
-      	throw e;
+        Exception e = new Exception("SETBasicBlockNode.getPathPredicate : incoming edge not an outgoing edge of the predecessor.");
+        throw e;
       }
     }
     else if(pred instanceof SETBasicBlockNode) {

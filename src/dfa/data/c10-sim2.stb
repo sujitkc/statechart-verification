@@ -1,0 +1,69 @@
+//c9>Sh>A,B
+//c9>Sh>A(composite)>A1(atomic),A2(atomic)
+//c9>Sh>B(composite)>B1(atomic),B2(atomic)
+
+//transition t1 out from A to C
+//transition t2 out from B to C
+statechart  c5{
+  
+  events {
+	e;
+	e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	shell Sh{
+		entry:{}
+		exit:{}
+	    state A{
+		    entry:{}
+		    exit:{}
+            state A1{
+                entry:{}
+                exit:{}
+            }
+            state A2{
+                entry:{}
+                exit:{}
+            }
+
+        }
+        state B{
+		    entry:{}
+		    exit:{}
+            state B1{
+                entry:{}
+                exit:{}
+            }
+            state B2{
+                entry:{}
+                exit:{}
+            }
+
+	    }
+    }
+
+    state C{
+        entry:{}
+		exit:{}
+	    
+    }
+    transition t1{
+        source: c5.Sh.A;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    transition t2{
+        source: c5.Sh.B;
+        destination: c5.C;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+    
+}

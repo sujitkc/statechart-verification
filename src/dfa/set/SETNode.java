@@ -92,7 +92,7 @@ public abstract class SETNode implements ISETNode{
   public SETNode getPredecessorNode() {
     if(this.mIncomingEdge != null) {
       if(this.mIncomingEdge.getTail() != null) {
-      	return this.mIncomingEdge.getTail();
+        return this.mIncomingEdge.getTail();
       }
     }
     return null;

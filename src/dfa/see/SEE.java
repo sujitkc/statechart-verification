@@ -77,55 +77,55 @@
 //      ICFGNode corrCFGNode = leaf.getCFGNode();
 //      List<ICFEdge> outCFEdges = corrCFGNode.getOutgoingEdgeList();
 //      if (outCFEdges.contains(edge)) {
-//      	valid = true;
-//      	ICFGNode newNode = edge.getHead();
-//      	// check for dangling edge
-//      	if (newNode == null) {
-//      		throw new Exception("Dangling Edge");
-//      	}
-//      	SETEdge newSETEdge = new SETEdge(mSET, leaf, null); // why head is null?
+//        valid = true;
+//        ICFGNode newNode = edge.getHead();
+//        // check for dangling edge
+//        if (newNode == null) {
+//          throw new Exception("Dangling Edge");
+//        }
+//        SETEdge newSETEdge = new SETEdge(mSET, leaf, null); // why head is null?
 //
-//      	if (leaf instanceof SETBasicBlockNode) {
-//      		((SETBasicBlockNode) leaf).setOutgoingEdge(newSETEdge);
-//      		// case 1
-//      		if (newNode instanceof CFGBasicBlockNode) {
-//      			addNewSETBasicBlockNode(newNode, newSETEdge);
-//      		}
-//      		// case 2
-//      		else if (newNode instanceof CFGDecisionNode) {
-//      			addNewSETDecisionNode(newNode, newSETEdge);
-//      		}
-//      	}
+//        if (leaf instanceof SETBasicBlockNode) {
+//          ((SETBasicBlockNode) leaf).setOutgoingEdge(newSETEdge);
+//          // case 1
+//          if (newNode instanceof CFGBasicBlockNode) {
+//            addNewSETBasicBlockNode(newNode, newSETEdge);
+//          }
+//          // case 2
+//          else if (newNode instanceof CFGDecisionNode) {
+//            addNewSETDecisionNode(newNode, newSETEdge);
+//          }
+//        }
 //
-//      	else if (leaf instanceof SETDecisionNode) {
-//      		CFGDecisionNode corrDecisionNode = (CFGDecisionNode) corrCFGNode;
-//      		if (edge.equals(corrDecisionNode.getThenEdge())) {
-//      			// case 3a
-//      			if (newNode instanceof CFGBasicBlockNode) {
-//      				addNewSETBasicBlockNode(newNode, newSETEdge);
-//      				((SETDecisionNode) leaf).setThenEdge(newSETEdge);
-//      			}
-//      			// case 4a
-//      			else if (newNode instanceof CFGDecisionNode) {
-//      				addNewSETDecisionNode(newNode, newSETEdge);
-//      				((SETDecisionNode) leaf).setThenEdge(newSETEdge);
-//      			}
-//      		} else if (edge.equals(corrDecisionNode.getElseEdge())) {
-//      			// case 3b
-//      			if (newNode instanceof CFGBasicBlockNode) {
-//      				addNewSETBasicBlockNode(newNode, newSETEdge);
-//      				((SETDecisionNode) leaf).setElseEdge(newSETEdge);
-//      			}
-//      			// case 4b
-//      			else if (newNode instanceof CFGDecisionNode) {
-//      				addNewSETDecisionNode(newNode, newSETEdge);
-//      				((SETDecisionNode) leaf).setElseEdge(newSETEdge);
-//      			}
-//      		}
-//      	}
+//        else if (leaf instanceof SETDecisionNode) {
+//          CFGDecisionNode corrDecisionNode = (CFGDecisionNode) corrCFGNode;
+//          if (edge.equals(corrDecisionNode.getThenEdge())) {
+//            // case 3a
+//            if (newNode instanceof CFGBasicBlockNode) {
+//              addNewSETBasicBlockNode(newNode, newSETEdge);
+//              ((SETDecisionNode) leaf).setThenEdge(newSETEdge);
+//            }
+//            // case 4a
+//            else if (newNode instanceof CFGDecisionNode) {
+//              addNewSETDecisionNode(newNode, newSETEdge);
+//              ((SETDecisionNode) leaf).setThenEdge(newSETEdge);
+//            }
+//          } else if (edge.equals(corrDecisionNode.getElseEdge())) {
+//            // case 3b
+//            if (newNode instanceof CFGBasicBlockNode) {
+//              addNewSETBasicBlockNode(newNode, newSETEdge);
+//              ((SETDecisionNode) leaf).setElseEdge(newSETEdge);
+//            }
+//            // case 4b
+//            else if (newNode instanceof CFGDecisionNode) {
+//              addNewSETDecisionNode(newNode, newSETEdge);
+//              ((SETDecisionNode) leaf).setElseEdge(newSETEdge);
+//            }
+//          }
+//        }
 //      }
 //      else {
-//      	System.out.println("Invalid : edge = " + edge + " node = " + corrCFGNode);
+//        System.out.println("Invalid : edge = " + edge + " node = " + corrCFGNode);
 //      }
 //    }
 //    if (!valid) {
@@ -138,7 +138,7 @@
 //      throws Exception {
 //    CFGDecisionNode decisionNode = (CFGDecisionNode) newNode;
 //    SETDecisionNode newSETNode = new SETDecisionNode(
-//      	decisionNode.getCondition(), mSET, decisionNode);
+//        decisionNode.getCondition(), mSET, decisionNode);
 //    this.mSET.addDecisionNode(newSETNode);
 //    newSETEdge.setHead(newSETNode);
 //    newSETEdge.setHead(newSETNode);
@@ -150,7 +150,7 @@
 //
 //  public void addNewSETBasicBlockNode(ICFGNode newNode, SETEdge newSETEdge) throws Exception {
 //    SETBasicBlockNode newSETNode = new SETBasicBlockNode(mSET,
-//      	(CFGBasicBlockNode) newNode);
+//        (CFGBasicBlockNode) newNode);
 //    this.mSET.addBasicBlockNode(newSETNode);
 //    newSETEdge.setHead(newSETNode);
 //    newSETNode.setIncomingEdge(newSETEdge);
@@ -160,12 +160,12 @@
 //
 //  private void computeStatementList(SETBasicBlockNode node) throws Exception {
 //    ICFGBasicBlockNode cfgBasicBlockNode = (ICFGBasicBlockNode) node
-//      	.getCFGNode();
+//        .getCFGNode();
 //    IStatement statements = cfgBasicBlockNode.getStatement();
 //
 //    for (IStatement statement : statements) {
 //      SETExpressionVisitor visitor = new SETExpressionVisitor(node,
-//      		statement.getLHS().getType());
+//          statement.getLHS().getType());
 //      IExpression value = null;
 //
 //      visitor.visit(statement.getRHS());
@@ -178,7 +178,7 @@
 //
 //  private void computeExpression(SETDecisionNode node) throws Exception {
 //    SETExpressionVisitor visitor = new SETExpressionVisitor(node,
-//      	Type.BOOLEAN);
+//        Type.BOOLEAN);
 //    CFGDecisionNode cfgNode = (CFGDecisionNode) node.getCFGNode();
 //    if (node.getCondition() == null) {
 //      throw new Exception("Null Expression");

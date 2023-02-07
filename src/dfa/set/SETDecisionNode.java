@@ -28,7 +28,7 @@ public class SETDecisionNode extends SETNode {
     
     if(IdGenerator.hasId(id)) {
       Exception e = new Exception("Can't construct SETDecisionNode : something with name '" + id + "' already exists.");
-      throw e;			
+      throw e;      
     }
     IdGenerator.addId(id);
     this.mId = id;
@@ -55,12 +55,12 @@ public class SETDecisionNode extends SETNode {
     List<SETNode> list = new ArrayList<SETNode>();
     if(this.mThenEdge != null) {
       if(this.mThenEdge.getHead() != null) {
-      	list.add(this.mThenEdge.getHead());
+        list.add(this.mThenEdge.getHead());
       }
     }
     if(this.mElseEdge != null) {
       if(this.mElseEdge.getHead() != null) {
-      	list.add(this.mElseEdge.getHead());
+        list.add(this.mElseEdge.getHead());
       }
     }
     return list;
@@ -114,21 +114,21 @@ public class SETDecisionNode extends SETNode {
     if(pred instanceof SETDecisionNode) {
       SETDecisionNode pr = (SETDecisionNode)pred;
       if(inEdge.equals(pr.getThenEdge())) {
-      	//result = new AndExpression(this.mSET, pred.getPathPredicate(), pr.getCondition());
-      	result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"&");
+        //result = new AndExpression(this.mSET, pred.getPathPredicate(), pr.getCondition());
+        result = new BinaryExpression(this.mSET, pred.getPathPredicate(), pr.getCondition(),"&");
       }
       else if(inEdge.equals(pr.getElseEdge())) {
-      	Expression and = this.mIncomingEdge.getTail().getPathPredicate();
-      	Expression l = and;
-      	Expression r = pr.getCondition();
-      	NotExpression not = new NotExpression(r.getProgram(), r);
-      	//result = new AndExpression(r.getProgram(), l, not);
-      	result = new BinaryExpression(r.getProgram(), l, not,"&");
-      	
+        Expression and = this.mIncomingEdge.getTail().getPathPredicate();
+        Expression l = and;
+        Expression r = pr.getCondition();
+        NotExpression not = new NotExpression(r.getProgram(), r);
+        //result = new AndExpression(r.getProgram(), l, not);
+        result = new BinaryExpression(r.getProgram(), l, not,"&");
+        
       }
       else {
-      	Exception e = new Exception("SETBasicBlockNode.getPathPredicate : incoming edge not an outgoing edge of the predecessor.");
-      	throw e;
+        Exception e = new Exception("SETBasicBlockNode.getPathPredicate : incoming edge not an outgoing edge of the predecessor.");
+        throw e;
       }
     }
     else if(pred instanceof SETBasicBlockNode) {

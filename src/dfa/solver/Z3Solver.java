@@ -63,7 +63,7 @@ public class Z3Solver implements ISolver {
     String s = "";
     for (Name v : symVars) {
       s = s + "(declare-fun " + v.getName() + " () "
-      		+ Z3Solver.getVariableTypeString(v) + ")" + "\n";
+          + Z3Solver.getVariableTypeString(v) + ")" + "\n";
     }
     s = s + "(assert " + formula + ")\n";
     s = s + "(check-sat)\n";
@@ -81,8 +81,8 @@ public class Z3Solver implements ISolver {
       return "Int";
     } else {
       Exception e = new Exception(
-      		"Z3Solver.getVariableTypeString : type of variable '"
-      				+ var.getName() + "' not handled.");
+          "Z3Solver.getVariableTypeString : type of variable '"
+              + var.getName() + "' not handled.");
       throw e;
     }*/
     return var.getDeclaration().getType().toString();
@@ -94,7 +94,7 @@ public class Z3Solver implements ISolver {
 
     Process p = Runtime.getRuntime().exec(cmdLine);
     BufferedReader input = new BufferedReader(new InputStreamReader(
-      	p.getInputStream()));
+        p.getInputStream()));
     line = input.readLine();
     while (line != null) {
       output += (line + '\n');
@@ -122,17 +122,17 @@ public class Z3Solver implements ISolver {
       isSat = true;
 
       for (int i = 3; i < tokens.size(); i = i + 5) {
-      	String varName = tokens.get(i);
-      	Name var = this.getVariableByName(varName);
-      	if (var == null) {
-      		Exception e = new Exception(
-      				"Z3Solver.parseZ3Output : variable '"
-      						+ varName + "' not found.");
-      		throw e;
-      	}
-      	Object value = Z3Solver.parseVariableValue(var,
-      			tokens.get(i + 3));
-      	map.put(var, value);
+        String varName = tokens.get(i);
+        Name var = this.getVariableByName(varName);
+        if (var == null) {
+          Exception e = new Exception(
+              "Z3Solver.parseZ3Output : variable '"
+                	+ varName + "' not found.");
+          throw e;
+        }
+        Object value = Z3Solver.parseVariableValue(var,
+            tokens.get(i + 3));
+        map.put(var, value);
       }
     }
     return new SolverResult(isSat, map);
@@ -146,8 +146,8 @@ public class Z3Solver implements ISolver {
       return Boolean.parseBoolean(value);
     } else {
       Exception e = new Exception(
-      		"Z3Solver.parseVariableValue : type of variable '"
-      				+ var.getName() + "' not handled.");
+          "Z3Solver.parseVariableValue : type of variable '"
+              + var.getName() + "' not handled.");
       throw e;
     }
   }
@@ -155,7 +155,7 @@ public class Z3Solver implements ISolver {
   private Name getVariableByName(String name) {
     for (Name v : this.mVariables) {
       if (v.getName().equals(name)) {
-      	return v;
+        return v;
       }
     }
     return null;

@@ -39,7 +39,7 @@ public class SET implements IProgram {
     this.mLeafNodeSet.add(this.mStartNode);
     if(IdGenerator.hasId(id)) {
       Exception e = new Exception("Can't construct SET : something with name '" + id + "' already exists.");
-      throw e;			
+      throw e;      
     }
     IdGenerator.addId(id);
     this.mId = id;
@@ -166,7 +166,7 @@ public class SET implements IProgram {
     for(SETNode node : this.getNodeSet()) {
       List<SETNode> succ = node.getSuccessorSETNodeList();
       if(succ.isEmpty()) {
-      	this.mLeafNodeSet.add(node);
+        this.mLeafNodeSet.add(node);
       }
     }
   }

@@ -23,7 +23,7 @@ public class SETEdge implements ISETEdge{
 
     if(IdGenerator.hasId(id)) {
       Exception e = new Exception("Can't construct SETEdge : something with name '" + id + "' already exists.");
-      throw e;			
+      throw e;      
     }
     IdGenerator.addId(id);
     this.mId = id;

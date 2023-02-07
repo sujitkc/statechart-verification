@@ -17,7 +17,7 @@ public class DRealSolver implements ISolver {
 
   public SolverResult solve() throws Exception {
     String drealInput = DRealSolver.makeDRealInput(this.mVariables,
-      	this.mExpression);
+        this.mExpression);
 
      System.out.println("yices input :\n" + drealInput);
 
@@ -56,7 +56,7 @@ public class DRealSolver implements ISolver {
     String s = "(set-logic QF_NRA)\n";
     for (Variable v : symVars) {
       s = s + "(declare-fun " + v.getName() + " () "
-      		+ DRealSolver.getVariableTypeString(v) + ")" + "\n";
+          + DRealSolver.getVariableTypeString(v) + ")" + "\n";
     }
     s = s + "(assert " + formula + ")\n";
     s = s + "(check-sat)\n";
@@ -73,8 +73,8 @@ public class DRealSolver implements ISolver {
       return "int";
     } else {
       Exception e = new Exception(
-      		"DRealSolver.getVariableTypeString : type of variable '"
-      				+ var.getName() + "' not handled.");
+          "DRealSolver.getVariableTypeString : type of variable '"
+              + var.getName() + "' not handled.");
       throw e;
     }
   }
@@ -85,7 +85,7 @@ public class DRealSolver implements ISolver {
 
     Process p = Runtime.getRuntime().exec(cmdLine);
     BufferedReader input = new BufferedReader(new InputStreamReader(
-      	p.getInputStream()));
+        p.getInputStream()));
     line = input.readLine();
     while (line != null) {
       output += (line + '\n');
@@ -113,17 +113,17 @@ public class DRealSolver implements ISolver {
       isSat = true;
 
       for (int i = 2; i < tokens.size(); i = i + 3) {
-      	String varName = tokens.get(i);
-      	Variable var = this.getVariableByName(varName);
-      	if (var == null) {
-      		Exception e = new Exception(
-      				"DRealSolver.parseDrealOutput : variable '"
-      						+ varName + "' not found.");
-      		throw e;
-      	}
-      	Object value = DRealSolver.parseVariableValue(var,
-      			tokens.get(i + 1));
-      	map.put(var, value);
+        String varName = tokens.get(i);
+        Variable var = this.getVariableByName(varName);
+        if (var == null) {
+          Exception e = new Exception(
+              "DRealSolver.parseDrealOutput : variable '"
+                	+ varName + "' not found.");
+          throw e;
+        }
+        Object value = DRealSolver.parseVariableValue(var,
+            tokens.get(i + 1));
+        map.put(var, value);
       }
     }
     return new SolverResult(isSat, map);
@@ -137,8 +137,8 @@ public class DRealSolver implements ISolver {
       return Boolean.parseBoolean(value);
     } else {
       Exception e = new Exception(
-      		"YicesSolver.parseVariableValue : type of variable '"
-      				+ var.getName() + "' not handled.");
+          "YicesSolver.parseVariableValue : type of variable '"
+              + var.getName() + "' not handled.");
       throw e;
     }
   }
@@ -146,7 +146,7 @@ public class DRealSolver implements ISolver {
   private Variable getVariableByName(String name) {
     for (Variable v : this.mVariables) {
       if (v.getName().equals(name)) {
-      	return v;
+        return v;
       }
     }
     return null;

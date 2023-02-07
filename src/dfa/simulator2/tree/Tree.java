@@ -10,7 +10,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 
 public class Tree<T>  {
-  private final T root;
+  public final T root;
   private Map <T, Set<T>> map = new HashMap<>();
 
   public Tree(T root) {
@@ -69,7 +69,7 @@ public class Tree<T>  {
   }
 
   public List<T> getAllAncestors(T node) throws Exception {
-    if(node == this.root) {
+    if(node.equals(this.root)) {
       List<T> ancestors = new ArrayList<T>();
       ancestors.add(node);
       return ancestors;
@@ -123,6 +123,32 @@ public class Tree<T>  {
     return tree;
   }
 
+  public Tree<T> copy() throws Exception {
+    TreeMap<T, T> map = new TreeMap<>();
+    Function<T, T> function = new Function<>() {
+      public T apply(T input) {
+        return input;
+      }
+    };
+    return map.map(function, this);
+    // return this.getSubtree(this.root);
+  }
+
+  // Add 'tree' as a subtree of 'node'
+  // The node set in 'tree' should be disjoint with the node set of this tree.
+  public void addSubtree(T node, Tree<T> tree) throws Exception {
+    Queue<T> queue = new LinkedList<T>();
+    this.addChild(node, tree.root);
+    queue.add(tree.root);
+    while(queue.isEmpty() == false) {
+      T currentNode = queue.remove();
+      for(T child : tree.getChildren(currentNode)) {
+        this.addChild(currentNode, child);
+        queue.add(child);
+      }
+    }
+  }
+
   public Tree<T> getSlicedSubtree(T node, Set<T> leaves) throws Exception {
     Tree<T> tree = this.getSubtree(node);
     Set<List<T>> allAncestors = new HashSet<>();
@@ -135,6 +161,7 @@ public class Tree<T>  {
     }
     return slicedTree;
   }
+
 
   public String toString() {
     String s = "Tree ";

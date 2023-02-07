@@ -15,12 +15,12 @@ public class StatechartToProgramTranslator {
     StatementList result = new StatementList();
     for (Statement stmt: list.getStatements()) {
       if (stmt instanceof StatementList) {
-      	StatementList stmt_list = flattenStatementList ((StatementList)stmt);
-      	for (Statement smt: stmt_list.getStatements()) {
-      		result.add (smt);
-      	}
+        StatementList stmt_list = flattenStatementList ((StatementList)stmt);
+        for (Statement smt: stmt_list.getStatements()) {
+          result.add (smt);
+        }
       } else {
-      	result.add (stmt);
+        result.add (stmt);
       }
     }
     return result;
@@ -141,15 +141,15 @@ public class StatechartToProgramTranslator {
       int size = all_guards.size();
       for (int i = 0; i < size; i++) {
         for (int j = i+1; j < size; j++) {
-      	  pairwise_ands.add(new BinaryExpression(all_guards.get(i), all_guards.get(j), "&&"));
+          pairwise_ands.add(new BinaryExpression(all_guards.get(i), all_guards.get(j), "&&"));
         }
       }
       Expression or_of_ands = null;
       for (Expression and: pairwise_ands) {
         if (or_of_ands == null) {
-      	  or_of_ands = and;
+          or_of_ands = and;
         } else {
-      	  or_of_ands = new BinaryExpression (or_of_ands, and, "||");
+          or_of_ands = new BinaryExpression (or_of_ands, and, "||");
         }
       }
       /* Non-Determinism end */

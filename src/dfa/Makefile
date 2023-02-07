@@ -46,10 +46,7 @@ run: Analyser.java
 # java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./" org.junit.runner.JUnitCore testcases.TestSimulator
 
 simulator2-build:
-	javac -Xlint:-unchecked -d classes ast/*.java simulator2/ASTToCFG.java simulator2/cfg/*.java testcases/TestSimulator2.java -cp ./lib/junit-4.8.1.jar:ast:classes:./;
-
-simulator2-test:
-	java -cp lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestSimulator2
+	javac -Xlint:-unchecked -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestSimulator2.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
 
 tree:
 	javac -Xlint:-unchecked -d classes simulator2/tree/*.java testcases/TestTree.java -cp ./lib/junit-4.8.1.jar:ast:classes:./;

@@ -20,7 +20,7 @@ public class YicesSolver implements ISolver {
 
   public SolverResult solve() throws Exception {
     String yicesInput = YicesSolver.makeYicesInput(this.mVariables,
-      	this.mExpression);
+        this.mExpression);
 
     // System.out.println("/home/sujit/My-Download/yices-2.2.2/bin/yices input :\n" + yicesInput);
 
@@ -60,7 +60,7 @@ public class YicesSolver implements ISolver {
     String s = "";
     for (IIdentifier v : mVariables2) {
       s = s + "(define " + v.getName() + "::"
-      		+ YicesSolver.getVariableTypeString(v) + ")" + "\n";
+          + YicesSolver.getVariableTypeString(v) + ")" + "\n";
     }
     s = s + "(assert " + formula + ")\n";
     s = s + "(check)\n";
@@ -77,8 +77,8 @@ public class YicesSolver implements ISolver {
       return "int";
     } else {
       Exception e = new Exception(
-      		"YicesSolver.getVariableTypeString : type of variable '"
-      				+ v.getName() + "' not handled.");
+          "YicesSolver.getVariableTypeString : type of variable '"
+              + v.getName() + "' not handled.");
       throw e;
     }
   }
@@ -89,7 +89,7 @@ public class YicesSolver implements ISolver {
 
     Process p = Runtime.getRuntime().exec(cmdLine);
     BufferedReader input = new BufferedReader(new InputStreamReader(
-      	p.getInputStream()));
+        p.getInputStream()));
     line = input.readLine();
     while (line != null) {
       output += (line + '\n');
@@ -117,17 +117,17 @@ public class YicesSolver implements ISolver {
       isSat = true;
 
       for (int i = 2; i < tokens.size(); i = i + 3) {
-      	String varName = tokens.get(i);
-      	IIdentifier var = this.getVariableByName(varName);
-      	if (var == null) {
-      		Exception e = new Exception(
-      				"YicesSolver.parseYicesOutput : variable '"
-      						+ varName + "' not found.");
-      		throw e;
-      	}
-      	Object value = YicesSolver.parseVariableValue(var,
-      			tokens.get(i + 1));
-      	map.put(var, value);
+        String varName = tokens.get(i);
+        IIdentifier var = this.getVariableByName(varName);
+        if (var == null) {
+          Exception e = new Exception(
+              "YicesSolver.parseYicesOutput : variable '"
+                	+ varName + "' not found.");
+          throw e;
+        }
+        Object value = YicesSolver.parseVariableValue(var,
+            tokens.get(i + 1));
+        map.put(var, value);
       }
     }
     return new SolverResult(isSat, map);
@@ -141,8 +141,8 @@ public class YicesSolver implements ISolver {
       return Boolean.parseBoolean(value);
     } else {
       Exception e = new Exception(
-      		"YicesSolver.parseVariableValue : type of variable '"
-      				+ var.getName() + "' not handled.");
+          "YicesSolver.parseVariableValue : type of variable '"
+              + var.getName() + "' not handled.");
       throw e;
     }
   }
@@ -150,7 +150,7 @@ public class YicesSolver implements ISolver {
   private IIdentifier getVariableByName(String name) {
     for (IIdentifier v : this.mVariables) {
       if (v.getName().equals(name)) {
-      	return v;
+        return v;
       }
     }
     return null;

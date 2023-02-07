@@ -26,6 +26,23 @@ public class TestTree {
     }
   }
 
+@Test
+  public void test_copy_1() {
+    System.out.println("test_copy_1 ...");
+    try {
+      Tree<Integer> tree = new Tree<>(1);
+      tree.addChild(1, 2);
+      tree.addChild(1, 3);
+      tree.addChild(3, 4);
+      System.out.println("tree = " + tree);
+      System.out.println("tree.copy = " + tree.copy());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+
   @Test
   public void testAddPath1() {
   // Adding a path whose nodes are some there, but the path is longer than the existing path.
@@ -176,5 +193,34 @@ public class TestTree {
       e.printStackTrace();
     }
   }
+
+  @Test
+  public void test_addSubTree_1() {
+    System.out.println("test_addSubTree_1 ...");
+    try {
+      Tree<Integer> tree1 = new Tree<>(1);
+      tree1.addChild(1, 2);
+      tree1.addChild(1, 3);
+      tree1.addChild(3, 4);
+      tree1.addChild(2, 7);
+      tree1.addChild(7, 8);
+      tree1.addChild(7, 9);
+      System.out.println("Tree1 = " + tree1);
+
+      Tree<Integer> tree2 = new Tree<>(5);
+      tree2.addChild(5, 6);
+      tree2.addChild(6, 10);
+      tree2.addChild(6, 11);
+      tree2.addChild(6, 12);
+      System.out.println("Tree2 = " + tree2);
+
+      tree1.addSubtree(2, tree2);
+      System.out.println("Modified tree2 = " + tree1);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
 
 }
