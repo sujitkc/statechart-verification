@@ -11,7 +11,8 @@ public class IntegerConstant extends Expression {
   }
 
   public String toString() {
-    return new Integer(this.value).toString();
+    Integer Value = this.value;
+    return Value.toString();
   }
 
   public void visit (Visitor visitor) throws Exception {

@@ -131,7 +131,6 @@ public class Tree<T>  {
       }
     };
     return map.map(function, this);
-    // return this.getSubtree(this.root);
   }
 
   // Add 'tree' as a subtree of 'node'

@@ -12,4 +12,12 @@ public class CFGDecisionNode extends CFGNode {
     this.thenSuccessor = thenSuccessor;
     this.elseSuccessor = elseSuccessor;
   }
+
+  public String toString() {
+    String s = "IfNode\n";
+    s += "\tCondition = " + this.condition;
+    s += "\tThen statement = " + this.thenSuccessor;
+    s += "\tElse statement = " + this.elseSuccessor;
+    return s;
+  }
 }

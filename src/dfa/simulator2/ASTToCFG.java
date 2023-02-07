@@ -9,17 +9,18 @@ import ast.*;
 import simulator2.cfg.*;
 
 public class ASTToCFG {
+  /*
   private final Statement statement;
 
   public ASTToCFG(Statement statement) {
     this.statement = statement;
   }
-
   public CFG convert() throws Exception {
     return this.convert(this.statement);
   }
+  */
 
-  private CFG convert(Statement s) throws Exception {
+  public CFG convert(Statement s) throws Exception {
     if(s instanceof AssignmentStatement) {
       return this.convertAssignmentStatement((AssignmentStatement) s);
     }
@@ -61,6 +62,11 @@ public class ASTToCFG {
   }
 
   private CFG convertStatementList(StatementList s) throws Exception {
+    if(s.getStatements().size() == 0) {
+      CFGBasicBlockNode node = new CFGSkipNode();
+      return new CFG(node, node);
+      
+    }
     List<CFG> cfgs = new ArrayList<>();
     for(Statement statement : s.getStatements()) {
       cfgs.add(this.convert(statement));

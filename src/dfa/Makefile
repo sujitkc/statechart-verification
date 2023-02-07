@@ -38,16 +38,5 @@ constabl-test:
 stabl-flatten-test:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestFlatten
 
-run: Analyser.java
-	java -cp ${MYCLASSPATH} analyse/Analyser data/t1.stbl
-	clang-format-8 output.cxx -i
-# javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java testcases/*.java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./"
-# javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./"
-# java -cp "lib/java-cup-11a.jar;lib/jflex-1.4.1.jar;lib/junit-4.8.1.jar;ast;classes;./" org.junit.runner.JUnitCore testcases.TestSimulator
-
 simulator2-build:
-	javac -Xlint:-unchecked -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestSimulator2.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
-
-tree:
-	javac -Xlint:-unchecked -d classes simulator2/tree/*.java testcases/TestTree.java -cp ./lib/junit-4.8.1.jar:ast:classes:./;
-
+	javac -Xlint:-unchecked -Xlint:deprecation -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestASTToCFG.java testcases/TestSimulator2.java testcases/TestTree.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
