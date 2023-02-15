@@ -9,4 +9,12 @@ public class ConcurrentCode extends Code {
   public ConcurrentCode(Set<Code> codes) {
     this.codes = codes;
   }
+
+  public Code reverse() {
+    Set<Code> rcodes = new HashSet<>();
+    for(Code code : codes) {
+      rcodes.add(code.reverse());
+    }
+    return new ConcurrentCode(rcodes);
+  }
 }

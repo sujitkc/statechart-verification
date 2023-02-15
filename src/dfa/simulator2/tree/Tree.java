@@ -48,8 +48,12 @@ public class Tree<T>  {
      }
   }
 
+  public Set<T> getAllNodes() {
+    return this.map.keySet();
+  }
+
   public boolean hasNode(T node) {
-    return this.map.keySet().contains(node);
+    return this.getAllNodes().contains(node);
   }
 
   public Set<T> getChildren(T node) {
@@ -78,6 +82,21 @@ public class Tree<T>  {
     List<T> ancestors = this.getAllAncestors(parent);
     ancestors.add(node);
     return ancestors;
+  }
+
+  //  All ancestors excluding ancestor.
+  //  Example: If ancestors(n) = [root, n1, n2, ..., ni, n(i+1) ..., n]
+  //  then ancestors(n, ni) = [n(i+1), ..., n]
+  public List<T> getAllAncestorsUpto(T node, T ancestor) throws Exception {
+    List<T> ancestors = this.getAllAncestors(node);
+    while(ancestors.isEmpty() == false) {
+      T anc = ancestors.remove(0);
+      if(anc.equals(ancestor)) {
+        return ancestors;
+      }
+    }
+    throw new Exception("Tree::getAllAncestorsUpto: the given ancestor is " +
+      "not an actual ancestor.");
   }
 
   public T lub(T a, T b) throws Exception {

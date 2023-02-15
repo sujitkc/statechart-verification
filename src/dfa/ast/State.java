@@ -14,10 +14,6 @@ public class State {
   public final Statement entry;
   public final Statement exit;
   public final BooleanConstant history;
-  //public final BooleanConstant shell;
-  //public final BooleanConstant region;
-  //public final BooleanConstant fin;
-  
 
   protected Statechart  statechart  = null;
   protected State       superstate  = null;
@@ -33,9 +29,6 @@ public class State {
       List<Transition>  transitions,
       BooleanConstant   history
      ) {
-/* BooleanConstant   region,
-      BooleanConstant   shell,
-      BooleanConstant   fin*/
     this.name         = name;
     this.declarations = declarations;
     this.entry        = entry;
@@ -43,9 +36,6 @@ public class State {
     this.states       = states;
     this.transitions  = transitions;
     this.history      = history;
-    //this.shell        = shell;
-    //this.region       = region;
-    //this.fin          = fin;
 
     for(State st : this.states) {
       st.setSuperstate(this);
@@ -136,7 +126,7 @@ public class State {
     return this.states;
   }
 
-  // returns the list of all superstates (this excluded), starting with the
+ // returns the list of all superstates (this excluded), starting with the
   // top-level statechart.
   public List<State> getAllSuperstates() {
     if(this.superstate != null) {

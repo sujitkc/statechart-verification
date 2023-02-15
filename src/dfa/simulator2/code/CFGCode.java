@@ -8,4 +8,8 @@ public class CFGCode extends Code {
   public CFGCode(CFG cfg) {
     this.cfg = cfg;
   }
+
+  public Code reverse() {
+    return this;
+  }
 }
