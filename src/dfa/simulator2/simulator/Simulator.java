@@ -98,10 +98,19 @@ public class Simulator {
   }
 
   private Code getSourceCode(Tree<CFG> tree) throws Exception {
-    return this.getSourceCode(tree.root, tree);
+    return this.getCode(tree);
   }
 
-  private Code getSourceCode(CFG cfg, Tree<CFG> tree) throws Exception {
+  private Code getDestinationCode(Tree<CFG> tree) throws Exception {
+    Code rcode = this.getCode(tree);
+    return rcode.reverse();
+  }
+
+  private Code getCode(Tree<CFG> tree) throws Exception {
+    return this.getCode(tree.root, tree);
+  }
+
+  private Code getCode(CFG cfg, Tree<CFG> tree) throws Exception {
     Set<CFG> childCFGs = tree.getChildren(cfg);
     List<CFG> childCFGList = new ArrayList<>(childCFGs);
     Code myCode = new CFGCode(cfg);
@@ -109,14 +118,14 @@ public class Simulator {
       return myCode;
     }
     else if(childCFGs.size() == 1) { // sequence code
-      Code childCode = this.getSourceCode(childCFGList.get(0), tree);
+      Code childCode = this.getCode(childCFGList.get(0), tree);
       Code[] codes = {childCode, myCode};
       return new SequenceCode(Arrays.asList(codes));
     }
     else { // concurrent code
       Set<Code> childCodes = new HashSet<>();
       for(CFG child : childCFGs) {
-	childCodes.add(this.getSourceCode(child, tree));
+	childCodes.add(this.getCode(child, tree));
       }
       Code childCode = new ConcurrentCode(childCodes);
       Code[] codes = {childCode, myCode};
@@ -126,6 +135,7 @@ public class Simulator {
 
   private Code getSourceCode(Transition t) throws Exception {
 
+    // Source side state tree - begin
     Set<State> atomicStates = new HashSet<>();
     for(State atomicState : this.configuration) {
       if(this.stateTree.getAllAncestors(atomicState).contains(t.getSource())) {
@@ -141,6 +151,9 @@ public class Simulator {
     sourceStateTree.addPath(sourceAncestors);
     State currentLeaf = sourceAncestors.get(sourceAncestors.size() - 1);
     sourceStateTree.addSubtree(currentLeaf, subtree);
+    // Source side state tree - end
+
+    // Source side CFG tree - begin
     Map<Statement, CFG> CFGs = this.CFGs;
     TreeMap<State, CFG> map = new TreeMap<>();
     Tree<CFG> CFGTree = map.map(
@@ -150,10 +163,60 @@ public class Simulator {
         }
       },
       sourceStateTree);
+    // Source side CFG tree - end
+
     return this.getSourceCode(CFGTree);
   }
 
-  private Code getDestinationCode(Tree<CFG> tree) {
-    return null;
+  private Tree<State> getEntrySubTree(State state) throws Exception {
+    Tree<State> tree = new Tree<State>(state);
+    if(state.states.isEmpty() == true) {
+      return tree;
+    }
+    else if(state instanceof Shell) {
+      for(State s : state.states) {
+        tree.addSubtree(state, this.getEntrySubTree(s));
+      }
+      return tree;
+    }
+    else {
+      tree.addSubtree(state, this.getEntrySubTree(state.states.get(0)));
+      return tree;
+    }
+  }
+
+  private Code getDestinationCode(Transition t) throws Exception {
+    Tree<State> subtree = this.getEntrySubTree(t.getDestination());
+
+    State lub = this.stateTree.lub(t.getSource(), t.getDestination());
+    List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
+    destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
+    Tree<State> destinationStateTree = new Tree<>(destinationAncestors.get(0));
+    destinationStateTree.addPath(destinationAncestors);
+    State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
+    destinationStateTree.addSubtree(currentLeaf, subtree);
+
+    // Destination side CFG tree - begin
+    Map<Statement, CFG> CFGs = this.CFGs;
+    TreeMap<State, CFG> map = new TreeMap<>();
+    Tree<CFG> CFGTree = map.map(
+      new Function<State, CFG>() {
+        public CFG apply(State state) {
+	  return CFGs.get(state.entry);
+        }
+      },
+      destinationStateTree);
+    // Destination side CFG tree - end
+
+    return this.getDestinationCode(CFGTree);
+  }
+
+  private Code getCode(Transition t) throws Exception {
+    Code sourceCode = this.getSourceCode(t);
+    Code actionCode = new CFGCode(this.CFGs.get(t.action));
+    Code destinationCode = this.getDestinationCode(t);
+    Code[] codes = {sourceCode, actionCode, destinationCode};
+    SequenceCode code = new SequenceCode(Arrays.asList(codes));
+    return code;
   }
 }
