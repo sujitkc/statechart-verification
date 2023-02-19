@@ -25,13 +25,18 @@ public class Simulator {
   private Set<State> configuration;
 
   public Simulator(Statechart statechart) throws Exception {
+    this(statechart, new HashSet<State>());
+  }
+
+  public Simulator(Statechart statechart, Set<State> configuration) throws Exception {
     this.statechart = statechart;
     this.allTransitions = this.getAllTransitions(this.statechart);
     this.stateTree = this.getStateTree(this.statechart);
     this.makeCFGs(this.statechart);
+    this.configuration = configuration;
   }
 
-  private void simulationStep() {
+  public void simulationStep(String event) throws Exception {
   /*
    * Compute the set of all enabled transitions
    * Check for non-determinism. Abort if found.
@@ -40,8 +45,22 @@ public class Simulator {
    *   of transition-wise code.
    * while, there's code to execute, keep single-stepping
   */
+    Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
+    Set<State> newConfiguration = new HashSet<>();
+    for(Transition t : enabledTransitions) {
+      System.out.println("Enabled transition: " + t.name);
+      Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
+                                    .getLeafNodes();
+      newConfiguration.addAll(atomicStates);
+    }
+    this.configuration = newConfiguration;
+    for(State s : this.configuration) {
+      System.out.println("New state : " + s.name);
+    }
   }
 
+  // Gives the set of all transitions inside of state in a recursive way.
+  // useful in constructing and storing the set of transitions for fast access later on.
   private Set<Transition> getAllTransitions(State state) {
     Set<Set<Transition>> allTransitionSets = new HashSet<>();
     for(State childState : state.states) {
@@ -54,7 +73,24 @@ public class Simulator {
     }
     return allTransitions;
   }
- 
+
+  // Recursively look for a state by the given name.
+  public State getSubstateByName(String name, State state) {
+    List<State> substates = state.states;
+    for(State s : substates) {
+      if(s.name.equals(name)) {
+        return s;
+      }
+      State ss = this.getSubstateByName(name, s);
+      if(ss != null) {
+        return ss;
+      }
+    }
+    return null;
+  }
+  // Generates a tree of states.
+  // Useful in later plucking subtrees out of the main tree and
+  // creating code fragments out of it. 
   private Tree<State> getStateTree(State state) throws Exception {
     Set<Tree<State>> trees = new HashSet<>();
     for(State child : state.states) {

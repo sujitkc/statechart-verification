@@ -99,6 +99,16 @@ public class Tree<T>  {
       "not an actual ancestor.");
   }
 
+  public Set<T> getLeafNodes() {
+    Set<T> leaves = new HashSet<>();
+    for(T node : this.getAllNodes()) {
+      if(this.getChildren(node).isEmpty()) {
+        leaves.add(node);
+      }
+    }
+    return leaves;
+  }
+
   public T lub(T a, T b) throws Exception {
     List<T> a1 = this.getAllAncestors(a);
     List<T> a2 = this.getAllAncestors(b);

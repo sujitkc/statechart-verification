@@ -74,4 +74,91 @@ public class TestSimulator2 {
       System.exit(1);
     }
   }
+
+  @Test
+  public void test_1() {
+    Statechart statechart = this.test_template("test_1", "data/constabl/simulator2/t1.stbl");
+    try
+    {
+      State A = statechart.findSubstateByName("A");
+      System.out.println(A);
+      Set<State> configuration = new HashSet<>();
+      configuration.add(A);
+      Simulator simulator = new Simulator(statechart, configuration);
+      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
+    }
+  }
+
+  @Test
+  public void test_2() {
+    Statechart statechart = this.test_template("test_2", "data/constabl/simulator2/t2.stbl");
+    try
+    {
+      State A = statechart.findSubstateByName("A");
+      System.out.println(A);
+      Set<State> configuration = new HashSet<>();
+      configuration.add(A);
+      Simulator simulator = new Simulator(statechart, configuration);
+      simulator.simulationStep("e1");
+      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
+    }
+  }
+
+  @Test
+  public void test_3() {
+    Statechart statechart = this.test_template("test_3", "data/constabl/simulator2/t3.stbl");
+
+    try
+    {
+      Set<State> configuration = new HashSet<>();
+      Simulator simulator = new Simulator(statechart, configuration);
+      State A = simulator.getSubstateByName("AA", statechart);
+      System.out.println(A);
+      configuration.add(A);
+      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
+    }
+  }
+
+  public Statechart test_template(String testName, String inputFileName) {
+    System.out.println(testName);
+
+    Typechecker typechecker;
+
+    Statechart statechart = null;
+    String input = inputFileName;
+    try {
+      Parser parser = new FrontEnd(input).getParser();    
+      Symbol result = parser.parse();
+      statechart = (Statechart)result.value;
+    }
+    catch(FileNotFoundException e) {
+      System.out.println("Couldn't open file '" + input + "'"); 
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't parse '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+      System.exit(1);
+    }
+    try {
+      new Typechecker(statechart).typecheck();
+      return statechart;
+    }
+    catch(Exception e) {
+      System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
+      e.printStackTrace();
+    }
+    return null;
+  }
 }
