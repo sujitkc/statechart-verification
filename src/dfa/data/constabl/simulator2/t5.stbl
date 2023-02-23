@@ -1,0 +1,40 @@
+statechart  c5 {
+  
+  events {
+	e;
+	e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  
+  state A {
+    entry:{}
+    exit:{}    
+
+    state AA {
+      entry:{}
+      exit:{}    
+    }
+  }
+
+  state B {
+    entry:{}
+    exit:{}
+
+    state BB {
+      entry:{}
+      exit:{}    
+    }
+  }
+
+  transition t1 {
+    source: c5.A.AA;
+    destination: c5.B.BB;
+    trigger: e1;
+    guard:(true);
+    action:{}
+  }
+}

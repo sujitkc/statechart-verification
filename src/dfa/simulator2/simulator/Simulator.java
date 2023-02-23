@@ -53,7 +53,9 @@ public class Simulator {
                                     .getLeafNodes();
       newConfiguration.addAll(atomicStates);
     }
-    this.configuration = newConfiguration;
+    if(newConfiguration.isEmpty() == false) {
+      this.configuration = newConfiguration;
+    }
     for(State s : this.configuration) {
       System.out.println("New state : " + s.name);
     }
@@ -74,7 +76,8 @@ public class Simulator {
     return allTransitions;
   }
 
-  // Recursively look for a state by the given name.
+  // Recursively look for a state by the given name. 
+  // Return the first match. Null on no match.
   public State getSubstateByName(String name, State state) {
     List<State> substates = state.states;
     for(State s : substates) {
@@ -88,6 +91,7 @@ public class Simulator {
     }
     return null;
   }
+
   // Generates a tree of states.
   // Useful in later plucking subtrees out of the main tree and
   // creating code fragments out of it. 

@@ -1,0 +1,75 @@
+statechart  c5{
+  
+  events {
+	e;
+	e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+    input<||>() : int;
+  }
+
+  state A {
+    entry:{}
+    exit:{}
+  }
+
+  shell B {
+    entry:{}
+    exit:{}
+
+    state B1 {
+      entry:{}
+      exit:{}
+
+      state B1A {
+        entry:{}
+        exit:{}
+      }
+
+      state B1B {
+        entry:{}
+        exit:{}
+      }
+      
+      transition t3{
+        source: c5.B.B1.B1A;
+        destination: c5.B.B1.B1B;
+        trigger: e1;
+        guard:(true);
+        action:{}
+      }
+    }
+
+    state B2 {
+      entry:{}
+      exit:{}
+
+      state B2A {
+        entry:{}
+        exit:{}
+      }
+      state B2B {
+        entry:{}
+        exit:{}
+      }
+
+      transition t4{
+        source: c5.B.B2.B2A;
+        destination: c5.B.B2.B2B;
+        trigger: e1;
+        guard:(true);
+        action:{}
+      }
+    }
+  }
+
+  transition t1{
+    source: c5.A;
+    destination: c5.B;
+    trigger: e;
+    guard:(true);
+    action:{}
+  }
+}

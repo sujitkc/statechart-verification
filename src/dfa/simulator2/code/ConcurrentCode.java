@@ -17,4 +17,12 @@ public class ConcurrentCode extends Code {
     }
     return new ConcurrentCode(rcodes);
   }
+
+  public Set<CFGCode> getFirstCFGCodeSet() {
+    Set<CFGCode> firstCodes = new HashSet<>();
+    for(Code code : this.codes) {
+      firstCodes.addAll(code.getFirstCFGCodeSet());
+    }
+    return firstCodes;
+  }
 }

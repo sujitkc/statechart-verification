@@ -1,5 +1,8 @@
 package simulator2.code;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import simulator2.cfg.*;
 
 public class CFGCode extends Code {
@@ -11,5 +14,11 @@ public class CFGCode extends Code {
 
   public Code reverse() {
     return this;
+  }
+
+  public Set<CFGCode> getFirstCFGCodeSet() {
+    Set<CFGCode> set = new HashSet<>();
+    set.add(this);
+    return set;
   }
 }
