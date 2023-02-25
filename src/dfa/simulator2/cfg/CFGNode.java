@@ -17,8 +17,10 @@ public abstract class CFGNode {
   }
 
   public void setCFG(CFG cfg) {
-    this.cfg = cfg;
+    this.setCFG(cfg, new HashSet<CFGNode>());
   }
+
+  protected abstract void setCFG(CFG cfg, Set<CFGNode> added);
 
   public CFG getCFG() {
     return this.cfg;

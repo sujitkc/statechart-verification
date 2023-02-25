@@ -1,5 +1,7 @@
 package simulator2.cfg;
 
+import java.util.Set;
+
 import ast.*;
 
 public class CFGDecisionNode extends CFGNode {
@@ -11,6 +13,19 @@ public class CFGDecisionNode extends CFGNode {
     this.condition     = condition;
     this.thenSuccessor = thenSuccessor;
     this.elseSuccessor = elseSuccessor;
+  }
+
+  protected void setCFG(CFG cfg, Set<CFGNode> added) {
+    if(added.contains(this) == false) {
+      this.cfg = cfg;
+      added.add(this);
+      if(this.thenSuccessor != null) {
+        this.thenSuccessor.setCFG(cfg, added);
+      }
+      if(this.elseSuccessor != null) {
+        this.elseSuccessor.setCFG(cfg, added);
+      }
+    }
   }
 
   public String toString() {
