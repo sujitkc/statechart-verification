@@ -25,4 +25,13 @@ public class ConcurrentCode extends Code {
     }
     return firstCodes;
   }
+
+  public Set<CFGCode> getLastCFGCodeSet() {
+    Set<CFGCode> lastCodes = new HashSet<>();
+    for(Code code : this.codes) {
+      lastCodes.addAll(code.getLastCFGCodeSet());
+    }
+    return lastCodes;
+  }
+
 }

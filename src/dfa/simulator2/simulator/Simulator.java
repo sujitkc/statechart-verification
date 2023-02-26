@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
 import ast.*;
 
@@ -19,6 +21,7 @@ public class Simulator {
 
   public final Statechart statechart;
   private final Set<Transition> allTransitions;
+  private final Map<Declaration, Expression> valueEnvironment;
   public final Tree<State> stateTree;
   public final Map<Statement, CFG> CFGs = new HashMap<>();
   private final ASTToCFG converter = new ASTToCFG();
@@ -30,7 +33,8 @@ public class Simulator {
 
   public Simulator(Statechart statechart, Set<State> configuration) throws Exception {
     this.statechart = statechart;
-    this.allTransitions = this.getAllTransitions(this.statechart);
+    this.allTransitions = this.getAllTransitions();
+    this.valueEnvironment = this.makeValueEnvironment();
     this.stateTree = this.getStateTree(this.statechart);
     this.makeCFGs(this.statechart);
     this.configuration = configuration;
@@ -61,19 +65,40 @@ public class Simulator {
     }
   }
 
+  private Map<Declaration, Expression> makeValueEnvironment() {
+    Map<Declaration, Expression> environment = new HashMap<>();
+    Set<Declaration> declarations = this.getAllDeclarations();
+    for(Declaration declaration : declarations) {
+      environment.put(declaration, null);
+    }
+    return environment;
+  }
+
+  private Set<Declaration> getAllDeclarations() {
+    Set<Declaration> declarations = new HashSet<>();
+    Queue<State> queue = new LinkedList<>();
+    queue.add(this.statechart);
+    while(queue.isEmpty() == false) {
+      State state = queue.remove();
+      declarations.addAll(state.declarations);
+      queue.addAll(state.states);
+    }
+    return declarations;
+  }
+
   // Gives the set of all transitions inside of state in a recursive way.
-  // useful in constructing and storing the set of transitions for fast access later on.
-  private Set<Transition> getAllTransitions(State state) {
-    Set<Set<Transition>> allTransitionSets = new HashSet<>();
-    for(State childState : state.states) {
-      allTransitionSets.add(this.getAllTransitions(childState));
+  // useful in constructing and storing the set of transitions for fast access
+  // later on.
+  private Set<Transition> getAllTransitions() {
+    Set<Transition> transitions = new HashSet<>();
+    Queue<State> queue = new LinkedList<>();
+    queue.add(this.statechart);
+    while(queue.isEmpty() == false) {
+      State state = queue.remove();
+      transitions.addAll(state.transitions);
+      queue.addAll(state.states);
     }
-    Set<Transition> allTransitions = new HashSet<>();
-    allTransitions.addAll(state.transitions);
-    for(Set<Transition> transitions : allTransitionSets) {
-      allTransitions.addAll(transitions);
-    }
-    return allTransitions;
+    return transitions;
   }
 
   // Recursively look for a state by the given name. 

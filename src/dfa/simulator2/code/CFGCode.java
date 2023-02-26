@@ -21,4 +21,7 @@ public class CFGCode extends Code {
     set.add(this);
     return set;
   }
+  public Set<CFGCode> getLastCFGCodeSet() {
+    return this.getFirstCFGCodeSet();
+  }
 }

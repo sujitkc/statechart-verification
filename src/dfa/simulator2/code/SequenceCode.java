@@ -40,7 +40,25 @@ public class SequenceCode extends Code {
     }
   }
 
+  public Code getPreviousSibling(Code code) {
+    int i = this.codes.indexOf(code);
+    if(i == -1) { // code doesn't belong this sequence
+      return null;
+    }
+    else if(i == 0) { // first code; no previous sibling.
+      return null;
+    }
+    else {
+      return this.codes.get(i - 1);
+    }
+  }
+
   public Set<CFGCode> getFirstCFGCodeSet() {
     return this.getFirstCode().getFirstCFGCodeSet();
   }
+
+  public Set<CFGCode> getLastCFGCodeSet() {
+    return this.getLastCode().getLastCFGCodeSet();
+  }
+
 }
