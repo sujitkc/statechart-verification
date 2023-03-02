@@ -316,8 +316,32 @@ public class TestSimulator2 {
       System.exit(1);
     }
   }
-
   /// CONCURRENT CONFIGURATION AND TRANSITION - END ///////////////////////////
+
+  // CODE SIMULATION AND INTERPRETATION - BEGIN ///////////////////////////////
+  // The event enables a transition emenating from an 
+  // active atomic state (A) and lands on an atomic state (B).
+  // Expected result: Resultant configuration = {B}.
+  @Test
+  public void test_1_1() {
+    Statechart statechart = this.test_template("test_1_1", "data/constabl/simulator2/t1-1.stbl");
+    try
+    {
+      State A = statechart.findSubstateByName("A");
+      System.out.println(A.name);
+      Set<State> configuration = new HashSet<>();
+      configuration.add(A);
+      Simulator simulator = new Simulator(statechart, configuration);
+      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
+    }
+  }
+
+
+  // CODE SIMULATION AND INTERPRETATION - END    //////////////////////////////
   public Statechart test_template(String testName, String inputFileName) {
     System.out.println(testName);
 

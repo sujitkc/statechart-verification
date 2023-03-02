@@ -63,6 +63,22 @@ public class Simulator {
     for(State s : this.configuration) {
       System.out.println("New state : " + s.name);
     }
+
+    Code code = null;
+    if(enabledTransitions.size() > 1) {
+      Set<Code> codes = new HashSet<>();
+      for(Transition t: enabledTransitions) {
+        codes.add(this.getCode(t));
+      }
+      code = new ConcurrentCode(codes);
+    }
+    else if(enabledTransitions.size() == 1) {
+      List<Transition> tlist = new ArrayList<>(enabledTransitions);
+      Transition t = tlist.get(0);
+      code = this.getCode(t);
+    }
+    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
+    codeSimulator.simulate();
   }
 
   private Map<Declaration, Expression> makeValueEnvironment() {
@@ -211,11 +227,17 @@ public class Simulator {
 
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> sourceAncestors = this.stateTree.getAllAncestorsUpto(t.getSource(), lub);
-    sourceAncestors.remove(sourceAncestors.size() - 1); // removing t.source.
-    Tree<State> sourceStateTree = new Tree<>(sourceAncestors.get(0));
-    sourceStateTree.addPath(sourceAncestors);
-    State currentLeaf = sourceAncestors.get(sourceAncestors.size() - 1);
-    sourceStateTree.addSubtree(currentLeaf, subtree);
+    Tree<State> sourceStateTree = null;
+    if(sourceAncestors.size() > 1) {
+      sourceAncestors.remove(sourceAncestors.size() - 1); // removing t.source.
+      sourceStateTree = new Tree<State>(sourceAncestors.get(0));
+      sourceStateTree.addPath(sourceAncestors);
+      State currentLeaf = sourceAncestors.get(sourceAncestors.size() - 1);
+      sourceStateTree.addSubtree(currentLeaf, subtree);
+    }
+    else {
+      sourceStateTree = new Tree<State>(t.getSource());
+    }
     // Source side state tree - end
 
     // Source side CFG tree - begin
@@ -255,11 +277,17 @@ public class Simulator {
 
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
-    destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
-    Tree<State> destinationStateTree = new Tree<>(destinationAncestors.get(0));
-    destinationStateTree.addPath(destinationAncestors);
-    State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
-    destinationStateTree.addSubtree(currentLeaf, subtree);
+    Tree<State> destinationStateTree = null;
+    if(destinationAncestors.size() > 1) {
+      destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
+      destinationStateTree = new Tree<State>(destinationAncestors.get(0));
+      destinationStateTree.addPath(destinationAncestors);
+      State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
+      destinationStateTree.addSubtree(currentLeaf, subtree);
+    }
+    else {
+      destinationStateTree = new Tree<State>(t.getDestination());
+    }
 
     // Destination side CFG tree - begin
     Map<Statement, CFG> CFGs = this.CFGs;

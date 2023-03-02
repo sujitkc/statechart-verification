@@ -6,8 +6,15 @@ public class BooleanConstant extends Expression {
 
   public final boolean value;
 
+  public static final BooleanConstant True = new BooleanConstant(true);
+  public static final BooleanConstant False = new BooleanConstant(false);
+
   public BooleanConstant(boolean value) {
     this.value = value;
+  }
+
+  public boolean equals(BooleanConstant b) {
+    return this.value == b.value;
   }
 
   public String toString() {
