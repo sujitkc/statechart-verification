@@ -17,7 +17,9 @@ public class SequenceCode extends Code {
 
   public Code reverse() {
     List<Code> rcodes = new ArrayList<>();
-    rcodes.addAll(this.codes);
+    for(Code code : this.codes) {
+      rcodes.add(code.reverse());
+    }
     Collections.reverse(rcodes);
     return new SequenceCode(rcodes);
   }

@@ -4,47 +4,49 @@ statechart  c5{
 	e;
 	e1;
   }
-  entry : {}
-  exit  : {} 
+  x:int:local;
+
+  entry : { x := 10; }
+  exit  : { x := 20; } 
   functions {
     input<||>() : int;
   }
 
   state A {
-    entry:{}
-    exit:{}
+    entry:{ x := 30; }
+    exit:{ x := 40; }
   }
 
   shell B {
-    entry:{}
-    exit:{}
+    entry:{ x := 50; }
+    exit:{ x := 60; }
 
     state B1 {
-      entry:{}
-      exit:{}
+      entry:{ x := 70; }
+      exit:{ x := 80; }
 
       state B1A {
-        entry:{}
-        exit:{}
+        entry:{ x := 90; }
+        exit:{ x := 100; }
       }
 
       state B1B {
-        entry:{}
-        exit:{}
+        entry:{ x := 110; }
+        exit:{ x := 120; }
       }
     }
 
     state B2 {
-      entry:{}
-      exit:{}
+      entry:{ x := 130; }
+      exit:{ x := 140; }
 
       state B2A {
-        entry:{}
-        exit:{}
+        entry:{ x := 150; }
+        exit:{ x := 160; }
       }
       state B2B {
-        entry:{}
-        exit:{}
+        entry:{ x := 170; }
+        exit:{ x := 180; }
       }
     }
   }
@@ -54,7 +56,7 @@ statechart  c5{
     destination: c5.B;
     trigger: e1;
     guard:(true);
-    action:{}
+    action:{ x := 190; }
   }
 
   transition t2{
@@ -62,6 +64,6 @@ statechart  c5{
     destination: c5.A;
     trigger: e1;
     guard:(true);
-    action:{}
+    action:{ x := 200; }
   }
 }
