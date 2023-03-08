@@ -8,6 +8,9 @@ public class ConcurrentCode extends Code {
 
   public ConcurrentCode(Set<Code> codes) {
     this.codes = codes;
+    for(Code code : this.codes) {
+      code.setParentCode(this);
+    }
   }
 
   public Code reverse() {
@@ -34,4 +37,10 @@ public class ConcurrentCode extends Code {
     return lastCodes;
   }
 
+
+  public void accept(CodeVisitor visitor) {
+    for(Code c : this.codes) {
+      visitor.visit(c);
+    }
+  }
 }

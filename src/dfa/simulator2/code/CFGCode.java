@@ -24,4 +24,7 @@ public class CFGCode extends Code {
   public Set<CFGCode> getLastCFGCodeSet() {
     return this.getFirstCFGCodeSet();
   }
+
+  public void accept(CodeVisitor visitor) {
+  }
 }

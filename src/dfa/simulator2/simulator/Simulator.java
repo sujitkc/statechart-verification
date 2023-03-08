@@ -50,20 +50,6 @@ public class Simulator {
    * while, there's code to execute, keep single-stepping
   */
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
-    Set<State> newConfiguration = new HashSet<>();
-    for(Transition t : enabledTransitions) {
-      System.out.println("Enabled transition: " + t.name);
-      Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
-                                    .getLeafNodes();
-      newConfiguration.addAll(atomicStates);
-    }
-    if(newConfiguration.isEmpty() == false) {
-      this.configuration = newConfiguration;
-    }
-    for(State s : this.configuration) {
-      System.out.println("New state : " + s.name);
-    }
-
     Code code = null;
     if(enabledTransitions.size() > 1) {
       Set<Code> codes = new HashSet<>();
@@ -79,13 +65,37 @@ public class Simulator {
     }
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
     codeSimulator.simulate();
+    System.out.println("Value environment");
+    for(Declaration d : this.valueEnvironment.keySet()) {
+      System.out.println(d + " : " + this.valueEnvironment.get(d));
+    }
+    Set<State> newConfiguration = new HashSet<>();
+    for(Transition t : enabledTransitions) {
+      System.out.println("Enabled transition: " + t.name);
+      Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
+                                    .getLeafNodes();
+      newConfiguration.addAll(atomicStates);
+    }
+    if(newConfiguration.isEmpty() == false) {
+      this.configuration = newConfiguration;
+    }
+    for(State s : this.configuration) {
+      System.out.println("New state : " + s.name);
+    }
   }
 
   private Map<Declaration, Expression> makeValueEnvironment() {
     Map<Declaration, Expression> environment = new HashMap<>();
     Set<Declaration> declarations = this.getAllDeclarations();
+    Expression defaultValue = null;
     for(Declaration declaration : declarations) {
-      environment.put(declaration, null);
+      if(declaration.typeName.equals("int")) {
+        defaultValue = new IntegerConstant(0);
+      }
+      else if(declaration.typeName.equals("bool")) {
+        defaultValue = new BooleanConstant(true);
+      }
+      environment.put(declaration, defaultValue);
     }
     return environment;
   }
@@ -219,11 +229,20 @@ public class Simulator {
     // Source side state tree - begin
     Set<State> atomicStates = new HashSet<>();
     for(State atomicState : this.configuration) {
+      System.out.println("atomic state = " + atomicState.name);
       if(this.stateTree.getAllAncestors(atomicState).contains(t.getSource())) {
         atomicStates.add(atomicState);
       }
     }
     Tree<State> subtree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
+    System.out.println("source subtree =");
+    TreeMap<State, String> namemap = new TreeMap<>();
+    Function<State, String> function = new Function<>() {
+      public String apply(State state) {
+        return state.name;
+      }
+    };
+    System.out.println(namemap.map(function, subtree));
 
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> sourceAncestors = this.stateTree.getAllAncestorsUpto(t.getSource(), lub);
@@ -236,7 +255,7 @@ public class Simulator {
       sourceStateTree.addSubtree(currentLeaf, subtree);
     }
     else {
-      sourceStateTree = new Tree<State>(t.getSource());
+      sourceStateTree = subtree;
     }
     // Source side state tree - end
 
@@ -286,7 +305,7 @@ public class Simulator {
       destinationStateTree.addSubtree(currentLeaf, subtree);
     }
     else {
-      destinationStateTree = new Tree<State>(t.getDestination());
+      destinationStateTree = subtree;
     }
 
     // Destination side CFG tree - begin

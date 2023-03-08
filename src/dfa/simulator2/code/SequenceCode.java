@@ -10,6 +10,9 @@ public class SequenceCode extends Code {
 
   public SequenceCode(List<Code> codes) {
     this.codes = codes;
+    for(Code code : this.codes) {
+      code.setParentCode(this);
+    }
   }
 
   public Code reverse() {
@@ -61,4 +64,10 @@ public class SequenceCode extends Code {
     return this.getLastCode().getLastCFGCodeSet();
   }
 
+
+  public void accept(CodeVisitor visitor) {
+    for(Code c : this.codes) {
+      visitor.visit(c);
+    }
+  }
 }

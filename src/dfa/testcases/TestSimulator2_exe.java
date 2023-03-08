@@ -53,6 +53,54 @@ public class TestSimulator2_exe {
   }
 
 
+  // From atomic state to shell state.
+  // From shell state to atomic state.
+  @Test
+  public void test_9() {
+    Statechart statechart = this.test_template("test_9", "data/constabl/simulator2/t9.stbl");
+
+    try
+    {
+      Set<State> configuration = new HashSet<>();
+      Simulator simulator = new Simulator(statechart, configuration);
+      State A = simulator.getSubstateByName("A", statechart);
+      System.out.println(A.name);
+      configuration.add(A);
+      simulator.simulationStep("e1");
+//      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+
+  // From shell state to composite state.
+  @Test
+  public void test_11() {
+    Statechart statechart = this.test_template("test_11", "data/constabl/simulator2/t11.stbl");
+
+    try
+    {
+      Set<State> configuration = new HashSet<>();
+      Simulator simulator = new Simulator(statechart, configuration);
+      State s1 = simulator.getSubstateByName("B1A", statechart);
+      State s2 = simulator.getSubstateByName("B2B", statechart);
+      configuration.add(s1);
+      configuration.add(s2);
+      System.out.println(s1.name);
+      System.out.println(s2.name);
+      simulator.simulationStep("e1");
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      System.exit(1);
+    }
+  }
+ 
+
+
   // CODE SIMULATION AND INTERPRETATION - END    //////////////////////////////
   public Statechart test_template(String testName, String inputFileName) {
     System.out.println(testName);

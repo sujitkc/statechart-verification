@@ -10,22 +10,20 @@ statechart  c5{
   functions {
   input<||>() : int;
   }
-    state A{
-        entry:{}
-exit:{}
-	    
-    }
+  state A{
+    entry:{}
+    exit:{}    
+  }
   state B{
-		    entry:{}
-		    exit:{}
-
+    entry:{}
+    exit:{}
     }
 
-    transition t1{
-        source: c5.A;
-        destination: c5.B;
-        trigger: e1;
-        guard:(true);
-        action:{x := 1;}
-	}   
+  transition t1{
+    source: c5.A;
+    destination: c5.B;
+    trigger: e1;
+    guard:(true);
+    action:{x := 1;}
+  }   
 }

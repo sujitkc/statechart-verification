@@ -22,8 +22,11 @@ public class CodeSimulator {
   private final Map<CFG, CFGCode> cfgMap;
   private final Map<CFGNode, Set<CFGNode>> joinPoints = new HashMap<>();
   private final Set<CFGNode> controlPoints = new HashSet<>();
+
   public CodeSimulator(Code code, Map<Declaration, Expression> env) {
     this.code = code;
+    CodeVisitor visitor = new CodeVisitor();
+    visitor.visit(code);
     this.env = env;
     this.cfgMap = this.makeCFGMap();
   }
@@ -53,6 +56,7 @@ public class CodeSimulator {
   public void simulate() {
     Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
     for(CFGCode cfgCode : cfgCodes) {
+      System.out.println("Initial control point : " + cfgCode.cfg);
       this.controlPoints.add(cfgCode.cfg.entryNode);
     }
     for(CFGNode n : controlPoints) {
@@ -60,46 +64,68 @@ public class CodeSimulator {
     }
     while(controlPoints.isEmpty() == false) {
       CFGNode node = this.randomSelect();
+      System.out.println("executing " + node);
       this.controlPoints.remove(node);
-      if(node instanceof CFGAssignmentNode) {
-	CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
-        this.interpreter.execute(assignmentNode.assignment, this.env);
-	this.controlPoints.add(assignmentNode.getSuccessor());
+      if(node.equals(node.getCFG().exitNode)) {
+        simulateExitNode(node);
+      }
+      else if(node instanceof CFGAssignmentNode) {
+        this.simulateAssignmentNode((CFGAssignmentNode)node);
       }
       else if(node instanceof CFGSkipNode) {
         this.simulateSkipNode((CFGSkipNode)node);
       }
       else if(node instanceof CFGDecisionNode) {
-        simulateDecisionNode((CFGDecisionNode)node);
+        this.simulateDecisionNode((CFGDecisionNode)node);
       }
     }
   }
 
+  private void simulateAssignmentNode(CFGAssignmentNode node) {
+   CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
+    this.interpreter.execute(assignmentNode.assignment, this.env);
+    this.controlPoints.add(assignmentNode.getSuccessor());
+  }
+  
   private void simulateSkipNode(CFGSkipNode node) {
-    if(node.equals(node.getCFG().exitNode)) {
-      CFGCode code = this.cfgMap.get(node.getCFG());
-      Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
+    System.out.println("Skip ...");
+  }
 
-      Set<CFGNode> nextNodes = new HashSet<>();
-      for(CFGCode nextCode : nextCodes) {
-        nextNodes.add(nextCode.cfg.entryNode);
-      }
-      if(nextNodes.size() > 1) {
-        for(CFGNode nextNode : nextNodes) {
-          this.controlPoints.add(nextNode);
-	}
-      }
-      else if(nextNodes.size() == 1) {
-        List<CFGNode> list = new ArrayList<>(nextNodes);
-        CFGNode nextNode = list.get(0);
-        if(this.joinPoints.keySet().contains(nextNode) == false) {
-    //      this.joinPoints.put(nextNode,);
-          
-        }
-      }
+  private void simulateExitNode(CFGNode node) {
+    System.out.println("Simulating exit node " + node);
+    CFGCode code = this.cfgMap.get(node.getCFG());
+    Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
+    Set<CFGNode> nextNodes = new HashSet<>();
+    for(CFGCode nextCode : nextCodes) {
+      System.out.println("next code ka cfg = " + nextCode.cfg);
+      nextNodes.add(nextCode.cfg.entryNode);
     }
-    else {
-      System.out.println("Skip ...");
+    if(nextNodes.isEmpty()) {
+      System.out.println("No next nodes");
+      return;
+    }
+    for(CFGNode s : nextNodes) {
+      // if s is in joinPoints then it has already been visited from at least
+      // one of the other running threads.
+      if(this.joinPoints.keySet().contains(s) == false) {
+        CFGCode scode = this.cfgMap.get(s.getCFG());
+        Set<CFGCode> prevCodes = scode.getPreviousCFGCodeSet();
+        Set<CFGNode> sPredecessors = new HashSet<>();
+	for(CFGCode prevCode : prevCodes) {
+          sPredecessors.add(prevCode.cfg.exitNode);
+          System.out.println("prev code ka cfg = " + prevCode.cfg);
+	}
+	this.joinPoints.put(s, sPredecessors);
+      }
+      Set<CFGNode> sPredecessors = this.joinPoints.get(s);
+      sPredecessors.remove(node); // this can be done blindly. Failure
+         // would mean some bug somewhere else.
+
+      // this means that all predecessors have been processed.
+      if(sPredecessors.isEmpty()) {
+        this.joinPoints.remove(s);
+        this.controlPoints.add(s);
+      }
     }
   }
 

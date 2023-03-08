@@ -43,10 +43,16 @@ public abstract class Code {
     else if(this.parentCode instanceof SequenceCode) {
       SequenceCode seqParent = (SequenceCode)this.parentCode;
       if(seqParent.getLastCode().equals(this)) {
+        System.out.println("last code in sequence code");
         return this.parentCode.getNextCFGCodeSet();
       }
       else {
+        System.out.println("not last code in sequence code");
         Code nextSibling = seqParent.getNextSibling(this);
+        if(nextSibling instanceof CFGCode) {
+          CFGCode ns = (CFGCode)nextSibling;
+          System.out.println(ns.cfg);
+        }
         return nextSibling.getFirstCFGCodeSet();
       }
     }
@@ -54,4 +60,6 @@ public abstract class Code {
       return new HashSet<CFGCode>();
     }
   }
+
+  public abstract void accept(CodeVisitor visitor);
 }

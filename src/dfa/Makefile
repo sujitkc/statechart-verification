@@ -39,4 +39,4 @@ stabl-flatten-test:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestFlatten
 
 simulator2-build:
-	javac -Xlint:-unchecked -Xlint:deprecation -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestASTToCFG.java testcases/TestSimulator2.java testcases/TestSimulator2_exe.java testcases/TestTree.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
+	javac -Xlint:-unchecked -Xlint:deprecation -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestASTToCFG.java testcases/TestSimulator2.java testcases/TestSimulator2_exe.java testcases/TestCodeVisitor.java testcases/TestTree.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
