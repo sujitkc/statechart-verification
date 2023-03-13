@@ -53,7 +53,7 @@ public class CodeSimulator {
     return map;
   }
 
-  public void simulate() {
+  public void simulate() throws Exception {
     Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
     for(CFGCode cfgCode : cfgCodes) {
       System.out.println("Initial control point : " + cfgCode.cfg);
@@ -81,9 +81,9 @@ public class CodeSimulator {
     }
   }
 
-  private void simulateAssignmentNode(CFGAssignmentNode node) {
+  private void simulateAssignmentNode(CFGAssignmentNode node) throws Exception {
    CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
-    this.interpreter.execute(assignmentNode.assignment, this.env);
+    ActionLanguageInterpreter.execute(assignmentNode.assignment, this.env);
     this.controlPoints.add(assignmentNode.getSuccessor());
   }
   
@@ -129,7 +129,7 @@ public class CodeSimulator {
     }
   }
 
-  private void simulateDecisionNode(CFGDecisionNode node) {
+  private void simulateDecisionNode(CFGDecisionNode node) throws Exception {
     Expression e = this.interpreter.evaluate(node.condition, this.env);
     if(BooleanConstant.True.equals((BooleanConstant)e)) {
       this.controlPoints.add(node.thenSuccessor);
