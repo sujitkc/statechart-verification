@@ -1,1 +1,1 @@
-constabl/simulator2/allcombinations/5#2_source_region(compositesubstate)/*.stbl
+constabl/simulator2/allcombinations/5#3_source_region(shellsubstate)/*.stbl
