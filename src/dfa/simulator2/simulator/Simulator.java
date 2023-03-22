@@ -63,6 +63,10 @@ public class Simulator {
       Transition t = tlist.get(0);
       code = this.getCode(t);
     }
+    else {
+      System.out.println("No trasition enabled.");
+      return;
+    }
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
     codeSimulator.simulate();
     System.out.println("Value environment");
@@ -169,10 +173,17 @@ public class Simulator {
     }
   }
 
-  private Set<Transition> getEnabledTransitions(String event) throws Exception {
+  private Set<Transition> getEnabledTransitions(String event)
+      throws Exception {
     Set<Transition> eTransitions = new HashSet<>();
     for(Transition t : this.allTransitions) {
-      if(t.trigger.equals(event)) {
+      BooleanConstant evaluatedGuard =
+        (BooleanConstant)ActionLanguageInterpreter
+	  .evaluate(t.guard, this.valueEnvironment);
+      if(
+          t.trigger.equals(event) &&
+	  evaluatedGuard.equals(BooleanConstant.True))
+      {
         eTransitions.add(t);
       }
     }
