@@ -64,7 +64,7 @@ shell B{
   
 
     transition t1{
-        source: chart.A.Sh;
+        source: chart.A.Sh.R1;
         destination: chart.B;
         trigger: e1;
         guard:(true);
