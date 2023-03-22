@@ -34,7 +34,9 @@ import constabl.*;
 import constabl.simulator.StatechartSimulator;
 public class TestConStaBLSimulator {
       String inputfile="";
+ Typechecker typechecker;
 
+    Statechart statechart = null;
   public TestConStaBLSimulator(){
     try{
       inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -49,12 +51,35 @@ public class TestConStaBLSimulator {
     
     System.out.println("Hello front end.");
 
-    Typechecker typechecker;
-
-    Statechart statechart = null;
+   
     //String input = "data/curfew_structs_minimal.txt";
      //String input="data/c5.stb";
-    String input="data/"+inputfile;
+    if(!inputfile.contains("*.stbl")){
+    	runSimulator(inputfile);
+    }
+    else{
+    	try{
+    		String dirpath=inputfile.replace("*.stbl","");
+    	      File directoryPath = new File("data/"+dirpath);
+	      //List of all files and directories
+	      String contents[] = directoryPath.list();
+	      System.out.println("List of files and directories in the specified directory:");
+	      for(int i=0; i<contents.length; i++) {
+		 System.out.println(dirpath+contents[i]);
+		 runSimulator(dirpath+contents[i]);
+	      }
+    	}
+    	catch(Exception e){
+    		System.out.println("Folder path exception");
+    		e.printStackTrace();
+    		System.exit(1);
+    	}
+    }
+    
+  }
+  public void runSimulator(String inputfile){
+  
+  String input="data/"+inputfile;
     System.out.println("Reading file : "+ input);
     // String input = "data/s24.txt";
     // String input = "data/curfew1.txt";
@@ -98,5 +123,5 @@ public class TestConStaBLSimulator {
      
       System.exit(1);
     }
-  }
+ } 
 }

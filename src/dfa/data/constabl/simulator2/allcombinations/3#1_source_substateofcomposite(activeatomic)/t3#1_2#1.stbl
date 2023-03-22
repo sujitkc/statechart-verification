@@ -1,0 +1,40 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+    state A{
+        entry:{}
+	exit:{}
+	 state A1{
+		entry:{}
+		exit:{}
+	    
+    	}      
+    }
+  state B{
+	entry:{}
+	exit:{}
+	state B1{
+		entry:{}
+		exit:{}
+	
+
+    	}
+
+    }
+
+    transition t1{
+        source: chart.A.A1;
+        destination: chart.B;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}   
+}
