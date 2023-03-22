@@ -1,1 +1,1 @@
-constabl/simulator2/allcombinations/6#1_source_substateofregion(atomicsubstate)/*.stbl
+constabl/simulator2/allcombinations/6#2_source_substateofregion(compositesubstate)/*.stbl

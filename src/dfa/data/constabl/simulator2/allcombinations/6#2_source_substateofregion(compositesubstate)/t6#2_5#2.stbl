@@ -1,0 +1,93 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+  }
+  entry : {}
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+    state A{
+        entry:{}
+	exit:{}
+	shell Sh{
+						entry:{}
+						exit:{}
+	    					state R1{
+	    						entry:{}
+							exit:{}
+							state ShR1A{
+	    							entry:{}
+								exit:{}
+							state ShR1Aa{
+	    							entry:{}
+								exit:{}
+							
+								}
+							}
+	    					}
+	    					state R2{
+	    						entry:{}
+							exit:{}
+							state ShR2A{
+	    							entry:{}
+								exit:{}
+							
+							}
+	    					}
+    					}  
+    }
+
+	
+		shell B{
+			entry:{}
+			exit:{}
+			state R1{
+				entry:{}
+				exit:{}
+	    			state R1A{
+					entry:{}
+					exit:{}
+	    				state R1A1{
+						entry:{}
+						exit:{}
+	    		
+    					}
+    				}
+    				state R1B{
+					entry:{}
+					exit:{}
+	    
+    				}
+   			 }
+			state R2{
+				entry:{}
+				exit:{}
+	    			state R2A{
+					entry:{}
+					exit:{}
+	    
+    				}
+    				state R2B{
+					entry:{}
+					exit:{}
+	    
+    				}	    
+   			 }
+
+    		}
+
+    	
+
+  
+
+    transition t1{
+        source: chart.A.Sh.R1.ShR1A;
+        destination: chart.B.R1;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}   
+}
