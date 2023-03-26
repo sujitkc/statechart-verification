@@ -97,7 +97,7 @@ public class CodeSimulator {
     Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
     Set<CFGNode> nextNodes = new HashSet<>();
     for(CFGCode nextCode : nextCodes) {
-      System.out.println("next code ka cfg = " + nextCode.cfg);
+      System.out.println("cfg of next code = " + nextCode.cfg);
       nextNodes.add(nextCode.cfg.entryNode);
     }
     if(nextNodes.isEmpty()) {
@@ -113,7 +113,7 @@ public class CodeSimulator {
         Set<CFGNode> sPredecessors = new HashSet<>();
 	for(CFGCode prevCode : prevCodes) {
           sPredecessors.add(prevCode.cfg.exitNode);
-          System.out.println("prev code ka cfg = " + prevCode.cfg);
+          System.out.println("cfg of prev code = " + prevCode.cfg);
 	}
 	this.joinPoints.put(s, sPredecessors);
       }

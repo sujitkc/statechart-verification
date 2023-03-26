@@ -43,11 +43,11 @@ public abstract class Code {
     else if(this.parentCode instanceof SequenceCode) {
       SequenceCode seqParent = (SequenceCode)this.parentCode;
       if(seqParent.getLastCode().equals(this)) {
-        System.out.println("last code in sequence code");
+        System.out.println("--Sequence Ends.");
         return this.parentCode.getNextCFGCodeSet();
       }
       else {
-        System.out.println("not last code in sequence code");
+        System.out.println("--Sequence Continues--");
         Code nextSibling = seqParent.getNextSibling(this);
         if(nextSibling instanceof CFGCode) {
           CFGCode ns = (CFGCode)nextSibling;

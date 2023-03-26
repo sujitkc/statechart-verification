@@ -51,20 +51,25 @@ public class Simulator {
   */
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Code code = null;
+    System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
       Set<Code> codes = new HashSet<>();
+      
       for(Transition t: enabledTransitions) {
+      	 System.out.print(t.name+",");
         codes.add(this.getCode(t));
       }
+      System.out.println();
       code = new ConcurrentCode(codes);
     }
     else if(enabledTransitions.size() == 1) {
       List<Transition> tlist = new ArrayList<>(enabledTransitions);
       Transition t = tlist.get(0);
+      System.out.println(t.name+",");
       code = this.getCode(t);
     }
     else {
-      System.out.println("No trasition enabled.");
+      System.out.println("No transition enabled.");
       return;
     }
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
@@ -75,7 +80,7 @@ public class Simulator {
     }
     Set<State> newConfiguration = new HashSet<>();
     for(Transition t : enabledTransitions) {
-      System.out.println("Enabled transition: " + t.name);
+      //System.out.println("Enabled transition: " + t.name);
       Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
                                     .getLeafNodes();
       newConfiguration.addAll(atomicStates);
@@ -83,9 +88,11 @@ public class Simulator {
     if(newConfiguration.isEmpty() == false) {
       this.configuration = newConfiguration;
     }
+    System.out.print("States in configuration : {");
     for(State s : this.configuration) {
-      System.out.println("New state : " + s.name);
+      System.out.print(s.name+", ");
     }
+    System.out.println("}");
   }
 
   private Map<Declaration, Expression> makeValueEnvironment() {
@@ -246,7 +253,7 @@ public class Simulator {
       }
     }
     Tree<State> subtree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
-    System.out.println("source subtree =");
+    System.out.print("source subtree = ");
     TreeMap<State, String> namemap = new TreeMap<>();
     Function<State, String> function = new Function<>() {
       public String apply(State state) {
