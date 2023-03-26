@@ -170,9 +170,12 @@ public class Simulator {
   }
 
   private void makeCFGs(State state) throws Exception {
+    this.converter.name=state.name+"_N";
     this.CFGs.put(state.entry, this.converter.convert(state.entry));
+    this.converter.name=state.name+"_X";
     this.CFGs.put(state.exit, this.converter.convert(state.exit));
     for(Transition t : state.transitions) {
+      this.converter.name=t.name+"_A";
       this.CFGs.put(t.action, this.converter.convert(t.action));
     }
     for(State s : state.states) {
