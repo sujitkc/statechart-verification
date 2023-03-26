@@ -33,22 +33,25 @@ public class TestTransitions {
 
     Statechart statechart = null;
     @Test
-    public void runAllFiles(){
+    public void testAll_1_source_atomic(){
       try{
-        inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+        inputfile="data/constabl_transitions/1_source_atomic/*.stbl";
+        String[] listofActiveAtomicStates={"A"};
+            
         if(!inputfile.contains("*.stbl")){
-          runTest("test","data/"+ inputfile);
+          runTest("test", inputfile,listofActiveAtomicStates);
         }
         else{
           try{
             String dirpath=inputfile.replace("*.stbl","");
-                File directoryPath = new File("data/"+dirpath);
+            File directoryPath = new File(dirpath);
             //List of all files and directories
             String contents[] = directoryPath.list();
-            System.out.println("List of files and directories in the specified directory:");
+            //System.out.println("List of files and directories in the specified directory:");
             for(int i=0; i<contents.length; i++) {
             System.out.println(dirpath+contents[i]);
-            runTest("test"+i, "data/"+dirpath+contents[i]);
+            runTest("test_"+dirpath+contents[i], dirpath+contents[i],listofActiveAtomicStates);
             }
           }
           catch(Exception e){
@@ -65,18 +68,341 @@ public class TestTransitions {
       }
     }
     
-    public void runTest(String testname, String filename) {
+    //@Test
+    public void testAll_2_source_composite_activeAtomicSubState(){
+      try{
+        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+        inputfile="data/constabl_transitions/2#1_source_composite(activeatomicsubstate)/*.stbl";
+        String[] listofActiveAtomicStates={"A1"};
+
+        if(!inputfile.contains("*.stbl")){
+          runTest("test", inputfile, listofActiveAtomicStates);
+        }
+        else{
+          try{
+            String dirpath=inputfile.replace("*.stbl","");
+                File directoryPath = new File(dirpath);
+            //List of all files and directories
+            String contents[] = directoryPath.list();
+            System.out.println("List of files and directories in the specified directory:");
+            for(int i=0; i<contents.length; i++) {
+            System.out.println(dirpath+contents[i]);
+            runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+            }
+          }
+          catch(Exception e){
+            System.out.println("Folder path exception");
+            e.printStackTrace();
+            System.exit(1);
+          }
+        }
+      
+      }
+      catch(Exception e){
+        System.out.println("Something went wrong! ");
+        e.printStackTrace();
+      }
+    }
+    //@Test
+    public void testAll_2_source_composite_activeCompositeSubstate(){
+      try{
+        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+        inputfile="data/constabl_transitions/2#2_source_composite(activecompositesubstate)/*.stbl";
+        String[] listofActiveAtomicStates={"A11"};
+
+        if(!inputfile.contains("*.stbl")){
+          runTest("test", inputfile, listofActiveAtomicStates);
+        }
+        else{
+          try{
+            String dirpath=inputfile.replace("*.stbl","");
+                File directoryPath = new File(dirpath);
+            //List of all files and directories
+            String contents[] = directoryPath.list();
+            System.out.println("List of files and directories in the specified directory:");
+            for(int i=0; i<contents.length; i++) {
+            System.out.println(dirpath+contents[i]);
+            runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+            }
+          }
+          catch(Exception e){
+            System.out.println("Folder path exception");
+            e.printStackTrace();
+            System.exit(1);
+          }
+        }
+      
+      }
+      catch(Exception e){
+        System.out.println("Something went wrong! ");
+        e.printStackTrace();
+      }
+    }
+    
+    @Test
+    public void testAll_2_source_composite_activeShellSubstate(){
+      try{
+        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+        inputfile="data/constabl_transitions/2#3(4)source_composite(activeshellsubstate)/*.stbl";
+        String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
+
+        if(!inputfile.contains("*.stbl")){
+          runTest("test", inputfile, listofActiveAtomicStates);
+        }
+        else{
+          try{
+            String dirpath=inputfile.replace("*.stbl","");
+                File directoryPath = new File(dirpath);
+            //List of all files and directories
+            String contents[] = directoryPath.list();
+            System.out.println("List of files and directories in the specified directory:");
+            for(int i=0; i<contents.length; i++) {
+            System.out.println(dirpath+contents[i]);
+            runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+            }
+          }
+          catch(Exception e){
+            System.out.println("Folder path exception");
+            e.printStackTrace();
+            System.exit(1);
+          }
+        }
+      
+      }
+      catch(Exception e){
+        System.out.println("Something went wrong! ");
+        e.printStackTrace();
+      }
+    }
+  //@Test
+  public void testAll_3_source_substate_of_composite_activeAtomicSubState(){
+    try{
+      //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+      inputfile="data/constabl_transitions/3#1_source_substateofcomposite(activeatomic)/*.stbl";
+      String[] listofActiveAtomicStates={"A1"};
+
+      if(!inputfile.contains("*.stbl")){
+        runTest("test", inputfile, listofActiveAtomicStates);
+      }
+      else{
+        try{
+          String dirpath=inputfile.replace("*.stbl","");
+              File directoryPath = new File(dirpath);
+          //List of all files and directories
+          String contents[] = directoryPath.list();
+          System.out.println("List of files and directories in the specified directory:");
+          for(int i=0; i<contents.length; i++) {
+          System.out.println(dirpath+contents[i]);
+          runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+          }
+        }
+        catch(Exception e){
+          System.out.println("Folder path exception");
+          e.printStackTrace();
+          System.exit(1);
+        }
+      }
+    
+    }
+    catch(Exception e){
+      System.out.println("Something went wrong! ");
+      e.printStackTrace();
+    }
+  }
+  //@Test
+  public void testAll_3_source_substate_of_composite_activeCompositeSubstate(){
+    try{
+      //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+      inputfile="data/constabl_transitions/3#2_source_substateofcomposite(activecompositesubstate)/*.stbl";
+      String[] listofActiveAtomicStates={"A11"};
+
+      if(!inputfile.contains("*.stbl")){
+        runTest("test", inputfile, listofActiveAtomicStates);
+      }
+      else{
+        try{
+          String dirpath=inputfile.replace("*.stbl","");
+              File directoryPath = new File(dirpath);
+          //List of all files and directories
+          String contents[] = directoryPath.list();
+          System.out.println("List of files and directories in the specified directory:");
+          for(int i=0; i<contents.length; i++) {
+          System.out.println(dirpath+contents[i]);
+          runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+          }
+        }
+        catch(Exception e){
+          System.out.println("Folder path exception");
+          e.printStackTrace();
+          System.exit(1);
+        }
+      }
+    
+    }
+    catch(Exception e){
+      System.out.println("Something went wrong! ");
+      e.printStackTrace();
+    }
+  }
+  
+  @Test
+  public void testAll_3_source_substate_of_composite_activeShellSubstate(){
+    try{
+      //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+      inputfile="data/constabl_transitions/3#3(4)source_substateofcomposite(activeshellsubstate)/*.stbl";
+      String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
+
+      if(!inputfile.contains("*.stbl")){
+        runTest("test", inputfile, listofActiveAtomicStates);
+      }
+      else{
+        try{
+          String dirpath=inputfile.replace("*.stbl","");
+              File directoryPath = new File(dirpath);
+          //List of all files and directories
+          String contents[] = directoryPath.list();
+          System.out.println("List of files and directories in the specified directory:");
+          for(int i=0; i<contents.length; i++) {
+          System.out.println(dirpath+contents[i]);
+          runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+          }
+        }
+        catch(Exception e){
+          System.out.println("Folder path exception");
+          e.printStackTrace();
+          System.exit(1);
+        }
+      }
+    
+    }
+    catch(Exception e){
+      System.out.println("Something went wrong! ");
+      e.printStackTrace();
+    }
+  }
+
+//@Test
+public void testAll_5_source_region_activeAtomicSubState(){
+  try{
+    //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    inputfile="data/constabl_transitions/2#1_source_composite(activeatomicsubstate)/*.stbl";
+    String[] listofActiveAtomicStates={"A1"};
+
+    if(!inputfile.contains("*.stbl")){
+      runTest("test", inputfile, listofActiveAtomicStates);
+    }
+    else{
+      try{
+        String dirpath=inputfile.replace("*.stbl","");
+            File directoryPath = new File(dirpath);
+        //List of all files and directories
+        String contents[] = directoryPath.list();
+        System.out.println("List of files and directories in the specified directory:");
+        for(int i=0; i<contents.length; i++) {
+        System.out.println(dirpath+contents[i]);
+        runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+        }
+      }
+      catch(Exception e){
+        System.out.println("Folder path exception");
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
+  
+  }
+  catch(Exception e){
+    System.out.println("Something went wrong! ");
+    e.printStackTrace();
+  }
+}
+//@Test
+public void testAll_5_source_region_activeCompositeSubstate(){
+  try{
+    //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    inputfile="data/constabl_transitions/2#2_source_composite(activecompositesubstate)/*.stbl";
+    String[] listofActiveAtomicStates={"A11"};
+
+    if(!inputfile.contains("*.stbl")){
+      runTest("test", inputfile, listofActiveAtomicStates);
+    }
+    else{
+      try{
+        String dirpath=inputfile.replace("*.stbl","");
+            File directoryPath = new File(dirpath);
+        //List of all files and directories
+        String contents[] = directoryPath.list();
+        System.out.println("List of files and directories in the specified directory:");
+        for(int i=0; i<contents.length; i++) {
+        System.out.println(dirpath+contents[i]);
+        runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+        }
+      }
+      catch(Exception e){
+        System.out.println("Folder path exception");
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
+  
+  }
+  catch(Exception e){
+    System.out.println("Something went wrong! ");
+    e.printStackTrace();
+  }
+}
+
+@Test
+public void testAll_5_source_region_activeShellSubstate(){
+  try{
+    //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    inputfile="data/constabl_transitions/5#3_source_region(activeshellsubstate)/*.stbl";
+    String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
+
+    if(!inputfile.contains("*.stbl")){
+      runTest("test", inputfile, listofActiveAtomicStates);
+    }
+    else{
+      try{
+        String dirpath=inputfile.replace("*.stbl","");
+            File directoryPath = new File(dirpath);
+        //List of all files and directories
+        String contents[] = directoryPath.list();
+        System.out.println("List of files and directories in the specified directory:");
+        for(int i=0; i<contents.length; i++) {
+        System.out.println(dirpath+contents[i]);
+        runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+        }
+      }
+      catch(Exception e){
+        System.out.println("Folder path exception");
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
+  
+  }
+  catch(Exception e){
+    System.out.println("Something went wrong! ");
+    e.printStackTrace();
+  }
+}
+    public void runTest(String testname, String filename, String[] statename) {
       Statechart statechart = this.test_template(testname, filename);
   
       try
       {
         Set<State> configuration = new HashSet<>();
         Simulator simulator = new Simulator(statechart, configuration);
-        State s1 = simulator.getSubstateByName("A", statechart);
-       // State s2 = simulator.getSubstateByName("B2B", statechart);
-        configuration.add(s1);
+        for(int i=0;i<statename.length;i++){
+          State s1 = simulator.getSubstateByName(statename[i], statechart);
+          configuration.add(s1);
+          System.out.println(s1.name);
+        }
+          // State s2 = simulator.getSubstateByName("B2B", statechart);
+        
         //configuration.add(s2);
-        System.out.println(s1.name);
+       
         //System.out.println(s2.name);
         simulator.simulationStep("e1");
       }
