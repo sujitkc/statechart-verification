@@ -76,7 +76,7 @@ public class TestSimulator {
       new Simulator(statechart);
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }

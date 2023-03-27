@@ -118,7 +118,7 @@ public class TestConStaBLSimulator {
       new StatechartSimulator(statechart);
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       e.printStackTrace();
      
       System.exit(1);

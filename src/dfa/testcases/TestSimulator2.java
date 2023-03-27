@@ -70,7 +70,7 @@ public class TestSimulator2 {
       System.out.println(map.map(function, simulator.stateTree));
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -91,7 +91,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -114,7 +114,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -136,7 +136,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -158,7 +158,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -180,7 +180,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -202,7 +202,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -224,7 +224,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -246,7 +246,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -270,7 +270,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -291,7 +291,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -312,7 +312,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -335,7 +335,7 @@ public class TestSimulator2 {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }

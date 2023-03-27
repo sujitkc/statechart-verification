@@ -7,6 +7,7 @@ public class CFGSkipNode extends CFGBasicBlockNode {
   }
 
   public String toString() {
-    return "Skip Node";
+    return this.cfg.name+" : "+ "Skip Node";
   }
+  
 }

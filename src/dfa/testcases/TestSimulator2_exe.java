@@ -47,7 +47,7 @@ public class TestSimulator2_exe {
     }
     catch(Exception e) {
       e.printStackTrace();
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }
@@ -70,7 +70,7 @@ public class TestSimulator2_exe {
 //      simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       e.printStackTrace();
       System.exit(1);
     }
@@ -94,7 +94,7 @@ public class TestSimulator2_exe {
       simulator.simulationStep("e1");
     }
     catch(Exception e) {
-      System.out.println("Something Went Wrong!\n");
+      System.out.println("Something Went Wrong!\n"+e);
       System.exit(1);
     }
   }

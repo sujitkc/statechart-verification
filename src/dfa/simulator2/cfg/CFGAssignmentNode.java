@@ -11,6 +11,6 @@ public class CFGAssignmentNode extends CFGBasicBlockNode {
   }
 
   public String toString() {
-    return "CFGAssignmentNode " + this.assignment.toString();
+    return this.cfg.name+" : "+ "CFGAssignmentNode " + this.assignment.toString();
   }
 }

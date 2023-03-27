@@ -29,7 +29,7 @@ public class CFGDecisionNode extends CFGNode {
   }
 
   public String toString() {
-    String s = "IfNode\n";
+    String s = this.cfg.name+" : "+ "IfNode\n";
     s += "\tCondition = " + this.condition;
     s += "\tThen statement = " + this.thenSuccessor;
     s += "\tElse statement = " + this.elseSuccessor;

@@ -30,6 +30,15 @@ Name.java
       Declaration d = lhs.getDeclaration();
       env.put(d, newvalue);
     }
+    else if(statement instanceof IfStatement){
+      System.out.println("ActionLanguageInterpreter::interpret - if statement detected");
+    }
+    else if(statement instanceof WhileStatement){
+      System.out.println("ActionLanguageInterpreter::interpret - While statement detected");
+    }
+    else if(statement instanceof SkipStatement){
+      System.out.println("ActionLanguageInterpreter::interpret - SkipStatement detected");
+    }
     else {
       throw new Exception("ActionLanguageInterpreter::interpret - case not implemented.");
     }
@@ -98,20 +107,29 @@ Name.java
         return new BooleanConstant(bleft.value || bright.value);
       }
       else if(be.operator.equals("=")) {
-	Boolean answer = true;
-	if(left instanceof BooleanConstant && right instanceof BooleanConstant) {
-	  BooleanConstant bleft  = (BooleanConstant)left;
-	  BooleanConstant bright = (BooleanConstant)right;
-	  answer = (bleft.value == bright.value);
-	}
-	else if(left instanceof IntegerConstant && right instanceof IntegerConstant) {
-	  IntegerConstant ileft  = (IntegerConstant)left;
-	  IntegerConstant iright = (IntegerConstant)right;
-	  answer = (ileft.value == iright.value);
-	}
+          Boolean answer = true;
+          if(left instanceof BooleanConstant && right instanceof BooleanConstant) {
+            BooleanConstant bleft  = (BooleanConstant)left;
+            BooleanConstant bright = (BooleanConstant)right;
+            answer = (bleft.value == bright.value);
+          }
+          else if(left instanceof IntegerConstant && right instanceof IntegerConstant) {
+            IntegerConstant ileft  = (IntegerConstant)left;
+            IntegerConstant iright = (IntegerConstant)right;
+            answer = (ileft.value == iright.value);
+          }
+          else if(left instanceof Name && right instanceof IntegerConstant){
+            IntegerConstant iright = (IntegerConstant)right;
+            Declaration d=((Name)left).getDeclaration();
+            Expression e = env.get(d);
+            if(e instanceof IntegerConstant){
+              IntegerConstant ileft = (IntegerConstant)e;
+              answer = (ileft.value == iright.value);
+            }
+          }
         return new BooleanConstant(answer);
       }
     }
-    throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented.");
+    throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented." + expression +" : "+expression.getClass());
   }
 }

@@ -63,12 +63,12 @@ public class TestTransitions {
       
       }
       catch(Exception e){
-        System.out.println("Something went wrong! ");
+        System.out.println("Something went wrong! "+e);
         e.printStackTrace();
       }
     }
     
-    //@Test
+    @Test
     public void testAll_2_source_composite_activeAtomicSubState(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -99,11 +99,11 @@ public class TestTransitions {
       
       }
       catch(Exception e){
-        System.out.println("Something went wrong! ");
+        System.out.println("Something went wrong! "+e);
         e.printStackTrace();
       }
     }
-    //@Test
+    @Test
     public void testAll_2_source_composite_activeCompositeSubstate(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -134,12 +134,12 @@ public class TestTransitions {
       
       }
       catch(Exception e){
-        System.out.println("Something went wrong! ");
+        System.out.println("Something went wrong! "+e);
         e.printStackTrace();
       }
     }
     
-    //@Test
+    @Test
     public void testAll_2_source_composite_activeShellSubstate(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -170,11 +170,11 @@ public class TestTransitions {
       
       }
       catch(Exception e){
-        System.out.println("Something went wrong! ");
+        System.out.println("Something went wrong! "+e);
         e.printStackTrace();
       }
     }
-  //@Test
+  @Test
   public void testAll_3_source_substate_of_composite_activeAtomicSubState(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -205,11 +205,11 @@ public class TestTransitions {
     
     }
     catch(Exception e){
-      System.out.println("Something went wrong! ");
+      System.out.println("Something went wrong! "+e);
       e.printStackTrace();
     }
   }
-  //@Test
+  @Test
   public void testAll_3_source_substate_of_composite_activeCompositeSubstate(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -240,12 +240,12 @@ public class TestTransitions {
     
     }
     catch(Exception e){
-      System.out.println("Something went wrong! ");
+      System.out.println("Something went wrong! "+e);
       e.printStackTrace();
     }
   }
   
-  //@Test
+  @Test
   public void testAll_3_source_substate_of_composite_activeShellSubstate(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -276,12 +276,12 @@ public class TestTransitions {
     
     }
     catch(Exception e){
-      System.out.println("Something went wrong! ");
+      System.out.println("Something went wrong! "+e);
       e.printStackTrace();
     }
   }
 
-//@Test
+@Test
 public void testAll_5_source_region_activeAtomicSubState(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -312,11 +312,11 @@ public void testAll_5_source_region_activeAtomicSubState(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
-//@Test
+@Test
 public void testAll_5_source_region_activeCompositeSubstate(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -347,12 +347,12 @@ public void testAll_5_source_region_activeCompositeSubstate(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
 
-//@Test
+@Test
 public void testAll_5_source_region_activeShellSubstate(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -383,14 +383,14 @@ public void testAll_5_source_region_activeShellSubstate(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
 
 // tests for the files under folder #6
 
-//@Test
+@Test
 public void testAll_6_source_substate_of_region_activeAtomicSubState(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -421,11 +421,11 @@ public void testAll_6_source_substate_of_region_activeAtomicSubState(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
-//@Test
+@Test
 public void testAll_6_source_substate_of_region_activeCompositeSubstate(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -456,12 +456,12 @@ public void testAll_6_source_substate_of_region_activeCompositeSubstate(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
 
-//@Test
+@Test
 public void testAll_6_source_substate_of_region_activeShellSubstate(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -492,7 +492,7 @@ public void testAll_6_source_substate_of_region_activeShellSubstate(){
   
   }
   catch(Exception e){
-    System.out.println("Something went wrong! ");
+    System.out.println("Something went wrong! "+e);
     e.printStackTrace();
   }
 }
@@ -518,7 +518,7 @@ public void testAll_6_source_substate_of_region_activeShellSubstate(){
         simulator.simulationStep("e1");
       }
       catch(Exception e) {
-        System.out.println("Something Went Wrong!\n");
+        System.out.println("Something Went Wrong!\n"+e);
         System.exit(1);
       }
     }
@@ -560,7 +560,7 @@ public void testAll_6_source_substate_of_region_activeShellSubstate(){
     }
      */
   }
-//   //@Test
+//   @Test
 //   public void testSimulator() {
 
     

@@ -59,8 +59,10 @@ public class CodeSimulator {
       System.out.println("Initial control point : " + cfgCode.cfg);
       this.controlPoints.add(cfgCode.cfg.entryNode);
     }
+      System.out.println("Printing all control points : ");
+    
     for(CFGNode n : controlPoints) {
-      System.out.println(n);
+      System.out.println(n.toString());
     }
     while(controlPoints.isEmpty() == false) {
       CFGNode node = this.randomSelect();
@@ -93,9 +95,11 @@ public class CodeSimulator {
 
   private void simulateExitNode(CFGNode node) {
     System.out.println("Simulating exit node " + node);
+    
     CFGCode code = this.cfgMap.get(node.getCFG());
     Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
     Set<CFGNode> nextNodes = new HashSet<>();
+    System.out.println("====================");
     for(CFGCode nextCode : nextCodes) {
       System.out.println("cfg of next code = " + nextCode.cfg);
       nextNodes.add(nextCode.cfg.entryNode);
@@ -113,7 +117,7 @@ public class CodeSimulator {
         Set<CFGNode> sPredecessors = new HashSet<>();
 	for(CFGCode prevCode : prevCodes) {
           sPredecessors.add(prevCode.cfg.exitNode);
-          System.out.println("cfg of prev code = " + prevCode.cfg);
+          System.out.println("Predecessor added : " + prevCode.cfg);
 	}
 	this.joinPoints.put(s, sPredecessors);
       }
@@ -127,6 +131,7 @@ public class CodeSimulator {
         this.controlPoints.add(s);
       }
     }
+    System.out.println("====================");
   }
 
   private void simulateDecisionNode(CFGDecisionNode node) throws Exception {
