@@ -59,6 +59,7 @@ public class CodeSimulator {
       System.out.println("Initial control point : " + cfgCode.cfg);
       this.controlPoints.add(cfgCode.cfg.entryNode);
     }
+    
       System.out.println("Printing all control points : ");
     
     for(CFGNode n : controlPoints) {
@@ -66,9 +67,14 @@ public class CodeSimulator {
     }
     while(controlPoints.isEmpty() == false) {
       CFGNode node = this.randomSelect();
+      if(node==null)
+        break;
       System.out.println("executing " + node);
+      
       this.controlPoints.remove(node);
-      if(node.equals(node.getCFG().exitNode)) {
+     /*Original code */ 
+     /*if(node.equals(node.getCFG().exitNode)) {
+        
         simulateExitNode(node);
       }
       else if(node instanceof CFGAssignmentNode) {
@@ -79,14 +85,58 @@ public class CodeSimulator {
       }
       else if(node instanceof CFGDecisionNode) {
         this.simulateDecisionNode((CFGDecisionNode)node);
+      }*/
+      
+      /*Changed by Karthika -- earlier the exit node was not being executed*/
+      
+      if(node instanceof CFGAssignmentNode) {
+        this.simulateAssignmentNode((CFGAssignmentNode)node);
       }
-    }
-  }
+      else if(node instanceof CFGSkipNode) {
+        this.simulateSkipNode((CFGSkipNode)node);
+      }
+      else if(node instanceof CFGDecisionNode) {
+        this.simulateDecisionNode((CFGDecisionNode)node);
+      }
+      if(node.equals(node.getCFG().exitNode)) {
+        
+        simulateExitNode(node);
+      }
+      /*if(node.equals(node.getCFG().exitNode)) {
+        if(node instanceof CFGAssignmentNode) {
+          this.simulateAssignmentNodeWithoutSuccessor((CFGAssignmentNode)node);
+        }
+        else if(node instanceof CFGSkipNode) {
+          this.simulateSkipNode((CFGSkipNode)node);
+        }
+        else if(node instanceof CFGDecisionNode) {
+          this.simulateDecisionNode((CFGDecisionNode)node);
+        }
+        simulateExitNode(node);
+      }
+      else if(node instanceof CFGAssignmentNode) {
+        this.simulateAssignmentNode((CFGAssignmentNode)node);
+      }
+      else if(node instanceof CFGSkipNode) {
+        this.simulateSkipNode((CFGSkipNode)node);
+      }
+      else if(node instanceof CFGDecisionNode) {
+        this.simulateDecisionNode((CFGDecisionNode)node);
+      }*/
+     
+      System.out.println("Printing Environment : "+this.env.values());
 
+    }
+    System.out.println("Printing Environment : "+this.env.values());
+
+  }
   private void simulateAssignmentNode(CFGAssignmentNode node) throws Exception {
    CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
-    ActionLanguageInterpreter.execute(assignmentNode.assignment, this.env);
-    this.controlPoints.add(assignmentNode.getSuccessor());
+    // return type change for execute method to update environment - changed by karthika
+    this.env=ActionLanguageInterpreter.execute(assignmentNode.assignment, this.env);
+    //if it is exit node, it will not have a successor - changed by karthika
+    if(assignmentNode.getSuccessor()!=null)
+      this.controlPoints.add(assignmentNode.getSuccessor());
   }
   
   private void simulateSkipNode(CFGSkipNode node) {

@@ -36,7 +36,7 @@ public class TestActions {
     public void testAll_1_source_atomic(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-        inputfile="data/constabl_actions/1_source_atomic/t1_1_global_sequence.stbl";
+        inputfile="data/constabl_actions/1_source_atomic/t1_1.stbl";
         String[] listofActiveAtomicStates={"A"};
             
         if(!inputfile.contains("*.stbl")){

@@ -30,9 +30,11 @@ public class ASTToCFG {
     else if(s instanceof WhileStatement) {
       return this.convertWhileStatement((WhileStatement) s);
     }
+  
     else if(s instanceof StatementList) {
       return this.convertStatementList((StatementList) s);
     }
+
     else {
       throw new Exception("ASTToCFG.convert: Not implemented for this class - " + s.getClass());
     }
