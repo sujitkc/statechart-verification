@@ -9,63 +9,79 @@ statechart  chart{
   functions {
   input<||>() : int;
   }
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+  }
+   x:int:local;
+  entry : {x:=1;x:=2;}
+  exit  : {x:=3;x:=4;} 
+  functions {
+  input<||>() : int;
+  }
     state A{
-        entry:{}
-	exit:{}
-	 state A1{
-		entry:{}
-		exit:{}
+        entry:{x:=5;x:=6;}
+	exit:{x:=7;x:=8;}
+	   state A1{
+        entry:{x:=115;x:=116;}
+		exit:{x:=117;x:=118;}
 	    
-    	}      
+    	} 
     }
 
 	
 		shell B{
-			entry:{}
-			exit:{}
+			entry:{x:=9;x:=10;}
+			exit:{x:=11;x:=12;}
 			state R1{
-				entry:{}
-				exit:{}
-	    				shell Sh{
-						entry:{}
-						exit:{}
+				entry:{x:=13;x:=14;}
+				exit:{x:=15;x:=16;}
+	    			state R1A{
+					entry:{x:=17;x:=18;}
+					exit:{x:=19;x:=20;}
+					
+						shell Sh{
+						entry:{x:=21;x:=22;}
+						exit:{x:=23;x:=24;}
 	    					state R1{
-	    						entry:{}
-							exit:{}
+	    						entry:{x:=25;x:=26;}
+							exit:{x:=27;x:=28;}
 							state ShR1A{
-	    							entry:{}
-								exit:{}
+	    							entry:{x:=29;x:=30;}
+								exit:{x:=31;x:=32;}
 							
 							}
 	    					}
 	    					state R2{
-	    						entry:{}
-							exit:{}
+	    						entry:{x:=33;x:=34;}
+							exit:{x:=36;x:=35;}
 							state ShR2A{
-	    							entry:{}
-								exit:{}
+	    							entry:{x:=37;x:=38;}
+								exit:{x:=39;x:=40;}
 							
 							}
 	    					}
-    					
+    					}
     				}
     				state R1B{
-					entry:{}
-					exit:{}
+					entry:{x:=41;x:=42;}
+					exit:{x:=43;x:=44;}
 	    
     				}
    			 }
 			state R2{
-				entry:{}
-				exit:{}
+				entry:{x:=45;x:=46;}
+				exit:{x:=47;x:=48;}
 	    			state R2A{
-					entry:{}
-					exit:{}
+					entry:{x:=49;x:=50;}
+					exit:{x:=51;x:=52;}
 	    
     				}
     				state R2B{
-					entry:{}
-					exit:{}
+					entry:{x:=53;x:=54;}
+					exit:{x:=55;x:=56;}
 	    
     				}	    
    			 }
@@ -75,6 +91,7 @@ statechart  chart{
     	
 
   
+
 
     transition t1{
         source: chart.A;

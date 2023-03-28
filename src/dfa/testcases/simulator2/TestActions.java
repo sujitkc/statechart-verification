@@ -32,7 +32,7 @@ public class TestActions {
  Typechecker typechecker;
 
     Statechart statechart = null;
-    @Test
+    //@Test
     public void testAll_1_source_atomic(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -95,11 +95,24 @@ public class TestActions {
       }
     }
     
-    //@Test
+    @Test
     public void testAll_2_source_composite_activeAtomicSubState(){
       try{
-        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-        inputfile="data/constabl_transitions/2#1_source_composite(activeatomicsubstate)/*.stbl";
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_1.stbl"; // PASS
+        // inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_2#1.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_2#2.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_2#3.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_3#1.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_3#2.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_3#3.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_4.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#1.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#2.stbl"; //FAIL
+       // inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#3.stbl"; //FAIL
+      //  inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#1.stbl";
+        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#2.stbl";
+       inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#3.stbl";
+        
         String[] listofActiveAtomicStates={"A1"};
 
         if(!inputfile.contains("*.stbl")){

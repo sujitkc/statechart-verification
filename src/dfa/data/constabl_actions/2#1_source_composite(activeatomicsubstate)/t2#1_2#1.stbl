@@ -4,26 +4,27 @@ statechart  chart{
 	e;
 	e1;
   }
-  entry : {}
-  exit  : {} 
+   x:int:local;
+  entry : {x:=1;x:=2;}
+  exit  : {x:=3;x:=4;} 
   functions {
   input<||>() : int;
   }
     state A{
-        entry:{}
-	exit:{}
-	 state A1{
-		entry:{}
-		exit:{}
+        entry:{x:=5;x:=6;}
+	exit:{x:=7;x:=8;}
+	state A1{
+		entry:{x:=9;x:=10;}
+		exit:{x:=11;x:=12;}
 	    
-    	}      
+    	}    
     }
   state B{
-	entry:{}
-	exit:{}
+	entry:{x:=14;x:=15;}
+	exit:{x:=16;x:=17;}
 	state B1{
-		entry:{}
-		exit:{}
+		entry:{x:=18;x:=19;}
+	exit:{x:=20;x:=21;}
 	
 
     	}
@@ -35,6 +36,6 @@ statechart  chart{
         destination: chart.B;
         trigger: e1;
         guard:(true);
-        action:{}
+        action:{x:=22;x:=23;}
 	}   
 }
