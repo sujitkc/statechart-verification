@@ -4,51 +4,53 @@ statechart  chart{
 	e;
 	e1;
   }
-  entry : {}
-  exit  : {} 
+    x:int:local;
+  entry : {x:=1;x:=2;}
+  exit  : {x:=3;x:=4;} 
   functions {
   input<||>() : int;
   }
     state A{
-        entry:{}
-	exit:{}
+        entry:{
+        x:=5;
+        x:=6;
+        }
+	      exit:{
+          x:=7;
+          x:=8;
+          }
 	    
     }
-
+  
 	
-		shell B{
-			entry:{}
-			exit:{}
+			shell B{
+			entry:{x:=13;x:=14;}
+			exit:{x:=15;x:=16;}
 			state R1{
-				entry:{}
-				exit:{}
+				entry:{x:=17;x:=18;}
+				exit:{x:=19;x:=20;}
 	    			state A{
-					entry:{}
-					exit:{}
+					entry:{x:=21; x:=22;}
+					exit:{x:=23; x:=24;}
 	    
     				}
    			 }
 			state R2{
-				entry:{}
-				exit:{}
+				entry:{x:=25; x:=26;}
+				exit:{x:=27; x:=28;}
 	    			state A{
-					entry:{}
-					exit:{}
+					entry:{x:=29; x:=30;}
+					exit:{x:=31; x:=32;}
 	    
     				}	    
    			 }
 
     		}
-
-    	
-
-  
-
     transition t1{
         source: chart.A;
         destination: chart.B;
         trigger: e1;
         guard:(true);
-        action:{}
+        action:{x:=33;x:=34;}
 	}   
 }

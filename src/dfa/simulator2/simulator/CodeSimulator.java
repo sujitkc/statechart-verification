@@ -102,27 +102,6 @@ public class CodeSimulator {
         
         simulateExitNode(node);
       }
-      /*if(node.equals(node.getCFG().exitNode)) {
-        if(node instanceof CFGAssignmentNode) {
-          this.simulateAssignmentNodeWithoutSuccessor((CFGAssignmentNode)node);
-        }
-        else if(node instanceof CFGSkipNode) {
-          this.simulateSkipNode((CFGSkipNode)node);
-        }
-        else if(node instanceof CFGDecisionNode) {
-          this.simulateDecisionNode((CFGDecisionNode)node);
-        }
-        simulateExitNode(node);
-      }
-      else if(node instanceof CFGAssignmentNode) {
-        this.simulateAssignmentNode((CFGAssignmentNode)node);
-      }
-      else if(node instanceof CFGSkipNode) {
-        this.simulateSkipNode((CFGSkipNode)node);
-      }
-      else if(node instanceof CFGDecisionNode) {
-        this.simulateDecisionNode((CFGDecisionNode)node);
-      }*/
      
       System.out.println("Printing Environment : "+this.env.values());
 
