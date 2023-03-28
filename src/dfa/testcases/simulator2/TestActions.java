@@ -109,9 +109,9 @@ public class TestActions {
         //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#1.stbl"; //FAIL
         //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#2.stbl"; //FAIL
        // inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_5#3.stbl"; //FAIL
-      //  inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#1.stbl";
-        //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#2.stbl";
-       inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#3.stbl";
+      //  inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#1.stbl"; //FAIL
+      //  inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#2.stbl"; //FAIL
+      // inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_6#3.stbl"; //FAIL
         
         String[] listofActiveAtomicStates={"A1"};
 

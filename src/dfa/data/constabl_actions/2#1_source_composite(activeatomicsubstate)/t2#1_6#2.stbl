@@ -1,4 +1,4 @@
-statechart  chart{
+statechart chart{
   
   events {
 	e;
@@ -13,7 +13,7 @@ statechart  chart{
     state A{
         entry:{x:=5;x:=6;}
 	exit:{x:=7;x:=8;}
-	    state A{
+	    state A1{
         entry:{x:=115;x:=116;}
 		exit:{x:=117;x:=118;}
 	    
