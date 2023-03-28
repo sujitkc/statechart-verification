@@ -31,8 +31,8 @@ statechart  chart{
           x:=12;
           }
 	state B1{
-		entry:{}
-		exit:{}
+		entry:{x:=20;x:=21;}
+		exit:{x:=22;x:=23;}
 		state B11{
 			entry:{x:=15; x:=16;}
 			exit:{x:=17;x:=18;}

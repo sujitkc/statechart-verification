@@ -36,7 +36,34 @@ public class TestActions {
     public void testAll_1_source_atomic(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-        inputfile="data/constabl_actions/1_source_atomic/t1_1.stbl";
+        //inputfile="data/constabl_actions/1_source_atomic/t1_1.stbl";    //PASS
+        //inputfile="data/constabl_actions/1_source_atomic/t1_2#1.stbl";  //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_2#2.stbl"; //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_2#3.stbl";   //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_3#1.stbl";     //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_3#2.stbl";     //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_3#3.stbl";   //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_4.stbl";     //PASS
+        // inputfile="data/constabl_actions/1_source_atomic/t1_5#1.stbl";     //FAIL
+        // inputfile="data/constabl_actions/1_source_atomic/t1_5#2.stbl";     //FAIL
+        // inputfile="data/constabl_actions/1_source_atomic/t1_5#3.stbl";     //partial PASS - R1's parent is a shell - which is not considered to create a ConcurrentCode
+        // inputfile="data/constabl_actions/1_source_atomic/t1_6#1.stbl";     //FAIL
+        // inputfile="data/constabl_actions/1_source_atomic/t1_6#2.stbl";     //FAIL
+        // inputfile="data/constabl_actions/1_source_atomic/t1_6#3.stbl";      //Fails
+         /*
+          * data/constabl_actions/1_source_atomic/t1_6#3.stbl
+          Fails when destination is chart.B - it never ends in a state where x value can be 50 or 54
+          Fails when destination is chart.B.R1 - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R2 - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R1 - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R1.R1A - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R2.R2B - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R1.R1A.Sh - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R1.R1A.Sh - it does not create proper final configuration as well as the x value has problem
+          Fails when destination is chart.B.R1.R1A.Sh.R1 - it does not create proper final configuration as well as the x value has problem
+
+          */
+        
         String[] listofActiveAtomicStates={"A"};
             
         if(!inputfile.contains("*.stbl")){
