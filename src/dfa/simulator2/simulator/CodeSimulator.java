@@ -103,10 +103,10 @@ public class CodeSimulator {
         simulateExitNode(node);
       }
      
-      System.out.println("Printing Environment: "+this.env.values());
+      System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
     }
-    System.out.println("Printing Environment outside loop: "+this.env.values());
+    System.out.println("Printing Environment outside loop: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
   }
   private void simulateAssignmentNode(CFGAssignmentNode node) throws Exception {

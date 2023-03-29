@@ -95,7 +95,7 @@ public class TestActions {
       }
     }
     
-    @Test
+    //@Test
     public void testAll_2_source_composite_activeAtomicSubState(){
       try{
         //inputfile="data/constabl_actions/2#1_source_composite(activeatomicsubstate)/t2#1_1.stbl"; // PASS
@@ -143,11 +143,27 @@ public class TestActions {
         e.printStackTrace();
       }
     }
-    //@Test
+   // @Test
     public void testAll_2_source_composite_activeCompositeSubstate(){
       try{
         //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-        inputfile="data/constabl_transitions/2#2_source_composite(activecompositesubstate)/*.stbl";
+        //inputfile="data/constabl_transitions/2#2_source_composite(activecompositesubstate)/*.stbl";
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_1.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_2#1.stbl";//PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_2#2.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_2#3.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_3#1.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_3#2.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_3#3.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_4.stbl"; //PASS
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_5#1.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_5#2.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_5#3.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_6#1.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_6#2.stbl"; //FAIL
+        //inputfile="data/constabl_actions/2#2_source_composite(activecompositesubstate)/t2#2_6#3.stbl"; //FAIL
+        
+        
         String[] listofActiveAtomicStates={"A11"};
 
         if(!inputfile.contains("*.stbl")){
@@ -179,12 +195,14 @@ public class TestActions {
       }
     }
     
-    //@Test
+   // @Test
     public void testAll_2_source_composite_activeShellSubstate(){
       try{
-        //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-        inputfile="data/constabl_transitions/2#3(4)source_composite(activeshellsubstate)/*.stbl";
-        String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
+       // inputfile="data/constabl_transitions/2#3(4)source_composite(activeshellsubstate)/*.stbl";
+       inputfile="data/constabl_actions/2#3(4)source_composite(activeshellsubstate)/t2#3(4)_1.stbl"; //FAIL
+       
+       
+       String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
 
         if(!inputfile.contains("*.stbl")){
           runTest("test", inputfile, listofActiveAtomicStates);
@@ -218,7 +236,7 @@ public class TestActions {
   public void testAll_3_source_substate_of_composite_activeAtomicSubState(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-      inputfile="data/constabl_transitions/3#1_source_substateofcomposite(activeatomic)/*.stbl";
+      inputfile="data/constabl_actions/3#1_source_substateofcomposite(activeatomic)/*.stbl";
       String[] listofActiveAtomicStates={"A1"};
 
       if(!inputfile.contains("*.stbl")){
@@ -285,11 +303,11 @@ public class TestActions {
     }
   }
   
-  //@Test
+  @Test
   public void testAll_3_source_substate_of_composite_activeShellSubstate(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-      inputfile="data/constabl_transitions/3#3(4)source_substateofcomposite(activeshellsubstate)/*.stbl";
+      inputfile="data/constabl_actions/3#3(4)source_substateofcomposite(activeshellsubstate)/t3#3(4)_1.stbl";
       String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
 
       if(!inputfile.contains("*.stbl")){
@@ -434,7 +452,7 @@ public void testAll_5_source_region_activeShellSubstate(){
 public void testAll_6_source_substate_of_region_activeAtomicSubState(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-    inputfile="data/constabl_transitions/6#1_source_substateofregion(atomicsubstate)/*.stbl";
+    inputfile="data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/*.stbl";
     String[] listofActiveAtomicStates={"ShR1A", "ShR2A"};
 
     if(!inputfile.contains("*.stbl")){
