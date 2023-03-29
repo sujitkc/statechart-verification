@@ -1,0 +1,62 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+  }
+    x:int:local;
+  entry : {x:=1;x:=2;}
+  exit  : {x:=3;x:=4;} 
+  functions {
+  input<||>() : int;
+  }
+   
+			shell B{
+			entry:{x:=13;x:=14;}
+			exit:{x:=15;x:=16;}
+			state R1{
+				entry:{x:=17;x:=18;}
+				exit:{x:=19;x:=20;}
+	    			state R1A{
+					entry:{x:=21; x:=22;}
+					exit:{x:=23; x:=24;}
+	    
+    				}
+                    state R1B{
+					entry:{x:=35; x:=36;}
+					exit:{x:=37; x:=38;}
+	    
+    				}
+                    transition t1{
+                        source: chart.B.R1.R1A;
+                        destination: chart.B.R1.R1B;
+                        trigger: e1;
+                        guard:(true);
+                        action:{x:=43;x:=44;}
+                    }
+   			 }
+			state R2{
+				entry:{x:=25; x:=26;}
+				exit:{x:=27; x:=28;}
+	    			state R2A{
+					entry:{x:=29; x:=30;}
+					exit:{x:=31; x:=32;}
+	    
+    				}
+                    state R2B{
+					entry:{x:=39; x:=40;}
+					exit:{x:=41; x:=42;}
+	    
+    				}
+                    transition t2{
+                        source: chart.B.R2.R2A;
+                        destination: chart.B.R2.R2B;
+                        trigger: e1;
+                        guard:(true);
+                        action:{x:=33;x:=34;}
+                    }	    
+   			 }
+
+    		}
+       
+}

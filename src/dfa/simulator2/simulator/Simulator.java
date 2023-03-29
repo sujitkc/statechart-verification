@@ -170,12 +170,13 @@ public class Simulator {
   }
 
   private void makeCFGs(State state) throws Exception {
-    this.converter.name=state.name+"_N";
+    /* action name is added by Karthika */
+    this.converter.actionname=state.name+"_N";
     this.CFGs.put(state.entry, this.converter.convert(state.entry));
-    this.converter.name=state.name+"_X";
+    this.converter.actionname=state.name+"_X";
     this.CFGs.put(state.exit, this.converter.convert(state.exit));
     for(Transition t : state.transitions) {
-      this.converter.name=t.name+"_A";
+      this.converter.actionname=t.name+"_A";
       this.CFGs.put(t.action, this.converter.convert(t.action));
     }
     for(State s : state.states) {
@@ -296,6 +297,8 @@ public class Simulator {
   }
 
   private Tree<State> getEntrySubTree(State state) throws Exception {
+    //here something must be done - so that if some parent of the destination 
+    //is shell then corresponding subtree addition should happen
     Tree<State> tree = new Tree<State>(state);
     if(state.states.isEmpty() == true) {
       return tree;

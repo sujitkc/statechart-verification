@@ -195,7 +195,7 @@ public class TestActions {
       }
     }
     
-   // @Test
+    @Test
     public void testAll_2_source_composite_activeShellSubstate(){
       try{
        // inputfile="data/constabl_transitions/2#3(4)source_composite(activeshellsubstate)/*.stbl";
@@ -303,7 +303,7 @@ public class TestActions {
     }
   }
   
-  @Test
+  //@Test
   public void testAll_3_source_substate_of_composite_activeShellSubstate(){
     try{
       //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
@@ -525,6 +525,41 @@ public void testAll_6_source_substate_of_region_activeShellSubstate(){
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
     inputfile="data/constabl_transitions/6#3_source_region(shellsubstate)/*.stbl";
     String[] listofActiveAtomicStates={"ShR1A","ShR1A"};
+
+    if(!inputfile.contains("*.stbl")){
+      runTest("test", inputfile, listofActiveAtomicStates);
+    }
+    else{
+      try{
+        String dirpath=inputfile.replace("*.stbl","");
+            File directoryPath = new File(dirpath);
+        //List of all files and directories
+        String contents[] = directoryPath.list();
+        System.out.println("List of files and directories in the specified directory:");
+        for(int i=0; i<contents.length; i++) {
+        System.out.println(dirpath+contents[i]);
+        runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+        }
+      }
+      catch(Exception e){
+        System.out.println("Folder path exception");
+        e.printStackTrace();
+        System.exit(1);
+      }
+    }
+  
+  }
+  catch(Exception e){
+    System.out.println("Something went wrong! "+e);
+    e.printStackTrace();
+  }
+}
+//@Test
+public void testAll_7_concurrency(){
+  try{
+    //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
+    inputfile="data/constabl_actions/7_concurrent_transitions/1_1.stbl";
+    String[] listofActiveAtomicStates={"R1A","R2A"};
 
     if(!inputfile.contains("*.stbl")){
       runTest("test", inputfile, listofActiveAtomicStates);

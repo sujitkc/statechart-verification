@@ -19,7 +19,7 @@ public class ASTToCFG {
     return this.convert(this.statement);
   }
   */
-  public String name="";
+  public String actionname="";
   public CFG convert(Statement s) throws Exception {
     if(s instanceof AssignmentStatement) {
       return this.convertAssignmentStatement((AssignmentStatement) s);
@@ -42,7 +42,7 @@ public class ASTToCFG {
 
   private CFG convertAssignmentStatement(AssignmentStatement s) throws Exception {
     CFGBasicBlockNode node = new CFGAssignmentNode(s);
-    return new CFG(name, node, node);
+    return new CFG(actionname, node, node);
   }
 
   private CFG convertIfStatement(IfStatement s) throws Exception {
@@ -52,7 +52,7 @@ public class ASTToCFG {
     CFGBasicBlockNode exitNode = new CFGSkipNode();
     thenCFG.exitNode.setSuccessor(exitNode);
     elseCFG.exitNode.setSuccessor(exitNode);
-    return new CFG(name, node, exitNode);
+    return new CFG(actionname, node, exitNode);
   }
 
   private CFG convertWhileStatement(WhileStatement s) throws Exception {
@@ -60,13 +60,13 @@ public class ASTToCFG {
     CFGBasicBlockNode exitNode = new CFGSkipNode();
     CFGNode node = new CFGDecisionNode(s.condition, bodyCFG.entryNode, exitNode);
     bodyCFG.exitNode.setSuccessor(node);
-    return new CFG(name, node, exitNode);
+    return new CFG(actionname, node, exitNode);
   }
 
   private CFG convertStatementList(StatementList s) throws Exception {
     if(s.getStatements().size() == 0) {
       CFGBasicBlockNode node = new CFGSkipNode();
-      return new CFG(name, node, node);
+      return new CFG(actionname, node, node);
       
     }
     List<CFG> cfgs = new ArrayList<>();
@@ -79,6 +79,6 @@ public class ASTToCFG {
       cfg1.exitNode.setSuccessor(cfg2.entryNode);
     }
 
-    return new CFG(name, cfgs.get(0).entryNode, cfgs.get(cfgs.size() - 1).exitNode);
+    return new CFG(actionname, cfgs.get(0).entryNode, cfgs.get(cfgs.size() - 1).exitNode);
   }
 }
