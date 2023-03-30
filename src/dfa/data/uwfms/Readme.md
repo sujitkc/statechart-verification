@@ -9,7 +9,19 @@ Each file represents one of the features as specified in the Non-Proprietary Aut
 4. For transitions where multiple events are mentioned in stateflow - it has been specified as two different transitions
 	for instance, if the stateflow model is of the format - t1:e1|e2[g]/a - the corresponding constabl format is t1_1:e1[g]/a and t1_2:e2[g]/a
 5. There are no priorities defined in constabl transitions
-6. The 	
+6. Run **make simulator2-testcasestudy**
+
+# Files to use
+
+1. CruiseControl.stb [has a shell state]
+2. CollisionAvoidance.stb  
+3. ParkAssist.stb    
+4. LaneGuide.stb   
+5. EmergencyVehicleAvoidance.stb  
+6. ParkingSpaceCentering.stb
+7. ReversingAssistance.stb
+
+	
 # Subsystems
 
 1. **Cruise control (CC)** - TRW’s Adaptive Cruise Control (ACC) technology improves upon standard cruise control by automatically adjusting the vehicle speed and distance to that of a target vehicle. ACC uses a long range radar sensor to detect a target vehicle up to 200 meters in front and automatically adjusts the ACC vehicle speed and gap accordingly. ACC decelerates or accelerates the vehicle according to the
