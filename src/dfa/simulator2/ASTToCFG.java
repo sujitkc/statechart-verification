@@ -36,7 +36,7 @@ public class ASTToCFG {
     }
 
     else {
-      throw new Exception("ASTToCFG.convert: Not implemented for this class - " + s.getClass());
+      throw new Exception("ASTToCFG.convert: Not implemented for this class - " + s.getClass() + s);
     }
   }
 
