@@ -1,6 +1,6 @@
 // Evaluates the behavior for when History is maintained
 //A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
-statechart  Automotive{
+/*statechart  Automotive{
   
   events {
 	e;
@@ -279,4 +279,4 @@ statechart  Automotive{
   action:{CA_HVI:=3;Warning:=0;}
   }
   }
-}
+}*/		
