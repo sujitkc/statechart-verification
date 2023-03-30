@@ -1,10 +1,19 @@
 // Evaluates the behavior for when History is maintained
-//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf -- Page 173
+
+/* 
+ACC uses a long range radar sensor to detect the target vehicle upto 200 meters in front
+Automatically adjusts the vehicle speed and gap accordingly
+ACC decelerates/accelerates vehicle according to the desired speed/distance settings established by the driver
+Driver can override at any time
+desired distance = 50 m
+
+*/
 statechart  CruiseControl{
   
   events {
 	e;
-	No_event;
+	No_event; //Signal at a cycle unit for the Stateflow model when no other event is generated
 	SetAccelIn;
 	SetAccelOut;
 	ResumeCoastIn;
@@ -35,8 +44,6 @@ statechart  CruiseControl{
 	Speed:int:local;
 
 	state LogicControl{
-	//REGION
-	
 	entry:{
 		CC_Enabled:=true;
 	}
@@ -123,14 +130,14 @@ statechart  CruiseControl{
 				guard:(BrakePedal>0);
 				action:{CC_Engaged:=BoolFALSE;}
 			}
-			transition t25{
+			transition t25_1{
 				source: CruiseControl.CC.LogicControl.Enabled.Override;
 				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
 				trigger: SetAccelIn;
 				guard:(Speed>=40)&&(PRNDL_In=3);
 				action:{CC_Engaged:=BoolTRUE;}
 			}
-			transition t26{
+			transition t25_2{
 				source: CruiseControl.CC.LogicControl.Enabled.Override;
 				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
 				trigger: ResumeCoastIn;
@@ -162,7 +169,7 @@ statechart  CruiseControl{
 		}
 	}
 	state SpeedSetting{
-		//REGION
+
 		entry:{}
 		exit:{}
 			state IncSpeed{
