@@ -1,5 +1,5 @@
-// Evaluates the behavior for when History is maintained
-//A.7 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+
+//A.3 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
 statechart  ParkAssist{
   
   events {
@@ -10,12 +10,14 @@ statechart  ParkAssist{
   }
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
+  minusone: int :local;
   PA_Enabled : boolean : local;
   PA_HVI : int : local;
   Speed: int: local;
   entry : {
 	BoolTRUE:=true;
 	BoolFALSE:=false;
+	minusone:=0-1;
   }
 
   exit  : {} 
@@ -32,7 +34,7 @@ statechart  ParkAssist{
 	}
 	state Enabled{
 		PRNDL_In:int:local;
-		Const3:int:local;
+
 		Accepted:boolean:local;
 		SpaceFound:boolean:local;
 		set_Throttle:int:local;
@@ -94,7 +96,7 @@ statechart  ParkAssist{
 					destination: ParkAssist.Enabled.Engaged.SwivelOut;
 					trigger: Next;
 					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
-					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=0;} // setting value -1 was not possible for set_SteerOut=-1
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
 				}
 				transition t23{
 					source: ParkAssist.Enabled.Engaged.Stop1;
@@ -120,14 +122,14 @@ statechart  ParkAssist{
 					source: ParkAssist.Enabled.Idle;
 					destination: ParkAssist.Enabled.Searching;
 					trigger: e;
-					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=Const3);
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
 					action:{PA_HVI:=2;}
 				}
 			transition t22{
 					source: ParkAssist.Enabled.Searching;
 					destination: ParkAssist.Enabled.Idle;
 					trigger: e;
-					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=Const3);
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
 					action:{PA_HVI:=1;}
 				}
 			transition t24{

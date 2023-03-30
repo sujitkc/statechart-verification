@@ -1,5 +1,5 @@
 // Evaluates the behavior for when History is maintained
-//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf -- Page 173
+//A.1 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf -- Page 173
 
 /* 
 ACC uses a long range radar sensor to detect the target vehicle upto 200 meters in front
@@ -58,11 +58,9 @@ statechart  CruiseControl{
 		}
 		state Enabled{
 			PRNDL_In:int:local;
-			Const3:int:local;
-			Const40:int:local;
+			
 			entry:{
-				Const3:=3;
-				Const40:=40;
+			
 			}
 			exit:{}
 			state Disengaged{
@@ -106,14 +104,14 @@ statechart  CruiseControl{
 				source: CruiseControl.CC.LogicControl.Enabled.Disengaged;
 				destination: CruiseControl.CC.LogicControl.Enabled.Engaged;
 				trigger: SetAccelIn;
-				guard:(Speed>=Const40) && (PRNDL_In=Const3);
+				guard:(Speed>=40) && (PRNDL_In=3);
 				action:{CC_Engaged:=BoolTRUE;}
 			}
 			transition t37{
 				source: CruiseControl.CC.LogicControl.Enabled.Engaged;
 				destination: CruiseControl.CC.LogicControl.Enabled.Disengaged;
 				trigger: e;
-				guard:(Speed<Const40) || (PRNDL_In!=Const3);
+				guard:(Speed<40) || (PRNDL_In!=3);
 				action:{CC_Engaged:=BoolFALSE;}
 			}
 			transition t19{

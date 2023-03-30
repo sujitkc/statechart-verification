@@ -1,5 +1,5 @@
 // Evaluates the behavior for when History is maintained
-//A.8 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
 
 statechart  LaneGuide{
   
@@ -12,9 +12,13 @@ statechart  LaneGuide{
   BoolFALSE : boolean : local;
   LG_Enabled : boolean : local;
   LG_Warning : boolean :local;
+  minusten:int:local;
+  minusone:int:local;
   entry : {
 	BoolTRUE:=true;
 	BoolFALSE:=false;
+	minusten:=0-10;
+	minusone:=0-1;
   }
 
   exit  : {} 
@@ -50,9 +54,10 @@ statechart  LaneGuide{
 				LGMode:int:local;
 				set_SteerOut:int:local;
 				LaneDrift:int:local;
-		
 				
-				entry:{}
+				entry:{
+					
+				}
 				exit:{}
 				state WarnLeft{
 					entry:{}
@@ -78,14 +83,14 @@ statechart  LaneGuide{
 					source: LaneGuide.Enabled.Engaged.Idle;
 					destination: LaneGuide.Enabled.Engaged.WarnLeft;
 					trigger: e;
-					guard:(LaneDrift<10)&&(LGMode=0); //LaneDrift<-10
+					guard:(LaneDrift<minusten)&&(LGMode=0); //LaneDrift<-10
 					action:{LG_Warning:=BoolTRUE;}
 				}	
 				transition t17{
 					source: LaneGuide.Enabled.Engaged.WarnLeft;
 					destination: LaneGuide.Enabled.Engaged.Idle;
 					trigger: e;
-					guard:(LaneDrift>10); //LaneDrift>-10
+					guard:(LaneDrift>minusten); //LaneDrift>-10
 					action:{LG_Warning:=BoolFALSE;}
 				}
 				transition t20{
@@ -93,7 +98,7 @@ statechart  LaneGuide{
 					destination: LaneGuide.Enabled.Engaged.AssistLeft;
 					trigger: e;
 					guard:(LGMode=1); 
-					action:{LG_Warning:=BoolFALSE;set_SteerOut:=1;} //set_SteerOut:=-1
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
 				}
 				transition t19{
 					source: LaneGuide.Enabled.Engaged.AssistLeft;
@@ -106,15 +111,15 @@ statechart  LaneGuide{
 					source: LaneGuide.Enabled.Engaged.AssistLeft;
 					destination: LaneGuide.Enabled.Engaged.Idle;
 					trigger: e;
-					guard:(LaneDrift>10); //LaneDrift<-10
+					guard:(LaneDrift>minusten); //LaneDrift>-10
 					action:{LG_Warning:=BoolFALSE;}
 				}
 				transition t22{
 					source: LaneGuide.Enabled.Engaged.Idle;
 					destination: LaneGuide.Enabled.Engaged.AssistLeft;
 					trigger: e;
-					guard:(LaneDrift<10)&&(LGMode=1); //LaneDrift<-10
-					action:{LG_Warning:=BoolFALSE;set_SteerOut:=1;}
+					guard:(LaneDrift<minusten)&&(LGMode=1); //LaneDrift<-10
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
 				}
 				transition t23{
 					source: LaneGuide.Enabled.Engaged.Idle;
@@ -185,7 +190,7 @@ statechart  LaneGuide{
 				source: LaneGuide.Enabled.Engaged;
 				destination: LaneGuide.Enabled.Override;
 				trigger: e;
-				guard:(SteerIn>0)||(SteerIn<10)||(TurnSignal=BoolTRUE)||(BrakePedal>0); //negative value not accepted- (SteerIn<-10)
+				guard:(SteerIn>10)||(SteerIn<minusten)||(TurnSignal=BoolTRUE)||(BrakePedal>0); // SteerIn<-10
 				action:{LG_Warning:=BoolFALSE;}
 			}
 			

@@ -1,1 +1,1 @@
-constabl_transitions/1_source_atomic/*.stbl
+uwfms/EmergencyVehicleAvoidance.stb
