@@ -92,8 +92,8 @@ public void testAll_6_source_shell(){
     //String[] listofActiveAtomicStates={"ShR1Aa", "ShR2A"};
     
     //Test concurrent transitions - pass for atomic.
-    //String inputfile="data/constabl_actions/7_concurrent_transitions/1_1.stbl";
-    //String[] listofActiveAtomicStates={"R1A", "R2A"};
+    String inputfile="data/constabl_actions/7_concurrent_transitions/1_1.stbl";
+    String[] listofActiveAtomicStates={"R1A", "R2A"};
 
     if(!inputfile.contains("*.stbl")){
       runTest("test", inputfile, listofActiveAtomicStates);
