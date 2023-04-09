@@ -386,7 +386,8 @@ public class Simulator {
         Tree<State> subtree = this.getEntrySubTree(shellAncestor);
         List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
 	higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-        destinationStateTree = new Tree<State>(higherAncestors.get(0));
+	
+        destinationStateTree = new Tree<State>(higherAncestors.get(0)); // it fails here
         destinationStateTree.addPath(higherAncestors);
         State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
         destinationStateTree.addSubtree(currentLeaf, subtree);

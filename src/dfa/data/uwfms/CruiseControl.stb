@@ -90,7 +90,7 @@ statechart  CruiseControl{
 					destination: CruiseControl.CC.LogicControl.Enabled.Engaged.Accelerating;
 					trigger: e;
 					guard:(FollowDist>50) && (Speed<TargetSpeed);
-					action:{set_Throttle=TargetSpeed-Speed;}
+					action:{set_Throttle:=TargetSpeed-Speed;}
 				}
 				transition t21{
 					source: CruiseControl.CC.LogicControl.Enabled.Engaged.Accelerating;
