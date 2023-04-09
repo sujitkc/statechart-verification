@@ -50,6 +50,7 @@ public class Simulator {
    * while, there's code to execute, keep single-stepping
   */
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
+
     Code code = null;
     System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
@@ -60,6 +61,7 @@ public class Simulator {
         codes.add(this.getCode(t));
       }
       System.out.println();
+      this.detectNondeterminism(codes);
       code = new ConcurrentCode(codes);
     }
     else if(enabledTransitions.size() == 1) {
@@ -80,7 +82,6 @@ public class Simulator {
     }
     Set<State> newConfiguration = new HashSet<>();
     for(Transition t : enabledTransitions) {
-      //System.out.println("Enabled transition: " + t.name);
       Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
                                     .getLeafNodes();
       newConfiguration.addAll(atomicStates);
@@ -93,6 +94,45 @@ public class Simulator {
       System.out.print(s.name+", ");
     }
     System.out.println("}");
+  }
+
+  private void detectNondeterminism(Set<Code> codes) throws Exception {
+    Set<CFG> cfgs = new HashSet<>();
+    for(Code code : codes) {
+      Set<CFG> codeCFGs = this.getAllCFGsinCode(code);
+      Set<CFG> intersect = new HashSet<>(cfgs);
+      intersect.retainAll(codeCFGs);
+      if(intersect.isEmpty()) {
+        cfgs.addAll(codeCFGs);
+      }
+      else {
+        throw new Exception("Simulator::detectNondeterminism : Non-determinism detected.");
+      }
+    }
+  }
+
+  private Set<CFG> getAllCFGsinCode(Code code) throws Exception {
+    Set<CFG> cfgs = new HashSet<>();
+    if(code instanceof CFGCode) {
+      CFGCode cfgCode = (CFGCode)code;
+      cfgs.add(cfgCode.cfg);
+    }
+    else if(code instanceof SequenceCode) {
+      SequenceCode sequenceCode = (SequenceCode)code;
+      for(Code c : sequenceCode.codes) {
+        cfgs.addAll(this.getAllCFGsinCode(c));
+      }
+    }
+    else if(code instanceof ConcurrentCode) {
+      ConcurrentCode concurrentCode = (ConcurrentCode)code;
+      for(Code c : concurrentCode.codes) {
+        cfgs.addAll(this.getAllCFGsinCode(c));
+      }
+    }
+    else {
+      throw new Exception("Simulator::getAllCFGsinCode - Not implemented.");
+    }
+    return cfgs;
   }
 
   private Map<Declaration, Expression> makeValueEnvironment() {
@@ -246,38 +286,53 @@ public class Simulator {
     }
   }
 
-  private Code getSourceCode(Transition t) throws Exception {
-
-    // Source side state tree - begin
+  private Set<State> getActiveAtomicSubstates(State state) throws Exception {
     Set<State> atomicStates = new HashSet<>();
     for(State atomicState : this.configuration) {
-      System.out.println("atomic state = " + atomicState.name);
-      if(this.stateTree.getAllAncestors(atomicState).contains(t.getSource())) {
+      if(this.stateTree.getAllAncestors(atomicState).contains(state)) {
         atomicStates.add(atomicState);
       }
     }
-    Tree<State> subtree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
-    System.out.print("source subtree = ");
-    TreeMap<State, String> namemap = new TreeMap<>();
-    Function<State, String> function = new Function<>() {
-      public String apply(State state) {
-        return state.name;
-      }
-    };
-    System.out.println(namemap.map(function, subtree));
+    return atomicStates;
+  }
 
+  private Code getSourceCode(Transition t) throws Exception {
+
+    // Source side state tree - begin
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> sourceAncestors = this.stateTree.getAllAncestorsUpto(t.getSource(), lub);
     Tree<State> sourceStateTree = null;
     if(sourceAncestors.size() > 1) {
       sourceAncestors.remove(sourceAncestors.size() - 1); // removing t.source.
-      sourceStateTree = new Tree<State>(sourceAncestors.get(0));
-      sourceStateTree.addPath(sourceAncestors);
-      State currentLeaf = sourceAncestors.get(sourceAncestors.size() - 1);
-      sourceStateTree.addSubtree(currentLeaf, subtree);
+      Shell shellAncestor = null;
+      for(State ancestor : sourceAncestors) {
+	if(ancestor instanceof Shell) {
+          shellAncestor = (Shell)ancestor;
+	  break;
+	}
+      }
+      if(shellAncestor != null) {
+        Set<State> atomicStates = this.getActiveAtomicSubstates(shellAncestor);
+	Tree<State> subtree = this.stateTree.getSlicedSubtree(shellAncestor, atomicStates);
+        List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
+	higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+        sourceStateTree = new Tree<State>(higherAncestors.get(0));
+        sourceStateTree.addPath(higherAncestors);
+        State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+        sourceStateTree.addSubtree(currentLeaf, subtree);
+      }
+      else {
+        Set<State> atomicStates = this.getActiveAtomicSubstates(t.getSource());
+	Tree<State> subtree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
+        sourceStateTree = new Tree<State>(sourceAncestors.get(0));
+        sourceStateTree.addPath(sourceAncestors);
+        State currentLeaf = sourceAncestors.get(sourceAncestors.size() - 1);
+        sourceStateTree.addSubtree(currentLeaf, subtree);
+      }
     }
     else {
-      sourceStateTree = subtree;
+      Set<State> atomicStates = this.getActiveAtomicSubstates(t.getSource());
+      sourceStateTree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
     }
     // Source side state tree - end
 
@@ -297,8 +352,6 @@ public class Simulator {
   }
 
   private Tree<State> getEntrySubTree(State state) throws Exception {
-    //here something must be done - so that if some parent of the destination 
-    //is shell then corresponding subtree addition should happen
     Tree<State> tree = new Tree<State>(state);
     if(state.states.isEmpty() == true) {
       return tree;
@@ -316,20 +369,38 @@ public class Simulator {
   }
 
   private Code getDestinationCode(Transition t) throws Exception {
-    Tree<State> subtree = this.getEntrySubTree(t.getDestination());
 
+    Tree<State> destinationStateTree = null;
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
-    Tree<State> destinationStateTree = null;
     if(destinationAncestors.size() > 1) {
       destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
-      destinationStateTree = new Tree<State>(destinationAncestors.get(0));
-      destinationStateTree.addPath(destinationAncestors);
-      State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
-      destinationStateTree.addSubtree(currentLeaf, subtree);
+      Shell shellAncestor = null;
+      for(State ancestor : destinationAncestors) {
+	if(ancestor instanceof Shell) {
+          shellAncestor = (Shell)ancestor;
+	  break;
+	}
+      }
+      if(shellAncestor != null) {
+        Tree<State> subtree = this.getEntrySubTree(shellAncestor);
+        List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
+	higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+        destinationStateTree = new Tree<State>(higherAncestors.get(0));
+        destinationStateTree.addPath(higherAncestors);
+        State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+        destinationStateTree.addSubtree(currentLeaf, subtree);
+      }
+      else {
+        Tree<State> subtree = this.getEntrySubTree(t.getDestination());
+        destinationStateTree = new Tree<State>(destinationAncestors.get(0));
+        destinationStateTree.addPath(destinationAncestors);
+        State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
+        destinationStateTree.addSubtree(currentLeaf, subtree);
+      }
     }
     else {
-      destinationStateTree = subtree;
+      destinationStateTree = this.getEntrySubTree(t.getDestination());
     }
 
     // Destination side CFG tree - begin
