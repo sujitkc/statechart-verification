@@ -81,11 +81,13 @@ public class Simulator {
       System.out.println(d + " : " + this.valueEnvironment.get(d));
     }
     Set<State> newConfiguration = new HashSet<>();
+    
     for(Transition t : enabledTransitions) {
-      Set<State> atomicStates = this.getEntrySubTree(t.getDestination())
-                                    .getLeafNodes();
+      //Set<State> atomicStates = this.getEntrySubTree(t.getDestination()).getLeafNodes();
+      Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
       newConfiguration.addAll(atomicStates);
     }
+    
     if(newConfiguration.isEmpty() == false) {
       this.configuration = newConfiguration;
     }
@@ -371,6 +373,49 @@ public class Simulator {
       tree.addSubtree(state, this.getEntrySubTree(state.states.get(0)));
       return tree;
     }
+  }
+  private Tree getDestinationTree(Transition t) throws Exception{
+  	 Tree<State> destinationStateTree = null;
+    State lub = this.stateTree.lub(t.getSource(), t.getDestination());
+    List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
+    if(destinationAncestors.size() > 1) {
+      destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
+      Shell shellAncestor = null;
+      for(State ancestor : destinationAncestors) {
+	if(ancestor instanceof Shell) {
+          shellAncestor = (Shell)ancestor;
+	  break;
+	}
+      }
+      if(shellAncestor != null) {
+        Tree<State> subtree = this.getEntrySubTree(shellAncestor);
+        List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
+	if(higherAncestors.size() > 1) {
+	  higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+          destinationStateTree = new Tree<State>(higherAncestors.get(0));
+          destinationStateTree.addPath(higherAncestors);
+          State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+          destinationStateTree.addSubtree(currentLeaf, subtree);
+	}
+	else {
+          destinationStateTree = subtree;
+	}
+      }
+      else {
+        Tree<State> subtree = this.getEntrySubTree(t.getDestination());
+        destinationStateTree = new Tree<State>(destinationAncestors.get(0));
+        destinationStateTree.addPath(destinationAncestors);
+        State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
+        destinationStateTree.addSubtree(currentLeaf, subtree);
+      }
+    }
+    else {
+      destinationStateTree = this.getEntrySubTree(t.getDestination());
+    }
+
+    
+
+    return destinationStateTree;
   }
 
   private Code getDestinationCode(Transition t) throws Exception {
