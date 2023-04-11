@@ -315,11 +315,16 @@ public class Simulator {
         Set<State> atomicStates = this.getActiveAtomicSubstates(shellAncestor);
 	Tree<State> subtree = this.stateTree.getSlicedSubtree(shellAncestor, atomicStates);
         List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
-	higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-        sourceStateTree = new Tree<State>(higherAncestors.get(0));
-        sourceStateTree.addPath(higherAncestors);
-        State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
-        sourceStateTree.addSubtree(currentLeaf, subtree);
+	if(higherAncestors.size() > 1) {
+	  higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+          sourceStateTree = new Tree<State>(higherAncestors.get(0));
+          sourceStateTree.addPath(higherAncestors);
+          State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+          sourceStateTree.addSubtree(currentLeaf, subtree);
+	}
+	else {
+          sourceStateTree =subtree;
+	}
       }
       else {
         Set<State> atomicStates = this.getActiveAtomicSubstates(t.getSource());
@@ -385,12 +390,16 @@ public class Simulator {
       if(shellAncestor != null) {
         Tree<State> subtree = this.getEntrySubTree(shellAncestor);
         List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
-	higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-	
-        destinationStateTree = new Tree<State>(higherAncestors.get(0)); // it fails here
-        destinationStateTree.addPath(higherAncestors);
-        State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
-        destinationStateTree.addSubtree(currentLeaf, subtree);
+	if(higherAncestors.size() > 1) {
+	  higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+          destinationStateTree = new Tree<State>(higherAncestors.get(0));
+          destinationStateTree.addPath(higherAncestors);
+          State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+          destinationStateTree.addSubtree(currentLeaf, subtree);
+	}
+	else {
+          destinationStateTree = subtree;
+	}
       }
       else {
         Tree<State> subtree = this.getEntrySubTree(t.getDestination());
