@@ -29,7 +29,7 @@ import simulator2.simulator.*;
 
 public class TestFails {
 
-  @Test
+  //@Test
   public void testAll_1_source_atomic(){
     try{
       /* Following input should result in output {R1A,R2A} -- FAILS */
@@ -45,10 +45,10 @@ public class TestFails {
       //String inputfile="data/constabl_actions/1_source_atomic/t1_6#1.stbl";
       
       /* Following input should result in output {R1A1,R2A} -- FAILS */
-      String inputfile="data/constabl_actions/1_source_atomic/t1_6#2.stbl";
+      //String inputfile="data/constabl_actions/1_source_atomic/t1_6#2.stbl";
       
       /* Following input should result in output {ShR1A,ShR2A, R2A} -- FAILS */
-     // String inputfile="data/constabl_actions/1_source_atomic/t1_6#3.stbl";
+     String inputfile="data/constabl_actions/1_source_atomic/t1_6#3.stbl";
       
       
       String[] listofActiveAtomicStates={"A"};
@@ -80,20 +80,20 @@ public class TestFails {
       e.printStackTrace();
     }
   }
-  //@Test
+  @Test
 public void testAll_6_source_shell(){
   try{
     /* Result should be {R1A,R2A} */
-    //String inputfile="data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#1.stbl";
-    //String[] listofActiveAtomicStates={"ShR1A", "ShR2A"};
+    String inputfile="data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#1.stbl";
+    String[] listofActiveAtomicStates={"ShR1A", "ShR2A"};
 
     /* Result should be {ShR1A,ShR2A,R2A} */
     //String inputfile="data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl";
     //String[] listofActiveAtomicStates={"ShR1Aa", "ShR2A"};
     
     //Test concurrent transitions - pass for atomic.
-    String inputfile="data/constabl_actions/7_concurrent_transitions/1_1.stbl";
-    String[] listofActiveAtomicStates={"R1A", "R2A"};
+  //  String inputfile="data/constabl_actions/7_concurrent_transitions/1_1.stbl";
+   // String[] listofActiveAtomicStates={"R1A", "R2A"};
 
     if(!inputfile.contains("*.stbl")){
       runTest("test", inputfile, listofActiveAtomicStates);
