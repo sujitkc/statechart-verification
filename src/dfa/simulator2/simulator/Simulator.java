@@ -40,7 +40,7 @@ public class Simulator {
     this.configuration = configuration;
   }
 
-  public void simulationStep(String event) throws Exception {
+  public Set<State> simulationStep(String event) throws Exception {
   /*
    * Compute the set of all enabled transitions
    * Check for non-determinism. Abort if found.
@@ -50,7 +50,7 @@ public class Simulator {
    * while, there's code to execute, keep single-stepping
   */
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
-
+        Set<State> newConfiguration = new HashSet<>();
     Code code = null;
     System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
@@ -72,7 +72,7 @@ public class Simulator {
     }
     else {
       System.out.println("No transition enabled.");
-      return;
+      return newConfiguration;
     }
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
     codeSimulator.simulate();
@@ -80,7 +80,7 @@ public class Simulator {
     for(Declaration d : this.valueEnvironment.keySet()) {
       System.out.println(d + " : " + this.valueEnvironment.get(d));
     }
-    Set<State> newConfiguration = new HashSet<>();
+
     
     for(Transition t : enabledTransitions) {
       //Set<State> atomicStates = this.getEntrySubTree(t.getDestination()).getLeafNodes();
@@ -96,6 +96,7 @@ public class Simulator {
       System.out.print(s.name+", ");
     }
     System.out.println("}");
+    return newConfiguration;
   }
 
   private void detectNondeterminism(Set<Code> codes) throws Exception {
