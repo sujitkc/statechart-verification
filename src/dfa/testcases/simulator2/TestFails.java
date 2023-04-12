@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.junit.*;
-
+ import static org.junit.Assert.*;
 import java_cup.runtime.Symbol;
 
 import frontend.FrontEnd;
@@ -27,9 +28,10 @@ import simulator2.cfg.*;
 import simulator2.tree.*;
 import simulator2.simulator.*;
 
+
 public class TestFails {
 
-  //@Test
+  @Test
   public void testAll_1_source_atomic(){
     try{
       /* Following input should result in output {R1A,R2A} -- FAILS */
@@ -52,8 +54,22 @@ public class TestFails {
       
       
       String[] listofActiveAtomicStates={"A"};
+      String[] expected=new String[] {"ShR2A","ShR1A", "R2A"};
       if(!inputfile.contains("*.stbl")){
-        runTest("test", inputfile, listofActiveAtomicStates);
+        Set<State> newconfig=runTest("test", inputfile, listofActiveAtomicStates);
+        String[] output=new String[newconfig.size()];
+
+         
+        int j=0;
+          for(State s:newconfig) {
+      		output[j++]=s.name;
+    		}
+    	  Arrays.sort(output);
+    	   Arrays.sort(expected);
+    	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(expected)+"==="+Arrays.toString(output));
+    	  assertArrayEquals(expected,output);
+    	   
+          
       }
       else{
         try{
@@ -64,7 +80,19 @@ public class TestFails {
           System.out.println("List of files and directories in the specified directory:");
           for(int i=0; i<contents.length; i++) {
           System.out.println(dirpath+contents[i]);
-          runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+          Set<State> newconfig=runTest("test_"+dirpath+contents[i], dirpath+contents[i], listofActiveAtomicStates);
+          String[] output=new String[newconfig.size()];
+
+         
+          int j=0;
+          for(State s:newconfig) {
+      		output[j++]=s.name;
+    		}
+    	  Arrays.sort(output);
+    	   Arrays.sort(expected);
+    	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(expected)+"==="+Arrays.toString(output));
+    	  assertArrayEquals(expected,output);
+    	   
           }
         }
         catch(Exception e){
@@ -80,7 +108,7 @@ public class TestFails {
       e.printStackTrace();
     }
   }
-  @Test
+ // @Test
 public void testAll_6_source_shell(){
   try{
     /* Result should be {R1A,R2A} */
@@ -124,7 +152,7 @@ public void testAll_6_source_shell(){
   }
 }
 
-  public void runTest(String testname, String filename, String[] statename) {
+  public Set<State> runTest(String testname, String filename, String[] statename) {
     Statechart statechart = this.test_template(testname, filename);
 
     try
@@ -141,13 +169,15 @@ public void testAll_6_source_shell(){
       //configuration.add(s2);
      
       //System.out.println(s2.name);
-      simulator.simulationStep("e1");
+     Set<State> newConfiguration = simulator.simulationStep("e1");
+     return newConfiguration;
     }
     catch(Exception e) {
       System.out.println("Something Went Wrong!\n");
       e.printStackTrace();
       System.exit(1);
     }
+    return null;
   }
   public Statechart test_template(String testName, String inputFileName) {
     System.out.println(testName);
