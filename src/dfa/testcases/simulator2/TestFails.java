@@ -30,8 +30,52 @@ import simulator2.simulator.*;
 
 
 public class TestFails {
-
+  
+  List<TestCase> testlist=new ArrayList<TestCase>();
+  public void populate(){
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_5#1.stbl", new String[] {"A"}, new String[]{"R1A","R2A"});
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_5#2.stbl", new String[] {"A"}, new String[]{"R1A1","R2A"});
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_5#3.stbl", new String[] {"A"}, new String[]{"ShR1A","ShR2A", "R2A"});
+  	
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_6#1.stbl", new String[] {"A"}, new String[]{"R1A","R2A"});
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_6#2.stbl", new String[] {"A"}, new String[]{"R1A1","R2A"});
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_6#3.stbl", new String[] {"A"}, new String[]{"ShR1A","ShR2A", "R2A"});
+  	
+  	
+  }
+  public void makeTestCase(String filename, String[] sourceConfig, String[] destConfig){
+  	TestCase tc=new TestCase(filename,sourceConfig, destConfig);
+  	this.testlist.add(tc);
+  }
   @Test
+  public void callTestCases(){
+  try{
+  	populate();
+  	System.out.println("Test begins : Number of testcases : "+ testlist.size());
+  	for(int i=0;i<testlist.size();i++){
+  	  String inputfile=testlist.get(i).filename;
+  	  String[] listofActiveAtomicStates= testlist.get(i).sourceConfig;
+  	  String[] expected = testlist.get(i).destConfig;
+  	  Set<State> newconfig=runTest("test", inputfile, listofActiveAtomicStates);
+  	  String[] output=new String[newconfig.size()];
+      
+          int j=0;
+	  for(State s:newconfig) {
+	   		output[j++]=s.name;
+	   		}
+	  Arrays.sort(output);
+	  Arrays.sort(expected);
+	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(expected)+"==="+Arrays.toString(output));
+          assertArrayEquals(expected,output);		
+  		}
+  	}
+ 	 catch(Exception e){
+  		
+          e.printStackTrace();
+          System.exit(1);
+  	}
+  }
+  //@Test
   public void testAll_1_source_atomic(){
     try{
       /* Following input should result in output {R1A,R2A} -- FAILS */

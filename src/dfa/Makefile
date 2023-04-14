@@ -52,4 +52,7 @@ simulator2-testcasestudy:
 	
 simulator2-testfails:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestFails
+	
+simulator2-testall:
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestAll
 

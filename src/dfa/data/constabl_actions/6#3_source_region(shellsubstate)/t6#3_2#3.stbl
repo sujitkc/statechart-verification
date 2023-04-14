@@ -48,7 +48,7 @@ statechart  chart{
 	    					state R2{
 	    						entry:{}
 							exit:{}
-							state ShR2A{
+							state ShR2A1{
 	    							entry:{}
 								exit:{}
 							
@@ -65,7 +65,7 @@ statechart  chart{
 			state R1{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R1A{
 					entry:{}
 					exit:{}
 	    
@@ -74,7 +74,7 @@ statechart  chart{
 			state R2{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R2A{
 					entry:{}
 					exit:{}
 	    

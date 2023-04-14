@@ -27,7 +27,7 @@ statechart  chart{
 							state ShR1AComposite{
 	    							entry:{}
 								exit:{}
-							state ShR1A{
+							state Sh1R1A{
 	    							entry:{}
 								exit:{}
 							
@@ -37,7 +37,7 @@ statechart  chart{
 	    					state Sh1R2{
 	    						entry:{}
 							exit:{}
-							state ShR2A{
+							state Sh1R2A{
 	    							entry:{}
 								exit:{}
 							
@@ -65,7 +65,7 @@ statechart  chart{
 			state R1{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R1A{
 					entry:{}
 					exit:{}
 	    
@@ -74,7 +74,7 @@ statechart  chart{
 			state R2{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R2A{
 					entry:{}
 					exit:{}
 	    
