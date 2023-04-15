@@ -32,7 +32,7 @@ statechart  chart{
 			state R1{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R1A{
 					entry:{}
 					exit:{}
 	    
@@ -41,7 +41,7 @@ statechart  chart{
 			state R2{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R2A{
 					entry:{}
 					exit:{}
 	    

@@ -41,7 +41,7 @@ shell B{
 			state R1{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R1A{
 					entry:{}
 					exit:{}
 	    
@@ -50,7 +50,7 @@ shell B{
 			state R2{
 				entry:{}
 				exit:{}
-	    			state A{
+	    			state R2A{
 					entry:{}
 					exit:{}
 	    
