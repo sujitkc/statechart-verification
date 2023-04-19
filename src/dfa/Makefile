@@ -28,9 +28,9 @@ constabl-lp:
 	java -jar lib/java-cup-11a.jar -parser Parser -dump < frontend/parser.cup;
 
 constabl-build:
-	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java simulator/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
-	javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java constabl/*.java constabl/simulator/*.java testcases/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
-	javac -Xlint:-unchecked -d classes simulator/*.java constabl/*.java constabl/ast/*.java constabl/ast/connectors/*.java testcases/*.java testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
+	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java simulator/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:./lib/jazzer_standalone.jar:ast:classes:simulator:./;
+	javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java constabl/*.java constabl/simulator/*.java testcases/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/jazzer_standalone.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
+	javac -Xlint:-unchecked -d classes simulator/*.java constabl/*.java constabl/ast/*.java constabl/ast/connectors/*.java testcases/*.java testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/jazzer_standalone.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
 
 constabl-test:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestConStaBLSimulator
@@ -39,7 +39,7 @@ stabl-flatten-test:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestFlatten
 
 simulator2-build:
-	javac -Xlint:-unchecked -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestASTToCFG.java testcases/TestSimulator2.java testcases/TestSimulator2_exe.java testcases/TestCodeVisitor.java testcases/TestTree.java  testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:classes:./;
+	javac -Xlint:-unchecked -d classes frontend/*.java ast/*.java simulator2/ASTToCFG.java simulator2/simulator/*.java simulator2/cfg/*.java simulator2/tree/*.java testcases/TestASTToCFG.java testcases/TestSimulator2.java testcases/TestSimulator2_exe.java testcases/TestCodeVisitor.java testcases/TestTree.java  testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:lib/jazzer_standalone.jar:classes:./;
 	
 simulator2-testtransitions:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestTransitions
@@ -54,5 +54,9 @@ simulator2-testfails:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestFails
 	
 simulator2-testall:
-	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestAll
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:./lib/jazzer_standalone.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestAll
+	
+simulator2-fuzzit:
+	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java 
+
 
