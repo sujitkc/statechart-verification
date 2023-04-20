@@ -14,9 +14,11 @@ statechart  chart{
   shell B{
     entry:{x:=13;x:=14;}
     exit:{x:=15;x:=16;}
+
     state R1{
       entry:{x:=17;x:=18;}
       exit:{x:=19;x:=20;}
+
       state R1A{
         entry:{x:=21; x:=22;}
         exit:{x:=23; x:=24;}
@@ -35,13 +37,16 @@ statechart  chart{
         action:{x:=43;x:=44;}
       }
     }
+
     state R2{
       entry:{x:=25; x:=26;}
       exit:{x:=27; x:=28;}
+
       state R2A{
         entry:{x:=29; x:=30;}
         exit:{x:=31; x:=32;}
       }
+
       state R2B{
         entry:{x:=39; x:=40;}
         exit:{x:=41; x:=42;}

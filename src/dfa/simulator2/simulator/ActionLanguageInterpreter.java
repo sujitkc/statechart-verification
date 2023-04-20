@@ -131,6 +131,8 @@ Name.java
         return new BooleanConstant(answer);
       }
     }
+    else if(expression instanceof InputExpression) {
+    }
     throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented." + expression +" : "+expression.getClass());
   }
 }

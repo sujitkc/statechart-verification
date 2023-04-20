@@ -40,6 +40,29 @@ public class Simulator {
     this.configuration = configuration;
   }
 
+  public void simulate(List<String> events) throws Exception {
+
+    this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
+    Tree<State> subtree = this.getEntrySubTree(statechart);
+    Map<Statement, CFG> CFGs = this.CFGs;
+    TreeMap<State, CFG> map = new TreeMap<>();
+    Tree<CFG> CFGTree = map.map(
+      new Function<State, CFG>() {
+        public CFG apply(State state) {
+	  return CFGs.get(state.entry);
+        }
+      },
+      subtree);
+
+    Code code = this.getDestinationCode(CFGTree);
+    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
+    codeSimulator.simulate();
+
+    for(String event : events) {
+      this.simulationStep(event);
+    }
+  }
+
   public Set<State> simulationStep(String event) throws Exception {
   /*
    * Compute the set of all enabled transitions
@@ -83,7 +106,6 @@ public class Simulator {
 
     
     for(Transition t : enabledTransitions) {
-      //Set<State> atomicStates = this.getEntrySubTree(t.getDestination()).getLeafNodes();
       Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
       newConfiguration.addAll(atomicStates);
     }
@@ -299,9 +321,7 @@ public class Simulator {
     return atomicStates;
   }
 
-  private Code getSourceCode(Transition t) throws Exception {
-
-    // Source side state tree - begin
+  private Tree<State> getSourceTree(Transition t) throws Exception {
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> sourceAncestors = this.stateTree.getAllAncestorsUpto(t.getSource(), lub);
     Tree<State> sourceStateTree = null;
@@ -342,9 +362,12 @@ public class Simulator {
       Set<State> atomicStates = this.getActiveAtomicSubstates(t.getSource());
       sourceStateTree = this.stateTree.getSlicedSubtree(t.getSource(), atomicStates);
     }
-    // Source side state tree - end
+    return sourceStateTree;
+  }
 
-    // Source side CFG tree - begin
+  private Code getSourceCode(Transition t) throws Exception {
+
+    Tree<State> sourceStateTree = this.getSourceTree(t);
     Map<Statement, CFG> CFGs = this.CFGs;
     TreeMap<State, CFG> map = new TreeMap<>();
     Tree<CFG> CFGTree = map.map(
@@ -354,7 +377,6 @@ public class Simulator {
         }
       },
       sourceStateTree);
-    // Source side CFG tree - end
 
     return this.getSourceCode(CFGTree);
   }
@@ -375,52 +397,8 @@ public class Simulator {
       return tree;
     }
   }
+
   private Tree getDestinationTree(Transition t) throws Exception{
-  	 Tree<State> destinationStateTree = null;
-    State lub = this.stateTree.lub(t.getSource(), t.getDestination());
-    List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
-    if(destinationAncestors.size() > 1) {
-      destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
-      Shell shellAncestor = null;
-      for(State ancestor : destinationAncestors) {
-	if(ancestor instanceof Shell) {
-          shellAncestor = (Shell)ancestor;
-	  break;
-	}
-      }
-      if(shellAncestor != null) {
-        Tree<State> subtree = this.getEntrySubTree(shellAncestor);
-        List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
-	if(higherAncestors.size() > 1) {
-	  higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-          destinationStateTree = new Tree<State>(higherAncestors.get(0));
-          destinationStateTree.addPath(higherAncestors);
-          State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
-          destinationStateTree.addSubtree(currentLeaf, subtree);
-	}
-	else {
-          destinationStateTree = subtree;
-	}
-      }
-      else {
-        Tree<State> subtree = this.getEntrySubTree(t.getDestination());
-        destinationStateTree = new Tree<State>(destinationAncestors.get(0));
-        destinationStateTree.addPath(destinationAncestors);
-        State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
-        destinationStateTree.addSubtree(currentLeaf, subtree);
-      }
-    }
-    else {
-      destinationStateTree = this.getEntrySubTree(t.getDestination());
-    }
-
-    
-
-    return destinationStateTree;
-  }
-
-  private Code getDestinationCode(Transition t) throws Exception {
-
     Tree<State> destinationStateTree = null;
     State lub = this.stateTree.lub(t.getSource(), t.getDestination());
     List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
@@ -459,7 +437,12 @@ public class Simulator {
       destinationStateTree = this.getEntrySubTree(t.getDestination());
     }
 
-    // Destination side CFG tree - begin
+    return destinationStateTree;
+  }
+
+  private Code getDestinationCode(Transition t) throws Exception {
+    Tree<State> destinationStateTree = this.getDestinationTree(t);
+
     Map<Statement, CFG> CFGs = this.CFGs;
     TreeMap<State, CFG> map = new TreeMap<>();
     Tree<CFG> CFGTree = map.map(
@@ -469,7 +452,6 @@ public class Simulator {
         }
       },
       destinationStateTree);
-    // Destination side CFG tree - end
 
     return this.getDestinationCode(CFGTree);
   }
