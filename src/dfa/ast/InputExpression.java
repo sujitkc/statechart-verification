@@ -1,8 +1,12 @@
 package ast;
 import java.util.Map;
 import java.util.HashMap;
-public class InputExpression extends Expression {
+public class InputExpression extends FunctionCall {
 
+  public Declaration dec;
+  public InputExpression(Declaration dec) {
+    this.dec=dec;
+  }
  /* public final Expression expression;
   public final String operator;
 
