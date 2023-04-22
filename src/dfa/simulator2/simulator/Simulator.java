@@ -40,8 +40,8 @@ public class Simulator {
     this.configuration = configuration;
   }
 
-  public void simulate(List<String> events) throws Exception {
-
+  public Set<State> simulate(List<String> events) throws Exception {
+     Set<State> newConfiguration = new HashSet<>();
     this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
     Tree<State> subtree = this.getEntrySubTree(statechart);
     Map<Statement, CFG> CFGs = this.CFGs;
@@ -59,8 +59,10 @@ public class Simulator {
     codeSimulator.simulate();
 
     for(String event : events) {
-      this.simulationStep(event);
+      
+      newConfiguration=this.simulationStep(event);
     }
+    return newConfiguration;
   }
 
   public Set<State> simulationStep(String event) throws Exception {
@@ -73,7 +75,7 @@ public class Simulator {
    * while, there's code to execute, keep single-stepping
   */
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
-        Set<State> newConfiguration = new HashSet<>();
+    Set<State> newConfiguration = new HashSet<>();
     Code code = null;
     System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
@@ -95,7 +97,7 @@ public class Simulator {
     }
     else {
       System.out.println("No transition enabled.");
-      return newConfiguration;
+      return this.configuration;
     }
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
     codeSimulator.simulate();
