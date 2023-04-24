@@ -13,7 +13,7 @@ statechart  chart{
   }
     state A{
         entry:{
-        x:=input<||>();
+        //x:=input<||>();
         x:=6;
         }
 	      exit:{
