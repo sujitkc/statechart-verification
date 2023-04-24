@@ -328,6 +328,7 @@ public class TestSingleStepFuzzer {
   	sourceList.add(sourceConfig);
   	destList.add(destConfig);
   }
+  //adding test line
   public static void fuzzerInitialize() {
     // Optional initialization to be run before the first call to fuzzerTestOneInput.
   }
