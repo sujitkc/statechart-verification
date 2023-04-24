@@ -29,9 +29,7 @@ public class Typechecker {
 
   private void typecheckFunctionDeclarations(
       Statechart statechart) throws Exception {
-    /** added by karthika **/
-    
-    InputFunctionDeclaration integerInput=new InputFunctionDeclaration(TypeName returnTypeName)
+
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
       Type type = null;
       try {

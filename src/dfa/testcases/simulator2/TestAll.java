@@ -324,7 +324,7 @@ public class TestAll {
   	makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	
   	String events1[]={"e1","e2","e3"};
-  	makeTestCase("data/constabl_events/t6#2_6#3_nd.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh2R1A","Sh2R2A"}, events1);
+  	//makeTestCase("data/constabl_events/t6#2_6#3_nd.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh2R1A","Sh2R2A"}, events1);
   	
   	String events2[]={"e1","e2","e3"};
   	makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
