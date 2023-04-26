@@ -26,9 +26,14 @@ statechart  chart{
     }
   state B{
         entry:{
-          x:=input<|int|>();
-         /* y:=input<||>();
           x:=5;
+          
+          y:=input<|boolean|>();
+          x:=7;
+          x:=9;
+          x:=10;
+          x:=input<|int|>();
+        /*  x:=5;
           x:=7;
           x:=9;
           x:=10;*/
