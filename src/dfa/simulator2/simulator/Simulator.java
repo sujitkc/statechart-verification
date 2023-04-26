@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import ast.*;
 
@@ -41,6 +42,14 @@ public class Simulator {
   }
 
   public Set<State> simulate(List<String> events) throws Exception {
+  
+  System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
+    Scanner in=new Scanner(System.in);
+    String str=in.nextLine();
+    String mode="random";
+    if(str.equals("2"))
+    	mode="interactive";
+  
      Set<State> newConfiguration = new HashSet<>();
     this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
     Tree<State> subtree = this.getEntrySubTree(statechart);
@@ -55,7 +64,8 @@ public class Simulator {
       subtree);
 
     Code code = this.getDestinationCode(CFGTree);
-    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
+    
+    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
     codeSimulator.simulate();
 
     for(String event : events) {
@@ -74,6 +84,14 @@ public class Simulator {
    *   of transition-wise code.
    * while, there's code to execute, keep single-stepping
   */
+  
+  System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
+    Scanner in=new Scanner(System.in);
+    String str=in.nextLine();
+    String mode="random";
+    if(str.equals("2"))
+    	mode="interactive";
+    	
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Set<State> newConfiguration = new HashSet<>();
     Code code = null;
@@ -99,7 +117,7 @@ public class Simulator {
       System.out.println("No transition enabled.");
       return this.configuration;
     }
-    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment);
+    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
     codeSimulator.simulate();
     System.out.println("Value environment");
     for(Declaration d : this.valueEnvironment.keySet()) {

@@ -5,9 +5,13 @@ import java.util.Map;
 import ast.*;
 import generators.*;
 public class ActionLanguageInterpreter {
-
-  public ActionLanguageInterpreter() {
-
+  static InputGenerator ig;
+  public ActionLanguageInterpreter(String mode) {
+  	if(mode.equals("interactive"))
+    		this.ig=new InteractiveInputGenerator();
+    	else 
+    		this.ig=new RandomInputGenerator();	
+	
   }
 /*
 AssignmentStatement.java  
@@ -133,12 +137,12 @@ Name.java
     }
     else if(expression instanceof FunctionCall) {
     	FunctionDeclaration fd=((FunctionCall)expression).getFunctionDeclaration();
-    	
+  	
     	System.out.println("input function declaration found . "+fd.getReturnType());
     	if(((fd.getReturnType()).name).equals("int"))
-    		return RandomInputGenerator.getRandomInt();
+    		return ig.getInt();
     	else
-    		return RandomInputGenerator.getRandomBoolean();
+    		return ig.getBoolean();
     	
     }
     throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented." + expression +" : "+expression.getClass());

@@ -16,19 +16,22 @@ import simulator2.cfg.*;
 
 public class CodeSimulator {
 
-  private ActionLanguageInterpreter interpreter = new ActionLanguageInterpreter();
+  private ActionLanguageInterpreter interpreter;
   private Code code;
   private Map<Declaration, Expression> env;
   private final Map<CFG, CFGCode> cfgMap;
   private final Map<CFGNode, Set<CFGNode>> joinPoints = new HashMap<>();
   private final Set<CFGNode> controlPoints = new HashSet<>();
 
-  public CodeSimulator(Code code, Map<Declaration, Expression> env) {
+  public CodeSimulator(Code code, Map<Declaration, Expression> env, String mode) {
+  	
     this.code = code;
     CodeVisitor visitor = new CodeVisitor();
     visitor.visit(code);
     this.env = env;
     this.cfgMap = this.makeCFGMap();
+    interpreter = new ActionLanguageInterpreter(mode);
+    
   }
 
   private Map<CFG, CFGCode> makeCFGMap() {

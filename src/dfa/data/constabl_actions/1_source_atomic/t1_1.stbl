@@ -5,7 +5,7 @@ statechart  chart{
 	e1;
   }
   x:int:local;
- //y:int:static;
+ y:boolean:static;
   entry : {x:=1;x:=2;}
   exit  : {x:=3;x:=4;} 
   functions {
@@ -25,7 +25,7 @@ statechart  chart{
     }
   state B{
         entry:{
-          x:=input<|int|>();
+          y:=input<|boolean|>();
          /* y:=input<||>();
           x:=5;
           x:=7;

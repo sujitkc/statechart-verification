@@ -4,16 +4,16 @@ import ast.*;
 import java.lang.Math;   
 import java.util.Random;
 public class RandomInputGenerator extends InputGenerator {
-  	static Random rd = new Random();
-  public static BooleanConstant getRandomBoolean(){
+  	 Random rd = new Random();
+  public BooleanConstant getBoolean(){
   	
   	return new BooleanConstant(rd.nextBoolean());
   }
-  public static IntegerConstant getRandomInt(){
+  public IntegerConstant getInt(){
   	return new IntegerConstant(rd.nextInt());
   }
   
-  public static IntegerConstant getRandomInt(int lowerBound, int upperBound){
+  public IntegerConstant getInt(int lowerBound, int upperBound){
   
   	return new IntegerConstant(rd.nextInt(upperBound - lowerBound) + lowerBound);
   }
