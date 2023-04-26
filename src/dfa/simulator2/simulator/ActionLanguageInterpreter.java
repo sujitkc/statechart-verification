@@ -3,7 +3,7 @@ package simulator2.simulator;
 import java.util.Map;
 
 import ast.*;
-
+import generators.*;
 public class ActionLanguageInterpreter {
 
   public ActionLanguageInterpreter() {
@@ -131,10 +131,16 @@ Name.java
         return new BooleanConstant(answer);
       }
     }
-    /*else if(expression instanceof InputExpression) {
+    else if(expression instanceof FunctionCall) {
+    	FunctionDeclaration fd=((FunctionCall)expression).getFunctionDeclaration();
     	
+    	System.out.println("input function declaration found . "+fd.getReturnType());
+    	if(((fd.getReturnType()).name).equals("int"))
+    		return RandomInputGenerator.getRandomInt();
+    	else
+    		return RandomInputGenerator.getRandomBoolean();
     	
-    }*/
+    }
     throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented." + expression +" : "+expression.getClass());
   }
 }

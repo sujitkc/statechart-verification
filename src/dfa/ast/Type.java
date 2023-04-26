@@ -14,7 +14,7 @@ public abstract class Type {
 
   public Type(String name) {
     this.name = name;
-    this.typeParameterNames = new ArrayList<String>();;
+    this.typeParameterNames = new ArrayList<String>();
   }
 
   public Type(String name, List<String> typeParameterNames) {

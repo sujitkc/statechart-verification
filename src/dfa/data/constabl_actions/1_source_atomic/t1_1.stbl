@@ -5,7 +5,7 @@ statechart  chart{
 	e1;
   }
   x:int:local;
-  y:int:static;
+ //y:int:static;
   entry : {x:=1;x:=2;}
   exit  : {x:=3;x:=4;} 
   functions {
