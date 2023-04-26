@@ -72,7 +72,6 @@ public class CodeSimulator {
       CFGNode node = this.randomSelect();
       if(node==null)
         break;
-      System.out.println("executing " + node);
       
       this.controlPoints.remove(node);
      /*Original code */ 
@@ -115,7 +114,7 @@ public class CodeSimulator {
   private void simulateAssignmentNode(CFGAssignmentNode node) throws Exception {
    CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
     // return type change for execute method to update environment - changed by karthika
-    this.env=ActionLanguageInterpreter.execute(assignmentNode.assignment, this.env);
+    this.env=interpreter.execute(assignmentNode.assignment, this.env);
     //if it is exit node, it will not have a successor - changed by karthika
     if(assignmentNode.getSuccessor()!=null)
       this.controlPoints.add(assignmentNode.getSuccessor());
