@@ -5,27 +5,33 @@ statechart  chart{
 	e1;
   }
   x:int:local;
+  y:int:static;
   entry : {x:=1;x:=2;}
   exit  : {x:=3;x:=4;} 
   functions {
-  input<||>() : int;
+  //input<|Te|>() : Te;
+  
   }
     state A{
         entry:{
-        x:=5;
+       
         x:=6;
         }
-	      exit:{
-          x:=7;
+	exit:{
+	  
           x:=8;
-          }
+        }
 	    
     }
   state B{
         entry:{
+          x:=input<|int|>();
+         /* y:=input<||>();
+          x:=5;
+          x:=7;
           x:=9;
-          x:=10;
-          }
+          x:=10;*/
+        }
         exit:{
           x:=11;
           x:=12;

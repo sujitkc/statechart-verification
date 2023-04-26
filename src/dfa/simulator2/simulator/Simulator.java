@@ -239,6 +239,8 @@ public class Simulator {
   private void makeCFGs(State state) throws Exception {
     /* action name is added by Karthika */
     this.converter.actionname=state.name+"_N";
+   
+    
     this.CFGs.put(state.entry, this.converter.convert(state.entry));
     this.converter.actionname=state.name+"_X";
     this.CFGs.put(state.exit, this.converter.convert(state.exit));

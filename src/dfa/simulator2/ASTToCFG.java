@@ -22,6 +22,7 @@ public class ASTToCFG {
   public String actionname="";
   public CFG convert(Statement s) throws Exception {
     if(s instanceof AssignmentStatement) {
+     
       return this.convertAssignmentStatement((AssignmentStatement) s);
     }
     else if(s instanceof IfStatement) {
@@ -32,6 +33,7 @@ public class ASTToCFG {
     }
   
     else if(s instanceof StatementList) {
+    
       return this.convertStatementList((StatementList) s);
     }
 
@@ -71,8 +73,10 @@ public class ASTToCFG {
     }
     List<CFG> cfgs = new ArrayList<>();
     for(Statement statement : s.getStatements()) {
+    	
       cfgs.add(this.convert(statement));
     }
+    System.out.println("cfgs :" + cfgs);
     for(int i = 0; i < cfgs.size() - 1; i++) {
       CFG cfg1 = cfgs.get(i);
       CFG cfg2 = cfgs.get(i + 1);

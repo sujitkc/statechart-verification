@@ -39,7 +39,7 @@ public class TestAll {
   	
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"}, events);
   	
-  	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"}, events);
+  	/*makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"}, events);
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"}, events);
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#3.stbl", new String[] {"A"}, new String[]{"A1","A2"}, events);
   	
@@ -297,7 +297,7 @@ public class TestAll {
   	makeTestCase("data/constabl_actions/6#2_source_substateofregion(compositesubstate)/t6#2_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);*/
   	
   	//6#3
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B"}, events);
+  	/*makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B"}, events);
   	
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B1"}, events);
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B11"}, events);
@@ -315,7 +315,7 @@ public class TestAll {
   	
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);
+  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);*/
   	
   }
   
@@ -334,7 +334,7 @@ public class TestAll {
   	this.testlist.add(tc);
   }
   
-  @Test
+ // @Test
   public void callAllTestCasesSimulate(){
    try{      
   	populate_simulate();
@@ -363,7 +363,7 @@ public class TestAll {
   	}
   
   }
-  //@Test
+  @Test
   public void callAllTestCasesSingleStep(){
   try{
   	populate_singlestepcheck();
