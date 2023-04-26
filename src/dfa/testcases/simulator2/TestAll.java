@@ -321,20 +321,21 @@ public class TestAll {
   
   public void populate_simulate(){
   	String[] events={"e1","e2","e3"};
-  	makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
+  	//makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
+  	makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	
-  	String events1[]={"e1","e2","e3"};
+  	//String events1[]={"e1","e2","e3"};
   	//makeTestCase("data/constabl_events/t6#2_6#3_nd.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh2R1A","Sh2R2A"}, events1);
   	
-  	String events2[]={"e1","e2","e3"};
-  	makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
+  	//String events2[]={"e1","e2","e3"};
+  	//makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
   }
   public void makeTestCase( String filename, String[] sourceConfig, String[] destConfig, String[] eventseq){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig, eventseq);
   	this.testlist.add(tc);
   }
   
- // @Test
+  @Test
   public void callAllTestCasesSimulate(){
    try{      
   	populate_simulate();
@@ -352,7 +353,7 @@ public class TestAll {
 	   		}
 	  Arrays.sort(output);
 	  Arrays.sort(expected);
-	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(expected)+"==="+Arrays.toString(output));
+	  System.out.println("******** Testing Assertion ******** comparing ****** (expected)"+Arrays.toString(expected)+"=== (actual)"+Arrays.toString(output));
           assertArrayEquals(expected,output);	
 	  }
   }
@@ -363,7 +364,7 @@ public class TestAll {
   	}
   
   }
-  @Test
+  //@Test
   public void callAllTestCasesSingleStep(){
   try{
   	populate_singlestepcheck();

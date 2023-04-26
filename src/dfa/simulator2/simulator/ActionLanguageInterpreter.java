@@ -33,6 +33,7 @@ Name.java
       Expression newvalue = ActionLanguageInterpreter.evaluate(rhs, env);
       Declaration d = lhs.getDeclaration();
       env.put(d, newvalue);
+     
     }
     else if(statement instanceof IfStatement){
       System.out.println("ActionLanguageInterpreter::interpret - if statement detected");
@@ -50,17 +51,27 @@ Name.java
   }
 
   public static Expression evaluate(Expression expression, Map<Declaration, Expression> env) throws Exception {
+  //System.out.println("Binary expression :"+expression + expression.getClass());
+  
     if(
         expression instanceof IntegerConstant ||
         expression instanceof BooleanConstant ||
         expression instanceof StringLiteral
       ) {
+       
       return expression;
     }
     else if(expression instanceof BinaryExpression) {
+   
       BinaryExpression be = (BinaryExpression)expression;
+     
       Expression left = ActionLanguageInterpreter.evaluate(be.left, env);
+   
+      
       Expression right = ActionLanguageInterpreter.evaluate(be.right, env);
+    
+    
+      
       if(be.operator.equals("+")) {
 	IntegerConstant ileft  = (IntegerConstant)left;
 	IntegerConstant iright = (IntegerConstant)right;
@@ -112,6 +123,7 @@ Name.java
         return new BooleanConstant(bleft.value || bright.value);
       }
       else if(be.operator.equals("=")) {
+      	
           Boolean answer = true;
           if(left instanceof BooleanConstant && right instanceof BooleanConstant) {
             BooleanConstant bleft  = (BooleanConstant)left;
@@ -134,11 +146,28 @@ Name.java
           }
         return new BooleanConstant(answer);
       }
+      
     }
+    else if(expression instanceof Name){
+    //System.out.println("Name found");
+      	    Declaration d=((Name)expression).getDeclaration();
+      	    //            System.out.println("Declaration found :"+d + "and env is :"+env);
+      	     
+            Expression e = env.get(d);
+            //System.out.println("Expression found :"+e);
+            if(e instanceof IntegerConstant){
+              IntegerConstant val = (IntegerConstant)e;
+              return val;
+            }
+            else if(e instanceof BooleanConstant){
+              BooleanConstant val = (BooleanConstant)e;
+            	return val;
+            }	
+      }
     else if(expression instanceof FunctionCall) {
     	FunctionDeclaration fd=((FunctionCall)expression).getFunctionDeclaration();
   	
-    	System.out.println("input function declaration found . "+fd.getReturnType());
+    	//System.out.println("input function declaration found . "+fd.getReturnType());
     	if(((fd.getReturnType()).name).equals("int"))
     		return ig.getInt();
     	else

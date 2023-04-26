@@ -40,17 +40,31 @@ public class Simulator {
     this.makeCFGs(this.statechart);
     this.configuration = configuration;
   }
-
-  public Set<State> simulate(List<String> events) throws Exception {
-  
-  System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
+ public void printCurrentExecutionInfo(){
+	 	System.out.print("Current configuration : ");
+	    for(State s : this.configuration){
+	   		System.out.println(s.name+", ");
+		}
+	    System.out.println("Current Environment : "+ this.valueEnvironment);
+ 	}
+ public String getSimulationMode(){
+ 	System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
     Scanner in=new Scanner(System.in);
     String str=in.nextLine();
     String mode="random";
     if(str.equals("2"))
     	mode="interactive";
+    return mode;
+ }
+  public Set<State> simulate(List<String> events) throws Exception {
   
-     Set<State> newConfiguration = new HashSet<>();
+    printCurrentExecutionInfo();
+    
+    
+    String mode=getSimulationMode();
+    
+  
+    Set<State> newConfiguration = new HashSet<>();
     this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
     Tree<State> subtree = this.getEntrySubTree(statechart);
     Map<Statement, CFG> CFGs = this.CFGs;
@@ -69,7 +83,7 @@ public class Simulator {
     codeSimulator.simulate();
 
     for(String event : events) {
-      
+      System.out.println("Consuming event : "+event);
       newConfiguration=this.simulationStep(event);
     }
     return newConfiguration;
@@ -84,14 +98,10 @@ public class Simulator {
    *   of transition-wise code.
    * while, there's code to execute, keep single-stepping
   */
+    printCurrentExecutionInfo();
   
-  System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
-    Scanner in=new Scanner(System.in);
-    String str=in.nextLine();
-    String mode="random";
-    if(str.equals("2"))
-    	mode="interactive";
-    	
+    String mode=getSimulationMode();
+    
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Set<State> newConfiguration = new HashSet<>();
     Code code = null;
