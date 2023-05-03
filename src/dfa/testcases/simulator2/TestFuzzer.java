@@ -328,12 +328,50 @@ public class TestFuzzer {
   	sourceList.add(sourceConfig);
   	destList.add(destConfig);
   }
+  public static void eventFuzz(FuzzedDataProvider data){
+	for(int i=0;i<testcaselist.size();i++){
+  	  String inputfile=testcaselist.get(i).filename;
+  		List<String> events=new ArrayList<String>();
+	events.add("e1");
+	events.add("e2");
+	events.add("e1");
+	events.add("e2");
+	events.add("e1");
+	events.add("e2");
+	events.add("e1");
+	events.add("e2");
+	events.add("e1");
+	events.add("e2");
+	events.add("e1");
+	events.add("e2");
+	/*events.add("e3");
+	events.add("e4");
+	events.add("e5");
+	events.add("e6");*/
+	int eventlength=data.consumeInt​(3,10);
+	List<String> list=data.pickValues(events,eventlength);
+	System.out.println("events : "+ list);
+	String[] eventsarray = list.toArray(new String[list.size()]);
+	Set<State> newconfig=runSimulateTest("test"+i, inputfile, eventsarray);
+  	  String[] output=new String[newconfig.size()];
+  	  int j=0;
+	  for(State s:newconfig) {
+	   		output[j++]=s.name;
+	   		}
+	  Arrays.sort(output);
+	  System.out.println("Configuration is : "+ output);
+	  
+  	  
+  	  }
+
+  }
   public static void fuzzerInitialize() {
     // Optional initialization to be run before the first call to fuzzerTestOneInput.
   }
 
   public static void fuzzerTestOneInput(FuzzedDataProvider data) {
 	populate();
+	eventFuzz(data);
 	/*String[] randomSourceState=data.pickValue(sourceList);
 	String[] randomDestState=data.pickValue(destList);
 	String fname=data.pickValue(filenameList);
@@ -355,7 +393,7 @@ public class TestFuzzer {
 	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(randomDestState)+"==="+Arrays.toString(output));
           assertArrayEquals(randomDestState,output);	
 	*/
-	for(int i=0;i<testcaselist.size();i++){
+	/*for(int i=0;i<testcaselist.size();i++){
   	  String inputfile=testcaselist.get(i).filename;
   		List<String> events=new ArrayList<String>();
 	events.add("e1");
@@ -363,7 +401,7 @@ public class TestFuzzer {
 	/*events.add("e3");
 	events.add("e4");
 	events.add("e5");
-	events.add("e6");*/
+	events.add("e6");
 	int eventlength=data.consumeInt​(3,10);
 	List<String> list=data.pickValues(events,eventlength);
 	System.out.println(list);
