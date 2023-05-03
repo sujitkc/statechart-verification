@@ -76,7 +76,7 @@ public class ASTToCFG {
     	
       cfgs.add(this.convert(statement));
     }
-    System.out.println("cfgs :" + cfgs);
+   // System.out.println("cfgs :" + cfgs);
     for(int i = 0; i < cfgs.size() - 1; i++) {
       CFG cfg1 = cfgs.get(i);
       CFG cfg2 = cfgs.get(i + 1);
