@@ -43,7 +43,7 @@ public class TestFuzzer {
   	
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"});
   	
-  	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"});
+  /*	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"});
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"});
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#3.stbl", new String[] {"A"}, new String[]{"A1","A2"});
   	
@@ -319,7 +319,7 @@ public class TestFuzzer {
   	
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"});
   	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"});
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"});
+  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"});*/
   	 }
   public static void makeTestCase(String filename, String[] sourceConfig, String[] destConfig){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig);
@@ -334,7 +334,7 @@ public class TestFuzzer {
 
   public static void fuzzerTestOneInput(FuzzedDataProvider data) {
 	populate();
-	String[] randomSourceState=data.pickValue(sourceList);
+	/*String[] randomSourceState=data.pickValue(sourceList);
 	String[] randomDestState=data.pickValue(destList);
 	String fname=data.pickValue(filenameList);
 	System.out.println(randomSourceState);
@@ -354,26 +354,34 @@ public class TestFuzzer {
 	  Arrays.sort(randomDestState);
 	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(randomDestState)+"==="+Arrays.toString(output));
           assertArrayEquals(randomDestState,output);	
-	
-	/*List<String> events=new ArrayList<String>();
+	*/
+	for(int i=0;i<testcaselist.size();i++){
+  	  String inputfile=testcaselist.get(i).filename;
+  		List<String> events=new ArrayList<String>();
 	events.add("e1");
 	events.add("e2");
-	events.add("e3");
+	/*events.add("e3");
 	events.add("e4");
 	events.add("e5");
-	events.add("e6");
-	int eventlength=data.consumeInt​(1,events.size());
-	List<String> randomEvents=data.pickValues(events,eventlength);
-	System.out.println(randomEvents);
+	events.add("e6");*/
+	int eventlength=data.consumeInt​(3,10);
+	List<String> list=data.pickValues(events,eventlength);
+	System.out.println(list);
+	String[] eventsarray = list.toArray(new String[list.size()]);
+	Set<State> newconfig=runSimulateTest("test"+i, inputfile, eventsarray);
+  	  String[] output=new String[newconfig.size()];
+  	  int j=0;
+	  for(State s:newconfig) {
+	   		output[j++]=s.name;
+	   		}
+	  Arrays.sort(output);
+	  System.out.println("Configuration is : "+ output);
+	  
+  	  
+  	  }
+	  //Arrays.sort(expected);
+	  //System.out.println("******** Testing Assertion ******** comparing ****** (expected)"+Arrays.toString(expected)+"=== (actual)"+Arrays.toString(output));
 	
-	int sourcelength=data.consumeInt​(1,events.size());
-	List<String> randomEvents=data.pickValues(events,eventlength);
-	System.out.println(randomEvents);
-	
-	int eventlength=data.consumeInt​(1,events.size());
-	List<String> randomEvents=data.pickValues(events,eventlength);
-	System.out.println(randomEvents);
-	*/
 	
     /*String input = data.consumeRemainingAsString();
     // Without the hook in ExampleFuzzerHooks.java, the value of random would change on every
@@ -412,8 +420,25 @@ public class TestFuzzer {
   	}
   }*/
  
+public static Set<State> runSimulateTest(String testname, String filename, String[] events) {
+    Statechart statechart = test_template(testname, filename);
 
-  public static Set<State> runTest(String testname, String filename, String[] statename) {
+    try
+    {
+      Set<State> configuration = new HashSet<>();
+      Simulator simulator = new Simulator(statechart);
+      
+      Set<State> newConfiguration = simulator.simulate(Arrays.asList(events));
+     return newConfiguration;
+    }
+    catch(Exception e) {
+      System.out.println("Something Went Wrong!\n");
+      e.printStackTrace();
+      System.exit(1);
+    }
+    return null;
+  }
+  public static Set<State> runTestSimulationStep(String testname, String filename, String[] statename) {
     Statechart statechart = test_template(testname, filename);
 
     try

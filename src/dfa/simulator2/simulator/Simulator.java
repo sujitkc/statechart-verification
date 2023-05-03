@@ -56,13 +56,16 @@ public class Simulator {
     	mode="interactive";
     return mode;
  }
+ public String setRandomSimulationMode(){
+ 	return "random";
+ }
   public Set<State> simulate(List<String> events) throws Exception {
   
     printCurrentExecutionInfo();
     
     
-    String mode=getSimulationMode();
-    
+    //String mode=getSimulationMode();
+    String mode=setRandomSimulationMode();
   
     Set<State> newConfiguration = new HashSet<>();
     this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
@@ -100,8 +103,8 @@ public class Simulator {
   */
     printCurrentExecutionInfo();
   
-    String mode=getSimulationMode();
-    
+    //String mode=getSimulationMode();
+        String mode=setRandomSimulationMode();
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Set<State> newConfiguration = new HashSet<>();
     Code code = null;
