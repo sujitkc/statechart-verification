@@ -108,6 +108,7 @@ public class CodeSimulator {
      // System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
     }
+     System.out.println(" -- Code Simulation Ends. --");
     //System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
   }
@@ -137,7 +138,7 @@ public class CodeSimulator {
     }
     if(nextNodes.isEmpty()) {
       //System.out.println("No next nodes");
-      System.out.println(" -- Code Simulation Ends. --");
+      //System.out.println(" -- Code Simulation Ends. --");
       
       return;
     }
