@@ -43,15 +43,15 @@ public abstract class Code {
     else if(this.parentCode instanceof SequenceCode) {
       SequenceCode seqParent = (SequenceCode)this.parentCode;
       if(seqParent.getLastCode().equals(this)) {
-        System.out.println("--Sequence Ends.");
+        //System.out.println("--Sequence Ends.");
         return this.parentCode.getNextCFGCodeSet();
       }
       else {
-        System.out.println("--Sequence Continues--");
+        //System.out.println("--Sequence Continues--");
         Code nextSibling = seqParent.getNextSibling(this);
         if(nextSibling instanceof CFGCode) {
           CFGCode ns = (CFGCode)nextSibling;
-          System.out.println(ns.cfg);
+          //System.out.println(ns.cfg);
         }
         return nextSibling.getFirstCFGCodeSet();
       }

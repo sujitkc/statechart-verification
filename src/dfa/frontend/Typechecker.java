@@ -38,7 +38,7 @@ public class Typechecker {
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
       Type type = null;
       try {
-      System.out.println("fdec found : " +fdec.returnTypeName+" ::: "+ fdec.typeParameterNames);
+      //System.out.println("fdec found : " +fdec.returnTypeName+" ::: "+ fdec.typeParameterNames);
         type = this.lookupType(fdec.returnTypeName, fdec.typeParameterNames,
           this.statechart.types.size());
       }

@@ -59,15 +59,15 @@ public class CodeSimulator {
   public void simulate() throws Exception {
     Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
     for(CFGCode cfgCode : cfgCodes) {
-      System.out.println("Initial control point : " + cfgCode.cfg);
+      //System.out.println("Initial control point : " + cfgCode.cfg);
       this.controlPoints.add(cfgCode.cfg.entryNode);
     }
     
-      System.out.println("Printing all control points : ");
+    /*  System.out.println("Printing all control points : ");
     
     for(CFGNode n : controlPoints) {
       System.out.println(n.toString());
-    }
+    }*/
     while(controlPoints.isEmpty() == false) {
       CFGNode node = this.randomSelect();
       if(node==null)
@@ -105,10 +105,10 @@ public class CodeSimulator {
         simulateExitNode(node);
       }
      
-      System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
+     // System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
     }
-    System.out.println("Printing Environment outside loop: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
+    //System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
   }
   private void simulateAssignmentNode(CFGAssignmentNode node) throws Exception {
@@ -125,18 +125,20 @@ public class CodeSimulator {
   }
 
   private void simulateExitNode(CFGNode node) {
-    System.out.println("Simulating exit node " + node);
+    //System.out.println("Simulating exit node " + node);
     
     CFGCode code = this.cfgMap.get(node.getCFG());
     Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
     Set<CFGNode> nextNodes = new HashSet<>();
-    System.out.println("====================");
+    //System.out.println("====================");
     for(CFGCode nextCode : nextCodes) {
-      System.out.println("cfg of next code = " + nextCode.cfg);
+      //System.out.println("cfg of next code = " + nextCode.cfg);
       nextNodes.add(nextCode.cfg.entryNode);
     }
     if(nextNodes.isEmpty()) {
-      System.out.println("No next nodes");
+      //System.out.println("No next nodes");
+      System.out.println(" -- Code Simulation Ends. --");
+      
       return;
     }
     for(CFGNode s : nextNodes) {
@@ -148,7 +150,7 @@ public class CodeSimulator {
         Set<CFGNode> sPredecessors = new HashSet<>();
 	for(CFGCode prevCode : prevCodes) {
           sPredecessors.add(prevCode.cfg.exitNode);
-          System.out.println("Predecessor added : " + prevCode.cfg);
+          //System.out.println("Predecessor added : " + prevCode.cfg);
 	}
 	this.joinPoints.put(s, sPredecessors);
       }
@@ -162,7 +164,7 @@ public class CodeSimulator {
         this.controlPoints.add(s);
       }
     }
-    System.out.println("====================");
+    //System.out.println("====================");
   }
 
   private void simulateDecisionNode(CFGDecisionNode node) throws Exception {

@@ -40,12 +40,23 @@ public class Simulator {
     this.makeCFGs(this.statechart);
     this.configuration = configuration;
   }
- public void printCurrentExecutionInfo(){
-	 	System.out.print("Current configuration : ");
-	    for(State s : this.configuration){
-	   		System.out.println(s.name+", ");
-		}
-	    System.out.println("Current Environment : "+ this.valueEnvironment);
+ public void printCurrentExecutionInfo(String event){
+ 	System.out.println(".........................");
+      	System.out.println("Consuming event : "+event);
+	String con="Current configuration : [";
+	for(State s : this.configuration){
+		con+=s.name+", ";
+	}
+	con+="]";
+	
+	System.out.println(con);
+	
+	System.out.println("Current Environment : ");
+	 this.valueEnvironment.forEach((k,v) -> System.out.println(""
+                + k + " = " + v));
+	
+	
+	
  	}
  public String getSimulationMode(){
  	System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
@@ -60,8 +71,8 @@ public class Simulator {
  	return "random";
  }
   public Set<State> simulate(List<String> events) throws Exception {
-  
-    printCurrentExecutionInfo();
+    System.out.println ("==== Statechart Simulation begins ===");
+    printCurrentExecutionInfo(" initializing statechart");
     
     
     //String mode=getSimulationMode();
@@ -86,8 +97,9 @@ public class Simulator {
     codeSimulator.simulate();
 
     for(String event : events) {
-      System.out.println("Consuming event : "+event);
+      
       newConfiguration=this.simulationStep(event);
+      
     }
     return newConfiguration;
   }
@@ -101,13 +113,15 @@ public class Simulator {
    *   of transition-wise code.
    * while, there's code to execute, keep single-stepping
   */
-    printCurrentExecutionInfo();
+    
   
     //String mode=getSimulationMode();
         String mode=setRandomSimulationMode();
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Set<State> newConfiguration = new HashSet<>();
     Code code = null;
+    
+    printCurrentExecutionInfo(event);
     System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
       Set<Code> codes = new HashSet<>();
@@ -117,6 +131,7 @@ public class Simulator {
         codes.add(this.getCode(t));
       }
       System.out.println();
+      
       this.detectNondeterminism(codes);
       code = new ConcurrentCode(codes);
     }
@@ -130,12 +145,13 @@ public class Simulator {
       System.out.println("No transition enabled.");
       return this.configuration;
     }
+    System.out.println(" -- Code Simulation Begins --");
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
     codeSimulator.simulate();
-    System.out.println("Value environment");
+    /*System.out.println("Value environment");
     for(Declaration d : this.valueEnvironment.keySet()) {
       System.out.println(d + " : " + this.valueEnvironment.get(d));
-    }
+    }*/
 
     
     for(Transition t : enabledTransitions) {
@@ -146,11 +162,11 @@ public class Simulator {
     if(newConfiguration.isEmpty() == false) {
       this.configuration = newConfiguration;
     }
-    System.out.print("States in configuration : {");
+    /*System.out.print("States in configuration : {");
     for(State s : this.configuration) {
       System.out.print(s.name+", ");
     }
-    System.out.println("}");
+    System.out.println("}");*/
     return newConfiguration;
   }
 

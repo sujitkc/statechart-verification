@@ -50,7 +50,7 @@ public class Declaration {
     if(this.input) {
       s += " #";
     }
-    s += " : " + this.typeName + " : " + this.type + " Scope : " + this.scope + " Input status: " + this.input + ";"; 
+    s += " : " + this.typeName + " : " + this.type + " Scope : " + this.scope;// + " Input status: " + this.input + ";"; 
     return s;
   }
 

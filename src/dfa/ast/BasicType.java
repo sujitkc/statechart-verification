@@ -47,7 +47,7 @@ public class BasicType extends Type {
       s += "|>";
     }
 
-    s += "'\n";
+   // s += "'\n";
     return s;
   }
 

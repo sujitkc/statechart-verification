@@ -25,7 +25,7 @@ SkipStatement.java
 Name.java                  
 */
   public Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {
-    System.out.println("execute called.");
+    System.out.println("execute called. on "+statement);
     if(statement instanceof AssignmentStatement) {
       AssignmentStatement assign = (AssignmentStatement)statement;
       Name lhs = assign.lhs;
@@ -35,6 +35,7 @@ Name.java
       env.put(d, newvalue);
      
     }
+    
     else if(statement instanceof IfStatement){
       System.out.println("ActionLanguageInterpreter::interpret - if statement detected");
     }
