@@ -17,7 +17,7 @@ import simulator2.*;
 import simulator2.tree.*;
 import simulator2.cfg.*;
 import simulator2.code.*;
-
+import com.code_intelligence.jazzer.api.FuzzerSecurityIssueMedium;
 public class Simulator {
 
   public final Statechart statechart;
@@ -180,7 +180,7 @@ public class Simulator {
         cfgs.addAll(codeCFGs);
       }
       else {
-        throw new Exception("Simulator::detectNondeterminism : Non-determinism detected.");
+        throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
       }
     }
   }
