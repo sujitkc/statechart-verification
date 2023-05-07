@@ -42,7 +42,8 @@ public class TestSingleSCFuzzer {
   
   	//atomic
   	
-  	makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"});
+  	//makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"});
+  	makeTestCase("data/uwfms/CruiseControl.stb", new String[] {"A"}, new String[]{"B"});
   	
   /*	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"});
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"});
@@ -334,15 +335,23 @@ public class TestSingleSCFuzzer {
 	for(int i=0;i<testcaselist.size();i++){
   	  String inputfile=testcaselist.get(i).filename;
   		List<String> events=new ArrayList<String>();
-		events.add("e1");
+		/*events.add("e1");
 		events.add("e2");
+		events.add("e");*/
 		events.add("e");
+		events.add("No_event");
+		events.add("SetAccelIn");
+		events.add("ResumeCoastIn");
+		events.add("ResumeCoastOut");
+		events.add("Cancel");
+		events.add("Error");
+		
 		List<String> list=new ArrayList<String>();
 		Random r=new Random();
 		for(int j=0;j<1500;j++){
 			//num=data.consumeInt​(0,2);
 			
-			num=r.nextInt(3);
+			num=r.nextInt(7);
 			list.add(events.get(num));
 
 		}
@@ -359,7 +368,7 @@ public class TestSingleSCFuzzer {
 	   		output[j++]=s.name;
 	   		}
 	  Arrays.sort(output);
-	  System.out.println("Configuration is : "+ output);
+	 // System.out.println("Configuration is : "+ output);
 	  
   	  
   	  }

@@ -359,7 +359,7 @@ public class TestFuzzer {
 	   		output[j++]=s.name;
 	   		}
 	  Arrays.sort(output);
-	  System.out.println("Configuration is : "+ output);
+	  //System.out.println("Configuration is : "+ output);
 	  
   	  
   	  }

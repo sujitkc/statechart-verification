@@ -24,18 +24,22 @@ statechart  CruiseControl{
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   CC_Enabled : boolean : local;
-//  FollowDist : int : local;
+  FollowDist : int : local;
 //  AccelPedal :int: local;
+	PRNDL_In :int: local;
   
   entry : {
+	FollowDist:=10;
+		PRNDL_In:=3;
 	BoolTRUE:=true;
 	BoolFALSE:=false;
+	
   }
 
   exit  : {} 
   functions {
-  input<||>() : int;
-  testInput<|T|>():T;
+  //input<||>() : int;
+  //testInput<|T|>():T;
   }
   shell CC{
 	
@@ -43,9 +47,14 @@ statechart  CruiseControl{
 	CC_Engaged : boolean : local;
 	TargetSpeed : int : local;
 	Speed:int:local;
-
+   // FollowDist :int:local;
 	state LogicControl{
 	entry:{
+		CC_Engaged:=true;
+		
+		Speed:=input<|int|>();
+		BrakePedal:=input<|int|>();
+		TargetSpeed:=60;
 		CC_Enabled:=true;
 	}
 	exit:{}
@@ -58,10 +67,11 @@ statechart  CruiseControl{
 			exit:{}
 		}
 		state Enabled{
-			PRNDL_In:int:local;
+		//	PRNDL_In:int:local;
 			
 			entry:{
-			
+				PRNDL_In:=3;
+					PRNDL_In:=3;
 			}
 			exit:{}
 			state Disengaged{
@@ -74,9 +84,11 @@ statechart  CruiseControl{
 			}
 			state Engaged{
 				set_Throttle :int:local;
-				FollowDist :int:local;
 				
-				entry:{}
+				
+				entry:{
+					
+				}
 				exit:{}
 				state Coasting{
 					entry:{}

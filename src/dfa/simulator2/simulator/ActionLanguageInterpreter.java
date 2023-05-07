@@ -52,6 +52,7 @@ Name.java
   }
 
   public static Expression evaluate(Expression expression, Map<Declaration, Expression> env) throws Exception {
+  
   //System.out.println("Binary expression :"+expression + expression.getClass());
   
     if(
@@ -59,7 +60,7 @@ Name.java
         expression instanceof BooleanConstant ||
         expression instanceof StringLiteral
       ) {
-       
+     //  System.out.println ("integer constant found");
       return expression;
     }
     else if(expression instanceof BinaryExpression) {
@@ -67,7 +68,7 @@ Name.java
       BinaryExpression be = (BinaryExpression)expression;
      
       Expression left = ActionLanguageInterpreter.evaluate(be.left, env);
-   
+
       
       Expression right = ActionLanguageInterpreter.evaluate(be.right, env);
     
@@ -107,6 +108,11 @@ Name.java
 	IntegerConstant ileft  = (IntegerConstant)left;
 	IntegerConstant iright = (IntegerConstant)right;
         return new BooleanConstant(ileft.value <= iright.value);
+      }
+      else if(be.operator.equals("!=")) {
+	IntegerConstant ileft  = (IntegerConstant)left;
+	IntegerConstant iright = (IntegerConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);
       }
       else if(be.operator.equals("<")) {
 	IntegerConstant ileft  = (IntegerConstant)left;
