@@ -110,9 +110,21 @@ Name.java
         return new BooleanConstant(ileft.value <= iright.value);
       }
       else if(be.operator.equals("!=")) {
-	IntegerConstant ileft  = (IntegerConstant)left;
-	IntegerConstant iright = (IntegerConstant)right;
+        
+        if(left instanceof IntegerConstant && right instanceof IntegerConstant){
+          IntegerConstant ileft  = (IntegerConstant)left;
+	        IntegerConstant iright = (IntegerConstant)right;
         return new BooleanConstant(ileft.value != iright.value);
+        }
+        else{
+          BooleanConstant ileft  = (BooleanConstant)left;
+	        BooleanConstant iright = (BooleanConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);
+
+        }
+	/*IntegerConstant ileft  = (IntegerConstant)left;
+	IntegerConstant iright = (IntegerConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);*/
       }
       else if(be.operator.equals("<")) {
 	IntegerConstant ileft  = (IntegerConstant)left;

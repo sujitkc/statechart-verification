@@ -43,7 +43,8 @@ public class TestSingleSCFuzzer {
   	//atomic
   	
   	//makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"});
-  	makeTestCase("data/uwfms/CruiseControl.stb", new String[] {"A"}, new String[]{"B"});
+  //	makeTestCase("data/uwfms/CruiseControl.stb", new String[] {"A"}, new String[]{"B"});
+  		makeTestCase("data/uwfms/caeva.stb", new String[] {"A"}, new String[]{"B"});
   	
   /*	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"});
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"});

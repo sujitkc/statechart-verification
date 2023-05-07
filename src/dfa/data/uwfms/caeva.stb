@@ -1,0 +1,504 @@
+statechart  caeva{
+    events {
+	e;
+	Error;
+  }
+  CA_Enabled : boolean : local;
+  CA_HVI : int : local;
+  CA_Warning :int: local;
+  Warning :int: local;
+  EVA_Enabled : boolean : local;
+  EVA_HVI : int : local;
+  
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone : int : local;
+    ThreatCA:int:local;
+  entry:{
+      AccelPedal:=input<|int|>();
+
+  }
+  exit:{}
+
+   functions {
+  //input<||>() : int;
+  }
+  shell sc{
+    state  CollisionAvoidance{
+  
+     Speed:int:local;
+   PRNDL_In:int:local;
+   BreakPedal:int:local;
+
+ 
+  
+
+  entry : {
+  BoolTRUE:=true;
+  CA_Enabled:=true;
+  ThreatCA:=input<|int|>();
+          Speed:=input<|int|>();
+PRNDL_In:=input<|int|>();
+BreakPedal:=input<|int|>();
+  }
+
+  exit  : {} 
+ 
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   
+
+   
+   entry: {
+        ThreatCA:=input<|int|>();
+   }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+	 Set_Brake:int:local;
+	
+	 
+	 entry: {
+        
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Avoid{
+	 entry: {}
+     exit : {}
+	}
+	
+	state Mitigate{
+	 entry: {}
+     exit : {}
+    }
+	transition t19{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t20{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t21{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t22{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2; Set_Brake:=30;}
+    }
+	
+	transition t23{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t33{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+	transition t34{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t35{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3; Set_Brake:=80;}
+    }
+	
+	transition t29{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t31{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t30{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t32{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+   }
+   state Halt{
+	 entry: {}
+     exit : {}
+   }
+   transition t16{
+    source: caeva.sc.CollisionAvoidance.Enabled.Disengaged;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>25)&&(PRNDL_In=3);
+    action:{CA_HVI:=2;}
+  }
+   
+   transition t17{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<=25))||(PRNDL_In!=3);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t24{
+    source: caeva.sc.CollisionAvoidance.Enabled.Halt;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BreakPedal>10);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t25{
+    source: caeva.sc.CollisionAvoidance.Enabled.Engaged;
+    destination: caeva.sc.CollisionAvoidance.Enabled.Halt;
+    trigger: e;
+    guard:(Speed=0);
+    action:{CA_HVI:=1;Warning:=4;}
+  }
+   
+  }
+  transition t14{
+  source: caeva.sc.CollisionAvoidance.Disabled;
+  destination: caeva.sc.CollisionAvoidance.Enabled;
+  trigger: e;
+  guard:(CA_Enabled=BoolTRUE);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t15{
+  source: caeva.sc.CollisionAvoidance.Enabled;
+  destination: caeva.sc.CollisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+   
+  transition t38{
+  source: caeva.sc.CollisionAvoidance.Override;
+  destination: caeva.sc.CollisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+  
+  transition t36{
+  source: caeva.sc.CollisionAvoidance.Enabled;
+  destination: caeva.sc.CollisionAvoidance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{CA_HVI:=4;Warning:=0;}
+  }
+  
+  transition t37{
+  source: caeva.sc.CollisionAvoidance.Override;
+  destination: caeva.sc.CollisionAvoidance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t39{
+  source: caeva.sc.CollisionAvoidance.Override;
+  destination: caeva.sc.CollisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;}
+  }
+  
+  transition t27{
+  source: caeva.sc.CollisionAvoidance.Enabled;
+  destination: caeva.sc.CollisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;Warning:=0;}
+  }
+  
+}
+
+
+state  EmergencyVehicleAvoidance{
+  
+ 
+   BrakePedal:int:local;
+     	 DontStop: boolean : local;
+  	 WayClear: boolean : local;
+   Speed:int:local;
+ PRNDL_In:int:local;
+   	 Siren :boolean : local;
+  entry : {
+  BrakePedal:=input<|int|>();
+  BoolTRUE:=true;
+  BoolFALSE:=false;
+  EVA_Enabled:=true;
+  minusone:=0-1; 
+  DontStop:=input<|boolean|>();
+    WayClear:=input<|boolean|>();
+  Speed:=input<|int|>();
+   PRNDL_In:=input<|int|>();
+   Siren:=input<|boolean|>();
+   
+
+  }
+
+  exit  : {} 
+ 
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+  
+  
+
+   
+   entry: {
+      
+ }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     
+	 Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+  
+	
+	 
+	 entry: {
+	
+	 }
+     exit : {}
+	 
+	 state Slow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Coast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state PullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition t24{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition t23{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition t25{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t26{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition t22{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t27{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition t19{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition t20{
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Disengaged;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;Warning:=0;}
+  }
+   
+ 
+   
+  }
+  transition t13{
+  source: caeva.sc.EmergencyVehicleAvoidance.Disabled;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition t14{
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition t16{
+  source: caeva.sc.EmergencyVehicleAvoidance.Override;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition t17{
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Override;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition t18{
+  source: caeva.sc.EmergencyVehicleAvoidance.Override;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition t29{
+  source: caeva.sc.EmergencyVehicleAvoidance.Override;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition t28{
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+}
+
+
+  }
+}
