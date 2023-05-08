@@ -16,11 +16,12 @@ statechart  CollisionAvoidance{
   entry : {
   BoolTRUE:=true;
   CA_Enabled:=true;
+  AccelPedal:=input<|int|>();
   }
 
   exit  : {} 
   functions {
-  input<||>() : int;
+  //input<||>() : int;
   }
   state Disabled{
    entry: {}
@@ -41,7 +42,7 @@ statechart  CollisionAvoidance{
 
    
    entry: {
-
+    Speed:=input<|int|>();
    }
    exit : {}
    state Disengaged{
@@ -206,7 +207,7 @@ statechart  CollisionAvoidance{
     source: CollisionAvoidance.Enabled.Engaged;
     destination: CollisionAvoidance.Enabled.Halt;
     trigger: e;
-    guard:(Speed=0);
+    guard:(Speed=1);
     action:{CA_HVI:=1;Warning:=4;}
   }
    

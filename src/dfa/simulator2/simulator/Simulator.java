@@ -116,12 +116,14 @@ public class Simulator {
     
   
     //String mode=getSimulationMode();
+        printCurrentExecutionInfo(event);
+
         String mode=setRandomSimulationMode();
+        //need edit by karthika
     Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
     Set<State> newConfiguration = new HashSet<>();
     Code code = null;
     
-    printCurrentExecutionInfo(event);
     System.out.print("Enabled Transitions :");
     if(enabledTransitions.size() > 1) {
       Set<Code> codes = new HashSet<>();
@@ -304,15 +306,20 @@ public class Simulator {
       throws Exception {
     Set<Transition> eTransitions = new HashSet<>();
     for(Transition t : this.allTransitions) {
-      BooleanConstant evaluatedGuard =
+     
+      if(
+          t.trigger.equals(event)){
+          
+             BooleanConstant evaluatedGuard =
         (BooleanConstant)ActionLanguageInterpreter
 	  .evaluate(t.guard, this.valueEnvironment);
-      if(
-          t.trigger.equals(event) &&
-	  evaluatedGuard.equals(BooleanConstant.True))
+          if(evaluatedGuard.equals(BooleanConstant.True))
       {
         eTransitions.add(t);
       }
+
+          } 
+	  
     }
     Tree<State> slicedStateTree = this.stateTree.getSlicedSubtree(
       this.stateTree.root, this.configuration);
