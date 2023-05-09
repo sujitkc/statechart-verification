@@ -43,8 +43,8 @@ public class TestSingleSCFuzzer {
   	//atomic
   	
   	//makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"});
-  	makeTestCase("data/uwfms/CollisionAvoidance.stb", new String[] {"A"}, new String[]{"B"});
-  		//makeTestCase("data/uwfms/caeva.stb", new String[] {"A"}, new String[]{"B"});
+  	//makeTestCase("data/uwfms/CollisionAvoidance.stb", new String[] {"A"}, new String[]{"B"});
+  	makeTestCase("data/uwfms/caeva.stb", new String[] {"A"}, new String[]{"Fail", "Fail"});
   	
   /*	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"});
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"});
@@ -335,6 +335,8 @@ public class TestSingleSCFuzzer {
 	int num;
 	for(int i=0;i<testcaselist.size();i++){
   	  String inputfile=testcaselist.get(i).filename;
+	  	 String[] destConfig=testcaselist.get(i).destConfig;
+
   		List<String> events=new ArrayList<String>();
 		/*events.add("e1");
 		events.add("e2");
@@ -370,7 +372,9 @@ public class TestSingleSCFuzzer {
 	   		}
 	  Arrays.sort(output);
 	 // System.out.println("Configuration is : "+ output);
-	  
+	  Arrays.sort(destConfig);
+	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
+          assertFalse(Arrays.equals(destConfig,output));
   	  
   	  }
 
