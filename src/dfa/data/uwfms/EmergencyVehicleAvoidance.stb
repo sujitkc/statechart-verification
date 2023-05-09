@@ -14,16 +14,19 @@ statechart  EmergencyVehicleAvoidance{
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   minusone : int : local;
+  BrakePedal:int:local; 
+
   entry : {
   BoolTRUE:=true;
   BoolFALSE:=false;
   EVA_Enabled:=true;
-  minusone:=0-1; 
+  minusone:=0-1;
+   AccelPedal:=input<|int|>();
   }
 
   exit  : {} 
   functions {
-  input<||>() : int;
+ //input<||>() : int;
   }
   state Disabled{
    entry: {}
@@ -38,13 +41,13 @@ statechart  EmergencyVehicleAvoidance{
    exit : {}
   }
   state Enabled{
-   BrakePedal:int:local;
    Speed:int:local;
    PRNDL_In:int:local;
+	 Siren :boolean : local;
 
    
    entry: {
- 
+    BrakePedal:=input<|int|>();
  }
    exit : {}
    state Disengaged{
@@ -56,14 +59,14 @@ statechart  EmergencyVehicleAvoidance{
 	 Set_Brake:int:local;
 	 Set_Throttle:int:local;
 	 Set_SteerOut:int:local;
-	 Siren :boolean : local;
   	 WayClear: boolean : local;
   	 DontStop: boolean : local;
   
 	
 	 
 	 entry: {
-	
+	   Siren:=input<|boolean|>();
+
 	 }
      exit : {}
 	 
@@ -148,7 +151,7 @@ statechart  EmergencyVehicleAvoidance{
     destination: EmergencyVehicleAvoidance.Enabled.Engaged;
     trigger: e;
     guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
-    action:{EVA_HVI:=1;Warning:=0;}
+    action:{EVA_HVI:=1;}
   }
    
  
