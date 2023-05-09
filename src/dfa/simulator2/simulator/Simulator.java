@@ -307,16 +307,9 @@ public class Simulator {
     Set<Transition> eTransitions = new HashSet<>();
     for(Transition t : this.allTransitions) {
      
-      if(
-          t.trigger.equals(event)){
-          
-             BooleanConstant evaluatedGuard =
-        (BooleanConstant)ActionLanguageInterpreter
-	  .evaluate(t.guard, this.valueEnvironment);
-          if(evaluatedGuard.equals(BooleanConstant.True))
-      {
-        eTransitions.add(t);
-      }
+      if(t.trigger.equals(event)){
+          eTransitions.add(t);
+      
 
           } 
 	  
@@ -327,7 +320,15 @@ public class Simulator {
     Set<State> allSourceStates = slicedStateTree.getAllNodes();
     for(Transition t : eTransitions) {
       if(allSourceStates.contains(t.getSource())) {
-        enabledTransitions.add(t);
+               BooleanConstant evaluatedGuard =
+        (BooleanConstant)ActionLanguageInterpreter
+	  .evaluate(t.guard, this.valueEnvironment);
+          if(evaluatedGuard.equals(BooleanConstant.True))
+      {
+         enabledTransitions.add(t);
+      }
+
+       
       }	
     }
     return enabledTransitions;

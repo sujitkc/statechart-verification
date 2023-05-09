@@ -43,6 +43,8 @@ statechart  CollisionAvoidance{
    
    entry: {
     Speed:=input<|int|>();
+    PRNDL_In:=input<|int|>();
+
    }
    exit : {}
    state Disengaged{
