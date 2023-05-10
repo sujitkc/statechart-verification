@@ -53,7 +53,7 @@ Name.java
 
   public static Expression evaluate(Expression expression, Map<Declaration, Expression> env) throws Exception {
   
-  System.out.println("Binary expression :"+expression + expression.getClass());
+  //System.out.println("Binary expression :"+expression + expression.getClass());
   
     if(
         expression instanceof IntegerConstant ||

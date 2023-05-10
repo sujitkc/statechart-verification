@@ -47,7 +47,11 @@ statechart  EmergencyVehicleAvoidance{
 
    
    entry: {
+    PRNDL_In:=input<|int|>();
+     Speed:=input<|int|>();
     BrakePedal:=input<|int|>();
+    	   Siren:=input<|boolean|>();
+
  }
    exit : {}
    state Disengaged{
@@ -65,7 +69,6 @@ statechart  EmergencyVehicleAvoidance{
 	
 	 
 	 entry: {
-	   Siren:=input<|boolean|>();
 
 	 }
      exit : {}
