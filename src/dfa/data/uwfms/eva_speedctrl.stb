@@ -61,14 +61,14 @@ statechart  EVASC{
 		transition t27{
 				source: EVASC.evascshell.SpeedSetting.DecSpeed;
 				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				trigger: ResumeCoastOut;
+				trigger: e;
 				guard:(true);
 				action:{}
 		}
 		transition t28{
 				source: EVASC.evascshell.SpeedSetting.IncSpeed;
 				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				trigger: e;
+				trigger: hold;
 				guard:(BrakePedal>0);
 				action:{}
 		}
@@ -82,39 +82,39 @@ statechart  EVASC{
 		transition t31{
 				source: EVASC.evascshell.SpeedSetting.HoldSpeed;
 				destination: EVASC.evascshell.SpeedSetting.IncSpeed;
-				trigger: SetAccelIn;
+				trigger: e;
 				//guard:(CC_Engaged=BoolTRUE);
-                guard:(true);
-				action:{TargetSpeed:=Speed;}
+        guard:(true);
+				action:{}
 		}
 		transition t32{
 				source: EVASC.evascshell.SpeedSetting.IncSpeed;
 				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				trigger: SetAccelOut;
+				trigger: e;
 				guard:(true);
 				action:{}
 		}
 		transition t33{
 				source: EVASC.evascshell.SpeedSetting.IncSpeed;
 				destination: EVASC.evascshell.SpeedSetting.IncSpeed;
-				trigger: No_event;
-				guard:(TargetSpeed<100);
-				action:{TargetSpeed:=TargetSpeed+1;}
+				trigger: e;
+				guard:(Speed<100);
+				action:{Speed:=Speed+1;}
 		}
 		transition t34{
 				source: EVASC.evascshell.SpeedSetting.DecSpeed;
 				destination: EVASC.evascshell.SpeedSetting.DecSpeed;
-				trigger: No_event;
-				guard:(TargetSpeed>0);
-				action:{TargetSpeed:=TargetSpeed-1;}
+				trigger: e;
+				guard:(Speed>0);
+				action:{Speed:=Speed-1;}
 		}
 		transition t35{
 				source: EVASC.evascshell.SpeedSetting.HoldSpeed;
 				destination: EVASC.evascshell.SpeedSetting.DecSpeed;
-				trigger: ResumeCoastIn;
+				trigger: e;
 				//guard:(CC_Engaged=BoolTRUE);
-                guard:(true);
-				action:{TargetSpeed:=Speed;}
+        guard:(true);
+				action:{}
 		}
 		
 		
@@ -160,11 +160,9 @@ statechart  EVASC{
 	 Set_Brake:int:local;
 	 Set_Throttle:int:local;
 	 Set_SteerOut:int:local;
-  	 WayClear: boolean : local;
-  	 DontStop: boolean : local;
-  
-	
-	 
+   WayClear: boolean : local;
+   DontStop: boolean : local;
+  	 
 	 entry: {
 
 	 }
