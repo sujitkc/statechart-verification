@@ -343,18 +343,18 @@ public class TestSingleSCFuzzer {
 		events.add("e");*/
 		events.add("e");
 		events.add("No_event");
-		events.add("SetAccelIn");
-		events.add("ResumeCoastIn");
+		//events.add("SetAccelIn");
+		//events.add("ResumeCoastIn");
 		events.add("ResumeCoastOut");
 		events.add("Cancel");
 		events.add("Error");
 		
 		List<String> list=new ArrayList<String>();
 		Random r=new Random();
-		for(int j=0;j<1500;j++){
+		for(int j=0;j<5000;j++){
 			//num=data.consumeInt​(0,2);
 			
-			num=r.nextInt(7);
+			num=r.nextInt(5);
 			list.add(events.get(num));
 
 		}
@@ -377,6 +377,7 @@ public class TestSingleSCFuzzer {
           assertFalse(Arrays.equals(destConfig,output));
   	  
   	  }
+	System.exit(0);
 
   }
   public static void fuzzerInitialize() {
