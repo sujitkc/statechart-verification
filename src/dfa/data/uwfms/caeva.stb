@@ -334,19 +334,19 @@ state  EmergencyVehicleAvoidance{
 
   exit  : {} 
  
-  state Disabled{
+  state Disabled1{
    entry: {}
    exit : {}
   }
-  state Override{
+  state Override1{
    entry: {}
    exit : {}
   }
-  state Fail{
+  state Fail1{
    entry: {}
    exit : {}
   }
-  state Enabled{
+  state Enabled1{
   
   
 
@@ -389,16 +389,16 @@ state  EmergencyVehicleAvoidance{
 	
 	
 	transition t24{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Slow;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Coast;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Slow;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Coast;
     trigger: e;
     guard:(DontStop=BoolTRUE);
     action:{Set_Throttle:=35;}
     }
 	
     transition t23{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Slow;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.PullOver;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Slow;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.PullOver;
     trigger: e;
     guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
     action:{Set_Brake:=60;Set_SteerOut:=minusone;}
@@ -406,32 +406,32 @@ state  EmergencyVehicleAvoidance{
     
     
     transition t25{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Coast;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Slow;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Coast;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Slow;
     trigger: e;
     guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
     action:{Set_Brake:=30;}
     }
 	
 	transition t26{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Coast;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.PullOver;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Coast;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.PullOver;
     trigger: e;
     guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
     action:{Set_Brake:=60;Set_SteerOut:=minusone;}
     }
     
      transition t22{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.PullOver;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Slow;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.PullOver;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Slow;
     trigger: e;
     guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
     action:{Set_Brake:=30;}
     }
 	
 	transition t27{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.PullOver;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1.Coast;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.PullOver;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1.Coast;
     trigger: e;
     guard:(DontStop=BoolTRUE);
     action:{Set_Throttle:=35;}
@@ -441,16 +441,16 @@ state  EmergencyVehicleAvoidance{
    }
    
    transition t19{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Disengaged1;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Disengaged1;
     trigger: e;
     guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
     action:{EVA_HVI:=1;}
   }
    
    transition t20{
-    source: caeva.sc.EmergencyVehicleAvoidance.Enabled.Disengaged1;
-    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled.Engaged1;
+    source: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Disengaged1;
+    destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1.Engaged1;
     trigger: e;
     guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
     action:{EVA_HVI:=1;Warning:=0;}
@@ -460,56 +460,56 @@ state  EmergencyVehicleAvoidance{
    
   }
   transition t13{
-  source: caeva.sc.EmergencyVehicleAvoidance.Disabled;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  source: caeva.sc.EmergencyVehicleAvoidance.Disabled1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1;
   trigger: e;
   guard:(EVA_Enabled=BoolTRUE);
   action:{EVA_HVI:=1;}
   }
   
   transition t14{
-  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled;
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled1;
   trigger: e;
   guard:(EVA_Enabled!=BoolTRUE);
   action:{EVA_HVI:=0;}
   }
    
   transition t16{
-  source: caeva.sc.EmergencyVehicleAvoidance.Override;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled;
+  source: caeva.sc.EmergencyVehicleAvoidance.Override1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Disabled1;
   trigger: e;
   guard:(EVA_Enabled!=BoolTRUE);
   action:{EVA_HVI:=0;}
   }
   
   transition t17{
-  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Override;
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Override1;
   trigger: e;
   guard:(BrakePedal!=0)||(AccelPedal>=30);
   action:{EVA_HVI:=2;}
   }
   
   transition t18{
-  source: caeva.sc.EmergencyVehicleAvoidance.Override;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled;
+  source: caeva.sc.EmergencyVehicleAvoidance.Override1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Enabled1;
   trigger: e;
   guard:(BrakePedal=0)&&(AccelPedal<30);
   action:{EVA_HVI:=2;}
   }
   
   transition t29{
-  source: caeva.sc.EmergencyVehicleAvoidance.Override;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Fail;
+  source: caeva.sc.EmergencyVehicleAvoidance.Override1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Fail1;
   trigger: Error;
   guard:true;
   action:{EVA_HVI:=4;}
   }
   
   transition t28{
-  source: caeva.sc.EmergencyVehicleAvoidance.Enabled;
-  destination: caeva.sc.EmergencyVehicleAvoidance.Fail;
+  source: caeva.sc.EmergencyVehicleAvoidance.Enabled1;
+  destination: caeva.sc.EmergencyVehicleAvoidance.Fail1;
   trigger: Error;
   guard:true;
   action:{EVA_HVI:=4;}
