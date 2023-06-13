@@ -25,6 +25,24 @@ statechart  caeva{
   //input<||>() : int;
   }
   shell sc{
+  state Sensor{
+  	entry:{}
+  	exit:{}
+  	state sense{
+  		entry:{ ThreatCA:=input<|int|>();
+		          Speed:=input<|int|>();
+			PRNDL_In:=input<|int|>();
+			BreakPedal:=input<|int|>();}
+		exit:{}
+  	}
+  	transition t00{
+	    source: caeva.sc.Sensor.sense;
+	    destination: caeva.sc.Sensor.sense;
+	    trigger: e;
+	    guard:(true);
+	    action:{}
+	    }
+  }
     state  CollisionAvoidance{
   
      Speed:int:local;
@@ -37,10 +55,7 @@ statechart  caeva{
   entry : {
   BoolTRUE:=true;
   CA_Enabled:=true;
-  ThreatCA:=input<|int|>();
-          Speed:=input<|int|>();
-PRNDL_In:=input<|int|>();
-BreakPedal:=input<|int|>();
+ 
   }
 
   exit  : {} 
