@@ -19,99 +19,125 @@ statechart  EVASC{
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   minusone : int : local;
-  BrakePedal:int:local; 
-  Speed:int:local;
+
+  BrakePedal:int:local;
+  PRNDL_In:int:local;
+  Siren :boolean : local;
+  WayClear: boolean : local;
+  DontStop: boolean : local;
+ 
+ Speed:int:local;
   entry : {
-  	BoolTRUE:=true;
-  	BoolFALSE:=false;
- 	EVA_Enabled:=true;
-  	minusone:=0-1;
-  	AccelPedal:=input<|int|>();
-  	Speed:=input<|int|>();
-  	BrakePedal:=input<|int|>();
+  BoolTRUE:=true;
+  BoolFALSE:=false;
+  EVA_Enabled:=true;
+  minusone:=0-1;
+   AccelPedal:=input<|int|>();
+   Speed:=1;
+   BrakePedal:=input<|int|>();
+
   }
   exit  : {} 
   functions {
 	//input<||>() : int;
   }
   shell evascshell{
-    TargetSpeed : int : local;
     entry :{
-        TargetSpeed:=60;
     }
     exit  : {} 
+  state Sensor{
+	entry:{}
+	exit:{}
+	state sense{
+		entry:{
+		    	   Siren:=input<|boolean|>();
+			   WayClear:=input<|boolean|>();	
+			   DontStop:=input<|boolean|>();
+			   PRNDL_In:=input<|int|>();	
+		}
+		exit:{}
+	}
+	transition t11{
+				source: EVASC.evascshell.Sensor.sense;
+				destination: EVASC.evascshell.Sensor.sense;
+				trigger: e;
+				guard:(true);
+				action:{}
+	}
+		
+	}
   state SpeedSetting{
 		entry:{}
 		exit:{}
-			state IncSpeed{
-				entry:{}
+			
+      state HoldSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
 				exit:{}
 			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
 			state DecSpeed{
-				entry:{}
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
 				exit:{}
 			}
-			state HoldSpeed{
-				entry:{}
-				exit:{}
-			}
+			
 		transition t27{
 				source: EVASC.evascshell.SpeedSetting.DecSpeed;
 				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
 				trigger: e;
-				guard:(true);
-				action:{}
-		}
-		transition t28{
-				source: EVASC.evascshell.SpeedSetting.IncSpeed;
-				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				trigger: hold;
-				guard:(BrakePedal>0);
-				action:{}
-		}
-		transition t30{
-				source: EVASC.evascshell.SpeedSetting.DecSpeed;
-				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				trigger: e;
-				guard:(BrakePedal>0);
-				action:{}
-		}
-		transition t31{
-				source: EVASC.evascshell.SpeedSetting.HoldSpeed;
-				destination: EVASC.evascshell.SpeedSetting.IncSpeed;
-				trigger: e;
-				//guard:(CC_Engaged=BoolTRUE);
-			        guard:(true);
+				guard:(BrakePedal>=0);
 				action:{}
 		}
 		transition t32{
 				source: EVASC.evascshell.SpeedSetting.IncSpeed;
 				destination: EVASC.evascshell.SpeedSetting.HoldSpeed;
 				trigger: e;
-				guard:(true);
+				guard:(BrakePedal>=0);
 				action:{}
 		}
+		
+		transition t31{
+				source: EVASC.evascshell.SpeedSetting.HoldSpeed;
+				destination: EVASC.evascshell.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
 		transition t33{
 				source: EVASC.evascshell.SpeedSetting.IncSpeed;
 				destination: EVASC.evascshell.SpeedSetting.IncSpeed;
 				trigger: e;
-				guard:(Speed<100);
+				guard:((BrakePedal=0)&&(Speed<100));
 				action:{Speed:=Speed+1;}
 		}
 		transition t34{
 				source: EVASC.evascshell.SpeedSetting.DecSpeed;
 				destination: EVASC.evascshell.SpeedSetting.DecSpeed;
 				trigger: e;
-				guard:(Speed>0);
+				guard:((BrakePedal>0)&&(Speed>0));
 				action:{Speed:=Speed-1;}
 		}
 		transition t35{
 				source: EVASC.evascshell.SpeedSetting.HoldSpeed;
 				destination: EVASC.evascshell.SpeedSetting.DecSpeed;
 				trigger: e;
-				//guard:(CC_Engaged=BoolTRUE);
-			        guard:(true);
-				action:{}
+
+       				guard:(BrakePedal>=0);
+				action:{Speed:=Speed-1;}
+
 		}
 		
 		
@@ -123,27 +149,13 @@ statechart  EVASC{
     entry:{}
     exit:{}
   
-  state Disabled{
-   entry: {}
-   exit : {}
-  }
-  state Override{
-   entry: {}
-   exit : {}
-  }
-  state Fail{
-   entry: {}
-   exit : {}
-  }
+  
   state Enabled{
   
-   PRNDL_In:int:local;
-	 Siren :boolean : local;
+   
 
    
    entry: {
-	    PRNDL_In:=input<|int|>();
-            Siren:=input<|boolean|>();
 
 	 }
    exit : {}
@@ -156,8 +168,7 @@ statechart  EVASC{
 	 Set_Brake:int:local;
 	 Set_Throttle:int:local;
 	 Set_SteerOut:int:local;
-   WayClear: boolean : local;
-   DontStop: boolean : local;
+
   	 
 	 entry: {
 
@@ -251,6 +262,18 @@ statechart  EVASC{
  
    
   }
+state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
   transition t13{
   source: EVASC.evascshell.EmergencyVehicleAvoidance.Disabled;
   destination: EVASC.evascshell.EmergencyVehicleAvoidance.Enabled;
@@ -269,7 +292,7 @@ statechart  EVASC{
    
   transition t16{
   source: EVASC.evascshell.EmergencyVehicleAvoidance.Override;
-  destination: EVASC.evascshell.EmergencyVehicleAvoidance.Disabled;
+  destination: EVASC.evascshell.EmergencyVehicleAvoidance.Enabled;
   trigger: e;
   guard:(EVA_Enabled!=BoolTRUE);
   action:{EVA_HVI:=0;}
@@ -291,7 +314,7 @@ statechart  EVASC{
   action:{EVA_HVI:=2;}
   }
   
-  transition t29{
+ /* transition t29{
   source: EVASC.evascshell.EmergencyVehicleAvoidance.Override;
   destination: EVASC.evascshell.EmergencyVehicleAvoidance.Fail;
   trigger: Error;
@@ -305,7 +328,7 @@ statechart  EVASC{
   trigger: Error;
   guard:true;
   action:{EVA_HVI:=4;}
-  }
+  }*/
   
 }
 }

@@ -164,12 +164,20 @@ public class Simulator {
       System.out.println(d + " : " + this.valueEnvironment.get(d));
     }*/
 
+    for(State s : this.configuration){
+		Transition t = getTransitionForState(s,enabledTransitions);
+	      if(t!=null){
+		Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
+	     	 newConfiguration.addAll(atomicStates);
+				
+		}
+	      else{
+		newConfiguration.add(s);
+		}
+	      
+	    }
     
-    for(Transition t : enabledTransitions) {
-      Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
-      newConfiguration.addAll(atomicStates);
-    }
-    
+
     if(newConfiguration.isEmpty() == false) {
       this.configuration = newConfiguration;
     }
@@ -180,6 +188,7 @@ public class Simulator {
     System.out.println("}");*/
     return newConfiguration;
   }
+
  private void detectConcurrencyConflict(Set<Code> codes) throws Exception {
       System.out.println("detectConcurrencyConflict");
       TreeSet<Name> definitions = new TreeSet<>(new FirstComparator());
@@ -209,6 +218,24 @@ public class Simulator {
     }
  
  }
+
+  
+  public Transition getTransitionForState(State s, Set<Transition> enabledTransitions){
+		try{
+			   for(Transition t : enabledTransitions) {
+				if((this.getSourceTree(t)).hasNode(s))
+					return t;
+				}
+		
+		}
+		catch(Exception e){
+			System.out.println("Get transition for state");
+		}
+	return null;
+	
+	}
+
+
   private void detectNondeterminism(Set<Code> codes) throws Exception {
   
     Set<CFG> cfgs = new HashSet<>();

@@ -25,7 +25,7 @@ SkipStatement.java
 Name.java                  
 */
   public Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {
-    System.out.println("execute called. on "+statement);
+  //  System.out.println("execute called. on "+statement);
     if(statement instanceof AssignmentStatement) {
       AssignmentStatement assign = (AssignmentStatement)statement;
       Name lhs = assign.lhs;
