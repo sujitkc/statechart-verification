@@ -39,7 +39,7 @@ public void test_concurrency(){
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
     inputfile="data/uwfms/caeva.stb";
     //inputfile="data/constabl_events/t1_1.stbl";
-    String[] listofActiveAtomicStates={"Disengaged","HoldSpeed"};
+    String[] listofActiveAtomicStates={"Disengaged","Disengaged1"};
 
     if(!inputfile.contains("*.stbl")){
       runTest("test", inputfile, listofActiveAtomicStates);
