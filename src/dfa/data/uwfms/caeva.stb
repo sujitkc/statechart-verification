@@ -80,7 +80,7 @@ statechart  caeva{
 
    
    entry: {
-        ThreatCA:=input<|int|>();
+       // ThreatCA:=input<|int|>();
    }
    exit : {}
    state Disengaged{
