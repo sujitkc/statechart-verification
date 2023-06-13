@@ -15,8 +15,11 @@ statechart  caeva{
   BoolFALSE : boolean : local;
   minusone : int : local;
     ThreatCA:int:local;
+     Speed:int:local;
+   PRNDL_In:int:local;
+   BreakPedal:int:local;
   entry:{
-      AccelPedal:=input<|int|>();
+     
 
   }
   exit:{}
@@ -32,7 +35,9 @@ statechart  caeva{
   		entry:{ ThreatCA:=input<|int|>();
 		          Speed:=input<|int|>();
 			PRNDL_In:=input<|int|>();
-			BreakPedal:=input<|int|>();}
+			BreakPedal:=input<|int|>();
+			 AccelPedal:=input<|int|>();
+			}
 		exit:{}
   	}
   	transition t00{
@@ -45,9 +50,7 @@ statechart  caeva{
   }
     state  CollisionAvoidance{
   
-     Speed:int:local;
-   PRNDL_In:int:local;
-   BreakPedal:int:local;
+    
 
  
   
