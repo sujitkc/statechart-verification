@@ -374,8 +374,9 @@ public class TestSingleSCFuzzer {
 	  Arrays.sort(output);
 	 // System.out.println("Configuration is : "+ output);
 	  Arrays.sort(destConfig);
-	  System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
-          assertFalse(Arrays.equals(destConfig,output));
+	  //UNCOMMENT THIS FOR UNDESIRABLE CONFIGURATION
+	 // System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
+         //ssertFalse(Arrays.equals(destConfig,output));
   	  
   	  }
 	System.exit(0);
