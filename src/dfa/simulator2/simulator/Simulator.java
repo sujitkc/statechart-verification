@@ -190,31 +190,31 @@ public class Simulator {
   }
 
  private void detectConcurrencyConflict(Set<Code> codes) throws Exception {
-      System.out.println("detectConcurrencyConflict");
+      //System.out.println("detectConcurrencyConflict");
       TreeSet<Name> definitions = new TreeSet<>(new FirstComparator());
       for(Code code : codes) {
       TreeSet<Name> codeDefinitions = new TreeSet<>(new FirstComparator());
       codeDefinitions.addAll(this.getAllVariablesinCode(code));
-      System.out.println("codeDefinitions ::"+codeDefinitions);
+      //System.out.println("codeDefinitions ::"+codeDefinitions);
       
       
       TreeSet<Name> intersect = new TreeSet<>(new FirstComparator());
       intersect.addAll(definitions);
 
-      System.out.println("intersect ::"+intersect);
+      //System.out.println("intersect ::"+intersect);
       intersect.retainAll(codeDefinitions);
       /*for(Name def:intersect){
       	System.out.println("DEf : "+def.getClass()+"::"+(codeDefinitions.get(0)).equals(def));
       }*/
-      System.out.println("intersect after retainall::"+intersect);
+      //System.out.println("intersect after retainall::"+intersect);
       if(intersect.isEmpty()) {
         definitions.addAll(codeDefinitions);
       }
       else {
         
-        throw new FuzzerSecurityIssueMedium("Simulator::Concurrency-Conflict detected.");
+        throw new FuzzerSecurityIssueMedium("Simulator::Concurrency-Conflict detected.::"+intersect);
       }
-      System.out.println("definitions ::"+definitions);
+      //System.out.println("definitions ::"+definitions);
     }
  
  }
@@ -253,31 +253,31 @@ public class Simulator {
   }
   
   private Set<Name> getAllVariablesinCode(Code code) throws Exception {
-  System.out.println("getAllVariablesinCode");
+  //System.out.println("getAllVariablesinCode");
     Set<Name> definitions = new HashSet<>();
     if(code instanceof CFGCode) {
       CFGCode cfgCode = (CFGCode)code;
       CFGBasicBlockNode node=(CFGBasicBlockNode)cfgCode.cfg.entryNode;
-      System.out.println(":>:>"+node);
+      //System.out.println(":>:>"+node);
       if(node instanceof CFGAssignmentNode){
       		Name lhs=((CFGAssignmentNode)node).assignment.lhs;
-      		System.out.println("lhs :"+lhs);
+      	//	System.out.println("lhs :"+lhs);
       		definitions.add(lhs);
       	}
       while(node.getSuccessor()!=cfgCode.cfg.exitNode){
-      	System.out.println("::::"+node.getSuccessor());
+      //	System.out.println("::::"+node.getSuccessor());
       	node=(CFGBasicBlockNode)node.getSuccessor();
       	if(node instanceof CFGAssignmentNode){
       		Name lhs=((CFGAssignmentNode)node).assignment.lhs;
-      		System.out.println("lhs :"+lhs);
+      	//	System.out.println("lhs :"+lhs);
       		definitions.add(lhs);
       	}
       }
       if(node.getSuccessor()==cfgCode.cfg.exitNode){
-      	System.out.println(":x::"+node.getSuccessor());
+      	//System.out.println(":x::"+node.getSuccessor());
       	if(node instanceof CFGAssignmentNode){
       		Name lhs=((CFGAssignmentNode)node.getSuccessor()).assignment.lhs;
-      		System.out.println("lhs :"+lhs);
+      	//	System.out.println("lhs :"+lhs);
       		definitions.add(lhs);
       	}
       }
