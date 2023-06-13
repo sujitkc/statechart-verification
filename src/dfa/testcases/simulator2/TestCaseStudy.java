@@ -37,7 +37,7 @@ public class TestCaseStudy {
 public void test_concurrency(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-    inputfile="data/uwfms/CruiseControl.stb";
+    inputfile="data/uwfms/caeva.stb";
     //inputfile="data/constabl_events/t1_1.stbl";
     String[] listofActiveAtomicStates={"Disengaged","HoldSpeed"};
 
