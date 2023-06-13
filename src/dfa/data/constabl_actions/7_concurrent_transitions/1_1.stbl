@@ -5,6 +5,7 @@ statechart  chart{
 	e1;
   }
     x:int:local;
+    y:int:local;
   entry : {x:=1;x:=2;}
   exit  : {x:=3;x:=4;} 
   functions {
@@ -44,11 +45,11 @@ statechart  chart{
 
       state R2A{
         entry:{x:=29; x:=30;}
-        exit:{x:=31; x:=32;}
+        exit:{y:=31; y:=32;}
       }
 
       state R2B{
-        entry:{x:=39; x:=40;}
+        entry:{y:=39; y:=40;}
         exit:{x:=41; x:=42;}
       }
 
@@ -57,7 +58,7 @@ statechart  chart{
         destination: chart.B.R2.R2B;
         trigger: e1;
         guard:(true);
-        action:{x:=33;x:=34;}
+        action:{y:=33;x:=34;}
       }	    
     }
   }      

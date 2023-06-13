@@ -45,7 +45,7 @@ simulator2-testtransitions:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestTransitions
 
 simulator2-testactions:
-	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestActions
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:lib/jazzer_standalone.jar:./ org.junit.runner.JUnitCore testcases.simulator2.TestActions
 	
 simulator2-testcasestudy:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestCaseStudy

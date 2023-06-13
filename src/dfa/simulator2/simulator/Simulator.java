@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import ast.*;
 
@@ -18,6 +20,12 @@ import simulator2.tree.*;
 import simulator2.cfg.*;
 import simulator2.code.*;
 import com.code_intelligence.jazzer.api.FuzzerSecurityIssueMedium;
+class FirstComparator implements Comparator<Name> {
+	@Override public int compare(Name e1, Name e2)
+	{
+		return (e1.getDeclaration().vname).compareTo(e2.getDeclaration().vname);
+	}
+}
 public class Simulator {
 
   public final Statechart statechart;
@@ -135,6 +143,7 @@ public class Simulator {
       System.out.println();
       
       this.detectNondeterminism(codes);
+      this.detectConcurrencyConflict(codes);
       code = new ConcurrentCode(codes);
     }
     else if(enabledTransitions.size() == 1) {
@@ -171,8 +180,37 @@ public class Simulator {
     System.out.println("}");*/
     return newConfiguration;
   }
+ private void detectConcurrencyConflict(Set<Code> codes) throws Exception {
+      System.out.println("detectConcurrencyConflict");
+      TreeSet<Name> definitions = new TreeSet<>(new FirstComparator());
+      for(Code code : codes) {
+      TreeSet<Name> codeDefinitions = new TreeSet<>(new FirstComparator());
+      codeDefinitions.addAll(this.getAllVariablesinCode(code));
+      System.out.println("codeDefinitions ::"+codeDefinitions);
+      
+      
+      TreeSet<Name> intersect = new TreeSet<>(new FirstComparator());
+      intersect.addAll(definitions);
 
+      System.out.println("intersect ::"+intersect);
+      intersect.retainAll(codeDefinitions);
+      /*for(Name def:intersect){
+      	System.out.println("DEf : "+def.getClass()+"::"+(codeDefinitions.get(0)).equals(def));
+      }*/
+      System.out.println("intersect after retainall::"+intersect);
+      if(intersect.isEmpty()) {
+        definitions.addAll(codeDefinitions);
+      }
+      else {
+        
+        throw new FuzzerSecurityIssueMedium("Simulator::Concurrency-Conflict detected.");
+      }
+      System.out.println("definitions ::"+definitions);
+    }
+ 
+ }
   private void detectNondeterminism(Set<Code> codes) throws Exception {
+  
     Set<CFG> cfgs = new HashSet<>();
     for(Code code : codes) {
       Set<CFG> codeCFGs = this.getAllCFGsinCode(code);
@@ -186,7 +224,57 @@ public class Simulator {
       }
     }
   }
-
+  
+  private Set<Name> getAllVariablesinCode(Code code) throws Exception {
+  System.out.println("getAllVariablesinCode");
+    Set<Name> definitions = new HashSet<>();
+    if(code instanceof CFGCode) {
+      CFGCode cfgCode = (CFGCode)code;
+      CFGBasicBlockNode node=(CFGBasicBlockNode)cfgCode.cfg.entryNode;
+      System.out.println(":>:>"+node);
+      if(node instanceof CFGAssignmentNode){
+      		Name lhs=((CFGAssignmentNode)node).assignment.lhs;
+      		System.out.println("lhs :"+lhs);
+      		definitions.add(lhs);
+      	}
+      while(node.getSuccessor()!=cfgCode.cfg.exitNode){
+      	System.out.println("::::"+node.getSuccessor());
+      	node=(CFGBasicBlockNode)node.getSuccessor();
+      	if(node instanceof CFGAssignmentNode){
+      		Name lhs=((CFGAssignmentNode)node).assignment.lhs;
+      		System.out.println("lhs :"+lhs);
+      		definitions.add(lhs);
+      	}
+      }
+      if(node.getSuccessor()==cfgCode.cfg.exitNode){
+      	System.out.println(":x::"+node.getSuccessor());
+      	if(node instanceof CFGAssignmentNode){
+      		Name lhs=((CFGAssignmentNode)node.getSuccessor()).assignment.lhs;
+      		System.out.println("lhs :"+lhs);
+      		definitions.add(lhs);
+      	}
+      }
+      //cfgs.add(cfgCode.cfg);
+    }
+    else if(code instanceof SequenceCode) {
+      SequenceCode sequenceCode = (SequenceCode)code;
+      for(Code c : sequenceCode.codes) {
+        definitions.addAll(this.getAllVariablesinCode(c));
+      }
+    }
+    else if(code instanceof ConcurrentCode) {
+      ConcurrentCode concurrentCode = (ConcurrentCode)code;
+      for(Code c : concurrentCode.codes) {
+        definitions.addAll(this.getAllVariablesinCode(c));
+      }
+    }
+    else {
+      throw new Exception("Simulator::getAllCFGsinCode - Not implemented.");
+    }
+   
+    return definitions;
+  }
+  
   private Set<CFG> getAllCFGsinCode(Code code) throws Exception {
     Set<CFG> cfgs = new HashSet<>();
     if(code instanceof CFGCode) {
