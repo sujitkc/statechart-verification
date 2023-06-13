@@ -32,7 +32,8 @@ statechart  caeva{
   	entry:{}
   	exit:{}
   	state sense{
-  		entry:{ ThreatCA:=input<|int|>();
+  		entry:{ 
+  		//ThreatCA:=input<|int|>();
 		          Speed:=input<|int|>();
 			PRNDL_In:=input<|int|>();
 			BreakPedal:=input<|int|>();
