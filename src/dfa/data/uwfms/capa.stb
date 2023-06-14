@@ -295,10 +295,10 @@ state CollisionAvoidance{
     state ParkAssist{
         entry:{}
         exit:{}
-        	state paFail{
+    /*    	state paFail{
 		entry:{}
 		exit:{}
-	}
+	}*/
 	state paDisabled{
 		entry:{}
 		exit:{}
