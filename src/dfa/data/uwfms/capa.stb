@@ -26,7 +26,7 @@ statechart sc{
         CA_Enabled:=true;
         PA_Enabled:=true;
 	minusone:=0-1;
-        Speed:=0;
+        //Speed:=0;
     }
     exit:{}
     functions {
@@ -143,7 +143,7 @@ state CollisionAvoidance{
   }
   state caEnabled{
    BreakPedal:int:local;
-   Speed:int:local;
+   //Speed:int:local;
    //PRNDL_In:int:local;
 
    
