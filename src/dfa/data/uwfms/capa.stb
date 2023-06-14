@@ -6,6 +6,7 @@ statechart sc{
 	Error;
   }
     CA_Enabled : boolean : local;
+    PRNDL_In:int:local;
   CA_HVI : int : local;
   CA_Warning :int: local;
   Warning :int: local;
