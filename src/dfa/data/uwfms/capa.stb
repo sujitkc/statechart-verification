@@ -118,6 +118,8 @@ statechart sc{
         state sense{
             entry:{
                 AccelPedal:=input<|int|>();
+                    PRNDL_In:=input<|int|>();
+
             }
             exit:{}
 
@@ -141,12 +143,11 @@ state CollisionAvoidance{
   state caEnabled{
    BreakPedal:int:local;
    Speed:int:local;
-   PRNDL_In:int:local;
+   //PRNDL_In:int:local;
 
    
    entry: {
-    Speed:=input<|int|>();
-    PRNDL_In:=input<|int|>();
+    //Speed:=input<|int|>();
 
    }
    exit : {}
@@ -386,7 +387,7 @@ state CollisionAvoidance{
 		exit:{}
 	}
 	state paEnabled{
-		PRNDL_In:int:local;
+		//PRNDL_In:int:local;
 
 		Accepted:boolean:local;
 		SpaceFound:boolean:local;
