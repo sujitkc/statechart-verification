@@ -20,6 +20,7 @@ statechart sc{
     entry:{
         BoolTRUE:=true;
         CA_Enabled:=true;
+        PA_Enabled:=true;
 	minusone:=0-1;
 
     }
