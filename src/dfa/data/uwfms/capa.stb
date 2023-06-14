@@ -10,6 +10,8 @@ statechart sc{
   CA_Warning :int: local;
   Warning :int: local;
   AccelPedal :int: local;
+    BrakePedal:int:local;
+
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   minusone: int :local;
