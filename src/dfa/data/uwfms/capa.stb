@@ -36,12 +36,12 @@ statechart sc{
     entry:{}
     exit:{}
     state SpeedSetting{
-		entry:{}
+		entry:{ Speed:=0;}
 		exit:{}
 			
       state HoldSpeed{
 				entry:{
-          Speed:=0;
+         
           AccelPedal:=input<|int|>();
           BrakePedal:=input<|int|>();
         }
