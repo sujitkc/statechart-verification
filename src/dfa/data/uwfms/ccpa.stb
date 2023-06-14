@@ -14,17 +14,23 @@ statechart sc{
     PRNDL_In:int:local;
   CC_Enabled : boolean : local;
 	CC_Engaged : boolean : local;
-  Warning :int: local;
   AccelPedal :int: local;
     BrakePedal:int:local;
-
+set_Throttle :int:local;
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   minusone: int :local;
   PA_Enabled : boolean : local;
   PA_HVI : int : local;
   Speed: int: local;
-
+Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		//set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+	TargetSpeed : int : local;
+  	  FollowDist : int : local;
+	set_Brake:int:local;
     entry:{
         BoolTRUE:=true;
         BoolFALSE:=false;
@@ -38,9 +44,11 @@ statechart sc{
   input<|int|>() : int;
   }
   shell ccpa{
-  	TargetSpeed : int : local;
-  	  FollowDist : int : local;
-    entry:{}
+  //	TargetSpeed : int : local;
+  //	  FollowDist : int : local;
+    entry:{
+		FollowDist:=60;
+	}
     exit:{}
     state SpeedSetting{
 		entry:{ Speed:=0;}
@@ -116,16 +124,14 @@ statechart sc{
 				action:{Speed:=Speed-1;}
 
 		}
-		
-		
-		
+	
 	}
     state Sensor{
         entry:{}
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+                //AccelPedal:=input<|int|>();
                     PRNDL_In:=input<|int|>();
 
             }
@@ -137,8 +143,7 @@ statechart sc{
 	entry:{
 		CC_Engaged:=true;
 		
-		Speed:=input<|int|>();
-		BrakePedal:=input<|int|>();
+		
 		TargetSpeed:=60;
 		CC_Enabled:=true;
 	}
@@ -168,7 +173,7 @@ statechart sc{
 				exit:{}
 			}
 			state Engaged{
-				set_Throttle :int:local;
+				//set_Throttle :int:local;
 				
 				
 				entry:{
@@ -276,14 +281,14 @@ statechart sc{
 		exit:{}
 	}
 	state paEnabled{
-		//PRNDL_In:int:local;
+		/*//PRNDL_In:int:local;
 
 		Accepted:boolean:local;
 		SpaceFound:boolean:local;
-		set_Throttle:int:local;
+		//set_Throttle:int:local;
 		set_SteerOut:int:local;
 		SteerIn:int:local;
-		AccelPedal:int:local;
+		AccelPedal:int:local;*/
 		entry:{}
 		exit:{}
 			state paIdle{
@@ -303,7 +308,7 @@ statechart sc{
 				exit:{}
 			}
 			state paEngaged{
-				set_Brake:int:local;
+				//set_Brake:int:local;
 	
 				entry:{}
 				exit:{}

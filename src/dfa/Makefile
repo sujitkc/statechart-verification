@@ -67,11 +67,14 @@ simulator2-stepfuzz:
 simulator2-simfuzz:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestSimulateFuzzer.java;
 	sh runfuzzer.sh TestSimulateFuzzer
-
-
+	
 simulator2-singlescfuzz:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
 	sh runfuzzer.sh TestSingleSCFuzzer
 
 simulator2-replaycrash:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ $1;
+
+simulator2-fuzzcasestudy:
+	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
+	sh runfuzzer.sh TestCaseStudyFuzzer

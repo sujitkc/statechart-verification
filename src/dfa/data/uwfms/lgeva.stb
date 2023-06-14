@@ -12,25 +12,31 @@ statechart sc{
   }
 
     PRNDL_In:int:local;
-  LG_Enabled : boolean : local;
-  
- LG_HVI : int : local;
-  EVA_Enabled : boolean : local;
-  
- EVA_HVI : int : local;
+  	LG_Enabled : boolean : local;
  
-  LG_Warning:boolean:local;
-  Warning :int: local;
-  AccelPedal :int: local;
-    BrakePedal:int:local;
+ 	LG_HVI : int : local;
+  	EVA_Enabled : boolean : local;
+  
+ 	EVA_HVI : int : local;
+ 
+  	LG_Warning:boolean:local;
+  	Warning :int: local;
+  	AccelPedal :int: local;
 
-  minusten:int:local;
-  BoolTRUE : boolean : local;
-  BoolFALSE : boolean : local;
-  minusone: int :local;
+  	minusten:int:local;
+  	BoolTRUE : boolean : local;
+  	BoolFALSE : boolean : local;
+  	minusone: int :local;
     TargetSpeed : int : local;
-  	  FollowDist : int : local;
-  Speed: int: local;
+  	FollowDist : int : local;
+  	Speed: int: local;
+	Siren :boolean : local;
+	SteerIn:int:local;
+	BrakePedal:int:local;
+	TurnSignal:boolean:local;
+	set_SteerOut:int:local;
+	Set_Brake:int:local;
+	Set_Throttle:int:local;
 
     entry:{
         BoolTRUE:=true;
@@ -39,7 +45,8 @@ statechart sc{
     EVA_Enabled:=true;  
 	minusone:=0-1;
 	minusten:=0-10;
-
+	SteerIn:=0;
+	TurnSignal:=BoolFALSE;
     }
     exit:{}
     functions {
@@ -53,20 +60,20 @@ statechart sc{
     exit:{}
   
    state LaneGuide{
-    	state Fail{
+    /*	state Fail{
 		entry:{}
 		exit:{}
-	}
+	}*/
 	state Disabled{
 		entry:{}
 		exit:{}
 	}
 	state Enabled{
-		PRNDL_In:int:local;
+		/*PRNDL_In:int:local;
 		Speed: int: local;
 		SteerIn:int:local;
 		BrakePedal:int:local;
-		TurnSignal:boolean:local;
+		TurnSignal:boolean:local;*/
 		
 		entry:{}
 		exit:{}
@@ -80,11 +87,12 @@ statechart sc{
 			}
 			state Engaged{
 				LGMode:int:local;
-				set_SteerOut:int:local;
+				//set_SteerOut:int:local;
 				LaneDrift:int:local;
 				
 				entry:{
-					
+					LGMode:=input<|int|>();
+					LaneDrift:=input<|int|>();
 				}
 				exit:{}
 				state WarnLeft{
@@ -126,7 +134,7 @@ statechart sc{
 					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
 					trigger: e;
 					guard:(LGMode=1); 
-					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} 
 				}
 				transition lgt19{
 					source: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
@@ -147,7 +155,7 @@ statechart sc{
 					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
 					trigger: e;
 					guard:(LaneDrift<minusten)&&(LGMode=1); //LaneDrift<-10
-					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} 
 				}
 				transition lgt23{
 					source: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
@@ -238,13 +246,13 @@ statechart sc{
 		guard:(LG_Enabled=BoolFALSE);
 		action:{LG_Warning:=BoolFALSE;}
 	}
-	transition lgt31{
+	/*transition lgt31{
 		source: sc.lgeva.LaneGuide.Fail;
 		destination: sc.lgeva.LaneGuide.Enabled;
 		trigger: Error;
 		guard:(true);
 		action:{LG_Warning:=BoolFALSE;}
-	}
+	}*/
     }
     state SpeedSetting{
 		entry:{ Speed:=0;}
@@ -330,7 +338,7 @@ statechart sc{
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+                
                     PRNDL_In:=input<|int|>();
 
             }
@@ -349,22 +357,19 @@ statechart sc{
    entry: {}
    exit : {}
   }
-  state evaFail{
+ /* state evaFail{
    entry: {}
    exit : {}
-  }
+  }*/
   state evaEnabled{
-   Speed:int:local;
+   /*Speed:int:local;
    PRNDL_In:int:local;
-	 Siren :boolean : local;
+	 Siren :boolean : local;*/
 
    
    entry: {
     PRNDL_In:=input<|int|>();
-     Speed:=input<|int|>();
-    BrakePedal:=input<|int|>();
-    	   Siren:=input<|boolean|>();
-
+    Siren:=BoolTRUE;
  }
    exit : {}
    state evaDisengaged{
@@ -373,9 +378,9 @@ statechart sc{
    }
    state evaEngaged{
      
-	 Set_Brake:int:local;
+	 /*Set_Brake:int:local;
 	 Set_Throttle:int:local;
-	 Set_SteerOut:int:local;
+	 Set_SteerOut:int:local;*/
   	 WayClear: boolean : local;
   	 DontStop: boolean : local;
   
@@ -415,7 +420,7 @@ statechart sc{
     destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
     trigger: e;
     guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
-    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    action:{Set_Brake:=60;set_SteerOut:=minusone;}
     }
     
     
@@ -432,7 +437,7 @@ statechart sc{
     destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
     trigger: e;
     guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
-    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    action:{Set_Brake:=60;set_SteerOut:=minusone;}
     }
     
      transition evat22{
@@ -513,7 +518,7 @@ statechart sc{
   action:{EVA_HVI:=2;}
   }
   
-  transition evat29{
+ /* transition evat29{
   source: sc.lgeva.eva.evaOverride;
   destination: sc.lgeva.eva.evaFail;
   trigger: Error;
@@ -527,7 +532,7 @@ statechart sc{
   trigger: Error;
   guard:true;
   action:{EVA_HVI:=4;}
-  }
+  }*/
  
     }
   

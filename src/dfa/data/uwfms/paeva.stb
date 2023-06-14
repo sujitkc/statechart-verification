@@ -13,7 +13,9 @@ statechart sc{
 
     PRNDL_In:int:local;
   PA_Enabled : boolean : local;
-  
+  Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
  PA_HVI : int : local;
   EVA_Enabled : boolean : local;
   
@@ -31,7 +33,9 @@ statechart sc{
     TargetSpeed : int : local;
   	  FollowDist : int : local;
   Speed: int: local;
-
+set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
     entry:{
         BoolTRUE:=true;
         BoolFALSE:=false;
@@ -68,10 +72,10 @@ statechart sc{
 
 		Accepted:boolean:local;
 		SpaceFound:boolean:local;
-		set_Throttle:int:local;
+		/*set_Throttle:int:local;
 		set_SteerOut:int:local;
 		SteerIn:int:local;
-		AccelPedal:int:local;
+		AccelPedal:int:local;*/
 		entry:{}
 		exit:{}
 			state paIdle{
@@ -91,7 +95,7 @@ statechart sc{
 				exit:{}
 			}
 			state paEngaged{
-				set_Brake:int:local;
+				//set_Brake:int:local;
 	
 				entry:{}
 				exit:{}
@@ -120,7 +124,7 @@ statechart sc{
 					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop1;
 					trigger: Next;
 					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
-					action:{PA_HVI:=4;set_Brake:=30;}
+					action:{PA_HVI:=4;Set_Brake:=30;}
 				}
 				transition pat27{
 					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelIn;
@@ -141,7 +145,7 @@ statechart sc{
 					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop2;
 					trigger: Next;
 					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
-					action:{PA_HVI:=4;set_Brake:=30;}
+					action:{PA_HVI:=4;Set_Brake:=30;}
 				}
 				
 			}
@@ -335,7 +339,7 @@ statechart sc{
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+               
                     PRNDL_In:=input<|int|>();
 
             }
@@ -359,15 +363,15 @@ statechart sc{
    exit : {}
   }
   state evaEnabled{
-   Speed:int:local;
-   PRNDL_In:int:local;
+   /*Speed:int:local;
+   PRNDL_In:int:local;*/
 	 Siren :boolean : local;
 
    
    entry: {
     PRNDL_In:=input<|int|>();
-     Speed:=input<|int|>();
-    BrakePedal:=input<|int|>();
+  //   Speed:=input<|int|>();
+  //  BrakePedal:=input<|int|>();
     	   Siren:=input<|boolean|>();
 
  }
@@ -378,9 +382,9 @@ statechart sc{
    }
    state evaEngaged{
      
-	 Set_Brake:int:local;
+	/* Set_Brake:int:local;
 	 Set_Throttle:int:local;
-	 Set_SteerOut:int:local;
+	 Set_SteerOut:int:local;*/
   	 WayClear: boolean : local;
   	 DontStop: boolean : local;
   

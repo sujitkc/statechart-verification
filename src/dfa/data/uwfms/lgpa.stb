@@ -26,40 +26,53 @@ LG_Enabled : boolean : local;
   PA_Enabled : boolean : local;
   PA_HVI : int : local;
   Speed: int: local;
-
+  set_Brake:int:local;
+ // PRNDL_In:int:local;
+		//Speed: int: local;
+		SteerIn:int:local;
+	//	BrakePedal:int:local;
+		TurnSignal:boolean:local;
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		set_Throttle:int:local;
+		//set_SteerOut:int:local;
+		//SteerIn:int:local;
+		//AccelPedal:int:local;
+		LaneDrift:int:local;
+			TargetSpeed : int : local;
+  	  FollowDist : int : local;
+set_SteerOut:int:local;
     entry:{
         BoolTRUE:=true;
         BoolFALSE:=false;
         CC_Enabled:=true;
         PA_Enabled:=true;
+		LG_Enabled:=true;
 	minusone:=0-1;
 	minusten:=0-10;
-
+	SteerIn:=0;
+	TurnSignal:=false;
+	LaneDrift:=0;
     }
     exit:{}
     functions {
   input<|int|>() : int;
   }
   shell lgpa{
-  	TargetSpeed : int : local;
-  	  FollowDist : int : local;
+  
     entry:{}
     exit:{}
     state LaneGuide{
-    	state Fail{
+    /*	state Fail{
 		entry:{}
 		exit:{}
-	}
+	}*/
 	state Disabled{
 		entry:{}
 		exit:{}
 	}
 	state Enabled{
-		PRNDL_In:int:local;
-		Speed: int: local;
-		SteerIn:int:local;
-		BrakePedal:int:local;
-		TurnSignal:boolean:local;
+		
 		
 		entry:{}
 		exit:{}
@@ -73,11 +86,11 @@ LG_Enabled : boolean : local;
 			}
 			state Engaged{
 				LGMode:int:local;
-				set_SteerOut:int:local;
-				LaneDrift:int:local;
+				//set_SteerOut:int:local;
+				
 				
 				entry:{
-					
+					LGMode:=1;	
 				}
 				exit:{}
 				state WarnLeft{
@@ -231,13 +244,13 @@ LG_Enabled : boolean : local;
 		guard:(LG_Enabled=BoolFALSE);
 		action:{LG_Warning:=BoolFALSE;}
 	}
-	transition lgt31{
+	/*transition lgt31{
 		source: sc.lgpa.LaneGuide.Fail;
 		destination: sc.lgpa.LaneGuide.Enabled;
 		trigger: Error;
 		guard:(true);
 		action:{LG_Warning:=BoolFALSE;}
-	}
+	}*/
     }
     state SpeedSetting{
 		entry:{ Speed:=0;}
@@ -322,7 +335,7 @@ LG_Enabled : boolean : local;
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+                
                     PRNDL_In:=input<|int|>();
 
             }
@@ -345,12 +358,7 @@ LG_Enabled : boolean : local;
 	state paEnabled{
 		//PRNDL_In:int:local;
 
-		Accepted:boolean:local;
-		SpaceFound:boolean:local;
-		set_Throttle:int:local;
-		set_SteerOut:int:local;
-		SteerIn:int:local;
-		AccelPedal:int:local;
+		
 		entry:{}
 		exit:{}
 			state paIdle{
@@ -370,7 +378,7 @@ LG_Enabled : boolean : local;
 				exit:{}
 			}
 			state paEngaged{
-				set_Brake:int:local;
+				//set_Brake:int:local;
 	
 				entry:{}
 				exit:{}

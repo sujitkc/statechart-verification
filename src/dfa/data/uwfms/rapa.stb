@@ -27,7 +27,12 @@ LG_Enabled : boolean : local;
   PA_Enabled : boolean : local;
   PA_HVI : int : local;
   Speed: int: local;
-
+TargetSpeed : int : local;
+  	  FollowDist : int : local;
+	  set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+Set_Brake:int:local;
     entry:{
         BoolTRUE:=true;
         BoolFALSE:=false;
@@ -42,8 +47,8 @@ LG_Enabled : boolean : local;
   input<|int|>() : int;
   }
   shell rapa{
-  	TargetSpeed : int : local;
-  	  FollowDist : int : local;
+ // 	TargetSpeed : int : local;
+ // 	  FollowDist : int : local;
     entry:{}
     exit:{}
 
@@ -61,9 +66,9 @@ LG_Enabled : boolean : local;
    exit : {}
   }
   state Enabled{
-   BrakePedal:int:local;
-   Speed:int:local;
-   PRNDL_In:int:local;
+   //BrakePedal:int:local;
+   //Speed:int:local;
+   //PRNDL_In:int:local;
    
    
    entry: {
@@ -76,7 +81,7 @@ LG_Enabled : boolean : local;
    }
    state Engaged{
      
-	 Set_Brake:int:local;
+	// Set_Brake:int:local;
 	 ObstacleZone:int:local;
 
 	 entry: {
@@ -323,7 +328,7 @@ LG_Enabled : boolean : local;
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+            //    AccelPedal:=input<|int|>();
                     PRNDL_In:=input<|int|>();
 
             }
@@ -348,10 +353,10 @@ LG_Enabled : boolean : local;
 
 		Accepted:boolean:local;
 		SpaceFound:boolean:local;
-		set_Throttle:int:local;
+		/*set_Throttle:int:local;
 		set_SteerOut:int:local;
 		SteerIn:int:local;
-		AccelPedal:int:local;
+		AccelPedal:int:local;*/
 		entry:{}
 		exit:{}
 			state paIdle{
@@ -371,7 +376,7 @@ LG_Enabled : boolean : local;
 				exit:{}
 			}
 			state paEngaged{
-				set_Brake:int:local;
+				//set_Brake:int:local;
 	
 				entry:{}
 				exit:{}
@@ -400,7 +405,7 @@ LG_Enabled : boolean : local;
 					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop1;
 					trigger: Next;
 					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
-					action:{PA_HVI:=4;set_Brake:=30;}
+					action:{PA_HVI:=4;Set_Brake:=30;}
 				}
 				transition pat27{
 					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
@@ -421,7 +426,7 @@ LG_Enabled : boolean : local;
 					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop2;
 					trigger: Next;
 					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
-					action:{PA_HVI:=4;set_Brake:=30;}
+					action:{PA_HVI:=4;Set_Brake:=30;}
 				}
 				
 			}

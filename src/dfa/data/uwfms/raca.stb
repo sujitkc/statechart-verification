@@ -27,7 +27,9 @@ LG_Enabled : boolean : local;
   CA_Enabled : boolean : local;
   CA_HVI : int : local;
   Speed: int: local;
-
+	TargetSpeed : int : local;
+  	  FollowDist : int : local;
+       Set_Brake:int:local;
     entry:{
         BoolTRUE:=true;
         BoolFALSE:=false;
@@ -42,8 +44,8 @@ LG_Enabled : boolean : local;
   input<|int|>() : int;
   }
   shell raca{
-  	TargetSpeed : int : local;
-  	  FollowDist : int : local;
+  	/*TargetSpeed : int : local;
+  	  FollowDist : int : local;*/
     entry:{}
     exit:{}
 
@@ -61,9 +63,9 @@ LG_Enabled : boolean : local;
    exit : {}
   }
   state Enabled{
-   BrakePedal:int:local;
-   Speed:int:local;
-   PRNDL_In:int:local;
+   //BrakePedal:int:local;
+  // Speed:int:local;
+   //PRNDL_In:int:local;
    
    
    entry: {
@@ -76,7 +78,7 @@ LG_Enabled : boolean : local;
    }
    state Engaged{
      
-	 Set_Brake:int:local;
+	// Set_Brake:int:local;
 	 ObstacleZone:int:local;
 
 	 entry: {
@@ -323,7 +325,7 @@ LG_Enabled : boolean : local;
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+                //AccelPedal:=input<|int|>();
                     PRNDL_In:=input<|int|>();
 
             }
@@ -348,7 +350,7 @@ LG_Enabled : boolean : local;
    exit : {}
   }
   state caEnabled{
-   BreakPedal:int:local;
+   //BreakPedal:int:local;
    //Speed:int:local;
    //PRNDL_In:int:local;
 
@@ -364,7 +366,7 @@ LG_Enabled : boolean : local;
    }
    state caEngaged{
      ThreatCA:int:local;
-	 Set_Brake:int:local;
+	// Set_Brake:int:local;
 	 
 	 
 	 entry: {
@@ -512,7 +514,7 @@ LG_Enabled : boolean : local;
     source:sc.raca.CollisionAvoidance.caEnabled.caHalt;
     destination:sc.raca.CollisionAvoidance.caEnabled.caDisengaged;
     trigger: e;
-    guard:(BreakPedal>10);
+    guard:(BrakePedal>10);
     action:{CA_HVI:=1;Warning:=0;}
   }
    

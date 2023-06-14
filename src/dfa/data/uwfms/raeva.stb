@@ -10,7 +10,11 @@ statechart sc{
 	ResumeCoastOut;
 	Cancel;
   }
-
+  
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+	TargetSpeed : int : local;
+  	  FollowDist : int : local;
     PRNDL_In:int:local;
   RA_Enabled : boolean : local;
   
@@ -28,7 +32,7 @@ statechart sc{
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   minusone: int :local;
-  
+  Set_Brake:int:local;
   Speed: int: local;
 
     entry:{
@@ -45,8 +49,8 @@ statechart sc{
   input<|int|>() : int;
   }
   shell raeva{
-  	TargetSpeed : int : local;
-  	  FollowDist : int : local;
+  	//TargetSpeed : int : local;
+  	//  FollowDist : int : local;
     entry:{}
     exit:{}
 
@@ -64,9 +68,9 @@ statechart sc{
    exit : {}
   }
   state raEnabled{
-   BrakePedal:int:local;
-   Speed:int:local;
-   PRNDL_In:int:local;
+   //BrakePedal:int:local;
+   //Speed:int:local;
+   //PRNDL_In:int:local;
    
    
    entry: {
@@ -79,7 +83,7 @@ statechart sc{
    }
    state raEngaged{
      
-	 Set_Brake:int:local;
+	 //Set_Brake:int:local;
 	 ObstacleZone:int:local;
 
 	 entry: {
@@ -326,7 +330,7 @@ statechart sc{
         exit:{}
         state sense{
             entry:{
-                AccelPedal:=input<|int|>();
+                //AccelPedal:=input<|int|>();
                     PRNDL_In:=input<|int|>();
 
             }
@@ -350,15 +354,15 @@ statechart sc{
    exit : {}
   }
   state evaEnabled{
-   Speed:int:local;
-   PRNDL_In:int:local;
+   //Speed:int:local;
+  // PRNDL_In:int:local;
 	 Siren :boolean : local;
 
    
    entry: {
     PRNDL_In:=input<|int|>();
-     Speed:=input<|int|>();
-    BrakePedal:=input<|int|>();
+   //  Speed:=input<|int|>();
+   // BrakePedal:=input<|int|>();
     	   Siren:=input<|boolean|>();
 
  }
@@ -369,9 +373,9 @@ statechart sc{
    }
    state evaEngaged{
      
-	 Set_Brake:int:local;
+	 /*Set_Brake:int:local;
 	 Set_Throttle:int:local;
-	 Set_SteerOut:int:local;
+	 Set_SteerOut:int:local;*/
   	 WayClear: boolean : local;
   	 DontStop: boolean : local;
   
