@@ -352,7 +352,7 @@ public class TestSingleSCFuzzer {
 		
 		List<String> list=new ArrayList<String>();
 		Random r=new Random();
-		for(int j=0;j<5000;j++){
+		for(int j=0;j<10000;j++){
 			//num=data.consumeInt​(0,2);
 			
 			num=r.nextInt(5);
