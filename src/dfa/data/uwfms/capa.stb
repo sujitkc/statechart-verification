@@ -275,21 +275,21 @@ state CollisionAvoidance{
   action:{CA_HVI:=1;}
   }
   
-  transition t39{
+ /* transition t39{
   source:sc.capa.CollisionAvoidance.caOverride;
   destination:sc.capa.CollisionAvoidance.caFail;
   trigger: Error;
   guard:true;
   action:{CA_HVI:=3;}
-  }
+  }*/
   
-  transition t27{
+  /*transition t27{
   source:sc.capa.CollisionAvoidance.caEnabled;
   destination:sc.capa.CollisionAvoidance.caFail;
   trigger: Error;
   guard:true;
   action:{CA_HVI:=3;Warning:=0;}
-  }
+  }*/
  
     }
     state ParkAssist{
@@ -424,7 +424,7 @@ state CollisionAvoidance{
 					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
 					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
 				}
-			transition t39{
+			/*transition t39{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
@@ -458,7 +458,7 @@ state CollisionAvoidance{
 					trigger: e;
 					guard:(SteerIn>0)||(AccelPedal>0);
 					action:{PA_HVI:=6;}
-				}
+				}*/
 	}
 	
 	transition t29{
