@@ -31,6 +31,83 @@ statechart sc{
   shell capa{
     entry:{}
     exit:{}
+    state SpeedSetting{
+		entry:{}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition t27{
+				source: sc.capa.SpeedSetting.DecSpeed;
+				destination: sc.capa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition t32{
+				source: sc.capa.SpeedSetting.IncSpeed;
+				destination: sc.capa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition t31{
+				source: sc.capa.SpeedSetting.HoldSpeed;
+				destination: sc.capa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition t33{
+				source: sc.capa.SpeedSetting.IncSpeed;
+				destination: sc.capa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition t34{
+				source: sc.capa.SpeedSetting.DecSpeed;
+				destination: sc.capa.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition t35{
+				source: sc.capa.SpeedSetting.HoldSpeed;
+				destination: sc.capa.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>=0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
     state Sensor{
         entry:{}
         exit:{}
