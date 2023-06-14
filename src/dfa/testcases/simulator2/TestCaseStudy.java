@@ -37,9 +37,9 @@ public class TestCaseStudy {
 public void test_concurrency(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();
-    inputfile="data/uwfms/capa.stb";
+    inputfile="data/uwfms/cceva.stb";
     //inputfile="data/constabl_events/t1_1.stbl";
-    String[] listofActiveAtomicStates={"sense","caDisabled","paDisabled"};
+    String[] listofActiveAtomicStates={"Disabled","HoldSpeed","sense","evaDisabled"};
 
     if(!inputfile.contains("*.stbl")){
       runTest("test", inputfile, listofActiveAtomicStates);

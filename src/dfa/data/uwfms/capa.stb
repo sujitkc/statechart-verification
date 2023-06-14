@@ -62,14 +62,14 @@ statechart sc{
 				exit:{}
 			}
 			
-		transition t27{
+		transition sst27{
 				source: sc.capa.SpeedSetting.DecSpeed;
 				destination: sc.capa.SpeedSetting.HoldSpeed;
 				trigger: e;
 				guard:(BrakePedal>=0);
 				action:{}
 		}
-		transition t32{
+		transition sst32{
 				source: sc.capa.SpeedSetting.IncSpeed;
 				destination: sc.capa.SpeedSetting.HoldSpeed;
 				trigger: e;
@@ -77,7 +77,7 @@ statechart sc{
 				action:{}
 		}
 		
-		transition t31{
+		transition sst31{
 				source: sc.capa.SpeedSetting.HoldSpeed;
 				destination: sc.capa.SpeedSetting.IncSpeed;
 				trigger: e;
@@ -86,21 +86,21 @@ statechart sc{
 
 		}
 		
-		transition t33{
+		transition sst33{
 				source: sc.capa.SpeedSetting.IncSpeed;
 				destination: sc.capa.SpeedSetting.IncSpeed;
 				trigger: e;
 				guard:((BrakePedal=0)&&(Speed<100));
 				action:{Speed:=Speed+1;}
 		}
-		transition t34{
+		transition sst34{
 				source: sc.capa.SpeedSetting.DecSpeed;
 				destination: sc.capa.SpeedSetting.DecSpeed;
 				trigger: e;
 				guard:((BrakePedal>0)&&(Speed>0));
 				action:{Speed:=Speed-1;}
 		}
-		transition t35{
+		transition sst35{
 				source: sc.capa.SpeedSetting.HoldSpeed;
 				destination: sc.capa.SpeedSetting.DecSpeed;
 				trigger: e;
@@ -125,6 +125,14 @@ statechart sc{
             exit:{}
 
         }
+        transition set11{
+				source: sc.capa.Sensor.sense;
+				destination: sc.capa.Sensor.sense;
+				trigger: e;
+      				guard:(BrakePedal>=0);
+				action:{Speed:=Speed-1;}
+
+		}
     }
 state CollisionAvoidance{
         entry:{}
@@ -185,7 +193,7 @@ state CollisionAvoidance{
 	 entry: {}
      exit : {}
     }
-	transition t19{
+	transition cat19{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     trigger: e;
@@ -193,7 +201,7 @@ state CollisionAvoidance{
     action:{Warning:=1;}
     }
 	
-	transition t20{
+	transition cat20{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     trigger: e;
@@ -201,7 +209,7 @@ state CollisionAvoidance{
     action:{Warning:=0;}
     }
 	
-	transition t21{
+	transition cat21{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     trigger: e;
@@ -209,7 +217,7 @@ state CollisionAvoidance{
     action:{Warning:=1;}
     }
 	
-	transition t22{
+	transition cat22{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     trigger: e;
@@ -217,7 +225,7 @@ state CollisionAvoidance{
     action:{Warning:=2; Set_Brake:=30;}
     }
 	
-	transition t23{
+	transition cat23{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     trigger: e;
@@ -225,7 +233,7 @@ state CollisionAvoidance{
     action:{Warning:=0;}
     }
 	
-	transition t33{
+	transition cat33{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     trigger: e;
@@ -233,7 +241,7 @@ state CollisionAvoidance{
     action:{Warning:=2;Set_Brake:=30;}
     }
 	
-	transition t34{
+	transition cat34{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     trigger: e;
@@ -241,7 +249,7 @@ state CollisionAvoidance{
     action:{Warning:=0;}
     }
 	
-	transition t35{
+	transition cat35{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     trigger: e;
@@ -249,7 +257,7 @@ state CollisionAvoidance{
     action:{Warning:=3; Set_Brake:=80;}
     }
 	
-	transition t29{
+	transition cat29{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     trigger: e;
@@ -257,7 +265,7 @@ state CollisionAvoidance{
     action:{Warning:=3;Set_Brake:=80;}
     }
 	
-	transition t31{
+	transition cat31{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caWarn;
     trigger: e;
@@ -265,7 +273,7 @@ state CollisionAvoidance{
     action:{Warning:=1;}
     }
 	
-	transition t30{
+	transition cat30{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     trigger: e;
@@ -273,7 +281,7 @@ state CollisionAvoidance{
     action:{Warning:=3;Set_Brake:=80;}
     }
 	
-	transition t32{
+	transition cat32{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
     trigger: e;
@@ -286,7 +294,7 @@ state CollisionAvoidance{
 	 entry: {}
      exit : {}
    }
-   transition t16{
+   transition cat16{
     source:sc.capa.CollisionAvoidance.caEnabled.caDisengaged;
     destination:sc.capa.CollisionAvoidance.caEnabled.caEngaged;
     trigger: e;
@@ -294,7 +302,7 @@ state CollisionAvoidance{
     action:{CA_HVI:=2;}
   }
    
-   transition t17{
+   transition cat17{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged;
     destination:sc.capa.CollisionAvoidance.caEnabled.caDisengaged;
     trigger: e;
@@ -302,7 +310,7 @@ state CollisionAvoidance{
     action:{CA_HVI:=1;Warning:=0;}
   }
    
-   transition t24{
+   transition cat24{
     source:sc.capa.CollisionAvoidance.caEnabled.caHalt;
     destination:sc.capa.CollisionAvoidance.caEnabled.caDisengaged;
     trigger: e;
@@ -310,7 +318,7 @@ state CollisionAvoidance{
     action:{CA_HVI:=1;Warning:=0;}
   }
    
-   transition t25{
+   transition cat25{
     source:sc.capa.CollisionAvoidance.caEnabled.caEngaged;
     destination:sc.capa.CollisionAvoidance.caEnabled.caHalt;
     trigger: e;
@@ -319,7 +327,7 @@ state CollisionAvoidance{
   }
    
   }
-  transition t14{
+  transition cat14{
   source:sc.capa.CollisionAvoidance.caDisabled;
   destination:sc.capa.CollisionAvoidance.caEnabled;
   trigger: e;
@@ -327,7 +335,7 @@ state CollisionAvoidance{
   action:{CA_HVI:=1;}
   }
   
-  transition t15{
+  transition cat15{
   source:sc.capa.CollisionAvoidance.caEnabled;
   destination:sc.capa.CollisionAvoidance.caDisabled;
   trigger: e;
@@ -335,7 +343,7 @@ state CollisionAvoidance{
   action:{CA_HVI:=0;Warning:=0;}
   }
    
-  transition t38{
+  transition cat38{
   source:sc.capa.CollisionAvoidance.caOverride;
   destination:sc.capa.CollisionAvoidance.caDisabled;
   trigger: e;
@@ -343,7 +351,7 @@ state CollisionAvoidance{
   action:{CA_HVI:=0;Warning:=0;}
   }
   
-  transition t36{
+  transition cat36{
   source:sc.capa.CollisionAvoidance.caEnabled;
   destination:sc.capa.CollisionAvoidance.caOverride;
   trigger: e;
@@ -351,7 +359,7 @@ state CollisionAvoidance{
   action:{CA_HVI:=4;Warning:=0;}
   }
   
-  transition t37{
+  transition cat37{
   source:sc.capa.CollisionAvoidance.caOverride;
   destination:sc.capa.CollisionAvoidance.caEnabled;
   trigger: e;
@@ -439,28 +447,28 @@ state CollisionAvoidance{
 					entry:{}
 					exit:{}
 				}
-				transition t30{
+				transition pat30{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
 					destination: sc.capa.ParkAssist.paEnabled.paEngaged.paStop1;
 					trigger: Next;
 					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
 					action:{PA_HVI:=4;set_Brake:=30;}
 				}
-				transition t27{
+				transition pat27{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
 					destination: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
 					trigger: Next;
 					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
 					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
 				}
-				transition t23{
+				transition pat23{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paStop1;
 					destination: sc.capa.ParkAssist.paEnabled.paEngaged.paCenter;
 					trigger: Next;
 					guard:(Speed=0);
 					action:{PA_HVI:=4;set_Throttle:=20;}
 				}
-				transition t19{
+				transition pat19{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paCenter;
 					destination: sc.capa.ParkAssist.paEnabled.paEngaged.paStop2;
 					trigger: Next;
@@ -473,70 +481,70 @@ state CollisionAvoidance{
 					entry:{}
 					exit:{}
 			}
-			transition t21{
+			transition pat21{
 					source: sc.capa.ParkAssist.paEnabled.paIdle;
 					destination: sc.capa.ParkAssist.paEnabled.paSearching;
 					trigger: e;
 					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
 					action:{PA_HVI:=2;}
 				}
-			transition t22{
+			transition pat22{
 					source: sc.capa.ParkAssist.paEnabled.paSearching;
 					destination: sc.capa.ParkAssist.paEnabled.paIdle;
 					trigger: e;
 					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
 					action:{PA_HVI:=1;}
 				}
-			transition t24{
+			transition pat24{
 					source: sc.capa.ParkAssist.paEnabled.paSearching;
 					destination: sc.capa.ParkAssist.paEnabled.paPrompting;
 					trigger: e;
 					guard:(SpaceFound=BoolTRUE);
 					action:{PA_HVI:=3;}
 				}
-			transition t25{
+			transition pat25{
 					source: sc.capa.ParkAssist.paEnabled.paPrompting;
 					destination: sc.capa.ParkAssist.paEnabled.paSearching;
 					trigger: e;
 					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
 					action:{PA_HVI:=2;}
 				}
-			transition t26{
+			transition pat26{
 					source: sc.capa.ParkAssist.paEnabled.paPrompting;
 					destination: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
 					trigger: e;
 					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
 					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
 				}
-			/*transition t39{
+			/*transition pat39{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
 					guard:(PRNDL_In!=1);
 					action:{PA_HVI:=6;}
 				}
-			transition t38{
+			transition pat38{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paCenter;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
 					guard:(PRNDL_In!=3);
 					action:{PA_HVI:=6;}
 				}
-			transition t37{
+			transition pat37{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
 					guard:(PRNDL_In!=1);
 					action:{PA_HVI:=6;}
 				}
-			transition t30{
+			transition pat30{
 					source: sc.capa.ParkAssist.paEnabled.paEngaged;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
 					guard:(SteerIn>0)||(AccelPedal>0);
 					action:{PA_HVI:=6;}
 				}
-			transition t36{
+			transition pat36{
 					source: sc.capa.ParkAssist.paEnabled.paOverride;
 					destination: sc.capa.ParkAssist.paEnabled.paAbort;
 					trigger: e;
@@ -545,28 +553,28 @@ state CollisionAvoidance{
 				}*/
 	}
 	
-	transition t29{
+	transition pat29{
 		source: sc.capa.ParkAssist.paDisabled;
 		destination: sc.capa.ParkAssist.paEnabled;
 		trigger: e;
 		guard:(PA_Enabled=BoolTRUE);
 		action:{PA_HVI:=1;}
 	}
-	transition t20{
+	transition pat20{
 		source: sc.capa.ParkAssist.paDisabled;
 		destination: sc.capa.ParkAssist.paEnabled;
 		trigger: e;
 		guard:(PA_Enabled=BoolFALSE);
 		action:{PA_HVI:=0;}
 	}
-	transition t33{
+	transition pat33{
 		source: sc.capa.ParkAssist.paDisabled;
 		destination: sc.capa.ParkAssist.paEnabled;
 		trigger: Error;
 		guard:(true);
 		action:{PA_HVI:=8;}
 	}
-	transition t35{
+	transition pat35{
 		source: sc.capa.ParkAssist.paEnabled.paEngaged.paStop2;
 		destination: sc.capa.ParkAssist.paDisabled;
 		trigger: e;
