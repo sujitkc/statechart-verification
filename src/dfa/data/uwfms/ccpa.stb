@@ -120,7 +120,7 @@ Accepted:boolean:local;
 				destination: sc.ccpa.SpeedSetting.DecSpeed;
 				trigger: e;
 
-       				guard:(BrakePedal>=0);
+       				guard:(BrakePedal>0);
 				action:{Speed:=Speed-1;}
 
 		}

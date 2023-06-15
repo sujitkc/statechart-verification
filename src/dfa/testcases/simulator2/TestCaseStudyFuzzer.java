@@ -41,11 +41,11 @@ public class TestCaseStudyFuzzer {
   static int noofevents=10000;
   public static void populate(){
 		 //casestudy - 1 
-  		  //makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
+  		  makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
 		//casestudy - 2 
-  		 // makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
+  		  //makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
 		 //casestudy - 3 
-  		 // makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
+  		//  makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working
   		 // makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
 		//casestudy - 5 
@@ -55,11 +55,11 @@ public class TestCaseStudyFuzzer {
 		//casestudy - 7 
   		//  makeTestCase("data/uwfms/lgeva.stb", new String[] {}, new String[]{});
 		//casestudy - 8 
-  		 // makeTestCase("data/uwfms/raeva.stb", new String[] {}, new String[]{});
+  		//  makeTestCase("data/uwfms/raeva.stb", new String[] {}, new String[]{});
 		//casestudy - 9 
   		 // makeTestCase("data/uwfms/raca.stb", new String[] {}, new String[]{});
 		//casestudy - 10 
-  		  makeTestCase("data/uwfms/rapa.stb", new String[] {}, new String[]{});
+  		 // makeTestCase("data/uwfms/rapa.stb", new String[] {}, new String[]{});
 		   
   
   	 }

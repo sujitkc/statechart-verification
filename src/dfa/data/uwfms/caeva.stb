@@ -368,7 +368,7 @@ statechart sc{
 				destination: sc.caeva.SpeedSetting.DecSpeed;
 				trigger: e;
 
-       				guard:(BrakePedal>=0);
+       				guard:(BrakePedal>0);
 				action:{Speed:=Speed-1;}
 
 		}

@@ -1,0 +1,238 @@
+javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
+sh runfuzzer.sh TestCaseStudyFuzzer
+events : [SetAccelIn, ResumeCoastIn, e, ResumeCoastIn, ResumeCoastIn, ResumeCoastIn, e, SetAccelIn, ResumeCoastIn, ResumeCoastIn, ResumeCoastIn, e, SetAccelIn, ResumeCoastOut, ResumeCoastOut, e, No_event, ResumeCoastOut, SetAccelIn, No_event, SetAccelIn, ResumeCoastIn, ResumeCoastOut, e, ResumeCoastOut, SetAccelIn, No_event, SetAccelIn, e, SetAccelIn, ResumeCoastIn, ResumeCoastOut, No_event, SetAccelIn, No_event, ResumeCoastIn, No_event, ResumeCoastOut, SetAccelIn, e, ResumeCoastIn, ResumeCoastIn, SetAccelIn, No_event, ResumeCoastOut, ResumeCoastIn, ResumeCoastOut, No_event, No_event, No_event, ResumeCoastOut, e, SetAccelIn, ResumeCoastIn, No_event, ResumeCoastOut, e, ResumeCoastIn, ResumeCoastIn, SetAccelIn, No_event, No_event, No_event, e, ResumeCoastOut, SetAccelIn, ResumeCoastIn, e, ResumeCoastOut, SetAccelIn, ResumeCoastIn, e, ResumeCoastIn, ResumeCoastOut, No_event, No_event, ResumeCoastIn, e, No_event, No_event, ResumeCoastIn, ResumeCoastIn, No_event, ResumeCoastOut, SetAccelIn, ResumeCoastOut, e, ResumeCoastOut, ResumeCoastOut, ResumeCoastIn, ResumeCoastIn, No_event, SetAccelIn, No_event, No_event, e, e, ResumeCoastOut, e, e]
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>
+
+test0
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+==== Statechart Simulation begins ===
+.........................
+Consuming event :  initializing statechart
+Current configuration : []
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = null
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = null
+PA_Enabled : boolean : basic type 'boolean Scope : local = null
+AccelPedal : int : basic type 'int Scope : local = null
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = null
+Speed : int : basic type 'int Scope : local = null
+TargetSpeed : int : basic type 'int Scope : local = null
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = null
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = null
+PRNDL_In : int : basic type 'int Scope : local = null
+CC_Engaged : boolean : basic type 'boolean Scope : local = null
+minusone : int : basic type 'int Scope : local = null
+PA_HVI : int : basic type 'int Scope : local = null
+Skip ...
+Skip ...
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+Consuming event : SetAccelIn
+Current configuration : [paDisabled, sense, Disabled, HoldSpeed, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 51
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 77
+Speed : int : basic type 'int Scope : local = 42
+TargetSpeed : int : basic type 'int Scope : local = 60
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 10
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = null
+Enabled Transitions :No transition enabled.
+.........................
+Consuming event : ResumeCoastIn
+Current configuration : [paDisabled, sense, Disabled, HoldSpeed, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 51
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 77
+Speed : int : basic type 'int Scope : local = 42
+TargetSpeed : int : basic type 'int Scope : local = 60
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 10
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = null
+Enabled Transitions :No transition enabled.
+.........................
+Consuming event : e
+Current configuration : [paDisabled, sense, Disabled, HoldSpeed, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 51
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 77
+Speed : int : basic type 'int Scope : local = 42
+TargetSpeed : int : basic type 'int Scope : local = 60
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 10
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = null
+Enabled Transitions :pat29,sst35,lct22,
+detectConcurrencyConflict :[simulator2.code.SequenceCode@35f26e72, simulator2.code.SequenceCode@66565121, simulator2.code.SequenceCode@7cf6a5f9]
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+Skip ...
+Skip ...
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+Consuming event : ResumeCoastIn
+Current configuration : [paIdle, sense, DecSpeed, Disengaged, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 20
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 96
+Speed : int : basic type 'int Scope : local = 41
+TargetSpeed : int : basic type 'int Scope : local = 0
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 3
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = 1
+Enabled Transitions :No transition enabled.
+.........................
+Consuming event : ResumeCoastIn
+Current configuration : [paIdle, sense, DecSpeed, Disengaged, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 20
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 96
+Speed : int : basic type 'int Scope : local = 41
+TargetSpeed : int : basic type 'int Scope : local = 0
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 3
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = 1
+Enabled Transitions :No transition enabled.
+.........................
+Consuming event : ResumeCoastIn
+Current configuration : [paIdle, sense, DecSpeed, Disengaged, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 20
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 96
+Speed : int : basic type 'int Scope : local = 41
+TargetSpeed : int : basic type 'int Scope : local = 0
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 3
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = 1
+Enabled Transitions :No transition enabled.
+.........................
+Consuming event : e
+Current configuration : [paIdle, sense, DecSpeed, Disengaged, ]
+Current Environment : 
+BoolTRUE : boolean : basic type 'boolean Scope : local = true
+set_SteerOut : int : basic type 'int Scope : local = null
+SpaceFound : boolean : basic type 'boolean Scope : local = null
+CC_Enabled : boolean : basic type 'boolean Scope : local = true
+PA_Enabled : boolean : basic type 'boolean Scope : local = true
+AccelPedal : int : basic type 'int Scope : local = 20
+Accepted : boolean : basic type 'boolean Scope : local = null
+SteerIn : int : basic type 'int Scope : local = null
+set_Brake : int : basic type 'int Scope : local = null
+Warning : int : basic type 'int Scope : local = null
+BrakePedal : int : basic type 'int Scope : local = 96
+Speed : int : basic type 'int Scope : local = 41
+TargetSpeed : int : basic type 'int Scope : local = 0
+AccelPedal : int : basic type 'int Scope : local = null
+FollowDist : int : basic type 'int Scope : local = 60
+set_Throttle : int : basic type 'int Scope : local = null
+BoolFALSE : boolean : basic type 'boolean Scope : local = false
+PRNDL_In : int : basic type 'int Scope : local = 3
+CC_Engaged : boolean : basic type 'boolean Scope : local = true
+minusone : int : basic type 'int Scope : local = -1
+PA_HVI : int : basic type 'int Scope : local = 1
+Enabled Transitions :sst34,sst27,
+Something Went Wrong!
+
+Makefile:79: recipe for target 'simulator2-fuzzcasestudy' failed
