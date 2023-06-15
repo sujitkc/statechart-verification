@@ -41,9 +41,9 @@ public class TestCaseStudyFuzzer {
   static int noofevents=10000;
   public static void populate(){
 		 //casestudy - 1 
-  		  makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
+  		 // makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
 		//casestudy - 2 
-  		  //makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
+  		  makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
 		 //casestudy - 3 
   		//  makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working

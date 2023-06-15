@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Comparator;
@@ -142,9 +143,18 @@ public class Simulator {
       }
       System.out.println();
       
-      this.detectNondeterminism(codes);
-      this.detectConcurrencyConflict(codes);
-      code = new ConcurrentCode(codes);
+      //this.detectNondeterminism(codes);
+      //this.detectConcurrencyConflict(codes);
+      //code = new ConcurrentCode(codes);
+      if(this.detectNondeterminism(codes)){
+        List<Transition> tlist = new ArrayList<>(enabledTransitions);
+        Random r=new Random();
+        code = this.getCode(tlist.get(r.nextInt(tlist.size())));
+
+      }else{
+        code = new ConcurrentCode(codes);
+      }
+
     }
     else if(enabledTransitions.size() == 1) {
       List<Transition> tlist = new ArrayList<>(enabledTransitions);
@@ -235,8 +245,7 @@ public class Simulator {
 	
 	}
 
-
-  private void detectNondeterminism(Set<Code> codes) throws Exception {
+  private boolean detectNondeterminism(Set<Code> codes) throws Exception {
   
     Set<CFG> cfgs = new HashSet<>();
     for(Code code : codes) {
@@ -247,10 +256,29 @@ public class Simulator {
         cfgs.addAll(codeCFGs);
       }
       else {
+        return true;
+        //throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
+      }
+    }
+    return false;
+  }
+ 
+ /*  private void detectNondeterminism(Set<Code> codes) throws Exception {
+  
+    Set<CFG> cfgs = new HashSet<>();
+    for(Code code : codes) {
+      Set<CFG> codeCFGs = this.getAllCFGsinCode(code);
+      Set<CFG> intersect = new HashSet<>(cfgs);
+      intersect.retainAll(codeCFGs);
+      if(intersect.isEmpty()) {
+        cfgs.addAll(codeCFGs);
+      }
+      else {
+        return true;
         throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
       }
     }
-  }
+  }*/
   
   private Set<Name> getAllVariablesinCode(Code code) throws Exception {
   //System.out.println("getAllVariablesinCode");

@@ -13,7 +13,6 @@ statechart sc{
 	Set_Brake:int:local;
 	Set_Throttle:int:local;
 	Set_SteerOut:int:local;
-    PRNDL_In:int:local;
   	CC_Enabled : boolean : local;
   	CC_Engaged : boolean : local;
  	CA_HVI : int : local;
