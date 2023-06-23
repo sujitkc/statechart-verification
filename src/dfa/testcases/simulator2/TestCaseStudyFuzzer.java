@@ -47,9 +47,9 @@ public class TestCaseStudyFuzzer {
 		 //casestudy - 3 
   		 // makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working
-  		 // makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
+  		  makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
 		//casestudy - 5 
-  		  makeTestCase("data/uwfms/caeva.stb", new String[] {}, new String[]{});
+  		//  makeTestCase("data/uwfms/caeva.stb", new String[] {}, new String[]{});
 		//casestudy - 6 
   		 // makeTestCase("data/uwfms/paeva.stb", new String[] {}, new String[]{});
 		//casestudy - 7 
