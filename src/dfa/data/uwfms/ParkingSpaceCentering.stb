@@ -8,7 +8,6 @@ statechart  ParkingSpaceCentering{
  
   PSC_Enabled : boolean : local;
   PSC_HVI : int : local;
-
   AccelPedal :int: local;
   BoolTRUE : boolean : local;
   minusone : int : local;

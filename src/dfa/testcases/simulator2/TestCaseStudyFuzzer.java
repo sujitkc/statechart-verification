@@ -40,10 +40,12 @@ public class TestCaseStudyFuzzer {
   static int i=0;
   static int noofevents=20000;
   public static void populate(){
+  		//casestudy - all together
+  		makeTestCase("data/uwfms/allcomponents.stb", new String[] {}, new String[]{});
 		 //casestudy - 1 
-  		  //makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
+  		//makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
 		//casestudy - 2 
-  		 // makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
+  	       // makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
 		 //casestudy - 3 
   		 // makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working
@@ -59,7 +61,7 @@ public class TestCaseStudyFuzzer {
 		//casestudy - 9 
   		//  makeTestCase("data/uwfms/raca.stb", new String[] {}, new String[]{});
 		//casestudy - 10 
-  		  makeTestCase("data/uwfms/rapa.stb", new String[] {}, new String[]{});
+  		//  makeTestCase("data/uwfms/rapa.stb", new String[] {}, new String[]{});
 		   
   
   	 }
@@ -98,22 +100,22 @@ public class TestCaseStudyFuzzer {
 		}
 			
 	
-	//int eventlength=data.consumeInt​(3,100);
-	//List<String> list=data.pickValues(events,400);
-	System.out.println("events : "+ list);
-	String[] eventsarray = list.toArray(new String[list.size()]);
-	Set<State> newconfig=runSimulateTest("test"+i, inputfile, eventsarray);
-  	String[] output=new String[newconfig.size()];
+	  //int eventlength=data.consumeInt​(3,100);
+	  //List<String> list=data.pickValues(events,400);
+	  System.out.println("events : "+ list);
+	  String[] eventsarray = list.toArray(new String[list.size()]);
+	  Set<State> newconfig=runSimulateTest("test"+i, inputfile, eventsarray);
+  	  String[] output=new String[newconfig.size()];
   	  int j=0;
 	  for(State s:newconfig) {
 	   		output[j++]=s.name;
 	   		}
 	  Arrays.sort(output);
-	 // System.out.println("Configuration is : "+ output);
-	 // Arrays.sort(destConfig);
+	  // System.out.println("Configuration is : "+ output);
+	  // Arrays.sort(destConfig);
 	  //UNCOMMENT THIS FOR UNDESIRABLE CONFIGURATION
-	 // System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
-         //ssertFalse(Arrays.equals(destConfig,output));
+	  // System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
+          //ssertFalse(Arrays.equals(destConfig,output));
   	  
   	  }
 	System.exit(0);
