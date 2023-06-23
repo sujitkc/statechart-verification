@@ -38,7 +38,7 @@ public class TestCaseStudyFuzzer {
   static List<String[]> sourceList=new ArrayList<String[]>();
   static List<String[]> destList=new ArrayList<String[]>();
   static int i=0;
-  static int noofevents=10000;
+  static int noofevents=20000;
   public static void populate(){
 		 //casestudy - 1 
   		 // makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
