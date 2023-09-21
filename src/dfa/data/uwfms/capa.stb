@@ -87,7 +87,7 @@ statechart sc{
 				source: sc.capa.SpeedSetting.HoldSpeed;
 				destination: sc.capa.SpeedSetting.IncSpeed;
 				trigger: e;
-				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				guard:(BrakePedal>=0);//((AccelPedal>30) && (BrakePedal=0)); 
 				action:{Speed:=Speed+1;} 
 
 		}

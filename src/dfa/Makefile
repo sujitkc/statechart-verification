@@ -1,5 +1,6 @@
 MYLIBPATH=./lib
 MYCLASSPATH="./classes/:"${MYLIBPATH}"/java-cup-11a.jar"
+EXT=".java"
 FE=frontend
 Analyser : Analyser.java ${FE}/Lexer.java sym.java ast/*.java
 	if [ ! -d classes ]; then \
@@ -72,9 +73,15 @@ simulator2-singlescfuzz:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
 	sh runfuzzer.sh TestSingleSCFuzzer
 
-simulator2-replaycrash:
-	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ $1;
+simulator2-compilecrash:
+	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ $(file).java;
 
 simulator2-fuzzcasestudy:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
 	sh runfuzzer.sh TestCaseStudyFuzzer
+
+simulator2-runcrash:
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./  $(file)
+
+
+simulator2-replaycrash: simulator2-compilecrash simulator2-runcrash

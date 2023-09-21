@@ -45,6 +45,7 @@ statechart  CoillisionAvoidance{
      entry: {
 		PRNDL_In:=input<||>();
 		Speed:=input<||>();
+		AccelPedal:=0;
 	 }
      exit : {}
    }
@@ -119,7 +120,7 @@ statechart  CoillisionAvoidance{
     source: CoillisionAvoidance.Enabled.Engaged.Idle;
     destination: CoillisionAvoidance.Enabled.Engaged.Avoid;
     trigger: e;
-    guard:(ThreatCA=2);
+    guard:(ThreatCA=1);
     action:{Warning:=2;Set_Brake:=30;}
     }
 	
@@ -135,7 +136,7 @@ statechart  CoillisionAvoidance{
     source: CoillisionAvoidance.Enabled.Engaged.Idle;
     destination: CoillisionAvoidance.Enabled.Engaged.Mitigate;
     trigger: e;
-    guard:(ThreatCA=3);
+    guard:(ThreatCA=1);
     action:{Warning:=3; Set_Brake:=80;}
     }
 	

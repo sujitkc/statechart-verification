@@ -144,7 +144,7 @@ public class Simulator {
       System.out.println();
       
       //this.detectNondeterminism(codes);
-      //this.detectConcurrencyConflict(codes);
+      this.detectConcurrencyConflict(codes);
       //code = new ConcurrentCode(codes);
       if(this.detectNondeterminism(codes)){
         List<Transition> tlist = new ArrayList<>(enabledTransitions);

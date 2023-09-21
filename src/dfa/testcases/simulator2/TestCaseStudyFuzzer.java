@@ -40,12 +40,13 @@ public class TestCaseStudyFuzzer {
   static int i=0;
   static int noofevents=20000;
   public static void populate(){
-  		//casestudy - all together
-  		makeTestCase("data/uwfms/allcomponents.stb", new String[] {}, new String[]{});
+  		makeTestCase("data/input1.stb",new String[]{},new String[]{});
+		//casestudy - all together
+  		//makeTestCase("data/uwfms/allcomponents.stb", new String[] {}, new String[]{});
 		 //casestudy - 1 
   		//makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
 		//casestudy - 2 
-  	       // makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
+//  	        makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
 		 //casestudy - 3 
   		 // makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working
@@ -79,22 +80,22 @@ public class TestCaseStudyFuzzer {
 	  	 String[] destConfig=testcaselist.get(i).destConfig;
 
   		List<String> events=new ArrayList<String>();
-		/*events.add("e1");
-		events.add("e2");
-		events.add("e");*/
-		events.add("e");
+		events.add("e1");
+		//events.add("e2");
+		//events.add("e");*/
+		events.add("e1");
 		events.add("No_event");
-		events.add("SetAccelIn");
-		events.add("ResumeCoastIn");
+		//events.add("SetAccelIn");
+		/*events.add("ResumeCoastIn");
 		events.add("ResumeCoastOut");
 		events.add("Cancel");
 		events.add("Error");
-		events.add("Next");
+		events.add("Next");*/
 		List<String> list=new ArrayList<String>();
 		Random r=new Random();
 		for(int j=0;j<noofevents;j++){
 			//num=data.consumeInt​(0,2);
-			num=r.nextInt(5);
+			num=r.nextInt(2);
 			list.add(events.get(num));
 
 		}
