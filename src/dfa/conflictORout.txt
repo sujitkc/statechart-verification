@@ -1,0 +1,2445 @@
+javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
+sh runfuzzer.sh TestCaseStudyFuzzer
+events : [e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e1, e1, e1, e2, e2, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e1, e2, e2, e1, e2, e1, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e1, e2, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e1, e1, e1, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e1, e2, e1, e2, e1, e2, e2, e2, e2, e2, e1, e1, e1, e1, e1, e1, e2, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e1, e1, e1, e1, e2, e1, e2, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e2, e1, e2, e2, e2, e2, e2, e1, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e1, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e1, e2, e1, e2, e2, e1, e1, e1, e2, e2, e2, e2, e1, e2, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e1, e2, e2, e1, e2, e2, e1, e1, e2, e2, e1, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e2, e1, e1, e2, e2, e2, e1, e1, e2, e2, e1, e2, e1, e2, e2, e1, e1, e2, e2, e2, e2, e1, e1, e2, e2, e1, e1, e2, e2, e2, e1, e2, e1, e1, e1, e1, e2, e1, e1, e2, e2, e2, e1, e2, e1, e2, e2, e2, e2, e2, e2, e1, e2, e1, e2, e1, e2, e1, e1, e2, e1, e1, e1, e2, e2, e1, e2, e2, e2, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e1, e2, e2, e1, e1, e1, e1, e2, e2, e2, e2, e1, e1, e1, e2, e2, e2, e1, e2, e2, e2, e2, e1, e1, e1, e1, e2, e1, e1, e1, e1]
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>>>>>>
+
+test0
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+==== Statechart Simulation begins ===
+.........................
+0 : Consuming event :  initializing statechart
+Current configuration : []
+Current Environment : 
+x : int : basic type 'int Scope : local = null
+y : boolean : basic type 'boolean Scope : static = null
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+1 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+2 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+3 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+4 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+5 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+6 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+7 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+8 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+9 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+10 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+11 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+12 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+13 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+14 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+15 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+16 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+17 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+18 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+19 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+20 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+21 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+22 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+23 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+24 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+25 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+26 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+27 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+28 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+29 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+30 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+31 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+32 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+33 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+34 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+35 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+36 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+37 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+38 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+39 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+40 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+41 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+42 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+43 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+44 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+45 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+46 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+47 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+48 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+49 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+50 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+51 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+52 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+53 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+54 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+55 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+56 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+57 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+58 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+59 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+60 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+61 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+62 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+63 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+64 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+65 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+66 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+67 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+68 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+69 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+70 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+71 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+72 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+73 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+74 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+75 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+76 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+77 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+78 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+79 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+80 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+81 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+82 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+83 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+84 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+85 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+86 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+87 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+88 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+89 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+90 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+91 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+92 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+93 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+94 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+95 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+96 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+97 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+98 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+99 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+100 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+101 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+102 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+103 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+104 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+105 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+106 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+107 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+108 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+109 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+110 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+111 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+112 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+113 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+114 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+115 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+116 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+117 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+118 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+119 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+120 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+121 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+122 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+123 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+124 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+125 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+126 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+127 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+128 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+129 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+130 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+131 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+132 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+133 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+134 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+135 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+136 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+137 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+138 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+139 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+140 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+141 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+142 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+143 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+144 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+145 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+146 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+147 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+148 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+149 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+150 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+151 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+152 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+153 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+154 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+155 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+156 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+157 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+158 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+159 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+160 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+161 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+162 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+163 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+164 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+165 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+166 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+167 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+168 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+169 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+170 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+171 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+172 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+173 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+174 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+175 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+176 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+177 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+178 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+179 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+180 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+181 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+182 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+183 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+184 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+185 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+186 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+187 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+188 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+189 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+190 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+191 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+192 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+193 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+194 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+195 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+196 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+197 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+198 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+199 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+200 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+201 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+202 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+203 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+204 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+205 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+206 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+207 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+208 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+209 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+210 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+211 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+212 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+213 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+214 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+215 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+216 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+217 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+218 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+219 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+220 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+221 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+222 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+223 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+224 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+225 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+226 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+227 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+228 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+229 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+230 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+231 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+232 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+233 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+234 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+235 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+236 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+237 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+238 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+239 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+240 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+241 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+242 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+243 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+244 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+245 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+246 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+247 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+248 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+249 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+250 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+251 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+252 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+253 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+254 : Consuming event : e1
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t4,
+ -- Code Simulation Begins --
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+255 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+256 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+257 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 1
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+258 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+259 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+260 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+261 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+262 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+263 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+264 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 2
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+265 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+266 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 3
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+267 : Consuming event : e2
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :No transition enabled.
+.........................
+268 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+269 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 4
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+270 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,
+ -- Code Simulation Begins --
+ -- Code Simulation Ends. --
+.........................
+271 : Consuming event : e2
+Current configuration : [B, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 5
+y : boolean : basic type 'boolean Scope : static = true
+Enabled Transitions :t3,
+ -- Code Simulation Begins --
+Skip ...
+Skip ...
+ -- Code Simulation Ends. --
+.........................
+272 : Consuming event : e1
+Current configuration : [A21, A11, ]
+Current Environment : 
+x : int : basic type 'int Scope : local = 6
+y : boolean : basic type 'boolean Scope : static = false
+Enabled Transitions :t1,t2,
+detectConcurrencyConflict :[simulator2.code.SequenceCode@51f49060, simulator2.code.SequenceCode@410954b]
+Something Went Wrong!
+

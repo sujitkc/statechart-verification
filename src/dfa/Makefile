@@ -45,9 +45,12 @@ simulator2-build:
 simulator2-testtransitions:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:lib/jazzer_standalone.jar:./ org.junit.runner.JUnitCore testcases.simulator2.TestTransitions
 
+simulator2-testissue:
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:lib/jazzer_standalone.jar:./ org.junit.runner.JUnitCore testcases.simulator2.TestIssue
+
 simulator2-testactions:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:lib/jazzer_standalone.jar:./ org.junit.runner.JUnitCore testcases.simulator2.TestActions
-	
+
 simulator2-testcasestudy:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:lib/jazzer_standalone.jar:./ org.junit.runner.JUnitCore testcases.simulator2.TestCaseStudy
 	
@@ -77,11 +80,10 @@ simulator2-compilecrash:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ $(file).java;
 
 simulator2-fuzzcasestudy:
-	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
+	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestCaseStudyFuzzer.java;
 	sh runfuzzer.sh TestCaseStudyFuzzer
 
 simulator2-runcrash:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./  $(file)
-
 
 simulator2-replaycrash: simulator2-compilecrash simulator2-runcrash

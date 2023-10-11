@@ -29,6 +29,7 @@ class FirstComparator implements Comparator<Name> {
 }
 public class Simulator {
 
+  public static int eventindex=0;
   public final Statechart statechart;
   private final Set<Transition> allTransitions;
   private final Map<Declaration, Expression> valueEnvironment;
@@ -36,6 +37,12 @@ public class Simulator {
   public final Map<Statement, CFG> CFGs = new HashMap<>();
   private final ASTToCFG converter = new ASTToCFG();
   private Set<State> configuration;
+
+
+public static void fuzzerInitialize() {
+    // Optional initialization to be run before the first call to fuzzerTestOneInput.
+  }
+
 
   public Simulator(Statechart statechart) throws Exception {
     this(statechart, new HashSet<State>());
@@ -51,7 +58,7 @@ public class Simulator {
   }
  public void printCurrentExecutionInfo(String event){
  	System.out.println(".........................");
-      	System.out.println("Consuming event : "+event);
+      	System.out.println(eventindex++ +" : Consuming event : "+event);
 	String con="Current configuration : [";
 	for(State s : this.configuration){
 		con+=s.name+", ";
@@ -89,6 +96,7 @@ public class Simulator {
   
     Set<State> newConfiguration = new HashSet<>();
     this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
+    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+configuration);
     Tree<State> subtree = this.getEntrySubTree(statechart);
     Map<Statement, CFG> CFGs = this.CFGs;
     TreeMap<State, CFG> map = new TreeMap<>();
@@ -143,7 +151,7 @@ public class Simulator {
       }
       System.out.println();
       
-      //this.detectNondeterminism(codes);
+     // this.detectNondeterminism(codes);
       this.detectConcurrencyConflict(codes);
       //code = new ConcurrentCode(codes);
       if(this.detectNondeterminism(codes)){
@@ -199,8 +207,9 @@ public class Simulator {
     return newConfiguration;
   }
 
- private void detectConcurrencyConflict(Set<Code> codes) throws Exception {
-      System.out.println("detectConcurrencyConflict :"+codes);
+ private void detectConcurrencyConflict(Set<Code> codes) {
+try{
+      System.out.println("detectConcurrencyConflict : "+codes.size()+" : "+codes);
       TreeSet<Name> definitions = new TreeSet<>(new FirstComparator());
       for(Code code : codes) {
       TreeSet<Name> codeDefinitions = new TreeSet<>(new FirstComparator());
@@ -223,9 +232,14 @@ public class Simulator {
       else {
         
         throw new FuzzerSecurityIssueMedium("Simulator::Concurrency-Conflict detected.::"+intersect);
+
       }
       //System.out.println("definitions ::"+definitions);
     }
+}catch(Exception e){
+        System.out.println("Exception caught: conflict detected");
+	Runtime.getRuntime().halt(1);
+}
  
  }
 
@@ -245,8 +259,9 @@ public class Simulator {
 	
 	}
 
-  private boolean detectNondeterminism(Set<Code> codes) throws Exception {
+  private boolean detectNondeterminism(Set<Code> codes) {
   
+try{
     Set<CFG> cfgs = new HashSet<>();
     for(Code code : codes) {
       Set<CFG> codeCFGs = this.getAllCFGsinCode(code);
@@ -256,10 +271,15 @@ public class Simulator {
         cfgs.addAll(codeCFGs);
       }
       else {
-        return true;
-        //throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
+        //return true;
+        throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
       }
     }
+}
+catch(Exception e){
+   System.out.println("Exception caught: non-determinism");
+   Runtime.getRuntime().halt(1);
+}
     return false;
   }
  

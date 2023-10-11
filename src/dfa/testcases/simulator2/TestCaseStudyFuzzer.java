@@ -40,19 +40,21 @@ public class TestCaseStudyFuzzer {
   static int i=0;
   static int noofevents=20000;
   public static void populate(){
-  		makeTestCase("data/input1.stb",new String[]{},new String[]{});
+  		makeTestCase("data/problem.stb",new String[]{},new String[]{});
+  		//makeTestCase("data/input3.stb",new String[]{},new String[]{});
+
 		//casestudy - all together
   		//makeTestCase("data/uwfms/allcomponents.stb", new String[] {}, new String[]{});
 		 //casestudy - 1 
   		//makeTestCase("data/uwfms/capa.stb", new String[] {}, new String[]{}); 
 		//casestudy - 2 
-//  	        makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
+  	        //makeTestCase("data/uwfms/ccpa.stb", new String[] {}, new String[]{});
 		 //casestudy - 3 
   		 // makeTestCase("data/uwfms/lgpa.stb", new String[] {}, new String[]{});
 		//casestudy - 4 --not working
-  		 // makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
+  		//  makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
 		//casestudy - 5 
-  		//  makeTestCase("data/uwfms/caeva.stb", new String[] {}, new String[]{});
+  		  makeTestCase("data/uwfms/caeva.stb", new String[] {}, new String[]{});
 		//casestudy - 6 
   		 // makeTestCase("data/uwfms/paeva.stb", new String[] {}, new String[]{});
 		//casestudy - 7 
@@ -83,7 +85,7 @@ public class TestCaseStudyFuzzer {
 		events.add("e1");
 		//events.add("e2");
 		//events.add("e");*/
-		events.add("e1");
+		events.add("e2");
 		events.add("No_event");
 		//events.add("SetAccelIn");
 		/*events.add("ResumeCoastIn");
@@ -127,8 +129,13 @@ public class TestCaseStudyFuzzer {
   }
 
   public static void fuzzerTestOneInput(FuzzedDataProvider data) {
+try{
 	populate();
 	eventFuzz(data);
+}
+catch(Exception e){
+	System.out.println("exception : fuzzed data provider");
+}
 	/*String[] randomSourceState=data.pickValue(sourceList);
 	String[] randomDestState=data.pickValue(destList);
 	String fname=data.pickValue(filenameList);
