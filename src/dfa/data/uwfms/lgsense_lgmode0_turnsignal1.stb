@@ -32,8 +32,8 @@ events {
 	minusone:=0-1;
 	LG_Enabled:=true;
 	PRNDL_In:=3;
-	LGMode:=1;
-	TurnSignal:=false;
+	LGMode:=0;
+	TurnSignal:=true;
   }
   exit  : {
   	
@@ -68,7 +68,9 @@ exit:{}
 			to_min:= 0;
 			to_max:= 100;
 			
-			if (Speed < from_min)
+			
+
+			    if (Speed < from_min)
 				Speed := to_min;
 			    else if (Speed > from_max)
 				Speed := to_max;
@@ -164,7 +166,7 @@ state LaneGuide{
 				transition t20{
 					source: lgsense.sh.LaneGuide.Enabled.Engaged.WarnLeft;
 					destination: lgsense.sh.LaneGuide.Enabled.Engaged.AssistLeft;
-					trigger: No_event;
+					trigger: e;
 					guard:(LGMode=1); 
 					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
 				}
@@ -178,7 +180,7 @@ state LaneGuide{
 				transition t21{
 					source: lgsense.sh.LaneGuide.Enabled.Engaged.AssistLeft;
 					destination: lgsense.sh.LaneGuide.Enabled.Engaged.Idle;
-					trigger: e2;
+					trigger: e;
 					guard:(LaneDrift>minusten); //LaneDrift>-10
 					action:{LG_Warning:=BoolFALSE;}
 				}
@@ -257,14 +259,14 @@ state LaneGuide{
 			transition t30{
 				source: lgsense.sh.LaneGuide.Enabled.Engaged;
 				destination: lgsense.sh.LaneGuide.Enabled.Override;
-				trigger: e1;
+				trigger: e2;
 				guard:(SteerIn>10)||(SteerIn<minusten)||(TurnSignal=BoolTRUE)||(BrakePedal>0); // SteerIn<-10
 				action:{LG_Warning:=BoolFALSE;}
 			}
 			transition t36{
 				source: lgsense.sh.LaneGuide.Enabled.Engaged;
 				destination: lgsense.sh.LaneGuide.Enabled.Disengaged;
-				trigger: Error;
+				trigger: e1;
 				guard:(Speed<40)||(PRNDL_In!=3); 
 				action:{LG_Warning:=BoolFALSE;}
 			}
