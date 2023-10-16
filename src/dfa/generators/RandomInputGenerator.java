@@ -14,7 +14,7 @@ public class RandomInputGenerator extends InputGenerator {
   }
   public IntegerConstant getInt(){
   	
-  	return new IntegerConstant(rd.nextInt(100));
+  	return new IntegerConstant(rd.nextInt(41)-20);
   }
   
   public IntegerConstant getInt(int lowerBound, int upperBound){

@@ -38,9 +38,9 @@ public class TestCaseStudyFuzzer {
   static List<String[]> sourceList=new ArrayList<String[]>();
   static List<String[]> destList=new ArrayList<String[]>();
   static int i=0;
-  static int noofevents=20000;
+  static int noofevents=300000;
   public static void populate(){
-  		makeTestCase("data/problem.stb",new String[]{},new String[]{});
+  		//makeTestCase("data/problem.stb",new String[]{},new String[]{});
   		//makeTestCase("data/input3.stb",new String[]{},new String[]{});
 
 		//casestudy - all together
@@ -54,7 +54,7 @@ public class TestCaseStudyFuzzer {
 		//casestudy - 4 --not working
   		//  makeTestCase("data/uwfms/evacc.stb", new String[] {}, new String[]{});
 		//casestudy - 5 
-  		  makeTestCase("data/uwfms/caeva.stb", new String[] {}, new String[]{});
+  		 // makeTestCase("data/uwfms/caeva.stb", new String[] {"caDisabled","HoldSpeed","sense","evaSlow"}, new String[]{"caMitigate","IncSpeed","sense","evaSlow"});
 		//casestudy - 6 
   		 // makeTestCase("data/uwfms/paeva.stb", new String[] {}, new String[]{});
 		//casestudy - 7 
@@ -65,7 +65,7 @@ public class TestCaseStudyFuzzer {
   		//  makeTestCase("data/uwfms/raca.stb", new String[] {}, new String[]{});
 		//casestudy - 10 
   		//  makeTestCase("data/uwfms/rapa.stb", new String[] {}, new String[]{});
-		   
+		makeTestCase("data/uwfms/lgsense.stb", new String[] {}, new String[]{});   
   
   	 }
   public static void makeTestCase(String filename, String[] sourceConfig, String[] destConfig){
@@ -83,21 +83,22 @@ public class TestCaseStudyFuzzer {
 
   		List<String> events=new ArrayList<String>();
 		events.add("e1");
-		//events.add("e2");
-		//events.add("e");*/
 		events.add("e2");
+		events.add("e");
+		//events.add("e2");
 		events.add("No_event");
-		//events.add("SetAccelIn");
-		/*events.add("ResumeCoastIn");
+		events.add("SetAccelIn");
+		events.add("ResumeCoastIn");
 		events.add("ResumeCoastOut");
 		events.add("Cancel");
 		events.add("Error");
-		events.add("Next");*/
+		events.add("Next");
+		events.add("Cancel");
 		List<String> list=new ArrayList<String>();
 		Random r=new Random();
 		for(int j=0;j<noofevents;j++){
 			//num=data.consumeInt​(0,2);
-			num=r.nextInt(2);
+			num=r.nextInt(10);
 			list.add(events.get(num));
 
 		}
@@ -115,10 +116,10 @@ public class TestCaseStudyFuzzer {
 	   		}
 	  Arrays.sort(output);
 	  // System.out.println("Configuration is : "+ output);
-	  // Arrays.sort(destConfig);
+	   Arrays.sort(destConfig);
 	  //UNCOMMENT THIS FOR UNDESIRABLE CONFIGURATION
 	  // System.out.println("******** Testing Assertion ******** comparing ******"+Arrays.toString(destConfig)+"==="+Arrays.toString(output));
-          //ssertFalse(Arrays.equals(destConfig,output));
+         // assertFalse(Arrays.equals(destConfig,output));
   	  
   	  }
 	System.exit(0);

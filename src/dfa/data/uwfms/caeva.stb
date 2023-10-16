@@ -35,6 +35,8 @@ statechart sc{
     EVA_Enabled:=true;  
 	minusone:=0-1;
 	minusten:=0-10;
+        Siren:=true;
+        Speed:=0;
 
     }
     exit:{}
@@ -51,18 +53,7 @@ statechart sc{
 	state CollisionAvoidance{
         entry:{}
         exit:{}   
-          state caDisabled{
-   entry: {}
-   exit : {}
-  }
-  state caOverride{
-   entry: {}
-   exit : {}
-  }
-  state caFail{
-   entry: {}
-   exit : {}
-  }
+
   state caEnabled{
    //BreakPedal:int:local;
    //Speed:int:local;
@@ -73,16 +64,15 @@ statechart sc{
 
    }
    exit : {}
-   state caDisengaged{
-     entry: {}
-     exit : {}
-   }
+ 
    state caEngaged{
      ThreatCA:int:local;
 	 Set_Brake:int:local;
 	 
 	 
 	 entry: {
+         ThreatCA:=input<|int|>();
+         //ThreatCA:=ThreatCA%2;
 
 	 }
      exit : {}
@@ -106,6 +96,19 @@ statechart sc{
 	 entry: {}
      exit : {}
     }
+          state caDisabled{
+   entry: {}
+   exit : {}
+  }
+  state caOverride{
+   entry: {}
+   exit : {}
+  }
+  state caFail{
+   entry: {}
+   exit : {}
+  }
+
 	transition cat19{
     source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
     destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
@@ -203,6 +206,10 @@ statechart sc{
     }
 	
    }
+  state caDisengaged{
+     entry: {}
+     exit : {}
+   }
    state caHalt{
 	 entry: {}
      exit : {}
@@ -240,6 +247,15 @@ statechart sc{
   }
    
   }
+  state caDisabled{
+	entry:{}
+	exit:{}
+	}
+  state caOverride{
+	entry:{}
+	exit:{}
+	
+	}
   transition cat14{
   source:sc.caeva.CollisionAvoidance.caDisabled;
   destination:sc.caeva.CollisionAvoidance.caEnabled;
@@ -280,26 +296,26 @@ statechart sc{
   action:{CA_HVI:=1;}
   }
   
- /* transition t39{
+  transition t39{
   source:sc.caeva.CollisionAvoidance.caOverride;
   destination:sc.caeva.CollisionAvoidance.caFail;
   trigger: Error;
   guard:true;
   action:{CA_HVI:=3;}
-  }*/
+  }
   
-  /*transition t27{
+  transition t27{
   source:sc.caeva.CollisionAvoidance.caEnabled;
   destination:sc.caeva.CollisionAvoidance.caFail;
   trigger: Error;
   guard:true;
   action:{CA_HVI:=3;Warning:=0;}
-  }*/
+  }
  
     }
 
     state SpeedSetting{
-		entry:{ Speed:=0;}
+		entry:{}
 		exit:{}
 			
       state HoldSpeed{
@@ -368,10 +384,18 @@ statechart sc{
 				destination: sc.caeva.SpeedSetting.DecSpeed;
 				trigger: e;
 
-       				guard:(BrakePedal>0);
+       				guard:((BrakePedal>0)&&(Speed>0));
 				action:{Speed:=Speed-1;}
 
 		}
+		/*transition sst36{
+				source: sc.caeva.SpeedSetting.HoldSpeed;
+				destination: sc.caeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+       				guard:true;
+				action:{}
+
+		}*/
 		
 		
 		
@@ -383,10 +407,20 @@ statechart sc{
         state sense{
             entry:{
                 PRNDL_In:=input<|int|>();
+               // Siren:=input<|boolean|>();
             }
             exit:{}
 
         }
+transition ss1{
+				source: sc.caeva.Sensor.sense;
+				destination: sc.caeva.Sensor.sense;
+				trigger: e;
+       				guard:true;
+				action:{AccelPedal:=input<|int|>(); BrakePedal:=input<|int|>();}
+
+		}
+        
     }
     
         state eva{
@@ -410,7 +444,7 @@ statechart sc{
 
    
    entry: {
-     Siren :=input<|boolean|>();
+    // Siren :=input<|boolean|>();
  }
    exit : {}
    state evaDisengaged{
@@ -428,6 +462,8 @@ statechart sc{
 	
 	 
 	 entry: {
+		DontStop:=true;
+		WayClear:=true;
 
 	 }
      exit : {}

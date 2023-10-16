@@ -186,9 +186,13 @@ Name.java
     else if(expression instanceof FunctionCall) {
     	FunctionDeclaration fd=((FunctionCall)expression).getFunctionDeclaration();
   	
-    	//System.out.println("input function declaration found . "+fd.getReturnType());
-    	if(((fd.getReturnType()).name).equals("int"))
-    		return ig.getInt();
+    	System.out.println("input function declaration found . "+fd.getReturnType());
+    	if(((fd.getReturnType()).name).equals("int")){
+        IntegerConstant temp=ig.getInt(-20,20);
+	System.out.println("integer generated :"+temp.getInt());
+	    	
+	return temp;
+	}
     	else
     		return ig.getBoolean();
     	

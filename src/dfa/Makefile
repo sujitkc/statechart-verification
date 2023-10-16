@@ -31,7 +31,7 @@ constabl-lp:
 constabl-build:
 	javac -Xlint:-unchecked -d classes *.java ast/*.java program/*.java metric/*.java generators/*.java simulator/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/junit-4.8.1.jar:./lib/jazzer_standalone.jar:ast:classes:simulator:./;
 	javac -Xlint:-unchecked -d classes *.java frontend/*.java ast/*.java utilities/*.java utilities/prettyprint/*.java metric/*.java constabl/*.java constabl/simulator/*.java testcases/*.java  -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/jazzer_standalone.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
-	javac -Xlint:-unchecked -d classes simulator/*.java constabl/*.java constabl/ast/*.java constabl/ast/connectors/*.java testcases/*.java testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/jazzer_standalone.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
+	javac -Xlint:-unchecked -d classes simulator/*.java constabl/*.java constabl/ast/*.java constabl/ast/connectors/*.java testcases/*.java generators/*.java testcases/simulator2/*.java -cp ./lib/java-cup-11a.jar:./lib/jflex-1.4.1.jar:./lib/jazzer_standalone.jar:./lib/junit-4.8.1.jar:ast:classes:simulator:./;
 
 constabl-test:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.TestConStaBLSimulator

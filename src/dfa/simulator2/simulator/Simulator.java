@@ -151,8 +151,8 @@ public static void fuzzerInitialize() {
       }
       System.out.println();
       
-     // this.detectNondeterminism(codes);
-      this.detectConcurrencyConflict(codes);
+      this.detectNondeterminism(codes);
+     // this.detectConcurrencyConflict(codes);
       //code = new ConcurrentCode(codes);
       if(this.detectNondeterminism(codes)){
         List<Transition> tlist = new ArrayList<>(enabledTransitions);
@@ -271,7 +271,7 @@ try{
         cfgs.addAll(codeCFGs);
       }
       else {
-        //return true;
+       // return true;
         throw new FuzzerSecurityIssueMedium("Simulator::detectNondeterminism : Non-determinism detected.");
       }
     }

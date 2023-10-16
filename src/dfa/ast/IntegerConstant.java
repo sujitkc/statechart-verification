@@ -18,4 +18,7 @@ public class IntegerConstant extends Expression {
   public void visit (Visitor visitor) throws Exception {
     visitor.visitIntegerConstant(this);
   }
+  public int getInt(){
+	return value;
+	}
 }
