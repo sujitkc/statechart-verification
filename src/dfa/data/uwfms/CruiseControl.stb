@@ -20,42 +20,117 @@ statechart  CruiseControl{
 	ResumeCoastOut;
 	Cancel;
 	Error;
+	e1;
+
   }
   BoolTRUE : boolean : local;
   BoolFALSE : boolean : local;
   CC_Enabled : boolean : local;
   FollowDist : int : local;
+  	CC_Engaged : boolean : local;
 //  AccelPedal :int: local;
 	PRNDL_In :int: local;
-  
+   minusten:int:local;
+  minusone:int:local;
+  TargetSpeed : int : local;
   entry : {
 	FollowDist:=10;
-		PRNDL_In:=3;
+	PRNDL_In:=3;
 	BoolTRUE:=true;
 	BoolFALSE:=false;
-	
+	CC_Engaged:=true;
+	CC_Enabled:=true;
+	minusten:=0-10;
+	minusone:=0-1;
+	TargetSpeed:=0;
   }
 
   exit  : {} 
   functions {
-  //input<||>() : int;
+  input<||>() : int;
   //testInput<|T|>():T;
   }
   shell CC{
 	
 	BrakePedal : int : local;
-	CC_Engaged : boolean : local;
-	TargetSpeed : int : local;
+
+	
 	Speed:int:local;
    // FollowDist :int:local;
+   
+   
+   
+   state sensor{
+entry:{}
+exit:{}
+	state sense{
+			from_min:int:local;
+			from_max:int:local;
+			to_min:int:local;
+			to_max:int:local;
+			to_min_threat:int:local;
+			to_max_threat:int:local;
+			
+		entry:{
+
+
+			Speed:=input<||>();
+			BrakePedal:=input<||>();
+			//AccelPedal:=input<||>();
+			
+			from_min:= minusten * 2;
+			from_max:= 20;
+			to_min:= 0;
+			to_max:= 100;
+			to_min_threat:=0;
+			to_max_threat:=3;
+			
+			if (Speed < from_min)
+				Speed := to_min;
+			    else if (Speed > from_max)
+				Speed := to_max;
+			    else {
+				Speed := (((Speed - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }
+			    
+			    if (BrakePedal < from_min)
+				BrakePedal := to_min;
+			    else if (BrakePedal > from_max)
+				BrakePedal := to_max;
+			    else {
+				BrakePedal := (((BrakePedal - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }
+			    
+			   /*  if (AccelPedal < from_min)
+				AccelPedal := to_min;
+			    else if (AccelPedal > from_max)
+				AccelPedal := to_max;
+			    else {
+				AccelPedal := (((AccelPedal - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }*/
+			    
+			 
+			    
+
+	 		
+		}
+		exit:{}	
+	}
+	transition t33{
+		source: CruiseControl.CC.sensor.sense;
+		destination: CruiseControl.CC.sensor.sense;
+		trigger: e;
+		guard:true; 
+		action:{}
+		}
+}
 	state LogicControl{
 	entry:{
-		CC_Engaged:=true;
 		
-		Speed:=input<|int|>();
-		BrakePedal:=input<|int|>();
-		TargetSpeed:=60;
-		CC_Enabled:=true;
+		
+		
+		
+		
 	}
 	exit:{}
 		state Disabled{
@@ -71,7 +146,7 @@ statechart  CruiseControl{
 			
 			entry:{
 				PRNDL_In:=3;
-					PRNDL_In:=3;
+					TargetSpeed:=60;
 			}
 			exit:{}
 			state Disengaged{
@@ -123,7 +198,7 @@ statechart  CruiseControl{
 			transition t37{
 				source: CruiseControl.CC.LogicControl.Enabled.Engaged;
 				destination: CruiseControl.CC.LogicControl.Enabled.Disengaged;
-				trigger: e;
+				trigger: e1;
 				guard:(Speed<40) || (PRNDL_In!=3);
 				action:{CC_Engaged:=BoolFALSE;}
 			}
