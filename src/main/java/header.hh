@@ -6,6 +6,13 @@ void dump_events (int * events, int N) {
 	}
 }
 
+
+void non_det (bool b) {
+#ifdef NON_DET
+	assert(b);
+#endif
+}
+
 void stuck_spec (bool b) {
 #ifdef STUCK_SPEC
 	assert(b);

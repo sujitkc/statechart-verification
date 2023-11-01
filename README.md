@@ -15,3 +15,12 @@ To run a specific test class, use `mvn -Dtest=<TEST_CLASS_NAME> test`
 
 - Any files related to testing must be placed in the `src/test/resources` directory.
 - Additional test classes must be placed in `src/test/java`.
+
+##Running in commandline
+git clone -b gradle-build git@github.com:SymbolicPathFinder/jpf-symbc.git --recurse-submodules
+
+gradle :jpf-symbc:buildJars
+sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+java -Xmx1024m -ea -jar ../jpf-core/build/RunJPF.jar ./src/examples/demo/NumericExample.jpf
+
+clang -I src/main/java/include/ -emit-llvm -c -g -O0 -Xclang -disable-O0-optnone test1.c

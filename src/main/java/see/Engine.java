@@ -20,7 +20,7 @@ public class Engine {
 	private Program _program;
 	private int _max_depth;
 	private SEResult _res;
-
+	static int exploredNodes=0;
 
 	public enum PropertyOfInterest {
 		NON_DETERMINISM,
@@ -29,7 +29,9 @@ public class Engine {
 
 	private PropertyOfInterest _property;
 
-	public Engine () {}
+	public Engine () {
+	System.out.println("Engine initialized");
+	}
 
 	private static StatementList flattenStatementList (StatementList list) {
 		StatementList res = new StatementList();
@@ -109,6 +111,7 @@ public class Engine {
 			Expression expr = ((ExpressionStatement)istmt).expression;
 			if (expr instanceof FunctionCall) {
 				FunctionCall call = (FunctionCall) expr;
+				System.out.println("Property : "+ _property+":" +(_property==PropertyOfInterest.NON_DETERMINISM));
 				if (_property == PropertyOfInterest.STUCK_SPECIFICATION) {
 					if (call.name.name.equals ("stuck_spec")) {
 						this.stuckSpecification (call.argumentList, leaf);
@@ -176,6 +179,8 @@ public class Engine {
 	}
 
 	SEResult executeStatement (Statement stmt, ArrayList<SETNode> leaves) throws Exception {
+		
+		exploredNodes++;
 		SEResult res = new SEResult();
 
 		for (SETNode leaf: leaves) {
@@ -223,7 +228,7 @@ public class Engine {
 			leaf = executeDeclaration(decl, leaf);
 			done.add(leaf);
 		}
-if (done.size() > 0) done.remove (done.size()-1);
+ if (done.size() > 0) done.remove (done.size()-1);
 		live.add(leaf);
 		return new SEResult(live, done);
 	}
@@ -253,10 +258,11 @@ if (done.size() > 0) done.remove (done.size()-1);
 			// TODO: Exception check
 			_prover.push();
 			BooleanFormula form = fg.generate(expr);
-
+			System.out.println("Boolean formula :"+form);
 			this._prover.addConstraint(form);
 			boolean res = this._prover.isUnsat();
 			this._prover.pop();
+			System.out.println("result:"+res);
 			return !res;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -274,10 +280,12 @@ if (done.size() > 0) done.remove (done.size()-1);
 		// 	expr = new BinaryExpression(expr, guard, "||");
 		// }
 		// expr = new UnaryExpression(expr, UnaryExpression.Operator.NOT);
-	
 		Expression expr = args.get(0);
+		
+        	//System.out.println("Expression inside  stuck spec : "+args.get(0) + isSat(expr));
 		if (isSat(expr)) {
-			System.out.println ("---------------------------------------Specification stuck--------------------------------");
+			System.out.println ("Explored nodes : "+exploredNodes+"---------------------------------------Specification stuck--------------------------------");
+			System.exit(0);
 		}
 	}
 
@@ -292,9 +300,12 @@ if (done.size() > 0) done.remove (done.size()-1);
 		// }
 
 		// expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
+		System.out.println("inside nonDeterminism detect");
 		Expression expr = args.get(0);
+		System.out.println("expression : "+expr);
 		if (isSat (expr)) {
 			System.out.println ("Non Deterministic state found");
+			System.exit(0);
 		}
 	}
 }

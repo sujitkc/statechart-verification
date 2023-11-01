@@ -5,8 +5,12 @@ statechart sc {
     }
 
 	x: int;
+	entry:{x:=10;}
+	exit:{}
 	state A {
 		xA: boolean;
+		entry:{x:=10;}
+		exit:{}
 	}
 	state B {
 		xB: int;
@@ -14,17 +18,17 @@ statechart sc {
 
     transition t1 {
 		source: sc.A;
-		destination: sc.A;
+		destination: sc.B;
 		trigger: e1;
-		guard: x < 10;
+		guard: true;
 		action: x := x+1;
 	}
 
     transition t2 {
 		source: sc.A;
 		destination: sc.B;
-		trigger: e2;
-		guard: x < 0;
+		trigger: e1;
+		guard: true;
 		action:{}
 	}
 }
