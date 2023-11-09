@@ -1,0 +1,221 @@
+
+//A.5 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  ReversingAssistance{
+  
+  events {
+	e;
+	Error;
+  }
+ 
+ RA_Enabled : boolean : local;
+ RA_HVI : int : local;
+
+ RA_Warning:int:local;
+  
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+ 
+
+  entry : {
+  BoolTRUE:=true;
+ 
+ RA_Enabled:=true;
+
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   BrakePedal:int:local;
+   Speed:int:local;
+   PRNDL_In:int:local;
+   
+   
+   entry: {
+     
+ }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     
+	 Set_Brake:int:local;
+	 ObstacleZone:int:local;
+
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Assist{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition t23{
+    source: ReversingAssistance.Enabled.Engaged.Idle;
+    destination: ReversingAssistance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+	
+	transition t24{
+    source: ReversingAssistance.Enabled.Engaged.Warn;
+    destination: ReversingAssistance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+    transition t27{
+    source: ReversingAssistance.Enabled.Engaged.Warn;
+    destination: ReversingAssistance.Enabled.Engaged.Assist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition t28{
+    source: ReversingAssistance.Enabled.Engaged.Assist;
+    destination: ReversingAssistance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+    transition t29{
+    source: ReversingAssistance.Enabled.Engaged.Idle;
+    destination: ReversingAssistance.Enabled.Engaged.Assist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition t30{
+    source: ReversingAssistance.Enabled.Engaged.Assist;
+    destination: ReversingAssistance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+	
+   }
+   state Hold{
+   	entry:{}
+   	exit:{}
+   }
+   
+   transition t22{
+    source: ReversingAssistance.Enabled.Engaged;
+    destination: ReversingAssistance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<10))||(Speed>25)||(PRNDL_In!=1);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+   transition t21{
+    source: ReversingAssistance.Enabled.Disengaged;
+    destination: ReversingAssistance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>=10)&&(Speed<=25)&&(PRNDL_In=1);
+    action:{RA_HVI:=2;}
+  }
+    transition t25{
+    source: ReversingAssistance.Enabled.Engaged;
+    destination: ReversingAssistance.Enabled.Hold;
+    trigger: e;
+    guard:(Speed=0);
+    action:{RA_Warning:=3;}
+  }
+  transition t26{
+    source: ReversingAssistance.Enabled.Hold;
+    destination: ReversingAssistance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BrakePedal>20);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+  }
+  transition t13{
+  source: ReversingAssistance.Disabled;
+  destination: ReversingAssistance.Enabled;
+  trigger: e;
+  guard:(RA_Enabled=BoolTRUE);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition t14{
+  source: ReversingAssistance.Enabled;
+  destination: ReversingAssistance.Disabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+   
+  transition t16{
+  source: ReversingAssistance.Override;
+  destination: ReversingAssistance.Disabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+  
+  transition t19{
+  source: ReversingAssistance.Enabled;
+  destination: ReversingAssistance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{RA_HVI:=4;RA_Warning:=0;}
+  }
+  
+  transition t15{
+  source: ReversingAssistance.Override;
+  destination: ReversingAssistance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition t32{
+  source: ReversingAssistance.Override;
+  destination: ReversingAssistance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+  
+  transition t18{
+  source: ReversingAssistance.Enabled;
+  destination: ReversingAssistance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+  
+}

@@ -1,0 +1,473 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+    PRNDL_In:int:local;
+  CC_Enabled : boolean : local;
+	CC_Engaged : boolean : local;
+  AccelPedal :int: local;
+    BrakePedal:int:local;
+set_Throttle :int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  PA_Enabled : boolean : local;
+  PA_HVI : int : local;
+  Speed: int: local;
+Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		//set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+	TargetSpeed : int : local;
+  	  FollowDist : int : local;
+	set_Brake:int:local;
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        CC_Enabled:=true;
+        PA_Enabled:=true;
+	minusone:=0-1;
+        //Speed:=0;
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+  shell ccpa{
+  //	TargetSpeed : int : local;
+  //	  FollowDist : int : local;
+    entry:{
+		FollowDist:=60;
+	}
+    exit:{}
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.ccpa.SpeedSetting.DecSpeed;
+				destination: sc.ccpa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.ccpa.SpeedSetting.IncSpeed;
+				destination: sc.ccpa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.ccpa.SpeedSetting.HoldSpeed;
+				destination: sc.ccpa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.ccpa.SpeedSetting.IncSpeed;
+				destination: sc.ccpa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.ccpa.SpeedSetting.DecSpeed;
+				destination: sc.ccpa.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.ccpa.SpeedSetting.HoldSpeed;
+				destination: sc.ccpa.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>0);
+				action:{Speed:=Speed-1;}
+
+		}
+	
+	}
+    state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+                //AccelPedal:=input<|int|>();
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+	state LogicControl{
+	entry:{
+		CC_Engaged:=true;
+		
+		
+		TargetSpeed:=60;
+		CC_Enabled:=true;
+	}
+	exit:{}
+		state Disabled{
+			entry:{}
+			exit:{}
+		}
+		state Fail{
+			entry:{}
+			exit:{}
+		}
+		state Enabled{
+		//	PRNDL_In:int:local;
+			
+			entry:{
+				PRNDL_In:=3;
+					PRNDL_In:=3;
+			}
+			exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				//set_Throttle :int:local;
+				
+				
+				entry:{
+					
+				}
+				exit:{}
+				state Coasting{
+					entry:{}
+					exit:{}
+				}
+				state Accelerating{
+					entry:{}
+					exit:{}
+				}
+				transition lct20{
+					source: sc.ccpa.LogicControl.Enabled.Engaged.Coasting;
+					destination: sc.ccpa.LogicControl.Enabled.Engaged.Accelerating;
+					trigger: e;
+					guard:(FollowDist>50) && (Speed<TargetSpeed);
+					action:{set_Throttle:=TargetSpeed-Speed;}
+				}
+				transition lct21{
+					source: sc.ccpa.LogicControl.Enabled.Engaged.Accelerating;
+					destination: sc.ccpa.LogicControl.Enabled.Engaged.Coasting;
+					trigger: e;
+					guard:(FollowDist<=50) || (Speed>=TargetSpeed);
+					action:{}
+				}
+			}
+			transition lct18{
+				source: sc.ccpa.LogicControl.Enabled.Disengaged;
+				destination: sc.ccpa.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=40) && (PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition lct37{
+				source: sc.ccpa.LogicControl.Enabled.Engaged;
+				destination: sc.ccpa.LogicControl.Enabled.Disengaged;
+				trigger: e;
+				guard:(Speed<40) || (PRNDL_In!=3);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct19{
+				source: sc.ccpa.LogicControl.Enabled.Engaged;
+				destination: sc.ccpa.LogicControl.Enabled.Override;
+				trigger: Cancel;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct24{
+				source: sc.ccpa.LogicControl.Enabled.Engaged;
+				destination: sc.ccpa.LogicControl.Enabled.Override;
+				trigger: e;
+				guard:(BrakePedal>0);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct25_1{
+				source: sc.ccpa.LogicControl.Enabled.Override;
+				destination: sc.ccpa.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition lct25_2{
+				source: sc.ccpa.LogicControl.Enabled.Override;
+				destination: sc.ccpa.LogicControl.Enabled.Engaged;
+				trigger: ResumeCoastIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			
+		}
+		transition lct22{
+				source: sc.ccpa.LogicControl.Disabled;
+				destination: sc.ccpa.LogicControl.Enabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolTRUE);
+				action:{TargetSpeed:=0;}
+		}
+		transition lct23{
+				source: sc.ccpa.LogicControl.Enabled;
+				destination: sc.ccpa.LogicControl.Disabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolFALSE);
+				action:{TargetSpeed:=0;CC_Engaged:=BoolFALSE;}
+		}
+		transition lct26{
+				source: sc.ccpa.LogicControl.Enabled;
+				destination: sc.ccpa.LogicControl.Disabled;
+				trigger: Error;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+		}
+	}
+    state ParkAssist{
+        entry:{}
+        exit:{}
+    /*    	state paFail{
+		entry:{}
+		exit:{}
+	}*/
+	state paDisabled{
+		entry:{}
+		exit:{}
+	}
+	state paEnabled{
+		/*//PRNDL_In:int:local;
+
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		//set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+		AccelPedal:int:local;*/
+		entry:{}
+		exit:{}
+			state paIdle{
+				entry:{}
+				exit:{}
+			}
+			state paSearching{
+				entry:{}
+				exit:{}
+			}
+			state paPrompting{
+				entry:{}
+				exit:{}
+			}
+			state paOverride{
+				entry:{}
+				exit:{}
+			}
+			state paEngaged{
+				//set_Brake:int:local;
+	
+				entry:{}
+				exit:{}
+				state paSwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state paSwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state paCenter{
+					entry:{}
+					exit:{}
+				}
+				state paStop1{
+					entry:{}
+					exit:{}
+				}
+				state paStop2{
+					entry:{}
+					exit:{}
+				}
+				transition pat30{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.ccpa.ParkAssist.paEnabled.paEngaged.paStop1;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				transition pat27{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
+				}
+				transition pat23{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paStop1;
+					destination: sc.ccpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					trigger: Next;
+					guard:(Speed=0);
+					action:{PA_HVI:=4;set_Throttle:=20;}
+				}
+				transition pat19{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.ccpa.ParkAssist.paEnabled.paEngaged.paStop2;
+					trigger: Next;
+					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				
+			}
+			state paAbort{
+					entry:{}
+					exit:{}
+			}
+			transition pat21{
+					source: sc.ccpa.ParkAssist.paEnabled.paIdle;
+					destination: sc.ccpa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
+					action:{PA_HVI:=2;}
+				}
+			transition pat22{
+					source: sc.ccpa.ParkAssist.paEnabled.paSearching;
+					destination: sc.ccpa.ParkAssist.paEnabled.paIdle;
+					trigger: e;
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
+					action:{PA_HVI:=1;}
+				}
+			transition pat24{
+					source: sc.ccpa.ParkAssist.paEnabled.paSearching;
+					destination: sc.ccpa.ParkAssist.paEnabled.paPrompting;
+					trigger: e;
+					guard:(SpaceFound=BoolTRUE);
+					action:{PA_HVI:=3;}
+				}
+			transition pat25{
+					source: sc.ccpa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.ccpa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
+					action:{PA_HVI:=2;}
+				}
+			transition pat26{
+					source: sc.ccpa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: e;
+					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
+				}
+			/*transition pat39{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					destination: sc.ccpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat38{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.ccpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=3);
+					action:{PA_HVI:=6;}
+				}
+			transition pat37{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.ccpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat30{
+					source: sc.ccpa.ParkAssist.paEnabled.paEngaged;
+					destination: sc.ccpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+			transition pat36{
+					source: sc.ccpa.ParkAssist.paEnabled.paOverride;
+					destination: sc.ccpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}*/
+	}
+	
+	transition pat29{
+		source: sc.ccpa.ParkAssist.paDisabled;
+		destination: sc.ccpa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition pat20{
+		source: sc.ccpa.ParkAssist.paDisabled;
+		destination: sc.ccpa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition pat33{
+		source: sc.ccpa.ParkAssist.paDisabled;
+		destination: sc.ccpa.ParkAssist.paEnabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition pat35{
+		source: sc.ccpa.ParkAssist.paEnabled.paEngaged.paStop2;
+		destination: sc.ccpa.ParkAssist.paDisabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+
+    }
+
+  }
+}

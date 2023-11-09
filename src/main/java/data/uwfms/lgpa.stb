@@ -1,0 +1,543 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+    PRNDL_In:int:local;
+  CC_Enabled : boolean : local;
+	CC_Engaged : boolean : local;
+  Warning :int: local;
+  AccelPedal :int: local;
+    BrakePedal:int:local;
+LG_Enabled : boolean : local;
+  LG_Warning : boolean :local;
+  minusten:int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  PA_Enabled : boolean : local;
+  PA_HVI : int : local;
+  Speed: int: local;
+  set_Brake:int:local;
+ // PRNDL_In:int:local;
+		//Speed: int: local;
+		SteerIn:int:local;
+	//	BrakePedal:int:local;
+		TurnSignal:boolean:local;
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		set_Throttle:int:local;
+		//set_SteerOut:int:local;
+		//SteerIn:int:local;
+		//AccelPedal:int:local;
+		LaneDrift:int:local;
+			TargetSpeed : int : local;
+  	  FollowDist : int : local;
+set_SteerOut:int:local;
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        CC_Enabled:=true;
+        PA_Enabled:=true;
+		LG_Enabled:=true;
+	minusone:=0-1;
+	minusten:=0-10;
+	SteerIn:=0;
+	TurnSignal:=false;
+	LaneDrift:=0;
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+  shell lgpa{
+  
+    entry:{}
+    exit:{}
+    state LaneGuide{
+    /*	state Fail{
+		entry:{}
+		exit:{}
+	}*/
+	state Disabled{
+		entry:{}
+		exit:{}
+	}
+	state Enabled{
+		
+		
+		entry:{}
+		exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				LGMode:int:local;
+				//set_SteerOut:int:local;
+				
+				
+				entry:{
+					LGMode:=1;	
+				}
+				exit:{}
+				state WarnLeft{
+					entry:{}
+					exit:{}
+				}
+				state Idle{
+					entry:{}
+					exit:{}
+				}
+				state AssistLeft{
+					entry:{}
+					exit:{}
+				}
+				state WarnRight{
+					entry:{}
+					exit:{}
+				}
+				state AssistRight{
+					entry:{}
+					exit:{}
+				}
+				transition lgt16{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=0); //LaneDrift<-10
+					action:{LG_Warning:=BoolTRUE;}
+				}	
+				transition lgt17{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt20{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
+				}
+				transition lgt19{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;} 
+				}
+				transition lgt21{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt22{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=1); //LaneDrift<-10
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} //set_SteerOut:=-1
+				}
+				transition lgt23{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;}
+				}
+				transition lgt24{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.WarnRight;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt25{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.WarnRight;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=BoolTRUE;set_SteerOut:=1;}
+				}
+				transition lgt26{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.AssistRight;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;}
+				}
+				transition lgt27{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.AssistRight;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt28{
+					source: sc.lgpa.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgpa.LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=1); 
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=1;}
+				}
+				
+			}
+			transition lgt35{
+				source: sc.lgpa.LaneGuide.Enabled.Disengaged;
+				destination: sc.lgpa.LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed<40)||(PRNDL_In!=3);
+				action:{LG_Warning:=BoolFALSE;}
+			}
+			transition lgt34{
+				source: sc.lgpa.LaneGuide.Enabled.Disengaged;
+				destination: sc.lgpa.LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{}
+			}
+			transition lgt29{
+				source: sc.lgpa.LaneGuide.Enabled.Override;
+				destination: sc.lgpa.LaneGuide.Enabled.Disengaged;
+				trigger: e;
+				guard:(SteerIn=0)&&(TurnSignal=BoolFALSE)&&(BrakePedal=0);
+				action:{}
+			}
+			transition lgt30{
+				source: sc.lgpa.LaneGuide.Enabled.Engaged;
+				destination: sc.lgpa.LaneGuide.Enabled.Override;
+				trigger: e;
+				guard:(SteerIn>10)||(SteerIn<minusten)||(TurnSignal=BoolTRUE)||(BrakePedal>0); // SteerIn<-10
+				action:{LG_Warning:=BoolFALSE;}
+			}
+			
+			
+	}
+	transition lgt14{
+		source: sc.lgpa.LaneGuide.Disabled;
+		destination: sc.lgpa.LaneGuide.Enabled;
+		trigger: e;
+		guard:(LG_Enabled=BoolTRUE);
+		action:{}
+	}
+	transition lgt15{
+		source: sc.lgpa.LaneGuide.Enabled;
+		destination: sc.lgpa.LaneGuide.Disabled;
+		trigger: e;
+		guard:(LG_Enabled=BoolFALSE);
+		action:{LG_Warning:=BoolFALSE;}
+	}
+	/*transition lgt31{
+		source: sc.lgpa.LaneGuide.Fail;
+		destination: sc.lgpa.LaneGuide.Enabled;
+		trigger: Error;
+		guard:(true);
+		action:{LG_Warning:=BoolFALSE;}
+	}*/
+    }
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.lgpa.SpeedSetting.DecSpeed;
+				destination: sc.lgpa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.lgpa.SpeedSetting.IncSpeed;
+				destination: sc.lgpa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.lgpa.SpeedSetting.HoldSpeed;
+				destination: sc.lgpa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.lgpa.SpeedSetting.IncSpeed;
+				destination: sc.lgpa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.lgpa.SpeedSetting.DecSpeed;
+				destination: sc.lgpa.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.lgpa.SpeedSetting.HoldSpeed;
+				destination: sc.lgpa.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+    state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+                
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+	
+    state ParkAssist{
+        entry:{}
+        exit:{}
+    /*    	state paFail{
+		entry:{}
+		exit:{}
+	}*/
+	state paDisabled{
+		entry:{}
+		exit:{}
+	}
+	state paEnabled{
+		//PRNDL_In:int:local;
+
+		
+		entry:{}
+		exit:{}
+			state paIdle{
+				entry:{}
+				exit:{}
+			}
+			state paSearching{
+				entry:{}
+				exit:{}
+			}
+			state paPrompting{
+				entry:{}
+				exit:{}
+			}
+			state paOverride{
+				entry:{}
+				exit:{}
+			}
+			state paEngaged{
+				//set_Brake:int:local;
+	
+				entry:{}
+				exit:{}
+				state paSwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state paSwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state paCenter{
+					entry:{}
+					exit:{}
+				}
+				state paStop1{
+					entry:{}
+					exit:{}
+				}
+				state paStop2{
+					entry:{}
+					exit:{}
+				}
+				transition pat30{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.lgpa.ParkAssist.paEnabled.paEngaged.paStop1;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				transition pat27{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
+				}
+				transition pat23{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paStop1;
+					destination: sc.lgpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					trigger: Next;
+					guard:(Speed=0);
+					action:{PA_HVI:=4;set_Throttle:=20;}
+				}
+				transition pat19{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.lgpa.ParkAssist.paEnabled.paEngaged.paStop2;
+					trigger: Next;
+					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				
+			}
+			state paAbort{
+					entry:{}
+					exit:{}
+			}
+			transition pat21{
+					source: sc.lgpa.ParkAssist.paEnabled.paIdle;
+					destination: sc.lgpa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
+					action:{PA_HVI:=2;}
+				}
+			transition pat22{
+					source: sc.lgpa.ParkAssist.paEnabled.paSearching;
+					destination: sc.lgpa.ParkAssist.paEnabled.paIdle;
+					trigger: e;
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
+					action:{PA_HVI:=1;}
+				}
+			transition pat24{
+					source: sc.lgpa.ParkAssist.paEnabled.paSearching;
+					destination: sc.lgpa.ParkAssist.paEnabled.paPrompting;
+					trigger: e;
+					guard:(SpaceFound=BoolTRUE);
+					action:{PA_HVI:=3;}
+				}
+			transition pat25{
+					source: sc.lgpa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.lgpa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
+					action:{PA_HVI:=2;}
+				}
+			transition pat26{
+					source: sc.lgpa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: e;
+					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
+				}
+			/*transition pat39{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					destination: sc.lgpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat38{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.lgpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=3);
+					action:{PA_HVI:=6;}
+				}
+			transition pat37{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.lgpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat30{
+					source: sc.lgpa.ParkAssist.paEnabled.paEngaged;
+					destination: sc.lgpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+			transition pat36{
+					source: sc.lgpa.ParkAssist.paEnabled.paOverride;
+					destination: sc.lgpa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}*/
+	}
+	
+	transition pat29{
+		source: sc.lgpa.ParkAssist.paDisabled;
+		destination: sc.lgpa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition pat20{
+		source: sc.lgpa.ParkAssist.paDisabled;
+		destination: sc.lgpa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition pat33{
+		source: sc.lgpa.ParkAssist.paDisabled;
+		destination: sc.lgpa.ParkAssist.paEnabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition pat35{
+		source: sc.lgpa.ParkAssist.paEnabled.paEngaged.paStop2;
+		destination: sc.lgpa.ParkAssist.paDisabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+
+    }
+
+  }
+}

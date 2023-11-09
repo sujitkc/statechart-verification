@@ -1,0 +1,1135 @@
+startchart EmergencyVehicleAvoidance {
+types {
+basic type 'int'
+basic type 'boolean'
+basic type 'string'
+}
+events {
+	e;
+	Error;
+}
+EmergencyVehicleAvoidance_Enabled_Engaged_DontStop : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_WayClear : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_EVA_HVI : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Siren : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_minusone : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Speed : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_BrakePedal : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_AccelPedal : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_PRNDL_In : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_EVA_Enabled : int : basic type 'int'
+;
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+functions {
+input() : int;
+}
+
+state EmergencyVehicleAvoidance_Disabled{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Fail{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Override{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Enabled_Engaged_Slow{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Enabled_Engaged_Coast{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Enabled_Disengaged{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state EmergencyVehicleAvoidance_Enabled_Engaged_PullOver{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+transition t14_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Disabled{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t23_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 60;
+
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut := EmergencyVehicleAvoidance_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t17_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Override{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t22_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Enabled_Engaged_Slow{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t20_EmergencyVehicleAvoidance_Enabled_Disengaged_EmergencyVehicleAvoidance_Enabled_Engaged_Slow{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed > 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In = 3)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Enabled_Disengaged{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t28_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Fail{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_EmergencyVehicleAvoidance_Enabled_Disengaged_EmergencyVehicleAvoidance_Disabled{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Disabled{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Enabled_Disengaged{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t28_EmergencyVehicleAvoidance_Enabled_Disengaged_EmergencyVehicleAvoidance_Fail{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t17_EmergencyVehicleAvoidance_Enabled_Disengaged_EmergencyVehicleAvoidance_Override{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t26_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 60;
+
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut := EmergencyVehicleAvoidance_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t25_EmergencyVehicleAvoidance_Enabled_Engaged_Coast_EmergencyVehicleAvoidance_Enabled_Engaged_Slow{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t17_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Override{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t29_EmergencyVehicleAvoidance_Override_EmergencyVehicleAvoidance_Fail{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t24_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Enabled_Engaged_Coast{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+guard : BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle := 35;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t28_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Fail{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_EmergencyVehicleAvoidance_Override_EmergencyVehicleAvoidance_Enabled_Disengaged{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal = 0) && BinaryExpr(EmergencyVehicleAvoidance_AccelPedal < 30))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+EmergencyVehicleAvoidance_Enabled_PRNDL_In := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Speed := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_BrakePedal := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Siren := input() : basic type 'int'
+;
+
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Disabled{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t16_EmergencyVehicleAvoidance_Override_EmergencyVehicleAvoidance_Disabled{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t28_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Fail{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Enabled_Disengaged{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t17_EmergencyVehicleAvoidance_Enabled_Engaged_Slow_EmergencyVehicleAvoidance_Override{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Slow
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Override
+guard : BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t27_EmergencyVehicleAvoidance_Enabled_Engaged_PullOver_EmergencyVehicleAvoidance_Enabled_Engaged_Coast{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_PullOver
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Engaged_Coast
+guard : BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle := 35;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t13_EmergencyVehicleAvoidance_Disabled_EmergencyVehicleAvoidance_Enabled_Disengaged{
+source : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Disabled
+destination : EmergencyVehicleAvoidance.EmergencyVehicleAvoidance_Enabled_Disengaged
+guard : BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+EmergencyVehicleAvoidance_Enabled_PRNDL_In := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Speed := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_BrakePedal := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Siren := input() : basic type 'int'
+;
+
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+}

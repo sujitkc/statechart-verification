@@ -1,0 +1,1129 @@
+Program {
+
+ParkAssist_minusone : int : basic type 'int'
+;
+ParkAssist_Speed : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_set_Brake : int : basic type 'int'
+;
+ParkAssist_Enabled_set_Throttle : int : basic type 'int'
+;
+ParkAssist_Enabled_SteerIn : int : basic type 'int'
+;
+ParkAssist_PA_Enabled : int : basic type 'int'
+;
+ParkAssist_Enabled_set_SteerOut : int : basic type 'int'
+;
+ParkAssist_PA_HVI : int : basic type 'int'
+;
+ParkAssist_Enabled_SpaceFound : int : basic type 'int'
+;
+ParkAssist_Enabled_AccelPedal : int : basic type 'int'
+;
+ParkAssist_Enabled_Accepted : int : basic type 'int'
+;
+ParkAssist_Enabled_PRNDL_In : int : basic type 'int'
+;
+state : int : basic type 'int'
+;
+event # : int : basic type 'int'
+;
+e : int : basic type 'int'
+;
+Next : int : basic type 'int'
+;
+No_event : int : basic type 'int'
+;
+Error : int : basic type 'int'
+;
+ParkAssist_Fail : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_Stop2 : int : basic type 'int'
+;
+ParkAssist_Enabled_Searching : int : basic type 'int'
+;
+ParkAssist_Enabled_Idle : int : basic type 'int'
+;
+ParkAssist_Disabled : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_Stop1 : int : basic type 'int'
+;
+ParkAssist_Enabled_Override : int : basic type 'int'
+;
+ParkAssist_Enabled_Abort : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_SwivelIn : int : basic type 'int'
+;
+ParkAssist_Enabled_Prompting : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_SwivelOut : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_Center : int : basic type 'int'
+;
+null
+{
+e := 0;
+
+Next := 1;
+
+No_event := 2;
+
+Error := 3;
+
+ParkAssist_Fail := 0;
+
+
+{
+}
+
+ParkAssist_Enabled_Engaged_Stop2 := 1;
+
+
+{
+}
+
+ParkAssist_Enabled_Searching := 2;
+
+
+{
+}
+
+ParkAssist_Enabled_Idle := 3;
+
+
+{
+}
+
+ParkAssist_Disabled := 4;
+
+
+{
+}
+
+ParkAssist_Enabled_Engaged_Stop1 := 5;
+
+
+{
+}
+
+ParkAssist_Enabled_Override := 6;
+
+
+{
+}
+
+ParkAssist_Enabled_Abort := 7;
+
+
+{
+}
+
+ParkAssist_Enabled_Engaged_SwivelIn := 8;
+
+
+{
+}
+
+ParkAssist_Enabled_Prompting := 9;
+
+
+{
+}
+
+ParkAssist_Enabled_Engaged_SwivelOut := 10;
+
+
+{
+}
+
+ParkAssist_Enabled_Engaged_Center := 11;
+
+
+{
+}
+
+state := ParkAssist_Fail;
+
+
+while(true)
+{
+event := input() : null;
+
+event := input() : null;
+
+
+if(BinaryExpr(state = ParkAssist_Enabled_Engaged_Center))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) + BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = Next) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))))
+{
+state := ParkAssist_Enabled_Engaged_Stop2;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Engaged_SwivelOut))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) + BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Prompting))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1))))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0))) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1)))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0))))
+{
+state := ParkAssist_Enabled_Searching;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1)))))
+{
+state := ParkAssist_Enabled_Engaged_SwivelOut;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Engaged_SwivelIn))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) + BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = Next) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))))
+{
+state := ParkAssist_Enabled_Engaged_SwivelOut;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := ParkAssist_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = Next) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))))
+{
+state := ParkAssist_Enabled_Engaged_Stop1;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Abort))
+{
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Override))
+{
+stuck_spec(NOT[BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))], ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Engaged_Stop1))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(ParkAssist_Speed = 0)) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ParkAssist_Speed = 0)) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = Next) && BinaryExpr(ParkAssist_Speed = 0)))
+{
+state := ParkAssist_Enabled_Engaged_Center;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Disabled))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ParkAssist_PA_Enabled = 1)) || BinaryExpr(ParkAssist_PA_Enabled = 0)) || true)], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ParkAssist_PA_Enabled = 1)) + BinaryExpr(ParkAssist_PA_Enabled = 0)) + true) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_PA_Enabled = 1)))
+{
+state := ParkAssist_Enabled_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_PA_Enabled = 0)))
+{
+state := ParkAssist_Enabled_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = Error) && true))
+{
+state := ParkAssist_Enabled_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 8;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Idle))
+{
+stuck_spec(NOT[BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(BinaryExpr(ParkAssist_Speed <= 10) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3))))], ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(BinaryExpr(ParkAssist_Speed <= 10) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3)))))
+{
+state := ParkAssist_Enabled_Searching;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Searching))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)))) || BinaryExpr(ParkAssist_Enabled_SpaceFound = 1))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)))) + BinaryExpr(ParkAssist_Enabled_SpaceFound = 1)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)))))
+{
+state := ParkAssist_Enabled_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_Enabled_SpaceFound = 1)))
+{
+state := ParkAssist_Enabled_Prompting;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Enabled_Engaged_Stop2))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(ParkAssist_Speed = 0)) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ParkAssist_Speed = 0)) + BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ParkAssist_Speed = 0)))
+{
+state := ParkAssist_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 5;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))))
+{
+state := ParkAssist_Enabled_Abort;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = ParkAssist_Fail))
+{
+}
+
+else
+skip;
+
+}
+
+}
+}

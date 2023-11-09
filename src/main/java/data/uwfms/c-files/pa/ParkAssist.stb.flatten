@@ -1,0 +1,1002 @@
+startchart ParkAssist {
+types {
+basic type 'int'
+basic type 'boolean'
+basic type 'string'
+}
+events {
+	e;
+	Next;
+	No_event;
+	Error;
+}
+ParkAssist_minusone : int : basic type 'int'
+;
+ParkAssist_Speed : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_set_Brake : int : basic type 'int'
+;
+ParkAssist_Enabled_set_Throttle : int : basic type 'int'
+;
+ParkAssist_Enabled_SteerIn : int : basic type 'int'
+;
+ParkAssist_PA_Enabled : int : basic type 'int'
+;
+ParkAssist_Enabled_set_SteerOut : int : basic type 'int'
+;
+ParkAssist_PA_HVI : int : basic type 'int'
+;
+ParkAssist_Enabled_SpaceFound : int : basic type 'int'
+;
+ParkAssist_Enabled_AccelPedal : int : basic type 'int'
+;
+ParkAssist_Enabled_Accepted : int : basic type 'int'
+;
+ParkAssist_Enabled_PRNDL_In : int : basic type 'int'
+;
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+functions {
+input() : int;
+}
+
+state ParkAssist_Fail{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Engaged_Stop2{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Searching{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Idle{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Disabled{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Engaged_Stop1{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Override{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Abort{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Engaged_SwivelIn{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Prompting{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Engaged_SwivelOut{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ParkAssist_Enabled_Engaged_Center{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+transition t21_ParkAssist_Enabled_Idle_ParkAssist_Enabled_Searching{
+source : ParkAssist.ParkAssist_Enabled_Idle
+destination : ParkAssist.ParkAssist_Enabled_Searching
+guard : BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(BinaryExpr(ParkAssist_Speed <= 10) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t36_ParkAssist_Enabled_Override_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Override
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t27_ParkAssist_Enabled_Engaged_SwivelIn_ParkAssist_Enabled_Engaged_SwivelOut{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelIn
+destination : ParkAssist.ParkAssist_Enabled_Engaged_SwivelOut
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := ParkAssist_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t35_ParkAssist_Enabled_Engaged_Stop2_ParkAssist_Disabled{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Stop2
+destination : ParkAssist.ParkAssist_Disabled
+guard : BinaryExpr(ParkAssist_Speed = 0)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 5;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_SwivelIn_ParkAssist_Enabled_Engaged_Stop1{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelIn
+destination : ParkAssist.ParkAssist_Enabled_Engaged_Stop1
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t22_ParkAssist_Enabled_Searching_ParkAssist_Enabled_Idle{
+source : ParkAssist.ParkAssist_Enabled_Searching
+destination : ParkAssist.ParkAssist_Enabled_Idle
+guard : BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t25_ParkAssist_Enabled_Prompting_ParkAssist_Enabled_Searching{
+source : ParkAssist.ParkAssist_Enabled_Prompting
+destination : ParkAssist.ParkAssist_Enabled_Searching
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_Stop2_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Stop2
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t23_ParkAssist_Enabled_Engaged_Stop1_ParkAssist_Enabled_Engaged_Center{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Stop1
+destination : ParkAssist.ParkAssist_Enabled_Engaged_Center
+guard : BinaryExpr(ParkAssist_Speed = 0)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_SwivelOut_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelOut
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_SwivelIn_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelIn
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t37_ParkAssist_Enabled_Engaged_SwivelIn_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelIn
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t24_ParkAssist_Enabled_Searching_ParkAssist_Enabled_Prompting{
+source : ParkAssist.ParkAssist_Enabled_Searching
+destination : ParkAssist.ParkAssist_Enabled_Prompting
+guard : BinaryExpr(ParkAssist_Enabled_SpaceFound = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t39_ParkAssist_Enabled_Engaged_SwivelOut_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_SwivelOut
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t29_ParkAssist_Disabled_ParkAssist_Enabled_Idle{
+source : ParkAssist.ParkAssist_Disabled
+destination : ParkAssist.ParkAssist_Enabled_Idle
+guard : BinaryExpr(ParkAssist_PA_Enabled = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t20_ParkAssist_Disabled_ParkAssist_Enabled_Idle{
+source : ParkAssist.ParkAssist_Disabled
+destination : ParkAssist.ParkAssist_Enabled_Idle
+guard : BinaryExpr(ParkAssist_PA_Enabled = 0)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t26_ParkAssist_Enabled_Prompting_ParkAssist_Enabled_Engaged_SwivelOut{
+source : ParkAssist.ParkAssist_Enabled_Prompting
+destination : ParkAssist.ParkAssist_Enabled_Engaged_SwivelOut
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_Center_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Center
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ParkAssist_Enabled_Engaged_Stop1_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Stop1
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t33_ParkAssist_Disabled_ParkAssist_Enabled_Idle{
+source : ParkAssist.ParkAssist_Disabled
+destination : ParkAssist.ParkAssist_Enabled_Idle
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 8;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t38_ParkAssist_Enabled_Engaged_Center_ParkAssist_Enabled_Abort{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Center
+destination : ParkAssist.ParkAssist_Enabled_Abort
+guard : BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_ParkAssist_Enabled_Engaged_Center_ParkAssist_Enabled_Engaged_Stop2{
+source : ParkAssist.ParkAssist_Enabled_Engaged_Center
+destination : ParkAssist.ParkAssist_Enabled_Engaged_Stop2
+guard : BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+}

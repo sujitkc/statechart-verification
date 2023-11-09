@@ -1,0 +1,221 @@
+
+//A.3 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  ParkAssist{
+  
+  events {
+	e;
+	Next;
+	No_event;
+	Error;
+  }
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  PA_Enabled : boolean : local;
+  PA_HVI : int : local;
+  Speed: int: local;
+  entry : {
+	BoolTRUE:=true;
+	BoolFALSE:=false;
+	minusone:=0-1;
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state Fail{
+		entry:{}
+		exit:{}
+	}
+	state Disabled{
+		entry:{}
+		exit:{}
+	}
+	state Enabled{
+		PRNDL_In:int:local;
+
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+		AccelPedal:int:local;
+		entry:{}
+		exit:{}
+			state Idle{
+				entry:{}
+				exit:{}
+			}
+			state Searching{
+				entry:{}
+				exit:{}
+			}
+			state Prompting{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				set_Brake:int:local;
+	
+				entry:{}
+				exit:{}
+				state SwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state SwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state Center{
+					entry:{}
+					exit:{}
+				}
+				state Stop1{
+					entry:{}
+					exit:{}
+				}
+				state Stop2{
+					entry:{}
+					exit:{}
+				}
+				transition t30{
+					source: ParkAssist.Enabled.Engaged.SwivelIn;
+					destination: ParkAssist.Enabled.Engaged.Stop1;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				transition t27{
+					source: ParkAssist.Enabled.Engaged.SwivelIn;
+					destination: ParkAssist.Enabled.Engaged.SwivelOut;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
+				}
+				transition t23{
+					source: ParkAssist.Enabled.Engaged.Stop1;
+					destination: ParkAssist.Enabled.Engaged.Center;
+					trigger: Next;
+					guard:(Speed=0);
+					action:{PA_HVI:=4;set_Throttle:=20;}
+				}
+				transition t19{
+					source: ParkAssist.Enabled.Engaged.Center;
+					destination: ParkAssist.Enabled.Engaged.Stop2;
+					trigger: Next;
+					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Brake:=30;}
+				}
+				
+			}
+			state Abort{
+					entry:{}
+					exit:{}
+			}
+			transition t21{
+					source: ParkAssist.Enabled.Idle;
+					destination: ParkAssist.Enabled.Searching;
+					trigger: e;
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
+					action:{PA_HVI:=2;}
+				}
+			transition t22{
+					source: ParkAssist.Enabled.Searching;
+					destination: ParkAssist.Enabled.Idle;
+					trigger: e;
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
+					action:{PA_HVI:=1;}
+				}
+			transition t24{
+					source: ParkAssist.Enabled.Searching;
+					destination: ParkAssist.Enabled.Prompting;
+					trigger: e;
+					guard:(SpaceFound=BoolTRUE);
+					action:{PA_HVI:=3;}
+				}
+			transition t25{
+					source: ParkAssist.Enabled.Prompting;
+					destination: ParkAssist.Enabled.Searching;
+					trigger: e;
+					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
+					action:{PA_HVI:=2;}
+				}
+			transition t26{
+					source: ParkAssist.Enabled.Prompting;
+					destination: ParkAssist.Enabled.Engaged.SwivelOut;
+					trigger: e;
+					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
+				}
+			transition t39{
+					source: ParkAssist.Enabled.Engaged.SwivelOut;
+					destination: ParkAssist.Enabled.Abort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition t38{
+					source: ParkAssist.Enabled.Engaged.Center;
+					destination: ParkAssist.Enabled.Abort;
+					trigger: e;
+					guard:(PRNDL_In!=3);
+					action:{PA_HVI:=6;}
+				}
+			transition t37{
+					source: ParkAssist.Enabled.Engaged.SwivelIn;
+					destination: ParkAssist.Enabled.Abort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition t30{
+					source: ParkAssist.Enabled.Engaged;
+					destination: ParkAssist.Enabled.Abort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+			transition t36{
+					source: ParkAssist.Enabled.Override;
+					destination: ParkAssist.Enabled.Abort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+	}
+	
+	transition t29{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition t20{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition t33{
+		source: ParkAssist.Disabled;
+		destination: ParkAssist.Enabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition t35{
+		source: ParkAssist.Enabled.Engaged.Stop2;
+		destination: ParkAssist.Disabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+}

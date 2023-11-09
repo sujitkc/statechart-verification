@@ -1,0 +1,1347 @@
+Program {
+
+LaneGuide_LG_Enabled : int : basic type 'int'
+;
+LaneGuide_minusone : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_LaneDrift : int : basic type 'int'
+;
+LaneGuide_Enabled_BrakePedal : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_LGMode : int : basic type 'int'
+;
+LaneGuide_LG_Warning : int : basic type 'int'
+;
+LaneGuide_Enabled_TurnSignal : int : basic type 'int'
+;
+LaneGuide_minusten : int : basic type 'int'
+;
+LaneGuide_Enabled_SteerIn : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_set_SteerOut : int : basic type 'int'
+;
+LaneGuide_Enabled_Speed : int : basic type 'int'
+;
+LaneGuide_Enabled_PRNDL_In : int : basic type 'int'
+;
+state : int : basic type 'int'
+;
+event # : int : basic type 'int'
+;
+e : int : basic type 'int'
+;
+No_event : int : basic type 'int'
+;
+Error : int : basic type 'int'
+;
+LaneGuide_Fail : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_WarnLeft : int : basic type 'int'
+;
+LaneGuide_Enabled_Override : int : basic type 'int'
+;
+LaneGuide_Enabled_Disengaged : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_AssistLeft : int : basic type 'int'
+;
+LaneGuide_Disabled : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_WarnRight : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_Idle : int : basic type 'int'
+;
+LaneGuide_Enabled_Engaged_AssistRight : int : basic type 'int'
+;
+null
+{
+e := 0;
+
+No_event := 1;
+
+Error := 2;
+
+LaneGuide_Fail := 0;
+
+
+{
+}
+
+LaneGuide_Enabled_Engaged_WarnLeft := 1;
+
+
+{
+}
+
+LaneGuide_Enabled_Override := 2;
+
+
+{
+}
+
+LaneGuide_Enabled_Disengaged := 3;
+
+
+{
+}
+
+LaneGuide_Enabled_Engaged_AssistLeft := 4;
+
+
+{
+}
+
+LaneGuide_Disabled := 5;
+
+
+{
+}
+
+LaneGuide_Enabled_Engaged_WarnRight := 6;
+
+
+{
+}
+
+LaneGuide_Enabled_Engaged_Idle := 7;
+
+
+{
+}
+
+LaneGuide_Enabled_Engaged_AssistRight := 8;
+
+
+{
+}
+
+state := LaneGuide_Fail;
+
+
+while(true)
+{
+event := input() : null;
+
+event := input() : null;
+
+
+if(BinaryExpr(state = LaneGuide_Enabled_Engaged_AssistRight))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)) || BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0)) || BinaryExpr(LaneGuide_LG_Enabled = 0)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0)))))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)) + BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0)) + BinaryExpr(LaneGuide_LG_Enabled = 0)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)))
+{
+state := LaneGuide_Enabled_Engaged_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0)))
+{
+state := LaneGuide_Enabled_Engaged_WarnRight;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))))
+{
+state := LaneGuide_Enabled_Override;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Engaged_Idle))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))) || BinaryExpr(LaneGuide_LG_Enabled = 0)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0)))))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))) + BinaryExpr(LaneGuide_LG_Enabled = 0)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))))
+{
+state := LaneGuide_Enabled_Engaged_WarnLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))))
+{
+state := LaneGuide_Enabled_Engaged_AssistRight;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+LaneGuide_Enabled_Engaged_set_SteerOut := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > 10) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))))
+{
+state := LaneGuide_Enabled_Engaged_WarnRight;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < LaneGuide_minusten) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))))
+{
+state := LaneGuide_Enabled_Engaged_AssistLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+LaneGuide_Enabled_Engaged_set_SteerOut := LaneGuide_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))))
+{
+state := LaneGuide_Enabled_Override;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Engaged_WarnRight))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(LaneGuide_LG_Enabled = 0)) || BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) || BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(LaneGuide_LG_Enabled = 0)) + BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) + BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift < 10)))
+{
+state := LaneGuide_Enabled_Engaged_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))))
+{
+state := LaneGuide_Enabled_Override;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1)))
+{
+state := LaneGuide_Enabled_Engaged_AssistRight;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 1;
+
+LaneGuide_Enabled_Engaged_set_SteerOut := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Disabled))
+{
+stuck_spec(NOT[BinaryExpr(false || BinaryExpr(LaneGuide_LG_Enabled = 1))], ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 1)))
+{
+state := LaneGuide_Enabled_Disengaged;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Engaged_AssistLeft))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)) || BinaryExpr(LaneGuide_LG_Enabled = 0)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) || BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)) + BinaryExpr(LaneGuide_LG_Enabled = 0)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) + BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)))
+{
+state := LaneGuide_Enabled_Engaged_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))))
+{
+state := LaneGuide_Enabled_Override;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 0)))
+{
+state := LaneGuide_Enabled_Engaged_WarnLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Disengaged))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed < 40) || BinaryExpr(LaneGuide_Enabled_PRNDL_In != 3))) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed >= 40) && BinaryExpr(LaneGuide_Enabled_PRNDL_In = 3))) || BinaryExpr(LaneGuide_LG_Enabled = 0))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed < 40) || BinaryExpr(LaneGuide_Enabled_PRNDL_In != 3))) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed >= 40) && BinaryExpr(LaneGuide_Enabled_PRNDL_In = 3))) + BinaryExpr(LaneGuide_LG_Enabled = 0)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed < 40) || BinaryExpr(LaneGuide_Enabled_PRNDL_In != 3))))
+{
+state := LaneGuide_Enabled_Engaged_WarnLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_Speed >= 40) && BinaryExpr(LaneGuide_Enabled_PRNDL_In = 3))))
+{
+state := LaneGuide_Enabled_Engaged_WarnLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Override))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(false || BinaryExpr(LaneGuide_LG_Enabled = 0)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn = 0) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 0) && BinaryExpr(LaneGuide_Enabled_BrakePedal = 0))))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(LaneGuide_LG_Enabled = 0)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn = 0) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 0) && BinaryExpr(LaneGuide_Enabled_BrakePedal = 0)))) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn = 0) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 0) && BinaryExpr(LaneGuide_Enabled_BrakePedal = 0)))))
+{
+state := LaneGuide_Enabled_Disengaged;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Enabled_Engaged_WarnLeft))
+{
+stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1)) || BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) || BinaryExpr(LaneGuide_LG_Enabled = 0))], ) : null;
+
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1)) + BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)) + BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))) + BinaryExpr(LaneGuide_LG_Enabled = 0)) > 1), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LGMode = 1)))
+{
+state := LaneGuide_Enabled_Engaged_AssistLeft;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+LaneGuide_Enabled_Engaged_set_SteerOut := LaneGuide_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_Enabled_Engaged_LaneDrift > LaneGuide_minusten)))
+{
+state := LaneGuide_Enabled_Engaged_Idle;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn > 10) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_SteerIn < LaneGuide_minusten) || BinaryExpr(BinaryExpr(LaneGuide_Enabled_TurnSignal = 1) || BinaryExpr(LaneGuide_Enabled_BrakePedal > 0))))))
+{
+state := LaneGuide_Enabled_Override;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+
+if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(LaneGuide_LG_Enabled = 0)))
+{
+state := LaneGuide_Disabled;
+
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LaneGuide_Fail))
+{
+stuck_spec(NOT[BinaryExpr(false || true)], ) : null;
+
+
+if(BinaryExpr(BinaryExpr(event = Error) && true))
+{
+state := LaneGuide_Enabled_Disengaged;
+
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+LaneGuide_LG_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+}
+}

@@ -1,0 +1,218 @@
+// Evaluates the behavior for when History is maintained
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+
+statechart  LaneGuide{
+  
+  events {
+	e;
+	No_event;
+	Error;
+  }
+
+  LG_Enabled : int ;
+  LG_Warning : int;
+  minusten:int;
+  minusone:int;
+  entry : {
+	
+	minusten:=0-10;
+	minusone:=0-1;
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+	state Fail{
+		entry:{}
+		exit:{}
+	}
+	state Disabled{
+		entry:{}
+		exit:{}
+	}
+	state Enabled{
+		PRNDL_In:int;
+		Speed: int;
+		SteerIn:int;
+		BrakePedal:int;
+		TurnSignal:int;
+		
+		entry:{}
+		exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				LGMode:int;
+				set_SteerOut:int;
+				LaneDrift:int;
+				
+				entry:{
+					
+				}
+				exit:{}
+				state WarnLeft{
+					entry:{}
+					exit:{}
+				}
+				state Idle{
+					entry:{}
+					exit:{}
+				}
+				state AssistLeft{
+					entry:{}
+					exit:{}
+				}
+				state WarnRight{
+					entry:{}
+					exit:{}
+				}
+				state AssistRight{
+					entry:{}
+					exit:{}
+				}
+				transition t16{
+					source: LaneGuide.Enabled.Engaged.Idle;
+					destination: LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=0); //LaneDrift<-10
+					action:{LG_Warning:=1;}
+				}	
+				transition t17{
+					source: LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=0;}
+				}
+				transition t20{
+					source: LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=0;set_SteerOut:=minusone;} //set_SteerOut:=-1
+				}
+				transition t19{
+					source: LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=1;} 
+				}
+				transition t21{
+					source: LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=0;}
+				}
+				transition t22{
+					source: LaneGuide.Enabled.Engaged.Idle;
+					destination: LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=1); //LaneDrift<-10
+					action:{LG_Warning:=0;set_SteerOut:=minusone;} //set_SteerOut:=-1
+				}
+				transition t23{
+					source: LaneGuide.Enabled.Engaged.Idle;
+					destination: LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=0); 
+					action:{LG_Warning:=1;}
+				}
+				transition t24{
+					source: LaneGuide.Enabled.Engaged.WarnRight;
+					destination: LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=0;}
+				}
+				transition t25{
+					source: LaneGuide.Enabled.Engaged.WarnRight;
+					destination: LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=1;set_SteerOut:=1;}
+				}
+				transition t26{
+					source: LaneGuide.Enabled.Engaged.AssistRight;
+					destination: LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=1;}
+				}
+				transition t27{
+					source: LaneGuide.Enabled.Engaged.AssistRight;
+					destination: LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=0;}
+				}
+				transition t28{
+					source: LaneGuide.Enabled.Engaged.Idle;
+					destination: LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=1); 
+					action:{LG_Warning:=0;set_SteerOut:=1;}
+				}
+				
+			}
+			transition t35{
+				source: LaneGuide.Enabled.Disengaged;
+				destination: LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed<40)||(PRNDL_In!=3);
+				action:{LG_Warning:=0;}
+			}
+			transition t34{
+				source: LaneGuide.Enabled.Disengaged;
+				destination: LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{}
+			}
+			transition t29{
+				source: LaneGuide.Enabled.Override;
+				destination: LaneGuide.Enabled.Disengaged;
+				trigger: e;
+				guard:(SteerIn=0)&&(TurnSignal=0)&&(BrakePedal=0);
+				action:{}
+			}
+			transition t30{
+				source: LaneGuide.Enabled.Engaged;
+				destination: LaneGuide.Enabled.Override;
+				trigger: e;
+				guard:(SteerIn>10)||(SteerIn<minusten)||(TurnSignal=1)||(BrakePedal>0); // SteerIn<-10
+				action:{LG_Warning:=0;}
+			}
+			
+			
+	}
+	transition t14{
+		source: LaneGuide.Disabled;
+		destination: LaneGuide.Enabled;
+		trigger: e;
+		guard:(LG_Enabled=1);
+		action:{}
+	}
+	transition t15{
+		source: LaneGuide.Enabled;
+		destination: LaneGuide.Disabled;
+		trigger: e;
+		guard:(LG_Enabled=0);
+		action:{LG_Warning:=0;}
+	}
+	transition t31{
+		source: LaneGuide.Fail;
+		destination: LaneGuide.Enabled;
+		trigger: Error;
+		guard:(true);
+		action:{LG_Warning:=0;}
+	}
+}

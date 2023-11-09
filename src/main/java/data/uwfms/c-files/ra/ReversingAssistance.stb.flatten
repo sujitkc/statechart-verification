@@ -1,0 +1,1413 @@
+startchart ReversingAssistance {
+types {
+basic type 'int'
+basic type 'boolean'
+basic type 'string'
+}
+events {
+	e;
+	Error;
+}
+ReversingAssistance_RA_Enabled : int : basic type 'int'
+;
+ReversingAssistance_AccelPedal : int : basic type 'int'
+;
+ReversingAssistance_Enabled_Engaged_Set_Brake : int : basic type 'int'
+;
+ReversingAssistance_RA_HVI : int : basic type 'int'
+;
+ReversingAssistance_Enabled_Engaged_ObstacleZone : int : basic type 'int'
+;
+ReversingAssistance_RA_Warning : int : basic type 'int'
+;
+ReversingAssistance_Enabled_PRNDL_In : int : basic type 'int'
+;
+ReversingAssistance_Enabled_Speed : int : basic type 'int'
+;
+ReversingAssistance_Enabled_BrakePedal : int : basic type 'int'
+;
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+functions {
+input() : int;
+}
+
+state ReversingAssistance_Disabled{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Enabled_Hold{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Enabled_Engaged_Assist{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Override{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Fail{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Enabled_Disengaged{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Enabled_Engaged_Idle{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+state ReversingAssistance_Enabled_Engaged_Warn{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+}
+
+transition t19_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Override{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Override
+guard : BinaryExpr(ReversingAssistance_AccelPedal >= 35)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 4;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t23_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Enabled_Engaged_Warn{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t32_ReversingAssistance_Override_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Override
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t28_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Enabled_Engaged_Warn{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t25_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Enabled_Hold{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Enabled_Hold
+guard : BinaryExpr(ReversingAssistance_Enabled_Speed = 0)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t25_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Enabled_Hold{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Enabled_Hold
+guard : BinaryExpr(ReversingAssistance_Enabled_Speed = 0)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t22_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Override{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Override
+guard : BinaryExpr(ReversingAssistance_AccelPedal >= 35)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 4;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_ReversingAssistance_Enabled_Disengaged_ReversingAssistance_Override{
+source : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+destination : ReversingAssistance.ReversingAssistance_Override
+guard : BinaryExpr(ReversingAssistance_AccelPedal >= 35)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 4;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t25_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Enabled_Hold{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Enabled_Hold
+guard : BinaryExpr(ReversingAssistance_Enabled_Speed = 0)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t22_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t27_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Enabled_Engaged_Assist{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 2;
+
+ReversingAssistance_Enabled_Engaged_Set_Brake := 60;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t24_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Enabled_Engaged_Idle{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_ReversingAssistance_Enabled_Disengaged_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_ReversingAssistance_Enabled_Disengaged_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t30_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Enabled_Engaged_Idle{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t26_ReversingAssistance_Enabled_Hold_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Enabled_Hold
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(ReversingAssistance_Enabled_BrakePedal > 20)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_ReversingAssistance_Enabled_Hold_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Enabled_Hold
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t13_ReversingAssistance_Disabled_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Disabled
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(ReversingAssistance_RA_Enabled = 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t22_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_ReversingAssistance_Enabled_Engaged_Assist_ReversingAssistance_Override{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+destination : ReversingAssistance.ReversingAssistance_Override
+guard : BinaryExpr(ReversingAssistance_AccelPedal >= 35)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 4;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_ReversingAssistance_Enabled_Engaged_Warn_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Warn
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t19_ReversingAssistance_Enabled_Hold_ReversingAssistance_Override{
+source : ReversingAssistance.ReversingAssistance_Enabled_Hold
+destination : ReversingAssistance.ReversingAssistance_Override
+guard : BinaryExpr(ReversingAssistance_AccelPedal >= 35)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 4;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t18_ReversingAssistance_Enabled_Hold_ReversingAssistance_Fail{
+source : ReversingAssistance.ReversingAssistance_Enabled_Hold
+destination : ReversingAssistance.ReversingAssistance_Fail
+guard : true
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 3;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t21_ReversingAssistance_Enabled_Disengaged_ReversingAssistance_Enabled_Engaged_Idle{
+source : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+guard : BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed >= 10) && BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed <= 25) && BinaryExpr(ReversingAssistance_Enabled_PRNDL_In = 1)))
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t14_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t15_ReversingAssistance_Override_ReversingAssistance_Enabled_Disengaged{
+source : ReversingAssistance.ReversingAssistance_Override
+destination : ReversingAssistance.ReversingAssistance_Enabled_Disengaged
+guard : BinaryExpr(ReversingAssistance_AccelPedal < 35)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t29_ReversingAssistance_Enabled_Engaged_Idle_ReversingAssistance_Enabled_Engaged_Assist{
+source : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Idle
+destination : ReversingAssistance.ReversingAssistance_Enabled_Engaged_Assist
+guard : BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_Warning := 2;
+
+ReversingAssistance_Enabled_Engaged_Set_Brake := 60;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+
+transition t16_ReversingAssistance_Override_ReversingAssistance_Disabled{
+source : ReversingAssistance.ReversingAssistance_Override
+destination : ReversingAssistance.ReversingAssistance_Disabled
+guard : BinaryExpr(ReversingAssistance_RA_Enabled != 1)
+action : 
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ReversingAssistance_RA_HVI := 0;
+
+ReversingAssistance_RA_Warning := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+
+}
+}

@@ -1,0 +1,209 @@
+//A.6 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  ParkingSpaceCentering{
+  
+  events {
+	e;
+	Error;
+  }
+ 
+  PSC_Enabled : boolean : local;
+  PSC_HVI : int : local;
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+  minusone : int : local;
+  entry : {
+  BoolTRUE:=true;
+  minusone:=0-1;
+  PSC_Enabled:=true;
+  }
+
+  exit  : {} 
+  functions {
+  input<||>() : int;
+  }
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+
+   Speed:int:local;
+   PRNDL_In:int:local;
+   
+   
+   entry: {
+     
+   }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+    
+	 Set_Brake:int:local;
+	 Set_SteerOut:int:local;
+	 Set_Throttle:int:local;
+	 
+	
+	 RightLine:int:local;
+	 LeftLine:int:local;
+	 FrontLine:int:local;
+	 
+	 entry: {
+		
+	 }
+     exit : {}
+	 
+	 state Straight{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state MoveLeft{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state MoveRight{
+	 entry: {}
+     exit : {}
+	}
+	
+	transition t16{
+    source: ParkingSpaceCentering.Enabled.Engaged.Straight;
+    destination: ParkingSpaceCentering.Enabled.Engaged.MoveRight;
+    trigger: e;
+    guard:((RightLine-LeftLine)>5);
+    action:{Set_SteerOut:=1;Set_Throttle:=20;}
+    }
+	
+	transition t20{
+    source: ParkingSpaceCentering.Enabled.Engaged.MoveRight;
+    destination: ParkingSpaceCentering.Enabled.Engaged.Straight;
+    trigger: e;
+    guard:((RightLine-LeftLine)<5);
+    action:{Set_Throttle:=20;}
+    }
+	
+	transition t19{
+    source: ParkingSpaceCentering.Enabled.Engaged.MoveLeft;
+    destination: ParkingSpaceCentering.Enabled.Engaged.Straight;
+    trigger: e;
+    guard:((LeftLine-RightLine)<5);
+    action:{Set_Throttle:=20;}
+    }
+	
+	transition t15{
+    source: ParkingSpaceCentering.Enabled.Engaged.Straight;
+    destination: ParkingSpaceCentering.Enabled.Engaged.MoveLeft;
+    trigger: e;
+    guard:((LeftLine-RightLine)>5);
+    action:{Set_SteerOut:=minusone;Set_Throttle:=20;}
+    }
+	
+	
+	
+   }
+   state Halt{
+	 entry: {}
+     exit : {}
+   }
+   transition t29{
+    source: ParkingSpaceCentering.Enabled.Disengaged;
+    destination: ParkingSpaceCentering.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>0)&&(Speed<=5)&&(PRNDL_In=3);
+    action:{}
+  }
+   
+   transition t21{
+    source: ParkingSpaceCentering.Enabled.Engaged;
+    destination: ParkingSpaceCentering.Enabled.Disengaged;
+    trigger: e;
+    guard:(Speed=0)||(Speed>5)||(PRNDL_In!=3);
+    action:{}
+  }
+    transition t17{
+    source: ParkingSpaceCentering.Enabled.Engaged;
+    destination: ParkingSpaceCentering.Enabled.Halt;
+    trigger: e;
+    guard:(FrontLine<5)&&((LeftLine-RightLine)<5)&&((RightLine-LeftLine)<5);
+    action:{Set_Brake:=30;}
+  }
+   transition t27{
+    source: ParkingSpaceCentering.Enabled.Halt;
+    destination: ParkingSpaceCentering.Enabled.Disengaged;
+    trigger: e;
+    guard:(Speed=0);
+    action:{}
+  }
+   
+   
+   
+  }
+  transition t13{
+  source: ParkingSpaceCentering.Disabled;
+  destination: ParkingSpaceCentering.Enabled;
+  trigger: e;
+  guard:(PSC_Enabled=BoolTRUE);
+  action:{PSC_HVI:=1;}
+  }
+  
+  transition t14{
+  source: ParkingSpaceCentering.Enabled;
+  destination: ParkingSpaceCentering.Disabled;
+  trigger: e;
+  guard:(PSC_Enabled!=BoolTRUE);
+  action:{PSC_HVI:=0;}
+  }
+   
+  transition t22{
+  source: ParkingSpaceCentering.Override;
+  destination: ParkingSpaceCentering.Disabled;
+  trigger: e;
+  guard:(PSC_Enabled!=BoolTRUE);
+  action:{PSC_HVI:=0;}
+  }
+  
+  transition t24{
+  source: ParkingSpaceCentering.Enabled;
+  destination: ParkingSpaceCentering.Override;
+  trigger: e;
+  guard:(BrakePedal>0)||(AccelPedal>0);
+  action:{PSC_HVI:=3;}
+  }
+  
+  transition t28{
+  source: ParkingSpaceCentering.Override;
+  destination: ParkingSpaceCentering.Enabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal=0);
+  action:{PSC_HVI:=1;}
+  }
+  
+  transition t30{
+  source: ParkingSpaceCentering.Override;
+  destination: ParkingSpaceCentering.Fail;
+  trigger: Error;
+  guard:true;
+  action:{PSC_HVI:=4;}
+  }
+  
+  transition t25{
+  source: ParkingSpaceCentering.Enabled;
+  destination: ParkingSpaceCentering.Fail;
+  trigger: Error;
+  guard:true;
+  action:{PSC_HVI:=4;}
+  }
+  
+}

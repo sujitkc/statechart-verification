@@ -1,0 +1,273 @@
+
+//A.2 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  CollisionAvoidance{
+  
+  events {
+	e;
+	Error;
+  }
+ 
+  CA_Enabled : boolean : local;
+  CA_HVI : int : local;
+  CA_Warning :int: local;
+  Warning :int: local;
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+  entry : {
+  BoolTRUE:=true;
+  CA_Enabled:=true;
+  AccelPedal:=input<|int|>();
+  }
+
+  exit  : {} 
+  functions {
+  //input<||>() : int;
+  }
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   BreakPedal:int:local;
+   Speed:int:local;
+   PRNDL_In:int:local;
+
+   
+   entry: {
+    Speed:=input<|int|>();
+    PRNDL_In:=input<|int|>();
+
+   }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     ThreatCA:int:local;
+	 Set_Brake:int:local;
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Avoid{
+	 entry: {}
+     exit : {}
+	}
+	
+	state Mitigate{
+	 entry: {}
+     exit : {}
+    }
+	transition t19{
+    source: CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t20{
+    source: CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t21{
+    source: CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t22{
+    source: CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2; Set_Brake:=30;}
+    }
+	
+	transition t23{
+    source: CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t33{
+    source: CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+	transition t34{
+    source: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CollisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition t35{
+    source: CollisionAvoidance.Enabled.Engaged.Idle;
+    destination: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3; Set_Brake:=80;}
+    }
+	
+	transition t29{
+    source: CollisionAvoidance.Enabled.Engaged.Warn;
+    destination: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t31{
+    source: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CollisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition t30{
+    source: CollisionAvoidance.Enabled.Engaged.Avoid;
+    destination: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t32{
+    source: CollisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: CollisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+   }
+   state Halt{
+	 entry: {}
+     exit : {}
+   }
+   transition t16{
+    source: CollisionAvoidance.Enabled.Disengaged;
+    destination: CollisionAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>25)&&(PRNDL_In=3);
+    action:{CA_HVI:=2;}
+  }
+   
+   transition t17{
+    source: CollisionAvoidance.Enabled.Engaged;
+    destination: CollisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<=25))||(PRNDL_In!=3);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t24{
+    source: CollisionAvoidance.Enabled.Halt;
+    destination: CollisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BreakPedal>10);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t25{
+    source: CollisionAvoidance.Enabled.Engaged;
+    destination: CollisionAvoidance.Enabled.Halt;
+    trigger: e;
+    guard:(Speed=1);
+    action:{CA_HVI:=1;Warning:=4;}
+  }
+   
+  }
+  transition t14{
+  source: CollisionAvoidance.Disabled;
+  destination: CollisionAvoidance.Enabled;
+  trigger: e;
+  guard:(CA_Enabled=BoolTRUE);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t15{
+  source: CollisionAvoidance.Enabled;
+  destination: CollisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+   
+  transition t38{
+  source: CollisionAvoidance.Override;
+  destination: CollisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+  
+  transition t36{
+  source: CollisionAvoidance.Enabled;
+  destination: CollisionAvoidance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{CA_HVI:=4;Warning:=0;}
+  }
+  
+  transition t37{
+  source: CollisionAvoidance.Override;
+  destination: CollisionAvoidance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t39{
+  source: CollisionAvoidance.Override;
+  destination: CollisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;}
+  }
+  
+  transition t27{
+  source: CollisionAvoidance.Enabled;
+  destination: CollisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;Warning:=0;}
+  }
+  
+}

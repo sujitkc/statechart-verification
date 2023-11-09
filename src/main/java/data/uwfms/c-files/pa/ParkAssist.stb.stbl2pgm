@@ -1,0 +1,1166 @@
+Program {
+
+ParkAssist_minusone : int : basic type 'int'
+;
+ParkAssist_Speed : int : basic type 'int'
+;
+ParkAssist_Enabled_Engaged_set_Brake : int : basic type 'int'
+;
+ParkAssist_Enabled_set_Throttle : int : basic type 'int'
+;
+ParkAssist_Enabled_SteerIn : int : basic type 'int'
+;
+ParkAssist_PA_Enabled : int : basic type 'int'
+;
+ParkAssist_Enabled_set_SteerOut : int : basic type 'int'
+;
+ParkAssist_PA_HVI : int : basic type 'int'
+;
+ParkAssist_Enabled_SpaceFound : int : basic type 'int'
+;
+ParkAssist_Enabled_AccelPedal : int : basic type 'int'
+;
+ParkAssist_Enabled_Accepted : int : basic type 'int'
+;
+ParkAssist_Enabled_PRNDL_In : int : basic type 'int'
+;
+
+state : int : basic type 'int'
+;
+event # : int : basic type 'int'
+;
+LzkXve : int : basic type 'int'
+;
+LpWcdb : int : basic type 'int'
+;
+GlOYsA : int : basic type 'int'
+;
+IZLsTD : int : basic type 'int'
+;
+VVVrSh : int : basic type 'int'
+;
+WoTYqB : int : basic type 'int'
+;
+sxCjIa : int : basic type 'int'
+;
+yOIgrZ : int : basic type 'int'
+;
+dDwSvi : int : basic type 'int'
+;
+HDvKix : int : basic type 'int'
+;
+IYrAxR : int : basic type 'int'
+;
+JRGcoo : int : basic type 'int'
+;
+QGIfAx : int : basic type 'int'
+;
+vDycGi : int : basic type 'int'
+;
+rAzNAV : int : basic type 'int'
+;
+YaZWoW : int : basic type 'int'
+;
+
+{
+LzkXve := 0;
+
+LpWcdb := 1;
+
+GlOYsA := 2;
+
+IZLsTD := 3;
+
+VVVrSh := 4;
+
+WoTYqB := 5;
+
+sxCjIa := 6;
+
+yOIgrZ := 7;
+
+dDwSvi := 8;
+
+HDvKix := 9;
+
+IYrAxR := 10;
+
+JRGcoo := 11;
+
+QGIfAx := 0;
+
+vDycGi := 1;
+
+rAzNAV := 2;
+
+YaZWoW := 3;
+
+state := LzkXve;
+
+
+while(true)
+{
+event := input() : null;
+
+
+if(BinaryExpr(state = JRGcoo))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(event = vDycGi))
+{
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LpWcdb;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+
+if(BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = IYrAxR))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)) && BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)), ) : null;
+
+
+if(BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = HDvKix))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0)) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1)))), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0)) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1)))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_Accepted = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := IYrAxR;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SpaceFound = 0) || BinaryExpr(ParkAssist_Enabled_Accepted = 0)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GlOYsA;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = dDwSvi))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)), ) : null;
+
+
+if(BinaryExpr(event = vDycGi))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5)))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_Engaged_set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := WoTYqB;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_PRNDL_In = 1) && BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(ParkAssist_Speed <= 5))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+ParkAssist_Enabled_set_SteerOut := ParkAssist_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := IYrAxR;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)) && BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1)), ) : null;
+
+
+if(BinaryExpr(ParkAssist_Enabled_PRNDL_In != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = yOIgrZ))skip;
+
+else
+
+if(BinaryExpr(state = sxCjIa))
+{
+stuck_spec(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = WoTYqB))
+{
+stuck_spec(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(event = vDycGi))
+{
+
+if(BinaryExpr(ParkAssist_Speed = 0))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 4;
+
+ParkAssist_Enabled_set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := JRGcoo;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = QGIfAx))
+{
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = VVVrSh))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_PA_Enabled = 0) || true) || BinaryExpr(ParkAssist_PA_Enabled = 1)), ) : null;
+
+
+if(BinaryExpr(event = YaZWoW))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 8;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := IZLsTD;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(ParkAssist_PA_Enabled = 0) && BinaryExpr(ParkAssist_PA_Enabled = 1)), ) : null;
+
+
+if(BinaryExpr(ParkAssist_PA_Enabled = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := IZLsTD;
+
+}
+
+else
+
+if(BinaryExpr(ParkAssist_PA_Enabled = 0))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := IZLsTD;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = IZLsTD))
+{
+stuck_spec(BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(BinaryExpr(ParkAssist_Speed <= 10) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3))), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) && BinaryExpr(BinaryExpr(ParkAssist_Speed <= 10) && BinaryExpr(ParkAssist_Enabled_PRNDL_In = 3))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GlOYsA;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = GlOYsA))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3))) || BinaryExpr(ParkAssist_Enabled_SpaceFound = 1)), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3))) && BinaryExpr(ParkAssist_Enabled_SpaceFound = 1)), ) : null;
+
+
+if(BinaryExpr(ParkAssist_Enabled_SpaceFound = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HDvKix;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Speed > 0) || BinaryExpr(ParkAssist_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := IZLsTD;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LpWcdb))
+{
+stuck_spec(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) || BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(event = QGIfAx))
+{
+non_det(BinaryExpr(BinaryExpr(ParkAssist_Speed = 0) && BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkAssist_Enabled_SteerIn > 0) || BinaryExpr(ParkAssist_Enabled_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 6;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := yOIgrZ;
+
+}
+
+else
+
+if(BinaryExpr(ParkAssist_Speed = 0))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkAssist_PA_HVI := 5;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := VVVrSh;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = LzkXve))skip;
+
+else
+skip;
+
+}
+
+halt;
+
+}
+}

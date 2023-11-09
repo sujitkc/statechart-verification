@@ -1,0 +1,282 @@
+// Evaluates the behavior for when History is maintained
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+/*statechart  Automotive{
+  
+  events {
+	e;
+	Error;
+  }
+  entry:{}
+  exit:{}
+	functions {
+	input<||>() : int;
+	}
+ 
+ state CoillisionAvoidance{
+  CA_Enabled : boolean : local;
+  CA_HVI : int : local;
+  CA_Warning :int: local;
+  Warning :int: local;
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+  entry : {
+  BoolTRUE:=true;
+  CA_Enabled:=true;
+  }
+
+  exit  : {} 
+  
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   BreakPedal:int:local;
+   Speed:int:local;
+   PRNDL_In:int:local;
+   const25:int:local;
+   const3:int:local;
+   const0:int:local;
+   const10:int:local;
+   
+   entry: {
+     const0:=0;
+	 const3:=3;
+	 const25:=25;
+	 const10:=10;
+   }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     ThreatCA:int:local;
+	 Set_Brake:int:local;
+	 const1:int:local;
+	 const2:int:local;
+	 
+	 entry: {
+		const1:=1;
+		const2:=2;
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Avoid{
+	 entry: {}
+     exit : {}
+	}
+	
+	state Mitigate{
+	 entry: {}
+     exit : {}
+    }
+	transition t19{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=const1);
+    action:{Warning:=1;}
+    }
+	
+	transition t20{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=const0);
+    action:{Warning:=0;}
+    }
+	
+	transition t21{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=const1);
+    action:{Warning:=1;}
+    }
+	
+	transition t22{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=const2);
+    action:{Warning:=2; Set_Brake:=30;}
+    }
+	
+	transition t23{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=const0);
+    action:{Warning:=0;}
+    }
+	
+	transition t33{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=const2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+	transition t34{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ThreatCA=const0);
+    action:{Warning:=0;}
+    }
+	
+	transition t35{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Idle;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=const3);
+    action:{Warning:=3; Set_Brake:=80;}
+    }
+	
+	transition t29{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=const3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t31{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ThreatCA=const1);
+    action:{Warning:=1;}
+    }
+	
+	transition t30{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    trigger: e;
+    guard:(ThreatCA=const3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition t32{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged.Mitigate;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged.Avoid;
+    trigger: e;
+    guard:(ThreatCA=const2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+   }
+   state Halt{
+	 entry: {}
+     exit : {}
+   }
+   transition t16{
+    source: Automotive.CoillisionAvoidance.Enabled.Disengaged;
+    destination: Automotive.CoillisionAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>const25)&&(PRNDL_In=const3);
+    action:{CA_HVI:=2;}
+  }
+   
+   transition t17{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged;
+    destination: Automotive.CoillisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<=const25))||(PRNDL_In!=const3);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t24{
+    source: Automotive.CoillisionAvoidance.Enabled.Halt;
+    destination: Automotive.CoillisionAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BreakPedal>const10);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition t25{
+    source: Automotive.CoillisionAvoidance.Enabled.Engaged;
+    destination: Automotive.CoillisionAvoidance.Enabled.Halt;
+    trigger: e;
+    guard:(Speed=const0);
+    action:{CA_HVI:=1;Warning:=4;}
+  }
+   
+  }
+  transition t14{
+  source: Automotive.CoillisionAvoidance.Disabled;
+  destination: Automotive.CoillisionAvoidance.Enabled;
+  trigger: e;
+  guard:(CA_Enabled=BoolTRUE);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t15{
+  source: Automotive.CoillisionAvoidance.Enabled;
+  destination: Automotive.CoillisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+   
+  transition t38{
+  source: Automotive.CoillisionAvoidance.Override;
+  destination: Automotive.CoillisionAvoidance.Disabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+  
+  transition t36{
+  source: Automotive.CoillisionAvoidance.Enabled;
+  destination: Automotive.CoillisionAvoidance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{CA_HVI:=4;Warning:=0;}
+  }
+  
+  transition t37{
+  source: Automotive.CoillisionAvoidance.Override;
+  destination: Automotive.CoillisionAvoidance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t39{
+  source: Automotive.CoillisionAvoidance.Override;
+  destination: Automotive.CoillisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;}
+  }
+  
+  transition t27{
+  source: Automotive.CoillisionAvoidance.Enabled;
+  destination: Automotive.CoillisionAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;Warning:=0;}
+  }
+  }
+}*/		

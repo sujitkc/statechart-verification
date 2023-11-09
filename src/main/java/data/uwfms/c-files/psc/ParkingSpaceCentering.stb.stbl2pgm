@@ -1,0 +1,1460 @@
+Program {
+
+ParkingSpaceCentering_PSC_Enabled : int : basic type 'int'
+;
+ParkingSpaceCentering_PSC_HVI : int : basic type 'int'
+;
+ParkingSpaceCentering_AccelPedal : int : basic type 'int'
+;
+ParkingSpaceCentering_Set_Brake : int : basic type 'int'
+;
+ParkingSpaceCentering_Enabled_PRNDL_In : int : basic type 'int'
+;
+ParkingSpaceCentering_BrakePedal : int : basic type 'int'
+;
+ParkingSpaceCentering_Enabled_Speed : int : basic type 'int'
+;
+ParkingSpaceCentering_Set_Throttle : int : basic type 'int'
+;
+ParkingSpaceCentering_LeftLine : int : basic type 'int'
+;
+ParkingSpaceCentering_RightLine : int : basic type 'int'
+;
+ParkingSpaceCentering_Set_SteerOut : int : basic type 'int'
+;
+ParkingSpaceCentering_FrontLine : int : basic type 'int'
+;
+ParkingSpaceCentering_minusone : int : basic type 'int'
+;
+
+state : int : basic type 'int'
+;
+event # : int : basic type 'int'
+;
+vMfFTD : int : basic type 'int'
+;
+mQvENu : int : basic type 'int'
+;
+HptHSM : int : basic type 'int'
+;
+keJjUW : int : basic type 'int'
+;
+HmivIn : int : basic type 'int'
+;
+kdVpVg : int : basic type 'int'
+;
+baOyBA : int : basic type 'int'
+;
+GrkypM : int : basic type 'int'
+;
+KliQFn : int : basic type 'int'
+;
+GmjHsf : int : basic type 'int'
+;
+
+{
+vMfFTD := 0;
+
+mQvENu := 1;
+
+HptHSM := 2;
+
+keJjUW := 3;
+
+HmivIn := 4;
+
+kdVpVg := 5;
+
+baOyBA := 6;
+
+GrkypM := 7;
+
+KliQFn := 0;
+
+GmjHsf := 1;
+
+state := vMfFTD;
+
+
+while(true)
+{
+event := input() : null;
+
+
+if(BinaryExpr(state = GrkypM))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal = 0) && BinaryExpr(ParkingSpaceCentering_AccelPedal = 0)) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)) || true), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal = 0) && BinaryExpr(ParkingSpaceCentering_AccelPedal = 0)) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)), ) : null;
+
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal = 0) && BinaryExpr(ParkingSpaceCentering_AccelPedal = 0)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = baOyBA))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3)))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5)) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)) || true), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))), ) : null;
+
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HptHSM;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GrkypM;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HmivIn;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = kdVpVg))skip;
+
+else
+
+if(BinaryExpr(state = HmivIn))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) || BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0)) || true) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0)) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))), ) : null;
+
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GrkypM;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = keJjUW))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 0) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed <= 5) && BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In = 3))) || true) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0))), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 0) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed <= 5) && BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In = 3))) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 0) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed <= 5) && BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In = 3))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GrkypM;
+
+}
+
+else
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 0) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed <= 5) && BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In = 3))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := HptHSM;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = HptHSM))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(true || BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5)) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5)) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0))) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5)))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3)))), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5)) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HmivIn;
+
+}
+
+else
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GrkypM;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) > 5))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_SteerOut := ParkingSpaceCentering_minusone;
+
+ParkingSpaceCentering_Set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := mQvENu;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) > 5))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_SteerOut := 1;
+
+ParkingSpaceCentering_Set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := baOyBA;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = mQvENu))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) || true) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3)))) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5)) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0))) || BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1)), ) : null;
+
+
+if(BinaryExpr(event = GmjHsf))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := kdVpVg;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = KliQFn))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)) && BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))), ) : null;
+
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := vMfFTD;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_BrakePedal > 0) || BinaryExpr(ParkingSpaceCentering_AccelPedal > 0)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 3;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := GrkypM;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_Throttle := 20;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HptHSM;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed = 0) || BinaryExpr(BinaryExpr(ParkingSpaceCentering_Enabled_Speed > 5) || BinaryExpr(ParkingSpaceCentering_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(ParkingSpaceCentering_FrontLine < 5) && BinaryExpr(BinaryExpr(BinaryExpr(ParkingSpaceCentering_LeftLine - ParkingSpaceCentering_RightLine) < 5) && BinaryExpr(BinaryExpr(ParkingSpaceCentering_RightLine - ParkingSpaceCentering_LeftLine) < 5))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := HmivIn;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = vMfFTD))
+{
+stuck_spec(BinaryExpr(ParkingSpaceCentering_PSC_Enabled = 1), ) : null;
+
+
+if(BinaryExpr(event = KliQFn))
+{
+
+if(BinaryExpr(ParkingSpaceCentering_PSC_Enabled = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+ParkingSpaceCentering_PSC_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := keJjUW;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+halt;
+
+}
+}

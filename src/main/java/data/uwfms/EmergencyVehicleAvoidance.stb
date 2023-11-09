@@ -1,0 +1,219 @@
+
+//A.5 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+statechart  EmergencyVehicleAvoidance{
+  
+  events {
+	e;
+	Error;
+  }
+ 
+  EVA_Enabled : boolean : local;
+  EVA_HVI : int : local;
+  
+  AccelPedal :int: local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone : int : local;
+  BrakePedal:int:local; 
+
+  entry : {
+  BoolTRUE:=true;
+  BoolFALSE:=false;
+  EVA_Enabled:=true;
+  minusone:=0-1;
+   AccelPedal:=input<|int|>();
+  }
+
+  exit  : {} 
+  functions {
+ //input<||>() : int;
+  }
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   Speed:int:local;
+   PRNDL_In:int:local;
+	 Siren :boolean : local;
+
+   
+   entry: {
+    PRNDL_In:=input<|int|>();
+     Speed:=input<|int|>();
+    BrakePedal:=input<|int|>();
+    	   Siren:=input<|boolean|>();
+
+ }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     
+	 Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state Slow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Coast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state PullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition t24{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition t23{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition t25{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t26{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition t22{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t27{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition t19{
+    source: EmergencyVehicleAvoidance.Enabled.Engaged;
+    destination: EmergencyVehicleAvoidance.Enabled.Disengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition t20{
+    source: EmergencyVehicleAvoidance.Enabled.Disengaged;
+    destination: EmergencyVehicleAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition t13{
+  source: EmergencyVehicleAvoidance.Disabled;
+  destination: EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition t14{
+  source: EmergencyVehicleAvoidance.Enabled;
+  destination: EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition t16{
+  source: EmergencyVehicleAvoidance.Override;
+  destination: EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition t17{
+  source: EmergencyVehicleAvoidance.Enabled;
+  destination: EmergencyVehicleAvoidance.Override;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition t18{
+  source: EmergencyVehicleAvoidance.Override;
+  destination: EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition t29{
+  source: EmergencyVehicleAvoidance.Override;
+  destination: EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition t28{
+  source: EmergencyVehicleAvoidance.Enabled;
+  destination: EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+}

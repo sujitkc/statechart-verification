@@ -1,0 +1,541 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+    PRNDL_In:int:local;
+  RA_Enabled : boolean : local;
+ RA_HVI : int : local;
+  RA_Warning:int:local;
+  Warning :int: local;
+  AccelPedal :int: local;
+    BrakePedal:int:local;
+LG_Enabled : boolean : local;
+  LG_Warning : boolean :local;
+  minusten:int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  PA_Enabled : boolean : local;
+  PA_HVI : int : local;
+  Speed: int: local;
+TargetSpeed : int : local;
+  	  FollowDist : int : local;
+	  set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+Set_Brake:int:local;
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        RA_Enabled:=true;
+        PA_Enabled:=true;
+	minusone:=0-1;
+	minusten:=0-10;
+
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+  shell rapa{
+ // 	TargetSpeed : int : local;
+ // 	  FollowDist : int : local;
+    entry:{}
+    exit:{}
+
+    state ReversingAssistance{
+     state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+  state Fail{
+   entry: {}
+   exit : {}
+  }
+  state Enabled{
+   //BrakePedal:int:local;
+   //Speed:int:local;
+   //PRNDL_In:int:local;
+   
+   
+   entry: {
+     
+ }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     
+	// Set_Brake:int:local;
+	 ObstacleZone:int:local;
+
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state Idle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Warn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Assist{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition t23{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Idle;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+	
+	transition t24{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Warn;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+    transition t27{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Warn;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Assist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition t28{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Assist;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Warn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+    transition t29{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Idle;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Assist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition t30{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged.Assist;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged.Idle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+	
+   }
+   state Hold{
+   	entry:{}
+   	exit:{}
+   }
+   
+   transition t22{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged;
+    destination: sc.rapa.ReversingAssistance.Enabled.Disengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<10))||(Speed>25)||(PRNDL_In!=1);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+   transition t21{
+    source: sc.rapa.ReversingAssistance.Enabled.Disengaged;
+    destination: sc.rapa.ReversingAssistance.Enabled.Engaged;
+    trigger: e;
+    guard:(Speed>=10)&&(Speed<=25)&&(PRNDL_In=1);
+    action:{RA_HVI:=2;}
+  }
+    transition t25{
+    source: sc.rapa.ReversingAssistance.Enabled.Engaged;
+    destination: sc.rapa.ReversingAssistance.Enabled.Hold;
+    trigger: e;
+    guard:(Speed=0);
+    action:{RA_Warning:=3;}
+  }
+  transition t26{
+    source: sc.rapa.ReversingAssistance.Enabled.Hold;
+    destination: sc.rapa.ReversingAssistance.Enabled.Disengaged;
+    trigger: e;
+    guard:(BrakePedal>20);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+  }
+  transition t13{
+  source: sc.rapa.ReversingAssistance.Disabled;
+  destination: sc.rapa.ReversingAssistance.Enabled;
+  trigger: e;
+  guard:(RA_Enabled=BoolTRUE);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition t14{
+  source: sc.rapa.ReversingAssistance.Enabled;
+  destination: sc.rapa.ReversingAssistance.Disabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+   
+  transition t16{
+  source: sc.rapa.ReversingAssistance.Override;
+  destination: sc.rapa.ReversingAssistance.Disabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+  
+  transition t19{
+  source: sc.rapa.ReversingAssistance.Enabled;
+  destination: sc.rapa.ReversingAssistance.Override;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{RA_HVI:=4;RA_Warning:=0;}
+  }
+  
+  transition t15{
+  source: sc.rapa.ReversingAssistance.Override;
+  destination: sc.rapa.ReversingAssistance.Enabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition t32{
+  source: sc.rapa.ReversingAssistance.Override;
+  destination: sc.rapa.ReversingAssistance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+  
+  transition t18{
+  source: sc.rapa.ReversingAssistance.Enabled;
+  destination: sc.rapa.ReversingAssistance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+    }
+
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.rapa.SpeedSetting.DecSpeed;
+				destination: sc.rapa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.rapa.SpeedSetting.IncSpeed;
+				destination: sc.rapa.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.rapa.SpeedSetting.HoldSpeed;
+				destination: sc.rapa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.rapa.SpeedSetting.IncSpeed;
+				destination: sc.rapa.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.rapa.SpeedSetting.DecSpeed;
+				destination: sc.rapa.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.rapa.SpeedSetting.HoldSpeed;
+				destination: sc.rapa.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+    state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+            //    AccelPedal:=input<|int|>();
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+	
+    state ParkAssist{
+        entry:{}
+        exit:{}
+    /*    	state paFail{
+		entry:{}
+		exit:{}
+	}*/
+	state paDisabled{
+		entry:{}
+		exit:{}
+	}
+	state paEnabled{
+		//PRNDL_In:int:local;
+
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		/*set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+		AccelPedal:int:local;*/
+		entry:{}
+		exit:{}
+			state paIdle{
+				entry:{}
+				exit:{}
+			}
+			state paSearching{
+				entry:{}
+				exit:{}
+			}
+			state paPrompting{
+				entry:{}
+				exit:{}
+			}
+			state paOverride{
+				entry:{}
+				exit:{}
+			}
+			state paEngaged{
+				//set_Brake:int:local;
+	
+				entry:{}
+				exit:{}
+				state paSwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state paSwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state paCenter{
+					entry:{}
+					exit:{}
+				}
+				state paStop1{
+					entry:{}
+					exit:{}
+				}
+				state paStop2{
+					entry:{}
+					exit:{}
+				}
+				transition pat30{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop1;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;Set_Brake:=30;}
+				}
+				transition pat27{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
+				}
+				transition pat23{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop1;
+					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paCenter;
+					trigger: Next;
+					guard:(Speed=0);
+					action:{PA_HVI:=4;set_Throttle:=20;}
+				}
+				transition pat19{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop2;
+					trigger: Next;
+					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;Set_Brake:=30;}
+				}
+				
+			}
+			state paAbort{
+					entry:{}
+					exit:{}
+			}
+			transition pat21{
+					source: sc.rapa.ParkAssist.paEnabled.paIdle;
+					destination: sc.rapa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
+					action:{PA_HVI:=2;}
+				}
+			transition pat22{
+					source: sc.rapa.ParkAssist.paEnabled.paSearching;
+					destination: sc.rapa.ParkAssist.paEnabled.paIdle;
+					trigger: e;
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
+					action:{PA_HVI:=1;}
+				}
+			transition pat24{
+					source: sc.rapa.ParkAssist.paEnabled.paSearching;
+					destination: sc.rapa.ParkAssist.paEnabled.paPrompting;
+					trigger: e;
+					guard:(SpaceFound=BoolTRUE);
+					action:{PA_HVI:=3;}
+				}
+			transition pat25{
+					source: sc.rapa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.rapa.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
+					action:{PA_HVI:=2;}
+				}
+			transition pat26{
+					source: sc.rapa.ParkAssist.paEnabled.paPrompting;
+					destination: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: e;
+					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
+				}
+			/*transition pat39{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					destination: sc.rapa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat38{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.rapa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=3);
+					action:{PA_HVI:=6;}
+				}
+			transition pat37{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.rapa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat30{
+					source: sc.rapa.ParkAssist.paEnabled.paEngaged;
+					destination: sc.rapa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+			transition pat36{
+					source: sc.rapa.ParkAssist.paEnabled.paOverride;
+					destination: sc.rapa.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}*/
+	}
+	
+	transition pat29{
+		source: sc.rapa.ParkAssist.paDisabled;
+		destination: sc.rapa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition pat20{
+		source: sc.rapa.ParkAssist.paDisabled;
+		destination: sc.rapa.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition pat33{
+		source: sc.rapa.ParkAssist.paDisabled;
+		destination: sc.rapa.ParkAssist.paEnabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition pat35{
+		source: sc.rapa.ParkAssist.paEnabled.paEngaged.paStop2;
+		destination: sc.rapa.ParkAssist.paDisabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+
+    }
+
+  }
+}

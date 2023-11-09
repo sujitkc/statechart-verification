@@ -1,0 +1,1268 @@
+Program {
+
+EmergencyVehicleAvoidance_Enabled_Engaged_DontStop : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_WayClear : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_EVA_HVI : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Siren : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_minusone : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_Speed : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_BrakePedal : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_AccelPedal : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_Enabled_PRNDL_In : int : basic type 'int'
+;
+EmergencyVehicleAvoidance_EVA_Enabled : int : basic type 'int'
+;
+
+state : int : basic type 'int'
+;
+event # : int : basic type 'int'
+;
+LIjgdU : int : basic type 'int'
+;
+EcpkJG : int : basic type 'int'
+;
+VWoiPz : int : basic type 'int'
+;
+nIcmnv : int : basic type 'int'
+;
+DmqSSx : int : basic type 'int'
+;
+dfVGKz : int : basic type 'int'
+;
+XxFeoq : int : basic type 'int'
+;
+VuhXiz : int : basic type 'int'
+;
+vJyGwO : int : basic type 'int'
+;
+
+{
+LIjgdU := 0;
+
+EcpkJG := 1;
+
+VWoiPz := 2;
+
+nIcmnv := 3;
+
+DmqSSx := 4;
+
+dfVGKz := 5;
+
+XxFeoq := 6;
+
+VuhXiz := 0;
+
+vJyGwO := 1;
+
+state := LIjgdU;
+
+
+while(true)
+{
+event := input() : null;
+
+
+if(BinaryExpr(state = XxFeoq))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) || BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)) || true) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1)) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))), ) : null;
+
+
+if(BinaryExpr(event = vJyGwO))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := EcpkJG;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = VuhXiz))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := VWoiPz;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := dfVGKz;
+
+}
+
+else
+
+if(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle := 35;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := DmqSSx;
+
+}
+
+else
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LIjgdU;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := nIcmnv;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = dfVGKz))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed > 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In = 3)))) || BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)) || true), ) : null;
+
+
+if(BinaryExpr(event = vJyGwO))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := EcpkJG;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = VuhXiz))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed > 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In = 3)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed > 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In = 3))) && BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))), ) : null;
+
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LIjgdU;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed > 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In = 3))))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+}
+
+state := nIcmnv;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := VWoiPz;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = DmqSSx))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3)))) || true) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1))), ) : null;
+
+
+if(BinaryExpr(event = vJyGwO))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := EcpkJG;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = VuhXiz))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))), ) : null;
+
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 60;
+
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut := EmergencyVehicleAvoidance_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := XxFeoq;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := dfVGKz;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 0) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 0)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 30;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := nIcmnv;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := VWoiPz;
+
+}
+
+else
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LIjgdU;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = nIcmnv))
+{
+stuck_spec(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) || BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30))) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1)) || true), ) : null;
+
+
+if(BinaryExpr(event = vJyGwO))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := EcpkJG;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = VuhXiz))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)) && BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))) || BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))), ) : null;
+
+
+if(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle := 35;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := DmqSSx;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal != 0) || BinaryExpr(EmergencyVehicleAvoidance_AccelPedal >= 30)))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := VWoiPz;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop != 1) && BinaryExpr(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear = 1)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake := 60;
+
+EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut := EmergencyVehicleAvoidance_minusone;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := XxFeoq;
+
+}
+
+else
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LIjgdU;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Siren = 0) || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_Enabled_Speed = 0) || BinaryExpr(EmergencyVehicleAvoidance_Enabled_PRNDL_In != 3))))
+{
+
+{
+
+{
+
+{
+}
+
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := dfVGKz;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = VWoiPz))
+{
+stuck_spec(BinaryExpr(BinaryExpr(true || BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal = 0) && BinaryExpr(EmergencyVehicleAvoidance_AccelPedal < 30))) || BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)), ) : null;
+
+
+if(BinaryExpr(event = vJyGwO))
+{
+
+if(true)
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 4;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := EcpkJG;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(event = VuhXiz))
+{
+non_det(BinaryExpr(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal = 0) && BinaryExpr(EmergencyVehicleAvoidance_AccelPedal < 30)) && BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1)), ) : null;
+
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled != 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 0;
+
+}
+
+
+{
+
+{
+}
+
+}
+
+}
+
+state := LIjgdU;
+
+}
+
+else
+
+if(BinaryExpr(BinaryExpr(EmergencyVehicleAvoidance_BrakePedal = 0) && BinaryExpr(EmergencyVehicleAvoidance_AccelPedal < 30)))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 2;
+
+}
+
+
+{
+
+{
+EmergencyVehicleAvoidance_Enabled_PRNDL_In := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Speed := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_BrakePedal := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Siren := input() : basic type 'int'
+;
+
+}
+
+
+{
+}
+
+}
+
+}
+
+state := dfVGKz;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+
+if(BinaryExpr(state = EcpkJG))skip;
+
+else
+
+if(BinaryExpr(state = LIjgdU))
+{
+stuck_spec(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled = 1), ) : null;
+
+
+if(BinaryExpr(event = VuhXiz))
+{
+
+if(BinaryExpr(EmergencyVehicleAvoidance_EVA_Enabled = 1))
+{
+
+{
+
+{
+
+{
+}
+
+}
+
+
+{
+EmergencyVehicleAvoidance_EVA_HVI := 1;
+
+}
+
+
+{
+
+{
+EmergencyVehicleAvoidance_Enabled_PRNDL_In := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Speed := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_BrakePedal := input() : basic type 'int'
+;
+
+EmergencyVehicleAvoidance_Enabled_Siren := input() : basic type 'int'
+;
+
+}
+
+
+{
+}
+
+}
+
+}
+
+state := dfVGKz;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+else
+skip;
+
+}
+
+halt;
+
+}
+}
