@@ -26,4 +26,5 @@ public class SETInstructionNode extends SETNode {
 			throw new Exception ("No such var" + decl.vname);
 		}
 	}
+
 }

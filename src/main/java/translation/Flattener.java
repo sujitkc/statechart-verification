@@ -141,7 +141,8 @@ class Globaliser extends Translator {
   private void makeGlobalDeclarations(State state) {
     for(Declaration dec : state.declarations) {
       // generate new variable name for each declaration
-      String newName = this.generateUniqueVarname();
+      //String newName = this.generateUniqueVarname();
+      String newName = this.underscoreFullName(dec.getFullVName());
       Declaration newdec = new Declaration(
         newName,
         dec.typeName,

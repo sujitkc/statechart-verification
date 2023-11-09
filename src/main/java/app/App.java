@@ -16,6 +16,7 @@ import program.*;
 import frontend.*;
 import translation.*;
 import java_cup.runtime.Symbol;
+import java.io.PrintWriter;
 
 // Entry point of the application
 public class App {
@@ -68,11 +69,26 @@ public class App {
 				// flatten
 				Flattener flattener = new Flattener();
 				Statechart flattenedSC = flattener.translate(statechart);
-
-				// Translate to Program
+				//write flattened program to file
+				PrintWriter pw=new PrintWriter(filename+".flatten", "UTF-8");
+				pw.println(flattenedSC);
+				pw.flush();
+				
+				// Translate to Program using s2p
 				S2P s2p = new S2P();
 				Program program = s2p.translate(flattenedSC);
-
+				PrintWriter pw1=new PrintWriter(filename+".pgm", "UTF-8");
+				pw1.println(program);
+				pw1.flush();
+				
+				// Translate to Program using statechart to program translator
+				StatechartToProgramTranslator s2p1 = new StatechartToProgramTranslator(flattenedSC);
+				Program program1 = s2p1.translate();
+				PrintWriter pw2=new PrintWriter(filename+".stbl2pgm", "UTF-8");
+				pw2.println(program1);
+				pw2.flush();
+				
+				
 				if (useKlee) {
 					ProgramToCpp translator = new ProgramToCpp(program);
 					translator.translate();
@@ -83,6 +99,7 @@ public class App {
 					}
 					Engine engine = new Engine();
 					engine.getSEResult(program, md, property);
+					//engine.getSEResult(program1, md, property);
 				}
 
 			} catch (Exception e) {

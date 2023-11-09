@@ -65,6 +65,7 @@ public class BinaryExpression extends Expression {
   }
 
   public void visit (ExpressionVisitor visitor) throws Exception {
+
     visitor.visitBinaryExpression(this);
   }
 }

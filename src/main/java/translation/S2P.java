@@ -36,6 +36,8 @@ public class S2P {
 		// Declarations of the statechart itself
 		_program.declarations.addAll(_statechart.declarations);
 
+
+		
 		// init 'state' and 'event' variable declarations
 		Declaration stateVarDecl = new Declaration("state", new TypeName("int"), false);
 		Declaration eventVarDecl = new Declaration("event", new TypeName("int"), true); // 'event' is an input
@@ -51,6 +53,7 @@ public class S2P {
 		// Add them to the program decls
 		_program.declarations.add(stateVarDecl);
 		_program.declarations.add(eventVarDecl);
+		
 	}
 
 	private void setBasicTypes() {
@@ -84,7 +87,7 @@ public class S2P {
 			// Intialise variable with value
 			Statement stmt = new AssignmentStatement(lhs, rhs);
 			_program.statements.add(stmt);
-
+			
 			rep += 1;
 		}
 	}
@@ -109,7 +112,7 @@ public class S2P {
 			// Initialize variable with value
 			Statement stmt = new AssignmentStatement(lhs, rhs);
 			_program.statements.add(stmt);
-
+			_program.statements.add(state.entry);
 			rep += 1;
 		}
 
@@ -197,8 +200,21 @@ public class S2P {
 		// event := input()
 		AssignmentStatement stmt = new AssignmentStatement(this._eventName, input_func_call);
 
+
+		
+		
 		StatementList while_body = new StatementList ();
 		while_body.add (stmt);
+		
+		//Declarations with input to be added properly
+		for(int i=0;i<_program.declarations.size();i++){
+			if(_program.declarations.get(i).input){
+				Name x=new Name(_program.declarations.get(i).vname);
+				x.setDeclaration(_program.declarations.get(i));
+				AssignmentStatement stmt1 = new AssignmentStatement(x, input_func_call);
+				while_body.add (stmt1);
+			}
+		}
 		while_body.add(outerIf);
 
 		_program.statements.add (new WhileStatement(new BooleanConstant(true), while_body));

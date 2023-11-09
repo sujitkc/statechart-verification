@@ -31,6 +31,7 @@ public class Engine {
 
 	public Engine () {
 	System.out.println("Engine initialized");
+
 	}
 
 	private static StatementList flattenStatementList (StatementList list) {
@@ -53,6 +54,7 @@ public class Engine {
 		this._program = program;
 		this._max_depth = max_depth;
 		this._property = property;
+		System.out.println(_program);
 		DeclarationList decls = new DeclarationList();
 		decls.addAll(this._program.declarations);
 		SEResult result = executeDeclarations(decls);
@@ -111,7 +113,6 @@ public class Engine {
 			Expression expr = ((ExpressionStatement)istmt).expression;
 			if (expr instanceof FunctionCall) {
 				FunctionCall call = (FunctionCall) expr;
-				System.out.println("Property : "+ _property+":" +(_property==PropertyOfInterest.NON_DETERMINISM));
 				if (_property == PropertyOfInterest.STUCK_SPECIFICATION) {
 					if (call.name.name.equals ("stuck_spec")) {
 						this.stuckSpecification (call.argumentList, leaf);
@@ -152,8 +153,12 @@ public class Engine {
 		SETDecisionNode then_node = new SETDecisionNode(leaf, stmt.condition);
 		// Expression pc = then_node.getPathConstraint();
 		Expression pc = stmt.condition;
+		System.out.println("stmt.condition :::"+stmt.condition);
 		// if (pc == null) pc = new BooleanConstant(true);
 		pc = executeExpression(pc, leaf);
+		System.out.println("================");
+		System.out.println("issat called from line 156: pc :"+ pc +": leaf :"+leaf);
+		System.out.println("================");
 		if (isSat(pc)) {
 			ArrayList<SETNode> leaves = new ArrayList<>();
 			leaves.add(then_node);
@@ -165,6 +170,9 @@ public class Engine {
 		SETDecisionNode else_node = new SETDecisionNode(leaf, else_cond);
 		// if (pc == null) pc = new BooleanConstant(true);
 		pc = executeExpression(else_cond, leaf);
+				System.out.println("------------------");
+		System.out.println("issat called from line 168: ");
+				System.out.println("----------------");
 		if (isSat (pc)) {
 			ArrayList<SETNode> leaves = new ArrayList<> ();
 			leaves.add(else_node);
@@ -182,9 +190,10 @@ public class Engine {
 		
 		exploredNodes++;
 		SEResult res = new SEResult();
-
+		
 		for (SETNode leaf: leaves) {
 			if (stmt instanceof InstructionStatement) {
+				System.out.println("Executing instruction :"+(InstructionStatement)stmt);
 				res = res.merge (executeInstruction((InstructionStatement)stmt, leaf));
 			} else if (stmt instanceof IfStatement) {
 				res = res.merge (executeDecision((IfStatement)stmt, leaf));
@@ -242,7 +251,7 @@ public class Engine {
 
 	SolverContext _context;
 	ProverEnvironment _prover;
-
+	
 	void setUpJavaSMT () throws InvalidConfigurationException {
 		String [] args = {};
 		Configuration config = Configuration.fromCmdLineArguments(args);
@@ -255,14 +264,19 @@ public class Engine {
 	boolean isSat (Expression expr) {
 		ExpressionFormulaGenerator fg = new ExpressionFormulaGenerator(this._context);
 		try {
+			
 			// TODO: Exception check
 			_prover.push();
+			System.out.println("generate is called here with expression ::::"+expr);
 			BooleanFormula form = fg.generate(expr);
-			System.out.println("Boolean formula :"+form);
+			//BooleanFormula form=fg.testFormula();
+		
+			System.out.println("formula :::: "+form);
 			this._prover.addConstraint(form);
 			boolean res = this._prover.isUnsat();
 			this._prover.pop();
-			System.out.println("result:"+res);
+			System.out.println("formula :::: "+form+"::: !res :::"+!res);
+			
 			return !res;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -280,12 +294,17 @@ public class Engine {
 		// 	expr = new BinaryExpression(expr, guard, "||");
 		// }
 		// expr = new UnaryExpression(expr, UnaryExpression.Operator.NOT);
+		try{
 		Expression expr = args.get(0);
-		
-        	//System.out.println("Expression inside  stuck spec : "+args.get(0) + isSat(expr));
+		expr=executeExpression(expr,leaf);
+        	System.out.println("Expression "+expr+" inside  stuck spec : "+args.get(0) + isSat(expr));
+        			System.out.println("issat called from line 287: ");
 		if (isSat(expr)) {
 			System.out.println ("Explored nodes : "+exploredNodes+"---------------------------------------Specification stuck--------------------------------");
 			System.exit(0);
+		}
+		} catch(Exception e){
+			System.out.println("Exception  ::"+e);
 		}
 	}
 
@@ -300,9 +319,10 @@ public class Engine {
 		// }
 
 		// expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
-		System.out.println("inside nonDeterminism detect");
+
 		Expression expr = args.get(0);
-		System.out.println("expression : "+expr);
+        	System.out.println("Expression inside  nondet spec : "+args.get(0) + isSat(expr));
+        			System.out.println("issat called from line 308: ");
 		if (isSat (expr)) {
 			System.out.println ("Non Deterministic state found");
 			System.exit(0);

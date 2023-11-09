@@ -68,7 +68,7 @@ public class ProgramToCpp implements ExpressionVisitor, Visitor {
     void addDeclarations() {
         for (Declaration decl : this.program.declarations) {
             writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");
-			// variable_names.add(decl.vname);
+			variable_names.add(decl.vname);
         }
 		// for (Declaration decl: this.program.other_declarations) {
         //     writer.println(this.typeNameMap.get(decl.typeName.toString()) + " " + decl.vname + ";");

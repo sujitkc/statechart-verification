@@ -23,6 +23,10 @@ public class Declaration {
     return this.getState().getFullName() + '.' + this.vname;
   }
 
+ public String getFullUnderscoreVName() {
+    return this.getState().getFullName() + '_' + this.vname;
+  }
+
   public Type getType() {
     return this.type;
   }
