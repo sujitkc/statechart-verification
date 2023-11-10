@@ -641,9 +641,9 @@ catch(Exception e){
       Tree<State> destinationTree = new Tree<State>(destAncPath.get(inx)); 
       List<State> childStateList = destAncPath.get(inx).getAllSubstates(); 
       
-      System.out.println("SHELL " + destAncPath.get(inx).getFullName()); 
+      //System.out.println("SHELL " + destAncPath.get(inx).getFullName()); 
       for(State ch : childStateList){
-        System.out.println(ch.getFullName()); 
+        //System.out.println(ch.getFullName()); 
         // if(ch.equals(destAncPath.get(inx +1)))
         // {
         //   destinationTree.addSubtree(destAncPath.get(inx) , f(destAncPath, inx + 1, t)); 
@@ -666,14 +666,14 @@ catch(Exception e){
   private Tree getDestinationTree(Transition t) throws Exception{
     Tree<State> destTree = null; 
     State lub = this.stateTree.lub(t.getSource() , t.getDestination());
-    System.out.println("DESTINATION : " + t.getDestination().getFullName()); 
+    //System.out.println("DESTINATION : " + t.getDestination().getFullName()); 
     List<State> destAncList = this.stateTree.getAllAncestorsUpto(t.getDestination() , lub); 
 
-    System.out.println("DEST LIST"); 
-    for(State st : destAncList)
-    {
-      System.out.println(st.getFullName()); 
-    }
+    // System.out.println("DEST LIST"); 
+    // for(State st : destAncList)
+    // {
+    //   System.out.println(st.getFullName()); 
+    // }
     return this.f(destAncList , 0 , t); 
   }
 
