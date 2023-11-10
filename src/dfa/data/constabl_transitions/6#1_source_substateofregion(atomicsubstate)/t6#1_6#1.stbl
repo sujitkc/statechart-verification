@@ -77,7 +77,7 @@ statechart  chart{
 
     transition t1{
         source: chart.A.Sh.R1.ShR1A;
-        destination: chart.B.R1.R1A;
+        destination: chart.B.R2.R2B;
         trigger: e1;
         guard:(true);
         action:{}

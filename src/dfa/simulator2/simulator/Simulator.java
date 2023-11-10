@@ -620,50 +620,108 @@ catch(Exception e){
     }
   }
 
-  private Tree getDestinationTree(Transition t) throws Exception{
-    Tree<State> destinationStateTree = null;
-    State lub = this.stateTree.lub(t.getSource(), t.getDestination());
-    List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
-    if(destinationAncestors.size() > 1) {
-      destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
-      Shell shellAncestor = null;
-      for(State ancestor : destinationAncestors) {
-	if(ancestor instanceof Shell) {
-          shellAncestor = (Shell)ancestor;
-	  break;
-	}
-      }
-      if(shellAncestor != null) {
-        Tree<State> subtree = this.getEntrySubTree(shellAncestor);
-        List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
-	if(higherAncestors.size() > 1) {
-	  higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-          destinationStateTree = new Tree<State>(higherAncestors.get(0));
-          destinationStateTree.addPath(higherAncestors);
-          State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
-          destinationStateTree.addSubtree(currentLeaf, subtree);
-	}
-	else {
-          destinationStateTree = subtree;
-	}
-      }
-      else {
-        Tree<State> subtree = this.getEntrySubTree(t.getDestination());
-        destinationStateTree = new Tree<State>(destinationAncestors.get(0));
-        destinationStateTree.addPath(destinationAncestors);
-        State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
-        destinationStateTree.addSubtree(currentLeaf, subtree);
-      }
+  private Tree fdash(List<State>destAncPath , int inx , Transition t , State child) throws Exception
+  {
+    if(child.equals(destAncPath.get(inx+1)))
+    {
+      return f(destAncPath , inx+1 , t); 
     }
-    else {
-      destinationStateTree = this.getEntrySubTree(t.getDestination());
+    return this.getEntrySubTree(child); 
+  }
+
+  private Tree f(List<State>destAncPath , int inx , Transition t) throws Exception
+  {
+    if(inx == destAncPath.size()-1)
+    {
+      Tree<State> subtree = this.getEntrySubTree(t.getDestination()); 
+      return subtree; 
+    }
+    else if(destAncPath.get(inx) instanceof Shell)
+    {
+      Tree<State> destinationTree = new Tree<State>(destAncPath.get(inx)); 
+      List<State> childStateList = destAncPath.get(inx).getAllSubstates(); 
+      
+      System.out.println("SHELL " + destAncPath.get(inx).getFullName()); 
+      for(State ch : childStateList){
+        System.out.println(ch.getFullName()); 
+        // if(ch.equals(destAncPath.get(inx +1)))
+        // {
+        //   destinationTree.addSubtree(destAncPath.get(inx) , f(destAncPath, inx + 1, t)); 
+        // }
+        // else
+        // {
+        //   destinationTree.addSubtree(destAncPath.get(inx) , this.getEntrySubTree(ch)); 
+        // }
+        destinationTree.addSubtree(destAncPath.get(inx) , fdash(destAncPath, inx, t, ch));
+      }
+
+      return destinationTree; 
     }
 
-    return destinationStateTree;
+    Tree<State> destinationTree = new Tree<State>(destAncPath.get(inx)); 
+    destinationTree.addSubtree(destAncPath.get(inx) , f(destAncPath , inx+1 , t)); 
+    return destinationTree; 
   }
+  
+  private Tree getDestinationTree(Transition t) throws Exception{
+    Tree<State> destTree = null; 
+    State lub = this.stateTree.lub(t.getSource() , t.getDestination());
+    System.out.println("DESTINATION : " + t.getDestination().getFullName()); 
+    List<State> destAncList = this.stateTree.getAllAncestorsUpto(t.getDestination() , lub); 
+
+    System.out.println("DEST LIST"); 
+    for(State st : destAncList)
+    {
+      System.out.println(st.getFullName()); 
+    }
+    return this.f(destAncList , 0 , t); 
+  }
+
+  // private Tree getDestinationTree(Transition t) throws Exception{
+  //   Tree<State> destinationStateTree = null;
+  //   State lub = this.stateTree.lub(t.getSource(), t.getDestination());
+  //   List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
+  //   if(destinationAncestors.size() > 1) {
+  //     destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
+  //     Shell shellAncestor = null;
+  //     for(State ancestor : destinationAncestors) {
+	// if(ancestor instanceof Shell) {
+  //         shellAncestor = (Shell)ancestor;
+	//   break;
+	// }
+  //     }
+  //     if(shellAncestor != null) {
+  //       Tree<State> subtree = this.getEntrySubTree(shellAncestor);
+  //       List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
+	// if(higherAncestors.size() > 1) {
+	//   higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
+  //         destinationStateTree = new Tree<State>(higherAncestors.get(0));
+  //         destinationStateTree.addPath(higherAncestors);
+  //         State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
+  //         destinationStateTree.addSubtree(currentLeaf, subtree);
+	// }
+	// else {
+  //         destinationStateTree = subtree;
+	// }
+  //     }
+  //     else {
+  //       Tree<State> subtree = this.getEntrySubTree(t.getDestination());
+  //       destinationStateTree = new Tree<State>(destinationAncestors.get(0));
+  //       destinationStateTree.addPath(destinationAncestors);
+  //       State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
+  //       destinationStateTree.addSubtree(currentLeaf, subtree);
+  //     }
+  //   }
+  //   else {
+  //     destinationStateTree = this.getEntrySubTree(t.getDestination());
+  //   }
+
+  //   return destinationStateTree;
+  // }
 
   private Code getDestinationCode(Transition t) throws Exception {
     Tree<State> destinationStateTree = this.getDestinationTree(t);
+    //System.out.println(destinationStateTree); 
 
     Map<Statement, CFG> CFGs = this.CFGs;
     TreeMap<State, CFG> map = new TreeMap<>();

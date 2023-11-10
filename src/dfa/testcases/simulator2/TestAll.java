@@ -37,7 +37,7 @@ public class TestAll {
   	String[] events={"e1"};
   	//atomic
   	
-  	makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"}, events);
+  	//makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"B"}, events);
   	
   	/*makeTestCase("data/constabl_actions/1_source_atomic/t1_2#1.stbl", new String[] {"A"}, new String[]{"B1"}, events);
   	makeTestCase("data/constabl_actions/1_source_atomic/t1_2#2.stbl", new String[] {"A"}, new String[]{"B11"}, events);
@@ -268,9 +268,10 @@ public class TestAll {
   	
   	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_5#1.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"R1A","R2A"}, events);
   	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_5#2.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"R1A1","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_5#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);
+  	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_5#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A","ShR2A", "R2A"}, events); */
   	
-  	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#1.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"R1A","R2A"}, events);
+  	//makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#1.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"R1A","R2B"}, events);
+	/*
   	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#2.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"R1A1","R2A"}, events);
   	makeTestCase("data/constabl_actions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);*/
   	
@@ -297,38 +298,39 @@ public class TestAll {
   	makeTestCase("data/constabl_actions/6#2_source_substateofregion(compositesubstate)/t6#2_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);*/
   	
   	//6#3
-  	/*makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B"}, events);
   	
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B1"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B11"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B1"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B11"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_2#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
   	
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B1"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B11"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B1"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"B11"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_3#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
   	
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_4.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_4.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
   	
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_5#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);
   	
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"}, events);
-  	makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);*/
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#1.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#2.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"R1A1","R2A"}, events);
+  	// makeTestCase("data/constabl_actions/6#3_source_region(shellsubstate)/t6#3_6#3.stbl", new String[] {"ShR1A","ShR2A", "ShR2A1"}, new String[]{"ShR1A","ShR2A", "R2A"}, events);
   	
   }
   
   public void populate_simulate(){
-  	//String[] events={"e1","e2","e3"};
-  	//makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
-  	//makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
+  	String[] events={"e1"};
+  	// makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
+  	// makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	
-  	//String events1[]={"e1","e2","e3"};
-  	//makeTestCase("data/constabl_events/t6#2_6#3_nd.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh2R1A","Sh2R2A"}, events1);
+  	// String events1[]={"e1","e2","e3"};
+  	// makeTestCase("data/constabl_events/t6#2_6#3_nd.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh2R1A","Sh2R2A"}, events1);
   	
-  	String events2[]={"e1","e2","e3"};
-  	makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
+  	// String events2[]={"e1","e2","e3"};
+  	// makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
+	makeTestCase("data/constabl_transitions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A" , "ShR2A" , "R2A"}, events);
   }
   public void makeTestCase( String filename, String[] sourceConfig, String[] destConfig, String[] eventseq){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig, eventseq);
