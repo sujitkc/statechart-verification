@@ -110,7 +110,7 @@ if(BinaryExpr(state = ReversingAssistance_Enabled_Engaged_Warn))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) || BinaryExpr(ReversingAssistance_AccelPedal >= 35)) || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2)) || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)) || BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) || true) || BinaryExpr(ReversingAssistance_RA_Enabled != 1))], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) + BinaryExpr(ReversingAssistance_AccelPedal >= 35)) + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2)) + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)) + BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) + true) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Speed = 0), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal >= 35), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0), ) : null), ) : null + toInt(BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1))), ) : null), ) : null + toInt(true, ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ReversingAssistance_Enabled_Speed = 0)))
@@ -414,7 +414,7 @@ if(BinaryExpr(state = ReversingAssistance_Enabled_Engaged_Idle))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ReversingAssistance_AccelPedal >= 35)) || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)) || BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) || BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) || true) || BinaryExpr(ReversingAssistance_RA_Enabled != 1)) || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2))], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ReversingAssistance_AccelPedal >= 35)) + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)) + BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) + BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) + true) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2)) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal >= 35), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Speed = 0), ) : null), ) : null + toInt(BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1))), ) : null), ) : null + toInt(true, ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 2), ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ReversingAssistance_AccelPedal >= 35)))
@@ -718,7 +718,7 @@ if(BinaryExpr(state = ReversingAssistance_Enabled_Disengaged))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ReversingAssistance_AccelPedal >= 35)) || true) || BinaryExpr(ReversingAssistance_RA_Enabled != 1)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed >= 10) && BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed <= 25) && BinaryExpr(ReversingAssistance_Enabled_PRNDL_In = 1))))], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ReversingAssistance_AccelPedal >= 35)) + true) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) + BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed >= 10) && BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed <= 25) && BinaryExpr(ReversingAssistance_Enabled_PRNDL_In = 1)))) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal >= 35), ) : null), ) : null + toInt(true, ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null), ) : null + toInt(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed >= 10) && BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed <= 25) && BinaryExpr(ReversingAssistance_Enabled_PRNDL_In = 1))), ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ReversingAssistance_AccelPedal >= 35)))
@@ -900,7 +900,7 @@ if(BinaryExpr(state = ReversingAssistance_Override))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(false || true) || BinaryExpr(ReversingAssistance_AccelPedal < 35)) || BinaryExpr(ReversingAssistance_RA_Enabled != 1))], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + true) + BinaryExpr(ReversingAssistance_AccelPedal < 35)) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(true, ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal < 35), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = Error) && true))
@@ -1026,7 +1026,7 @@ if(BinaryExpr(state = ReversingAssistance_Enabled_Engaged_Assist))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)) || BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) || BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) || true) || BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)) || BinaryExpr(ReversingAssistance_RA_Enabled != 1)) || BinaryExpr(ReversingAssistance_AccelPedal >= 35))], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)) + BinaryExpr(ReversingAssistance_Enabled_Speed = 0)) + BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1)))) + true) + BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0)) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) + BinaryExpr(ReversingAssistance_AccelPedal >= 35)) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Speed = 0), ) : null), ) : null + toInt(BinaryExpr(BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 0) && BinaryExpr(ReversingAssistance_Enabled_Speed < 10)) || BinaryExpr(BinaryExpr(ReversingAssistance_Enabled_Speed > 25) || BinaryExpr(ReversingAssistance_Enabled_PRNDL_In != 1))), ) : null), ) : null + toInt(true, ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 0), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal >= 35), ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ReversingAssistance_Enabled_Engaged_ObstacleZone = 1)))
@@ -1328,7 +1328,7 @@ if(BinaryExpr(state = ReversingAssistance_Enabled_Hold))
 {
 stuck_spec(NOT[BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false || BinaryExpr(ReversingAssistance_Enabled_BrakePedal > 20)) || BinaryExpr(ReversingAssistance_RA_Enabled != 1)) || BinaryExpr(ReversingAssistance_AccelPedal >= 35)) || true)], ) : null;
 
-non_det(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(BinaryExpr(false + BinaryExpr(ReversingAssistance_Enabled_BrakePedal > 20)) + BinaryExpr(ReversingAssistance_RA_Enabled != 1)) + BinaryExpr(ReversingAssistance_AccelPedal >= 35)) + true) > 1), ) : null;
+non_det(BinaryExpr(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(BinaryExpr(toInt(toInt(false, ) : null, ) : null + toInt(BinaryExpr(ReversingAssistance_Enabled_BrakePedal > 20), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_RA_Enabled != 1), ) : null), ) : null + toInt(BinaryExpr(ReversingAssistance_AccelPedal >= 35), ) : null), ) : null + toInt(true, ) : null) > 1), ) : null;
 
 
 if(BinaryExpr(BinaryExpr(event = e) && BinaryExpr(ReversingAssistance_Enabled_BrakePedal > 20)))

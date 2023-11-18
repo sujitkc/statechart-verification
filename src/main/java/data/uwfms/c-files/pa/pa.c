@@ -5,11 +5,11 @@
 
 
 void non_det (bool b) {
-	assert(b);
+	assert(!b);
 }
 
 void stuck_spec (bool b) {
-	assert(b);
+	assert(!b);
 }
 int ParkAssist_minusone;
 int ParkAssist_Speed;
@@ -19,10 +19,10 @@ int ParkAssist_Enabled_SteerIn;
 int ParkAssist_PA_Enabled;
 int ParkAssist_Enabled_set_SteerOut;
 int ParkAssist_PA_HVI;
-int ParkAssist_Enabled_SpaceFound;
-int ParkAssist_Enabled_AccelPedal;
-int ParkAssist_Enabled_Accepted;
-int ParkAssist_Enabled_PRNDL_In;
+int ParkAssist_Enabled_SpaceFound; //input
+int ParkAssist_Enabled_AccelPedal; //input
+int ParkAssist_Enabled_Accepted; //input
+int ParkAssist_Enabled_PRNDL_In; //input
 int state;
 int event;
 int e;
@@ -45,17 +45,17 @@ int ParkAssist_Enabled_Engaged_Center;
 void makeSymbolic(){
 
 
-klee_make_symbolic(&ParkAssist_Enabled_Engaged_set_Brake, sizeof ParkAssist_Enabled_Engaged_set_Brake,"ParkAssist_Enabled_Engaged_set_Brake");
+//klee_make_symbolic(&ParkAssist_Enabled_Engaged_set_Brake, sizeof ParkAssist_Enabled_Engaged_set_Brake,"ParkAssist_Enabled_Engaged_set_Brake");
 //klee_make_symbolic(&ParkAssist_Enabled_Prompting, sizeof ParkAssist_Enabled_Prompting,"ParkAssist_Enabled_Prompting");
 //klee_make_symbolic(&ParkAssist_Enabled_Abort, sizeof ParkAssist_Enabled_Abort,"ParkAssist_Enabled_Abort");
-//klee_make_symbolic(&ParkAssist_Enabled_SpaceFound, sizeof ParkAssist_Enabled_SpaceFound,"ParkAssist_Enabled_SpaceFound");
+klee_make_symbolic(&ParkAssist_Enabled_SpaceFound, sizeof ParkAssist_Enabled_SpaceFound,"ParkAssist_Enabled_SpaceFound");
 //klee_make_symbolic(&ParkAssist_Disabled, sizeof ParkAssist_Disabled,"ParkAssist_Disabled");
-klee_make_symbolic(&ParkAssist_Enabled_set_SteerOut, sizeof ParkAssist_Enabled_set_SteerOut,"ParkAssist_Enabled_set_SteerOut");
-klee_make_symbolic(&ParkAssist_Enabled_set_Throttle, sizeof ParkAssist_Enabled_set_Throttle,"ParkAssist_Enabled_set_Throttle");
+//klee_make_symbolic(&ParkAssist_Enabled_set_SteerOut, sizeof ParkAssist_Enabled_set_SteerOut,"ParkAssist_Enabled_set_SteerOut");
+//klee_make_symbolic(&ParkAssist_Enabled_set_Throttle, sizeof ParkAssist_Enabled_set_Throttle,"ParkAssist_Enabled_set_Throttle");
 //klee_make_symbolic(&state, sizeof state,"state");
 klee_make_symbolic(&event, sizeof event,"event");
 //klee_make_symbolic(&ParkAssist_Enabled_Engaged_SwivelIn, sizeof ParkAssist_Enabled_Engaged_SwivelIn,"ParkAssist_Enabled_Engaged_SwivelIn");
-//klee_make_symbolic(&ParkAssist_Enabled_SteerIn, sizeof ParkAssist_Enabled_SteerIn,"ParkAssist_Enabled_SteerIn");
+klee_make_symbolic(&ParkAssist_Enabled_SteerIn, sizeof ParkAssist_Enabled_SteerIn,"ParkAssist_Enabled_SteerIn");
 //klee_make_symbolic(&ParkAssist_Enabled_Engaged_Center, sizeof ParkAssist_Enabled_Engaged_Center,"ParkAssist_Enabled_Engaged_Center");
 klee_make_symbolic(&ParkAssist_Enabled_AccelPedal, sizeof ParkAssist_Enabled_AccelPedal,"ParkAssist_Enabled_AccelPedal");
 //klee_make_symbolic(&e, sizeof e,"e");
@@ -63,7 +63,7 @@ klee_make_symbolic(&ParkAssist_Enabled_AccelPedal, sizeof ParkAssist_Enabled_Acc
 //klee_make_symbolic(&ParkAssist_minusone, sizeof ParkAssist_minusone,"ParkAssist_minusone");
 //klee_make_symbolic(&Error, sizeof Error,"Error");
 //klee_make_symbolic(&ParkAssist_Enabled_Engaged_Stop1, sizeof ParkAssist_Enabled_Engaged_Stop1,"ParkAssist_Enabled_Engaged_Stop1");
-//klee_make_symbolic(&ParkAssist_Enabled_Accepted, sizeof ParkAssist_Enabled_Accepted,"ParkAssist_Enabled_Accepted");
+klee_make_symbolic(&ParkAssist_Enabled_Accepted, sizeof ParkAssist_Enabled_Accepted,"ParkAssist_Enabled_Accepted");
 //klee_make_symbolic(&ParkAssist_Enabled_Engaged_Stop2, sizeof ParkAssist_Enabled_Engaged_Stop2,"ParkAssist_Enabled_Engaged_Stop2");
 //klee_make_symbolic(&No_event, sizeof No_event,"No_event");
 //klee_make_symbolic(&ParkAssist_Enabled_Idle, sizeof ParkAssist_Enabled_Idle,"ParkAssist_Enabled_Idle");
@@ -96,9 +96,10 @@ ParkAssist_Enabled_Engaged_SwivelIn = 8;
 ParkAssist_Enabled_Prompting = 9;
 ParkAssist_Enabled_Engaged_SwivelOut = 10;
 ParkAssist_Enabled_Engaged_Center = 11;
-state = ParkAssist_Fail;
+state = ParkAssist_Disabled;
 for (int i = 0; i < N; i++) {
 event = events[i];
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Engaged_Center)) {
             stuck_spec(!
 (
@@ -126,12 +127,13 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Engaged_SwivelOut)) {
-                stuck_spec(!
+/*                stuck_spec(!
 (
 ((false||((ParkAssist_Enabled_SteerIn>0)||(ParkAssist_Enabled_AccelPedal>0)))||(ParkAssist_Enabled_PRNDL_In!=1)))
-);
-                non_det((((false+((ParkAssist_Enabled_SteerIn>0)||(ParkAssist_Enabled_AccelPedal>0)))+(ParkAssist_Enabled_PRNDL_In!=1))>1));
+);*/
+//                non_det((((false+((ParkAssist_Enabled_SteerIn>0)||(ParkAssist_Enabled_AccelPedal>0)))+(ParkAssist_Enabled_PRNDL_In!=1))>1));
 if (((event==e)&&((ParkAssist_Enabled_SteerIn>0)||(ParkAssist_Enabled_AccelPedal>0)))) {
 state = ParkAssist_Enabled_Abort;
 ParkAssist_PA_HVI = 6;
@@ -146,12 +148,13 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Prompting)) {
-                    stuck_spec(!
+/*                    stuck_spec(!
 (
 ((false||((ParkAssist_Enabled_SpaceFound==0)||(ParkAssist_Enabled_Accepted==0)))||((ParkAssist_Enabled_Accepted==1)&&((ParkAssist_Speed==0)&&(ParkAssist_Enabled_PRNDL_In==1)))))
-);
-                    non_det((((false+((ParkAssist_Enabled_SpaceFound==0)||(ParkAssist_Enabled_Accepted==0)))+((ParkAssist_Enabled_Accepted==1)&&((ParkAssist_Speed==0)&&(ParkAssist_Enabled_PRNDL_In==1))))>1));
+);*/
+//                    non_det((((false+((ParkAssist_Enabled_SpaceFound==0)||(ParkAssist_Enabled_Accepted==0)))+((ParkAssist_Enabled_Accepted==1)&&((ParkAssist_Speed==0)&&(ParkAssist_Enabled_PRNDL_In==1))))>1));
 if (((event==e)&&((ParkAssist_Enabled_SpaceFound==0)||(ParkAssist_Enabled_Accepted==0)))) {
 state = ParkAssist_Enabled_Searching;
 ParkAssist_PA_HVI = 2;
@@ -166,9 +169,13 @@ ParkAssist_Enabled_set_SteerOut = 1;
 }
 else {
 }
+
 }
 else {
+//makeSymbolic();
 if ((state==ParkAssist_Enabled_Engaged_SwivelIn)) {
+assert(false);
+
                         stuck_spec(!
 (
 ((((false||((ParkAssist_Enabled_PRNDL_In==1)&&((ParkAssist_Speed>0)&&(ParkAssist_Speed<=5))))||((ParkAssist_Enabled_PRNDL_In==1)&&((ParkAssist_Speed>0)&&(ParkAssist_Speed<=5))))||((ParkAssist_Enabled_SteerIn>0)||(ParkAssist_Enabled_AccelPedal>0)))||(ParkAssist_Enabled_PRNDL_In!=1)))
@@ -179,6 +186,7 @@ state = ParkAssist_Enabled_Engaged_SwivelOut;
 ParkAssist_PA_HVI = 4;
 ParkAssist_Enabled_set_Throttle = 20;
 ParkAssist_Enabled_set_SteerOut = ParkAssist_minusone;
+assert(false);
 }
 else {
 }
@@ -203,9 +211,11 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Abort)) {
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Override)) {
                                 stuck_spec(!
 (
@@ -219,6 +229,7 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Engaged_Stop1)) {
                                     stuck_spec(!
 (
@@ -240,12 +251,13 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Disabled)) {
                                         stuck_spec(!
 (
 (((false||(ParkAssist_PA_Enabled==1))||(ParkAssist_PA_Enabled==0))||true))
 );
-                                        non_det(((((false+(ParkAssist_PA_Enabled==1))+(ParkAssist_PA_Enabled==0))+true)>1));
+//                                        non_det(((((false+(ParkAssist_PA_Enabled==1))+(ParkAssist_PA_Enabled==0))+true)>1));
 if (((event==e)&&(ParkAssist_PA_Enabled==1))) {
 state = ParkAssist_Enabled_Idle;
 ParkAssist_PA_HVI = 1;
@@ -266,11 +278,12 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Idle)) {
-                                            stuck_spec(!
+/*                                            stuck_spec(!
 (
 (false||((ParkAssist_Speed>0)&&((ParkAssist_Speed<=10)&&(ParkAssist_Enabled_PRNDL_In==3)))))
-);
+);*/
 if (((event==e)&&((ParkAssist_Speed>0)&&((ParkAssist_Speed<=10)&&(ParkAssist_Enabled_PRNDL_In==3))))) {
 state = ParkAssist_Enabled_Searching;
 ParkAssist_PA_HVI = 2;
@@ -279,12 +292,13 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Searching)) {
-                                                stuck_spec(!
+/*                                                stuck_spec(!
 (
 ((false||((ParkAssist_Speed==0)||((ParkAssist_Speed>0)||(ParkAssist_Enabled_PRNDL_In!=3))))||(ParkAssist_Enabled_SpaceFound==1)))
-);
-                                                non_det((((false+((ParkAssist_Speed==0)||((ParkAssist_Speed>0)||(ParkAssist_Enabled_PRNDL_In!=3))))+(ParkAssist_Enabled_SpaceFound==1))>1));
+);*/
+//                                                non_det((((false+((ParkAssist_Speed==0)||((ParkAssist_Speed>0)||(ParkAssist_Enabled_PRNDL_In!=3))))+(ParkAssist_Enabled_SpaceFound==1))>1));
 if (((event==e)&&((ParkAssist_Speed==0)||((ParkAssist_Speed>0)||(ParkAssist_Enabled_PRNDL_In!=3))))) {
 state = ParkAssist_Enabled_Idle;
 ParkAssist_PA_HVI = 1;
@@ -299,6 +313,7 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Enabled_Engaged_Stop2)) {
                                                     stuck_spec(!
 (
@@ -319,6 +334,7 @@ else {
 }
 }
 else {
+makeSymbolic();
 if ((state==ParkAssist_Fail)) {
 }
 else {
@@ -339,7 +355,7 @@ else {
 int main () {
 int N = 5; int events[N];
 klee_make_symbolic(events, sizeof events, "events");
-
+makeSymbolic();
 run(events, N);
 return 0;
 }

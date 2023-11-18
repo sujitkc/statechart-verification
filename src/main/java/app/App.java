@@ -23,6 +23,7 @@ public class App {
 	public static void main (String[] args) {
 		OptionGroup grp = new OptionGroup();
 		grp
+		.addOption(new Option("jpf", false, "Translate to Java for inspection with JPF-Symbc"))
 			.addOption(new Option("klee", false, "Translate to C++ for inspection with KLEE"))
 			.addOption(new Option("see", false, "Run spec with home grown symbolic engine"));
 		grp.setRequired(true);
@@ -44,6 +45,7 @@ public class App {
 			CommandLine cmd = parser.parse(options, args);
 
 			boolean useKlee = cmd.hasOption("klee");
+			boolean useJpf = cmd.hasOption("jpf");
 			int md = 10;
 			if (cmd.hasOption("max-depth")) {
 				String mds = cmd.getOptionValue("max-depth");
@@ -92,7 +94,12 @@ public class App {
 				if (useKlee) {
 					ProgramToCpp translator = new ProgramToCpp(program);
 					translator.translate();
-				} else {
+				} 
+				if (useJpf) {
+					ProgramToJava translator = new ProgramToJava(program);
+					translator.translate();
+				}
+				else {
 					Engine.PropertyOfInterest property = Engine.PropertyOfInterest.NON_DETERMINISM; // Default
 					if (cmd.hasOption("ss")) {
 						property = Engine.PropertyOfInterest.STUCK_SPECIFICATION;

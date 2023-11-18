@@ -5,11 +5,11 @@
 
 
 void non_det (bool b) {
-	assert(b);
+	assert(!b);
 }
 
 void stuck_spec (bool b) {
-	assert(b);
+	assert(!b);
 }
 int EmergencyVehicleAvoidance_Enabled_Engaged_DontStop;
 int EmergencyVehicleAvoidance_Enabled_Engaged_WayClear;
@@ -44,7 +44,7 @@ void makeSymbolic(){
 klee_make_symbolic(&EmergencyVehicleAvoidance_AccelPedal, sizeof EmergencyVehicleAvoidance_AccelPedal,"EmergencyVehicleAvoidance_AccelPedal");
 //klee_make_symbolic(&Error, sizeof Error,"Error");
 //klee_make_symbolic(&EmergencyVehicleAvoidance_minusone, sizeof EmergencyVehicleAvoidance_minusone,"EmergencyVehicleAvoidance_minusone");
-klee_make_symbolic(&EmergencyVehicleAvoidance_Override, sizeof EmergencyVehicleAvoidance_Override,"EmergencyVehicleAvoidance_Override");
+//klee_make_symbolic(&EmergencyVehicleAvoidance_Override, sizeof EmergencyVehicleAvoidance_Override,"EmergencyVehicleAvoidance_Override");
 klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut,"EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut");
 klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake,"EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake");
 klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Siren, sizeof EmergencyVehicleAvoidance_Enabled_Siren,"EmergencyVehicleAvoidance_Enabled_Siren");
@@ -53,10 +53,10 @@ klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle, size
 klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_PRNDL_In, sizeof EmergencyVehicleAvoidance_Enabled_PRNDL_In,"EmergencyVehicleAvoidance_Enabled_PRNDL_In");
 //klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_Slow, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_Slow,"EmergencyVehicleAvoidance_Enabled_Engaged_Slow");
 klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Speed, sizeof EmergencyVehicleAvoidance_Enabled_Speed,"EmergencyVehicleAvoidance_Enabled_Speed");
-//klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_DontStop, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_DontStop,"EmergencyVehicleAvoidance_Enabled_Engaged_DontStop");
+klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_DontStop, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_DontStop,"EmergencyVehicleAvoidance_Enabled_Engaged_DontStop");
 //klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Disengaged, sizeof EmergencyVehicleAvoidance_Enabled_Disengaged,"EmergencyVehicleAvoidance_Enabled_Disengaged");
-//klee_make_symbolic(&EmergencyVehicleAvoidance_EVA_Enabled, sizeof EmergencyVehicleAvoidance_EVA_Enabled,"EmergencyVehicleAvoidance_EVA_Enabled");
-//klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_WayClear, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_WayClear,"EmergencyVehicleAvoidance_Enabled_Engaged_WayClear");
+klee_make_symbolic(&EmergencyVehicleAvoidance_EVA_Enabled, sizeof EmergencyVehicleAvoidance_EVA_Enabled,"EmergencyVehicleAvoidance_EVA_Enabled");
+klee_make_symbolic(&EmergencyVehicleAvoidance_Enabled_Engaged_WayClear, sizeof EmergencyVehicleAvoidance_Enabled_Engaged_WayClear,"EmergencyVehicleAvoidance_Enabled_Engaged_WayClear");
 klee_make_symbolic(&EmergencyVehicleAvoidance_BrakePedal, sizeof EmergencyVehicleAvoidance_BrakePedal,"EmergencyVehicleAvoidance_BrakePedal");
 //klee_make_symbolic(&state, sizeof state,"state");
 klee_make_symbolic(&event, sizeof event,"event");
@@ -82,226 +82,300 @@ EmergencyVehicleAvoidance_Enabled_Engaged_PullOver = 6;
 state = EmergencyVehicleAvoidance_Disabled;
 for (int i = 0; i < N; i++) {
 event = events[i];
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Enabled_Engaged_PullOver)) {
             stuck_spec(!
 (
 ((((((false||((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))||(EmergencyVehicleAvoidance_EVA_Enabled!=1))||((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))||((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))||true)||(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1)))
 );
-            non_det((((((((false+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))+true)+(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))>1));
+//            non_det((((((((false+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))+true)+(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))>1));
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_Slow;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake = 30;
+  //R-assert(false);
+
 }
 else {
+ //R-assert(false);
+
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled!=1))) {
 state = EmergencyVehicleAvoidance_Disabled;
 EmergencyVehicleAvoidance_EVA_HVI = 0;
+  //R-assert(false);
+
 }
 else {
+  //R-assert(false);
+
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))) {
 state = EmergencyVehicleAvoidance_Enabled_Disengaged;
 EmergencyVehicleAvoidance_EVA_HVI = 1;
+  //R-assert(false);
+
 }
 else {
+  //R-assert(false);
+
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))) {
 state = EmergencyVehicleAvoidance_Override;
 EmergencyVehicleAvoidance_EVA_HVI = 2;
+  //R-assert(false);
+
 }
 else {
+  //R-assert(false);
+
 }
 if (((event==Error)&&true)) {
 state = EmergencyVehicleAvoidance_Fail;
 EmergencyVehicleAvoidance_EVA_HVI = 4;
+    //R-assert(false);
+
 }
 else {
+    //R-assert(false);
+
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_Coast;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle = 35;
+    //R-assert(false);
+
 }
 else {
+  //R-assert(false);
 }
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Enabled_Disengaged)) {
                 stuck_spec(!
 (
 ((((false||((EmergencyVehicleAvoidance_Enabled_Siren==1)&&((EmergencyVehicleAvoidance_Enabled_Speed>0)&&(EmergencyVehicleAvoidance_Enabled_PRNDL_In==3))))||(EmergencyVehicleAvoidance_EVA_Enabled!=1))||true)||((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30))))
 );
-                non_det((((((false+((EmergencyVehicleAvoidance_Enabled_Siren==1)&&((EmergencyVehicleAvoidance_Enabled_Speed>0)&&(EmergencyVehicleAvoidance_Enabled_PRNDL_In==3))))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+true)+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))>1));
+//                non_det((((((false+((EmergencyVehicleAvoidance_Enabled_Siren==1)&&((EmergencyVehicleAvoidance_Enabled_Speed>0)&&(EmergencyVehicleAvoidance_Enabled_PRNDL_In==3))))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+true)+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))>1));
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Siren==1)&&((EmergencyVehicleAvoidance_Enabled_Speed>0)&&(EmergencyVehicleAvoidance_Enabled_PRNDL_In==3))))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_Slow;
 EmergencyVehicleAvoidance_EVA_HVI = 1;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled!=1))) {
 state = EmergencyVehicleAvoidance_Disabled;
 EmergencyVehicleAvoidance_EVA_HVI = 0;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==Error)&&true)) {
 state = EmergencyVehicleAvoidance_Fail;
 EmergencyVehicleAvoidance_EVA_HVI = 4;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))) {
 state = EmergencyVehicleAvoidance_Override;
 EmergencyVehicleAvoidance_EVA_HVI = 2;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Enabled_Engaged_Coast)) {
                     stuck_spec(!
 (
 ((((((false||(EmergencyVehicleAvoidance_EVA_Enabled!=1))||((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))||((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))||true)||((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))||((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0))))
 );
-                    non_det((((((((false+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+true)+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))>1));
+//                   non_det((((((((false+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+true)+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))>1));
+//R-assert(false);
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled!=1))) {
 state = EmergencyVehicleAvoidance_Disabled;
 EmergencyVehicleAvoidance_EVA_HVI = 0;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))) {
 state = EmergencyVehicleAvoidance_Override;
 EmergencyVehicleAvoidance_EVA_HVI = 2;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))) {
 state = EmergencyVehicleAvoidance_Enabled_Disengaged;
 EmergencyVehicleAvoidance_EVA_HVI = 1;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==Error)&&true)) {
 state = EmergencyVehicleAvoidance_Fail;
 EmergencyVehicleAvoidance_EVA_HVI = 4;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_PullOver;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake = 60;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut = EmergencyVehicleAvoidance_minusone;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==0)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==0)))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_Slow;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake = 30;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Enabled_Engaged_Slow)) {
                         stuck_spec(!
 (
 ((((((false||((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))||(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))||(EmergencyVehicleAvoidance_EVA_Enabled!=1))||true)||((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))||((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30))))
 );
-                        non_det((((((((false+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))+(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+true)+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))>1));
+//                        non_det((((((((false+((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))+(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))+true)+((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))+((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))>1));
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Engaged_DontStop!=1)&&(EmergencyVehicleAvoidance_Enabled_Engaged_WayClear==1)))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_PullOver;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Brake = 60;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_SteerOut = EmergencyVehicleAvoidance_minusone;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_Enabled_Engaged_DontStop==1))) {
 state = EmergencyVehicleAvoidance_Enabled_Engaged_Coast;
 EmergencyVehicleAvoidance_Enabled_Engaged_Set_Throttle = 35;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled!=1))) {
 state = EmergencyVehicleAvoidance_Disabled;
 EmergencyVehicleAvoidance_EVA_HVI = 0;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==Error)&&true)) {
 state = EmergencyVehicleAvoidance_Fail;
 EmergencyVehicleAvoidance_EVA_HVI = 4;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_Enabled_Siren==0)||((EmergencyVehicleAvoidance_Enabled_Speed==0)||(EmergencyVehicleAvoidance_Enabled_PRNDL_In!=3))))) {
 state = EmergencyVehicleAvoidance_Enabled_Disengaged;
 EmergencyVehicleAvoidance_EVA_HVI = 1;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_BrakePedal!=0)||(EmergencyVehicleAvoidance_AccelPedal>=30)))) {
 state = EmergencyVehicleAvoidance_Override;
 EmergencyVehicleAvoidance_EVA_HVI = 2;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Override)) {
                             stuck_spec(!
 (
 (((false||true)||((EmergencyVehicleAvoidance_BrakePedal==0)&&(EmergencyVehicleAvoidance_AccelPedal<30)))||(EmergencyVehicleAvoidance_EVA_Enabled!=1)))
 );
-                            non_det(((((false+true)+((EmergencyVehicleAvoidance_BrakePedal==0)&&(EmergencyVehicleAvoidance_AccelPedal<30)))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))>1));
+//                            non_det(((((false+true)+((EmergencyVehicleAvoidance_BrakePedal==0)&&(EmergencyVehicleAvoidance_AccelPedal<30)))+(EmergencyVehicleAvoidance_EVA_Enabled!=1))>1));
 if (((event==Error)&&true)) {
 state = EmergencyVehicleAvoidance_Fail;
 EmergencyVehicleAvoidance_EVA_HVI = 4;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&((EmergencyVehicleAvoidance_BrakePedal==0)&&(EmergencyVehicleAvoidance_AccelPedal<30)))) {
 state = EmergencyVehicleAvoidance_Enabled_Disengaged;
 EmergencyVehicleAvoidance_EVA_HVI = 2;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled!=1))) {
 state = EmergencyVehicleAvoidance_Disabled;
 EmergencyVehicleAvoidance_EVA_HVI = 0;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Fail)) {
+//R-assert(false);
 }
 else {
+makeSymbolic();
 if ((state==EmergencyVehicleAvoidance_Disabled)) {
-                                    stuck_spec(!
+/*                                  stuck_spec(!
 (
 (false||(EmergencyVehicleAvoidance_EVA_Enabled==1)))
-);
+);*/
 if (((event==e)&&(EmergencyVehicleAvoidance_EVA_Enabled==1))) {
 state = EmergencyVehicleAvoidance_Enabled_Disengaged;
 EmergencyVehicleAvoidance_EVA_HVI = 1;
+//R-assert(false);
 }
 else {
+//R-assert(false);
 }
 }
 else {
+assert(false);
 }
 }
 }
 }
 }
-}
+}   
 }
 }
 }
 int main () {
 int N = 5; int events[N];
 klee_make_symbolic(events, sizeof events, "events");
+makeSymbolic();
 run(events, N);
 return 0;
 }

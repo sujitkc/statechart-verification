@@ -125,7 +125,9 @@ public class S2P {
 	private void processTransitions () {
 		FunctionName stuck_spec_name = new FunctionName("stuck_spec");
 		FunctionName non_det_name = new FunctionName("non_det");
-
+		/*Added by karthika*/
+		FunctionName to_int_name=new FunctionName("toInt");
+		/*end by karthika*/
 		Statement outerIf = new SkipStatement();
 		for (State state: _statechart.states) {
 			Name stateName = this.state_var_name_map.get(state.name);
@@ -160,12 +162,33 @@ public class S2P {
 			// Non Determinism
 			if (guard_list.size () > 1) { // With a single/no transition, Non Determinism is not possible
 		Expression expr = new BooleanConstant (false);
+		/*modified by karthika*/
+		ArrayList<Expression> args1 = new ArrayList<>();
+			args1.add(expr);
+		//FunctionDeclaration toInt=new FunctionDeclaration(to_int_name.name,int,)
+			expr = new FunctionCall(to_int_name,args1);
+			
 		for (Expression guard: guard_list) {
-			expr = new BinaryExpression(expr, guard, "+");
+		
+			//expr = new BinaryExpression(expr, guard, "+");
+			
+			ArrayList<Expression> argsexpr = new ArrayList<>();
+			argsexpr.add(expr);
+			Expression newexpr=new FunctionCall(to_int_name,argsexpr);
+			
+			ArrayList<Expression> argsguard = new ArrayList<>();
+			argsguard.add(guard);
+			Expression newguard=new FunctionCall(to_int_name,argsguard);
+			
+			expr = new BinaryExpression(newexpr, newguard, "+");
+			
+
+		/*end by karthika*/	
 		}
-
+		
 		expr = new BinaryExpression (expr, new IntegerConstant(1), ">");
-
+		
+		
 		ArrayList<Expression> args = new ArrayList<>();
 		args.add(expr);
 
