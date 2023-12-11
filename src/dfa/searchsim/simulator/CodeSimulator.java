@@ -41,6 +41,7 @@ public class CodeSimulator {
     this.env = env;
     this.cfgMap = this.makeCFGMap();
     interpreter = new ActionLanguageInterpreter(mode);
+    this.BigL = new LinkedList<>(); 
     
   }
 
@@ -69,15 +70,19 @@ public class CodeSimulator {
   
   private Internode smallSim(CFGNode node , MachineState currMS) throws Exception{
       if(node instanceof CFGAssignmentNode) {
+        System.out.println("Assign");
         return this.simulateAssignmentNode((CFGAssignmentNode)node , currMS);
       }
       else if(node instanceof CFGSkipNode) {
+        System.out.println("Skip"); 
         return this.simulateSkipNode((CFGSkipNode)node);
       }
       else if(node instanceof CFGDecisionNode) {
+        System.out.println("Decision"); 
         return this.simulateDecisionNode((CFGDecisionNode)node , currMS);
       }
       if(node.equals(node.getCFG().exitNode)) {
+        System.out.println("exit"); 
         return this.simulateExitNode(node , currMS);
       }
       return null; 
@@ -86,6 +91,12 @@ public class CodeSimulator {
 
   private void generateNewReadySet(MachineState currMS) throws Exception{// machine state param
     Set<CFGNode> currReadySet = currMS.getReadySet(); 
+    // for(CFGNode n: currReadySet){
+    //   System.out.println(n);
+    // }
+    //System.out.println("---"); 
+    if(currReadySet.size() == 0)
+      return ; 
     for(CFGNode iternode : currReadySet)
     {
       Set<CFGNode> newReadySet= new HashSet<CFGNode>(); 
@@ -95,9 +106,11 @@ public class CodeSimulator {
         if(compnode.equals(iternode))
         {
           Internode resNode = this.smallSim(iternode , currMS); 
-          if(resNode.getCP() != null)
+          if(resNode.getCPsize() != 0)
           {
-            newReadySet.add(resNode.getCP()); 
+            for(CFGNode n : resNode.getCP()){
+              newReadySet.add(n);
+            }
           }
 
           if(resNode.getEnv() != null)
@@ -116,6 +129,15 @@ public class CodeSimulator {
         this.BigL.add(newMS); 
       }
     }
+    this.mainSimulate();
+  }
+
+  private void mainSimulate() throws Exception {
+    if(this.BigL.size() == 0)
+      return; 
+
+    MachineState topMS = this.BigL.remove(); 
+    this.generateNewReadySet(topMS);
   }
 
   public void simulate() throws Exception {
@@ -129,19 +151,21 @@ public class CodeSimulator {
     MachineState motherTree = new MachineState(this.controlPoints , this.env); 
     this.miniStateTree = new Tree<MachineState>(motherTree); 
     BigL.add(motherTree); 
+    this.mainSimulate(); 
     
     /*  System.out.println("Printing all control points : ");
+    
     
     for(CFGNode n : controlPoints) {
       System.out.println(n.toString());
     }*/
-    while(BigL.isEmpty() == false) {
-      MachineState topMS = BigL.remove(); 
+    //while(BigL.isEmpty() == false) {
+      //MachineState topMS = BigL.remove(); 
       /*
        * exhaustive creation of ready sets from this.controlPoints ~ the current ready set 
        */
 
-      this.generateNewReadySet(topMS);
+      //this.generateNewReadySet(topMS);
       
       //this.controlPoints.remove(node);
      /*Original code */ 
@@ -177,7 +201,7 @@ public class CodeSimulator {
      
      // System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
 
-    }
+    //}
      System.out.println(" -- Code Simulation Ends. --");
     
     //System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
@@ -200,7 +224,7 @@ public class CodeSimulator {
     // return type change for execute method to update environment - changed by karthika
 Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignment, currEnv);
     //if it is exit node, it will not have a successor - changed by karthika
-    Internode res = new Internode(newEnv , null); 
+    Internode res = new Internode(newEnv); 
     if(assignmentNode.getSuccessor()!=null)
     {
       res.setCP(assignmentNode.getSuccessor()); 
@@ -215,8 +239,9 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
 
   private Internode simulateExitNode(CFGNode node , MachineState currMS) {
     //System.out.println("Simulating exit node " + node);
-    Internode resNode = new Internode(null , null); 
+    Internode resNode = new Internode(null); 
     Map<Declaration, Expression> currEnv = currMS.getEnv(); 
+    System.out.println("In concurrency"); 
   
     CFGCode code = this.cfgMap.get(node.getCFG());
     Set<CFGCode> nextCodes = code.getNextCFGCodeSet();
@@ -233,6 +258,7 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
       return null;
     }
     for(CFGNode s : nextNodes) {
+      System.out.println(s); 
       // if s is in joinPoints then it has already been visited from at least
       // one of the other running threads.
       if(currMS.getjoinPoints().keySet().contains(s) == false) {
@@ -252,8 +278,7 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
       // this means that all predecessors have been processed.
       if(sPredecessors.isEmpty()) {
         currMS.getjoinPoints().remove(s);
-        resNode.setCP(s); 
-        return resNode; 
+        resNode.addCP(s);
       }
     }
     return resNode; 
@@ -263,7 +288,7 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
   private Internode simulateDecisionNode(CFGDecisionNode node , MachineState currMS) throws Exception {
     Map<Declaration , Expression> currEnv = currMS.getEnv(); 
     Expression e = this.interpreter.evaluate(node.condition, currEnv);
-    Internode resNode = new Internode(null , null); 
+    Internode resNode = new Internode(null); 
     
     if(BooleanConstant.True.equals((BooleanConstant)e)) {
       resNode.setCP(node.thenSuccessor);

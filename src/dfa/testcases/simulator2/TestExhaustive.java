@@ -23,13 +23,13 @@ import frontend.Typechecker;
 
 import ast.*;
 import java.io.*;
-import simulator2.*;
-import simulator2.cfg.*;
-import simulator2.tree.*;
-import simulator2.simulator.*;
+import searchsim.*;
+import searchsim.cfg.*;
+import searchsim.tree.*;
+import searchsim.simulator.*;
 
 
-public class TestAll {
+public class TestExhaustive {
   
   List<TestCase> testlist=new ArrayList<TestCase>();
   public void populate_singlestepcheck(){

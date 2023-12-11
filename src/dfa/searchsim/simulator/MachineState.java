@@ -50,7 +50,12 @@ public class MachineState {
 
     public String toString()
     { 
-        String res = "NONONONONONONO"; 
+        String res = ""; 
+
+        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        {
+            res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
+        }
         return res; 
     }
 }

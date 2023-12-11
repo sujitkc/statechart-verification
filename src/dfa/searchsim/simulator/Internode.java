@@ -15,12 +15,12 @@ import java.util.Map;
 
 public class Internode{
     private Map<Declaration, Expression> envd; 
-    private CFGNode cp; 
+    private Set<CFGNode> cp; 
 
-    public Internode(Map<Declaration, Expression> e , CFGNode cp)
+    public Internode(Map<Declaration, Expression> e)
     {
         this.envd = e; 
-        this.cp = cp; 
+        this.cp = new HashSet<CFGNode>();
     }
 
     public void setEnv(Map<Declaration, Expression> e)
@@ -30,7 +30,13 @@ public class Internode{
 
     public void setCP(CFGNode cp)
     {
-        this.cp = cp; 
+        this.cp = new HashSet<CFGNode>(); 
+        this.cp.add(cp); 
+    }
+
+    public void addCP(CFGNode cp)
+    {
+        this.cp.add(cp); 
     }
 
     public Map<Declaration, Expression> getEnv()
@@ -38,8 +44,12 @@ public class Internode{
         return this.envd; 
     }
 
-    public CFGNode getCP()
+    public Set<CFGNode> getCP()
     {
         return this.cp; 
+    }
+
+    public int getCPsize(){
+        return this.cp.size(); 
     }
 }

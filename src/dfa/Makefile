@@ -63,6 +63,9 @@ simulator2-testfails:
 simulator2-testall:
 	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:./lib/jazzer_standalone.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestAll
 
+simulator2-testexhaustive:
+	java -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/junit-4.8.1.jar:./lib/jazzer_standalone.jar:ast:classes:./ org.junit.runner.JUnitCore testcases.simulator2.TestExhaustive
+
 simulator2-eventfuzz:
 	javac -Xlint:-unchecked -d classes -cp lib/java-cup-11a.jar:lib/jflex-1.4.1.jar:lib/jazzer_standalone.jar:lib/junit-4.8.1.jar:ast:classes:simulator:./ testcases/simulator2/TestFuzzer.java;
 	sh runfuzzer.sh TestFuzzer

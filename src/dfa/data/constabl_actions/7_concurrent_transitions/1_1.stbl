@@ -40,7 +40,7 @@ statechart  chart{
     }
 
     state R2{
-      entry:{x:=25; x:=26;}
+      entry:{x:=25; x:=233; x:=26;}
       exit:{x:=27; x:=28;}
 
       state R2A{

@@ -109,9 +109,15 @@ public static void fuzzerInitialize() {
       subtree);
 
     Code code = this.getDestinationCode(CFGTree);
+    System.out.println(code); 
     
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
     codeSimulator.simulate();
+    System.out.println("Printing machine states : "+codeSimulator.getEndPoints().size());
+    for(MachineState node : codeSimulator.getEndPoints())
+    {
+      System.out.println(node);
+    }
 
     for(String event : events) {
       
@@ -177,7 +183,7 @@ public static void fuzzerInitialize() {
     System.out.println(" -- Code Simulation Begins --");
     CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
     codeSimulator.simulate();
-
+    System.out.println("Printing machine states : "+codeSimulator.getEndPoints().size());
     for(MachineState node : codeSimulator.getEndPoints())
     {
       System.out.println(node);
