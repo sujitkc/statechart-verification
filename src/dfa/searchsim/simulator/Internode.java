@@ -5,7 +5,7 @@ import searchsim.cfg.*;
 
 import java.util.HashSet; 
 import java.util.Set;
-
+import java.util.HashMap; 
 import java.util.Map; 
 
 /*
@@ -47,6 +47,16 @@ public class Internode{
     public Set<CFGNode> getCP()
     {
         return this.cp; 
+    }
+
+    public Map<Declaration, Expression> getCloneEnv()
+    {
+        Map<Declaration, Expression> newEnv = new HashMap<Declaration, Expression>(); 
+        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        {
+            newEnv.put(entry.getKey(), entry.getValue()); 
+        }
+        return newEnv; 
     }
 
     public int getCPsize(){

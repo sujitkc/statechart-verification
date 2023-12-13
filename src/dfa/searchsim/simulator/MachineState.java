@@ -2,8 +2,10 @@ package searchsim.simulator;
 
 import ast.*;
 
+import java.util.HashMap;
 import java.util.HashSet; 
 import java.util.Set;
+
 import java.util.Map; 
 
 import searchsim.cfg.*; 
@@ -24,6 +26,7 @@ public class MachineState {
         this.currReadySet = rs;
         this.envd = e; 
         this.prevMachineState = null; 
+        this.joinPoints = new HashMap<>(); 
     }
 
     public MachineState(Map<Declaration , Expression> e , MachineState prev)
@@ -40,6 +43,16 @@ public class MachineState {
     public Map<Declaration , Expression> getEnv()
     {
         return this.envd; 
+    }
+
+    public Map<Declaration, Expression> getCloneEnv()
+    {
+        Map<Declaration, Expression> newEnv = new HashMap<Declaration, Expression>(); 
+        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        {
+            newEnv.put(entry.getKey(), entry.getValue()); 
+        }
+        return newEnv; 
     }
 
 
