@@ -1,10 +1,15 @@
 package searchsim.tree;
 
+import java.io.File; 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
@@ -12,6 +17,7 @@ import java.util.LinkedList;
 public class Tree<T>  {
   public final T root;
   private Map <T, Set<T>> map = new HashMap<>();
+  private Set <Edge<T>> edgeList = new HashSet<>(); 
 
   public Tree(T root) {
     this.root = root;
@@ -190,6 +196,42 @@ public class Tree<T>  {
     return slicedTree;
   }
 
+  public Set<Edge<T>>getEdgeList()
+  {
+    return this.edgeList; 
+  }
+
+  public void collectEdges() throws Exception{
+    //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("g.dot"))); 
+    for(T child : this.getChildren(this.root))
+    {
+      this.edgeList.add(new Edge(this.root , child)); 
+      Tree<T> subTree = this.getSubtree(child); 
+      subTree.collectEdges(); 
+      for(Edge e : subTree.getEdgeList())
+      {
+        this.edgeList.add(e); 
+      }
+    } 
+  }
+
+  public void writeDot() throws Exception{
+    try {File myFile = new File("/home/huntergreen/statechart-verification/src/dfa/trap.dot"); 
+    myFile.createNewFile();}
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/home/huntergreen/statechart-verification/src/dfa/trap.dot"))); 
+    out.write("digraph {"); 
+    out.newLine();
+    for(Edge e : this.edgeList)
+    {
+      out.write(e.getParent() + " " + e.getChild()); 
+      out.newLine();
+    }
+    out.write("}"); 
+  }
 
   public String toString() {
     String s = "Tree ";

@@ -25,6 +25,7 @@ public class CodeSimulator {
   private final Map<CFG, CFGCode> cfgMap;
   private final Map<CFGNode, Set<CFGNode>> joinPoints = new HashMap<>();
   private final Set<CFGNode> controlPoints = new HashSet<>();
+  private Boolean firstSim = false; 
   /*
    * Queue to store the ready sets 
    * Tree to store MachineStates 
@@ -94,6 +95,7 @@ public class CodeSimulator {
     if(currReadySet.size() == 0)
       return ; 
 
+    //System.out.println(currReadySet); 
     for(CFGNode iternode : currReadySet)
     {
       Set<CFGNode> newReadySet= new HashSet<CFGNode>(); 
@@ -106,19 +108,25 @@ public class CodeSimulator {
         }
         newReadySet.add(compnode); 
       }
+
+      //System.out.println(newReadySet); 
       if(iternode.equals(iternode.getCFG().exitNode)) {
         //System.out.println("exit"); 
+        //System.out.print(iternode);
         Internode resExit = this.simulateExitNode(iternode , currMS);
 
         if(resExit != null && resExit.getCP() != null){
           for(CFGNode n : resExit.getCP())
           {
-            newReadySet.add(n); 
+            if(!(n instanceof CFGSkipNode))
+              newReadySet.add(n); 
           }
         }
       }
 
+      
       Internode resNode = this.smallSim(iternode , currMS);
+      //System.out.println(currReadySet + " " + resNode.getCP());
       if(resNode != null && resNode.getEnv() != null)
       {
         newEnv = resNode.getCloneEnv(); 
@@ -126,18 +134,22 @@ public class CodeSimulator {
       if(resNode != null && resNode.getCP() != null){
         for(CFGNode n : resNode.getCP())
         {
-          newReadySet.add(n); 
+          if(!(n instanceof CFGSkipNode))
+            newReadySet.add(n); 
         }
       }
 
-      if(newReadySet.size() != 0)
-      {
-        MachineState newMS = new MachineState(newReadySet , newEnv); 
-        //System.out.println(newMS); 
-        Tree<MachineState> newMSSubTree = new Tree<MachineState>(newMS); 
-        this.miniStateTree.addSubtree(currMS , newMSSubTree); //add machine state subtree
-        this.BigL.add(newMS); 
-      }
+      System.out.println(currReadySet + " " + newReadySet); 
+      MachineState newMS = new MachineState(newReadySet , newEnv); 
+      System.out.println("test\n" + currMS + " " + newMS); 
+      Tree<MachineState> newMSSubTree = new Tree<MachineState>(newMS); 
+      this.miniStateTree.addSubtree(currMS , newMSSubTree); //add machine state subtree
+      this.BigL.add(newMS); 
+    }
+    if(this.firstSim == false)
+    {
+      System.out.println(this.miniStateTree); 
+      this.firstSim = true; 
     }
     this.mainSimulate();
   }
@@ -161,7 +173,7 @@ public class CodeSimulator {
     MachineState motherTree = new MachineState(this.controlPoints , this.env); 
     this.miniStateTree = new Tree<MachineState>(motherTree); 
     BigL.add(motherTree); 
-    //System.out.println(this.miniStateTree); 
+    System.out.println(this.miniStateTree); 
     this.mainSimulate(); 
     
     /*  System.out.println("Printing all control points : ");
@@ -219,8 +231,11 @@ public class CodeSimulator {
 
   }
 
-  public Set<MachineState> getEndPoints()
+  public Set<MachineState> getEndPoints() throws Exception
   {
+    //System.out.println(this.miniStateTree);
+    //this.miniStateTree.collectEdges(); 
+    //this.miniStateTree.writeDot(); 
     //System.out.println(this.miniStateTree);
     return this.miniStateTree.getLeafNodes(); 
   }

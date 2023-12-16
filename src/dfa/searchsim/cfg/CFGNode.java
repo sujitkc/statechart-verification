@@ -30,5 +30,9 @@ public abstract class CFGNode {
     this.predecessors.add(p);
   }
 
-  
+  @Override 
+  public boolean equals(Object o)
+  {
+    return this.toString().equals(o.toString()); 
+  }
 }

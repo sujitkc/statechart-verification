@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet; 
 import java.util.Set;
 
+
 import java.util.Map; 
 
 import searchsim.cfg.*; 
@@ -71,4 +72,24 @@ public class MachineState {
         }
         return res; 
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        MachineState m = (MachineState)o; 
+        for(Map.Entry<Declaration, Expression>entry: this.envd.entrySet())
+        {
+            if(m.getEnv().get(entry.getKey()) == null)
+            {
+                return false; 
+            }
+
+            if(m.getEnv().get(entry.getKey()) != entry.getValue())
+            {
+                return false; 
+            }
+        }
+        return true; 
+    }
 }
+
