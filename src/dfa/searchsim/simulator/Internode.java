@@ -62,4 +62,8 @@ public class Internode{
     public int getCPsize(){
         return this.cp.size(); 
     }
+
+    public String toString(){
+        return this.cp.toString(); 
+    }
 }

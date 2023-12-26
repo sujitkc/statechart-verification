@@ -1,6 +1,7 @@
 package searchsim.simulator;
 
 import java.util.Map;
+import java.util.HashMap;
 
 import ast.*;
 import generators.*;
@@ -24,6 +25,20 @@ SkipStatement.java
 
 Name.java                  
 */
+  public Map<Declaration, Expression> partialEval(Statement statement, Map<Declaration, Expression> env) throws Exception{
+    Map<Declaration, Expression>partialEnv = new HashMap<>(); 
+
+    if(statement instanceof AssignmentStatement){
+      AssignmentStatement assign = (AssignmentStatement)statement;
+      Name lhs = assign.lhs;
+      Expression rhs = assign.rhs;
+      Expression newvalue = ActionLanguageInterpreter.evaluate(rhs, env);
+      Declaration d = lhs.getDeclaration();
+      partialEnv.put(d, newvalue);
+    }
+    return partialEnv; 
+  }
+  
   public Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {
   //  System.out.println("execute called. on "+statement);
     if(statement instanceof AssignmentStatement) {

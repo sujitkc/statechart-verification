@@ -20,13 +20,18 @@ import searchsim.*;
 import searchsim.tree.*;
 import searchsim.cfg.*;
 import searchsim.code.*;
+import searchsim.digraph.*;
+import searchsim.simulator.CodeSimulator;
+
 import com.code_intelligence.jazzer.api.FuzzerSecurityIssueMedium;
+
 class FirstComparator implements Comparator<Name> {
 	@Override public int compare(Name e1, Name e2)
 	{
 		return (e1.getDeclaration().vname).compareTo(e2.getDeclaration().vname);
 	}
 }
+
 public class Simulator {
 
   public static int eventindex=0;
@@ -38,187 +43,196 @@ public class Simulator {
   private final ASTToCFG converter = new ASTToCFG();
   private Set<State> configuration;
 
+  private Queue<SimState> BigQueue = new LinkedList<>(); 
+  private Digraph<SimState>controlFlowGraph;
 
-public static void fuzzerInitialize() {
+  public static void fuzzerInitialize() {
     // Optional initialization to be run before the first call to fuzzerTestOneInput.
   }
-
 
   public Simulator(Statechart statechart) throws Exception {
     this(statechart, new HashSet<State>());
   }
 
-  public Simulator(Statechart statechart, Set<State> configuration) throws Exception {
-    this.statechart = statechart;
-    this.allTransitions = this.getAllTransitions();
-    this.valueEnvironment = this.makeValueEnvironment();
-    this.stateTree = this.getStateTree(this.statechart);
-    this.makeCFGs(this.statechart);
-    this.configuration = configuration;
-  }
- public void printCurrentExecutionInfo(String event){
- 	System.out.println(".........................");
-      	System.out.println(eventindex++ +" : Consuming event : "+event);
-	String con="Current configuration : [";
-	for(State s : this.configuration){
-		con+=s.name+", ";
-	}
-	con+="]";
-	
-	System.out.println(con);
-	
-	System.out.println("Current Environment : ");
-	 this.valueEnvironment.forEach((k,v) -> System.out.println(""
-                + k + " = " + v));
-	
-	
-	
- 	}
- public String getSimulationMode(){
- 	System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
-    Scanner in=new Scanner(System.in);
-    String str=in.nextLine();
-    String mode="random";
-    if(str.equals("2"))
-    	mode="interactive";
-    return mode;
- }
- public String setRandomSimulationMode(){
- 	return "random";
- }
-  public Set<State> simulate(List<String> events) throws Exception {
-    System.out.println ("==== Statechart Simulation begins ===");
-    printCurrentExecutionInfo(" initializing statechart");
-    
-    
-    //String mode=getSimulationMode();
-    String mode=setRandomSimulationMode();
-  
-    Set<State> newConfiguration = new HashSet<>();
-    this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+configuration);
-    Tree<State> subtree = this.getEntrySubTree(statechart);
-    Map<Statement, CFG> CFGs = this.CFGs;
-    TreeMap<State, CFG> map = new TreeMap<>();
-    Tree<CFG> CFGTree = map.map(
-      new Function<State, CFG>() {
-        public CFG apply(State state) {
-	  return CFGs.get(state.entry);
+    public Simulator(Statechart statechart, Set<State> configuration) throws Exception {
+        this.statechart = statechart;
+        this.allTransitions = this.getAllTransitions();
+        this.valueEnvironment = this.makeValueEnvironment();
+        this.stateTree = this.getStateTree(this.statechart);
+        this.makeCFGs(this.statechart);
+        this.configuration = configuration;
+    }
+
+    public void printCurrentExecutionInfo(String event){
+        System.out.println(".........................");
+        System.out.println(eventindex++ +" : Consuming event : "+event);
+        String con="Current configuration : [";
+        for(State s : this.configuration){
+            con+=s.name+", ";
         }
-      },
-      subtree);
+        con+="]";
+        
+        System.out.println(con);
+        
+        System.out.println("Current Environment : ");
+        this.valueEnvironment.forEach((k,v) -> System.out.println(""
+                    + k + " = " + v));
+ 	}
 
-    Code code = this.getDestinationCode(CFGTree);
-    System.out.println(code); 
-    
-    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
-    codeSimulator.simulate();
-    System.out.println("Printing machine states : "+codeSimulator.getEndPoints().size());
-    for(MachineState node : codeSimulator.getEndPoints())
-    {
-      System.out.println(node);
+    public String getSimulationMode(){
+        System.out.println("Enter the preffered mode of simulation \n 1. Random(Default) \n 2. Interactive \n Enter 1 or 2 : ");
+        Scanner in=new Scanner(System.in);
+        String str=in.nextLine();
+        String mode="random";
+        if(str.equals("2"))
+            mode="interactive";
+        return mode;
     }
 
-    for(String event : events) {
-      
-      newConfiguration=this.simulationStep(event);
-      
+    public String setRandomSimulationMode(){
+ 	    return "random";
     }
-    return newConfiguration;
-  }
 
-  public Set<State> simulationStep(String event) throws Exception {
-  /*
-   * Compute the set of all enabled transitions
-   * Check for non-determinism. Abort if found.
-   * For each enabled transition, compute code
-   * Compute complete code to be executed as the concurrent composition
-   *   of transition-wise code.
-   * while, there's code to execute, keep single-stepping
-  */
-    
-  
-    //String mode=getSimulationMode();
-        printCurrentExecutionInfo(event);
-
+    public void simulate(List<String> events) throws Exception {
+        System.out.println ("==== Statechart Simulation begins ===");
+        printCurrentExecutionInfo(" initializing statechart");
+        
+        
+        //String mode=getSimulationMode();
         String mode=setRandomSimulationMode();
-        //need edit by karthika
-    Set<Transition> enabledTransitions = this.getEnabledTransitions(event);
-    Set<State> newConfiguration = new HashSet<>();
-    Code code = null;
     
-    System.out.print("Enabled Transitions :");
-    if(enabledTransitions.size() > 1) {
-      Set<Code> codes = new HashSet<>();
-      
-      for(Transition t: enabledTransitions) {
-      	 System.out.print(t.name+",");
-        codes.add(this.getCode(t));
-      }
-      System.out.println();
-      
-      this.detectNondeterminism(codes);
-     // this.detectConcurrencyConflict(codes);
-      //code = new ConcurrentCode(codes);
-      if(this.detectNondeterminism(codes)){
-        List<Transition> tlist = new ArrayList<>(enabledTransitions);
-        Random r=new Random();
-        code = this.getCode(tlist.get(r.nextInt(tlist.size())));
+        Set<State> newConfiguration = new HashSet<>();
+        this.configuration =  this.getEntrySubTree(this.statechart).getLeafNodes();
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+configuration);
+        Tree<State> subtree = this.getEntrySubTree(statechart);
+        Map<Statement, CFG> CFGs = this.CFGs;
+        TreeMap<State, CFG> map = new TreeMap<>();
+        Tree<CFG> CFGTree = map.map(
+        new Function<State, CFG>() {
+            public CFG apply(State state) {
+        return CFGs.get(state.entry);
+            }
+        },
+        subtree);
 
-      }else{
-        code = new ConcurrentCode(codes);
-      }
+        Code code = this.getDestinationCode(CFGTree);
+        System.out.println(code); 
+
+        ExternalState motherExternal = new ExternalState(this.configuration, 
+        this.valueEnvironment, null 
+        ); 
+        this.controlFlowGraph = new Digraph<SimState>(
+        motherExternal
+        ); 
+        CodeSimulator codeSimulator = new CodeSimulator(code, motherExternal, mode);
+        codeSimulator.simulate();
+
+        Digraph<SimState> subG = codeSimulator.getInternalDigraph(); 
+        this.controlFlowGraph.addSubgraph(motherExternal , subG); 
+
+        for(SimState s : subG.getLeafNodes()){
+            MachineState tmp = (MachineState)s; 
+            ExternalState newEx = new ExternalState(this.configuration , tmp.getCloneEnv()); 
+            this.BigQueue.add(newEx); 
+            this.controlFlowGraph.addNode(newEx); 
+        }
+
+        for(String event : events) {
+          this.simulationStep(event); 
+        }
+        this.controlFlowGraph.toDotScript(); 
+    }
+
+    public void simulationStep(String event) throws Exception{
+      printCurrentExecutionInfo(event);
+      String mode=setRandomSimulationMode();
+      /*
+       * get code generated on the basis of 
+       * enabled transitions and the new configuration
+       * for each top external node in the big queue
+       * 
+       * Simulate for each top accordingly and then push 
+       * the new leaves in the queue
+       */
+
+      while(!this.BigQueue.isEmpty()){
+        SimState top = this.BigQueue.remove(); 
+        Set<State>newConfiguration = new HashSet<>(); 
+
+        if(top instanceof ExternalState){
+          ExternalState state = (ExternalState)top; 
+          state.setEvent(event); 
+          Set<Transition> enabledTransitions = this.getEnabledTransitions(event , state);
+
+          Code code = null;
+          System.out.print("Enabled Transitions :");
+          if(enabledTransitions.size() > 1) {
+            Set<Code> codes = new HashSet<>();
+
+            for(Transition t: enabledTransitions) {
+              System.out.print(t.name+",");
+              codes.add(this.getCode(t));
+            }
+            System.out.println();
+
+            this.detectNondeterminism(codes);
+
+            if(this.detectNondeterminism(codes)){
+              List<Transition> tlist = new ArrayList<>(enabledTransitions);
+              Random r=new Random();
+              code = this.getCode(tlist.get(r.nextInt(tlist.size())));
+
+            }else{
+              code = new ConcurrentCode(codes);
+            }
+
+          }
+          else if(enabledTransitions.size() == 1) {
+            List<Transition> tlist = new ArrayList<>(enabledTransitions);
+            Transition t = tlist.get(0);
+            System.out.println(t.name+",");
+            code = this.getCode(t);
+          }
+          else {
+            System.out.println("No transition enabled.");
+            return ;
+          }
+
+          for(State s : this.configuration){
+            Transition t = getTransitionForState(s,enabledTransitions);
+            if(t!=null){
+              Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
+              newConfiguration.addAll(atomicStates);    
+            }else{
+              newConfiguration.add(s);
+            }
+	        } 
+
+          System.out.println(" -- Code Simulation Begins --");
+          CodeSimulator codeSimulator = new CodeSimulator(code, state, mode);
+          codeSimulator.simulate();
+
+          Digraph<SimState> subG = codeSimulator.getInternalDigraph(); 
+          //subG.toDotScript();
+          this.controlFlowGraph.addSubgraph(state , subG); 
+
+          for(SimState s : codeSimulator.getInternalDigraph().getLeafNodes()){
+              MachineState tmp = (MachineState)s; 
+              ExternalState newEx = new ExternalState(newConfiguration , tmp.getCloneEnv()); 
+              this.BigQueue.add(newEx); 
+              this.controlFlowGraph.addNode(newEx); 
+          }
+        }
+     }
 
     }
-    else if(enabledTransitions.size() == 1) {
-      List<Transition> tlist = new ArrayList<>(enabledTransitions);
-      Transition t = tlist.get(0);
-      System.out.println(t.name+",");
-      code = this.getCode(t);
-    }
-    else {
-      System.out.println("No transition enabled.");
-      return this.configuration;
-    }
-    System.out.println(" -- Code Simulation Begins --");
-    CodeSimulator codeSimulator = new CodeSimulator(code, this.valueEnvironment, mode);
-    codeSimulator.simulate();
-    System.out.println("Printing machine states : "+codeSimulator.getEndPoints().size());
-    for(MachineState node : codeSimulator.getEndPoints())
-    {
-      System.out.println(node);
-    }
-    /*System.out.println("Value environment");
-    for(Declaration d : this.valueEnvironment.keySet()) {
-      System.out.println(d + " : " + this.valueEnvironment.get(d));
-    }*/
 
-    for(State s : this.configuration){
-		Transition t = getTransitionForState(s,enabledTransitions);
-	      if(t!=null){
-		Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
-	     	 newConfiguration.addAll(atomicStates);
-				
-		}
-	      else{
-		newConfiguration.add(s);
-		}
-	      
-	    }
-    
+    public void preProcessSimulationStep(){
 
-    if(newConfiguration.isEmpty() == false) {
-      this.configuration = newConfiguration;
     }
-    /*System.out.print("States in configuration : {");
-    for(State s : this.configuration) {
-      System.out.print(s.name+", ");
-    }
-    System.out.println("}");*/
-    return newConfiguration;
-  }
 
- private void detectConcurrencyConflict(Set<Code> codes) {
+    /*------------------ ACCESSORY FUNCTIONS --------------- */
+     private void detectConcurrencyConflict(Set<Code> codes) {
 try{
       System.out.println("detectConcurrencyConflict : "+codes.size()+" : "+codes);
       TreeSet<Name> definitions = new TreeSet<>(new FirstComparator());
@@ -476,7 +490,7 @@ catch(Exception e){
     }
   }
 
-  private Set<Transition> getEnabledTransitions(String event)
+  private Set<Transition> getEnabledTransitions(String event , ExternalState ES)
       throws Exception {
     Set<Transition> eTransitions = new HashSet<>();
     for(Transition t : this.allTransitions) {
@@ -489,14 +503,14 @@ catch(Exception e){
 	  
     }
     Tree<State> slicedStateTree = this.stateTree.getSlicedSubtree(
-      this.stateTree.root, this.configuration);
+      this.stateTree.root, ES.getConfiguration());
     Set<Transition> enabledTransitions = new HashSet<>();
     Set<State> allSourceStates = slicedStateTree.getAllNodes();
     for(Transition t : eTransitions) {
       if(allSourceStates.contains(t.getSource())) {
                BooleanConstant evaluatedGuard =
         (BooleanConstant)ActionLanguageInterpreter
-	  .evaluate(t.guard, this.valueEnvironment);
+	  .evaluate(t.guard, ES.getCloneEnv());
           if(evaluatedGuard.equals(BooleanConstant.True))
       {
          enabledTransitions.add(t);
@@ -654,15 +668,6 @@ catch(Exception e){
       
       //System.out.println("SHELL " + destAncPath.get(inx).getFullName()); 
       for(State ch : childStateList){
-        //System.out.println(ch.getFullName()); 
-        // if(ch.equals(destAncPath.get(inx +1)))
-        // {
-        //   destinationTree.addSubtree(destAncPath.get(inx) , f(destAncPath, inx + 1, t)); 
-        // }
-        // else
-        // {
-        //   destinationTree.addSubtree(destAncPath.get(inx) , this.getEntrySubTree(ch)); 
-        // }
         destinationTree.addSubtree(destAncPath.get(inx) , fdash(destAncPath, inx, t, ch));
       }
 
@@ -677,58 +682,9 @@ catch(Exception e){
   private Tree getDestinationTree(Transition t) throws Exception{
     Tree<State> destTree = null; 
     State lub = this.stateTree.lub(t.getSource() , t.getDestination());
-    //System.out.println("DESTINATION : " + t.getDestination().getFullName()); 
     List<State> destAncList = this.stateTree.getAllAncestorsUpto(t.getDestination() , lub); 
-
-    // System.out.println("DEST LIST"); 
-    // for(State st : destAncList)
-    // {
-    //   System.out.println(st.getFullName()); 
-    // }
     return this.f(destAncList , 0 , t); 
   }
-
-  // private Tree getDestinationTree(Transition t) throws Exception{
-  //   Tree<State> destinationStateTree = null;
-  //   State lub = this.stateTree.lub(t.getSource(), t.getDestination());
-  //   List<State> destinationAncestors = this.stateTree.getAllAncestorsUpto(t.getDestination(), lub);
-  //   if(destinationAncestors.size() > 1) {
-  //     destinationAncestors.remove(destinationAncestors.size() - 1); // removing t.destination.
-  //     Shell shellAncestor = null;
-  //     for(State ancestor : destinationAncestors) {
-	// if(ancestor instanceof Shell) {
-  //         shellAncestor = (Shell)ancestor;
-	//   break;
-	// }
-  //     }
-  //     if(shellAncestor != null) {
-  //       Tree<State> subtree = this.getEntrySubTree(shellAncestor);
-  //       List<State> higherAncestors = this.stateTree.getAllAncestorsUpto(shellAncestor, lub);
-	// if(higherAncestors.size() > 1) {
-	//   higherAncestors.remove(higherAncestors.size() - 1); // removing shell ancestor.
-  //         destinationStateTree = new Tree<State>(higherAncestors.get(0));
-  //         destinationStateTree.addPath(higherAncestors);
-  //         State currentLeaf = higherAncestors.get(higherAncestors.size() - 1);
-  //         destinationStateTree.addSubtree(currentLeaf, subtree);
-	// }
-	// else {
-  //         destinationStateTree = subtree;
-	// }
-  //     }
-  //     else {
-  //       Tree<State> subtree = this.getEntrySubTree(t.getDestination());
-  //       destinationStateTree = new Tree<State>(destinationAncestors.get(0));
-  //       destinationStateTree.addPath(destinationAncestors);
-  //       State currentLeaf = destinationAncestors.get(destinationAncestors.size() - 1);
-  //       destinationStateTree.addSubtree(currentLeaf, subtree);
-  //     }
-  //   }
-  //   else {
-  //     destinationStateTree = this.getEntrySubTree(t.getDestination());
-  //   }
-
-  //   return destinationStateTree;
-  // }
 
   private Code getDestinationCode(Transition t) throws Exception {
     Tree<State> destinationStateTree = this.getDestinationTree(t);
@@ -756,3 +712,5 @@ catch(Exception e){
     return code;
   }
 }
+
+

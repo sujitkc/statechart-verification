@@ -8,7 +8,7 @@ This code structure should create 6 interleavings
 
 Now if event "e" occurs the code that will be executed is
 
-<[<x:=23; x:=24>,<x:=31;x:=32>], y:=33, x:=x+1>
+<[<x:=23>,<x:=31>],   y:=33, x:=x+1>
 
 The first set concurrency will give 6 interleavings. Now there are 6*6 possibilities = 36 paths. followed by 2 nodes y:=33 and x:=x+1
 
@@ -21,23 +21,23 @@ statechart  chart{
   }
     x:int:local;
     y:int:local;
-  entry : {x:=1;x:=2;}
-  exit  : {x:=3;x:=4;} 
+  entry : {x:=1;}
+  exit  : {x:=3;} 
   functions {
   input<||>() : int;
   }
    
   shell B{
-    entry:{x:=13;x:=14;}
-    exit:{x:=15;x:=16;}
+    entry:{x:=13;}
+    exit:{}
 
     state R1{
-      entry:{x:=17;x:=18;}
+      entry:{x:=17;}
       exit:{}
 
       state R1A{
         entry:{}
-        exit:{x:=23; x:=24;}
+        exit:{x:=23;}
       }
 
       state R1B{
@@ -55,12 +55,12 @@ statechart  chart{
     }
 
     state R2{
-      entry:{x:=25; x:=26;}
+      entry:{x:=26;}
       exit:{}
 
       state R2A{
         entry:{}
-        exit:{y:=31; y:=32;}
+        exit:{x:=31;}
       }
 
       state R2B{

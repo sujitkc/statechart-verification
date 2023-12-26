@@ -3,47 +3,57 @@ package searchsim.simulator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.LinkedList;
-import java.util.Random;
 
 import ast.*;
 import searchsim.code.*;
 import searchsim.cfg.*;
 import searchsim.tree.*; 
+import searchsim.digraph.*;
+import searchsim.simulator.ExternalState; 
 
-public class CodeSimulator {
 
+public class CodeSimulator{
   private ActionLanguageInterpreter interpreter;
   private Code code;
-  private Map<Declaration, Expression> env;
   private final Map<CFG, CFGCode> cfgMap;
-  private final Map<CFGNode, Set<CFGNode>> joinPoints = new HashMap<>();
-  private final Set<CFGNode> controlPoints = new HashSet<>();
-  private Boolean firstSim = false; 
+  private ExternalState initState; 
+  private Digraph<SimState>internalControlFlowGraph; 
+  private Queue<SimState>internalQueue = new LinkedList<>(); 
+
   /*
-   * Queue to store the ready sets 
-   * Tree to store MachineStates 
+   * Since the code simulator executes one whole code fragment
+   * and returns a digraph of internal nodes, we need to attach 
+   * that digraph to the external node on which the transition 
+   * code is generated for
+   * 
+   * Hence we need a small queue and a big queue, the smaller queue
+   * will create the graph of internal nodes which contain the respective
+   * ready sets, and the bigger queue will contain external nodes on
+   * which the code has to be generated and executed
+   * 
+   * (Note the code might be different for different external states, since
+   * the transitions enabled depend on the environment)
+   * 
+   * Since we are storing partial environment in the internal nodes, a function 
+   * has to be implemented which traverses up the state ladder, however only 
+   * till it reaches the ExternalState ancestor which contains the full environment
+   * 
+   *  - K.S.
    */
 
-  private Queue<MachineState> BigL; 
-  private Tree<MachineState> miniStateTree; //need a digraph in future
-
-  public CodeSimulator(Code code, Map<Declaration, Expression> env, String mode) {
-  	
+  public CodeSimulator(Code code, ExternalState init , String mode) {
     this.code = code;
     CodeVisitor visitor = new CodeVisitor();
     visitor.visit(code);
-    this.env = env;
+    this.initState = init; 
     this.cfgMap = this.makeCFGMap();
     interpreter = new ActionLanguageInterpreter(mode);
-    this.BigL = new LinkedList<>(); 
-    
+    //this.internalControlFlowGraph = new Digraph<SimState>(this.initState); 
   }
 
   private Map<CFG, CFGCode> makeCFGMap() {
@@ -68,193 +78,11 @@ public class CodeSimulator {
     return map;
   }
 
-  
-  private Internode smallSim(CFGNode node , MachineState currMS) throws Exception{
-      if(node instanceof CFGAssignmentNode) {
-        //System.out.println("Assign");
-        return this.simulateAssignmentNode((CFGAssignmentNode)node , currMS);
-      }
-      else if(node instanceof CFGSkipNode) {
-        //System.out.println("Skip"); 
-        return this.simulateSkipNode((CFGSkipNode)node);
-      }
-      else if(node instanceof CFGDecisionNode) {
-        //System.out.println("Decision"); 
-        return this.simulateDecisionNode((CFGDecisionNode)node , currMS);
-      }
-      return null; 
-  }
-
-
-  private void generateNewReadySet(MachineState currMS) throws Exception{// machine state param
-    Set<CFGNode> currReadySet = currMS.getReadySet(); 
-    // for(CFGNode n: currReadySet){
-    //   System.out.println(n);
-    // }
-    //System.out.println("---"); 
-    if(currReadySet.size() == 0)
-      return ; 
-
-    //System.out.println(currReadySet); 
-    for(CFGNode iternode : currReadySet)
-    {
-      Set<CFGNode> newReadySet= new HashSet<CFGNode>(); 
-      Map<Declaration , Expression> newEnv = currMS.getCloneEnv();  
-      for(CFGNode compnode : currReadySet)
-      {
-        if(compnode.equals(iternode))
-        {
-          continue; 
-        }
-        newReadySet.add(compnode); 
-      }
-
-      //System.out.println(newReadySet); 
-      if(iternode.equals(iternode.getCFG().exitNode)) {
-        //System.out.println("exit"); 
-        //System.out.print(iternode);
-        Internode resExit = this.simulateExitNode(iternode , currMS);
-
-        if(resExit != null && resExit.getCP() != null){
-          for(CFGNode n : resExit.getCP())
-          {
-            if(!(n instanceof CFGSkipNode))
-              newReadySet.add(n); 
-          }
-        }
-      }
-
-      
-      Internode resNode = this.smallSim(iternode , currMS);
-      //System.out.println(currReadySet + " " + resNode.getCP());
-      if(resNode != null && resNode.getEnv() != null)
-      {
-        newEnv = resNode.getCloneEnv(); 
-      } 
-      if(resNode != null && resNode.getCP() != null){
-        for(CFGNode n : resNode.getCP())
-        {
-          if(!(n instanceof CFGSkipNode))
-            newReadySet.add(n); 
-        }
-      }
-
-      System.out.println(currReadySet + " " + newReadySet); 
-      MachineState newMS = new MachineState(newReadySet , newEnv); 
-      System.out.println("test\n" + currMS + " " + newMS); 
-      Tree<MachineState> newMSSubTree = new Tree<MachineState>(newMS); 
-      this.miniStateTree.addSubtree(currMS , newMSSubTree); //add machine state subtree
-      this.BigL.add(newMS); 
-    }
-    if(this.firstSim == false)
-    {
-      System.out.println(this.miniStateTree); 
-      this.firstSim = true; 
-    }
-    this.mainSimulate();
-  }
-
-  private void mainSimulate() throws Exception {
-    if(this.BigL.size() == 0)
-      return; 
-
-    MachineState topMS = this.BigL.remove(); 
-    this.generateNewReadySet(topMS);
-  }
-
-  public void simulate() throws Exception {
-    Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
-    for(CFGCode cfgCode : cfgCodes) {
-      //System.out.println("Initial control point : " + cfgCode.cfg);
-      this.controlPoints.add(cfgCode.cfg.entryNode);
-    }
-
-     
-    MachineState motherTree = new MachineState(this.controlPoints , this.env); 
-    this.miniStateTree = new Tree<MachineState>(motherTree); 
-    BigL.add(motherTree); 
-    System.out.println(this.miniStateTree); 
-    this.mainSimulate(); 
-    
-    /*  System.out.println("Printing all control points : ");
-    
-    
-    for(CFGNode n : controlPoints) {
-      System.out.println(n.toString());
-    }*/
-    //while(BigL.isEmpty() == false) {
-      //MachineState topMS = BigL.remove(); 
-      /*
-       * exhaustive creation of ready sets from this.controlPoints ~ the current ready set 
-       */
-
-      //this.generateNewReadySet(topMS);
-      
-      //this.controlPoints.remove(node);
-     /*Original code */ 
-     /*if(node.equals(node.getCFG().exitNode)) {
-        
-        simulateExitNode(node);
-      }
-      else if(node instanceof CFGAssignmentNode) {
-        this.simulateAssignmentNode((CFGAssignmentNode)node);
-      }
-      else if(node instanceof CFGSkipNode) {
-        this.simulateSkipNode((CFGSkipNode)node);
-      }
-      else if(node instanceof CFGDecisionNode) {
-        this.simulateDecisionNode((CFGDecisionNode)node);
-      }*/
-      
-      /*Changed by Karthika -- earlier the exit node was not being executed*/
-      
-      // if(node instanceof CFGAssignmentNode) {
-      //   this.simulateAssignmentNode((CFGAssignmentNode)node);
-      // }
-      // else if(node instanceof CFGSkipNode) {
-      //   this.simulateSkipNode((CFGSkipNode)node);
-      // }
-      // else if(node instanceof CFGDecisionNode) {
-      //   this.simulateDecisionNode((CFGDecisionNode)node);
-      // }
-      // if(node.equals(node.getCFG().exitNode)) {
-        
-      //   simulateExitNode(node);
-      // }
-     
-     // System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
-
-    //}
-     System.out.println(" -- Code Simulation Ends. --");
-    
-    //System.out.println("Printing Environment: "+this.env.values()+"-----[[[[[[[[]]]]]]]]");
-
-  }
-
-  public Set<MachineState> getEndPoints() throws Exception
-  {
-    //System.out.println(this.miniStateTree);
-    //this.miniStateTree.collectEdges(); 
-    //this.miniStateTree.writeDot(); 
-    //System.out.println(this.miniStateTree);
-    return this.miniStateTree.getLeafNodes(); 
-  }
-
-  public Map<Declaration, Expression> getRandomResultEnv()
-  {
-    return this.randomSelectEnv(this.miniStateTree.getLeafNodes()); 
-  }
 
   private Internode simulateAssignmentNode(CFGAssignmentNode node , MachineState currMS) throws Exception {
     Map<Declaration, Expression> currEnv = currMS.getCloneEnv(); 
-   CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
-    // return type change for execute method to update environment - changed by karthika
-Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignment, currEnv);
-    //if it is exit node, it will not have a successor - changed by karthika
-    // for(Map.Entry<Declaration , Expression>entry : newEnv.entrySet())
-    //     {
-    //         System.out.println(entry.getKey().getFullVName() + " " + entry.getValue() + "\n");
-    //     }
+    CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
+    Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignment, currEnv);
     Internode res = new Internode(newEnv); 
     if(assignmentNode.getSuccessor()!=null)
     {
@@ -262,13 +90,14 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
     }
     return res; 
   }
-  
+
   private Internode simulateSkipNode(CFGSkipNode node) {
     System.out.println("Skip ...");
     return null; 
   }
 
-  private Internode simulateExitNode(CFGNode node , MachineState currMS) {
+  private Internode simulateExitNode(CFGNode node , MachineState currMS, Map<CFGNode , Set<CFGNode>>joinPoints) {
+
     //System.out.println("Simulating exit node " + node);
     Internode resNode = new Internode(null); 
     Map<Declaration, Expression> currEnv = currMS.getCloneEnv(); 
@@ -282,6 +111,12 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
       //System.out.println("cfg of next code = " + nextCode.cfg);
       nextNodes.add(nextCode.cfg.entryNode);
     }
+
+    // System.out.println(currMS + " " + node + " " + currMS.getjoinPoints()); 
+    // System.out.println(nextNodes);
+    // System.out.println("BREAK");
+
+    //System.out.println(currMS.getReadySet() + " " + nextNodes); 
     if(nextNodes.isEmpty()) {
       //System.out.println("No next nodes");
       //System.out.println(" -- Code Simulation Ends. --");
@@ -292,7 +127,7 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
       //System.out.println(s); 
       // if s is in joinPoints then it has already been visited from at least
       // one of the other running threads.
-      if(currMS.getjoinPoints().keySet().contains(s) == false) {
+      if(joinPoints.keySet().contains(s) == false) {
         CFGCode scode = this.cfgMap.get(s.getCFG());
         Set<CFGCode> prevCodes = scode.getPreviousCFGCodeSet();
         Set<CFGNode> sPredecessors = new HashSet<>();
@@ -300,16 +135,17 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
           sPredecessors.add(prevCode.cfg.exitNode);
           //System.out.println("Predecessor added : " + prevCode.cfg);
 	}
-	currMS.getjoinPoints().put(s, sPredecessors);
+	joinPoints.put(s , sPredecessors);
       }
-      Set<CFGNode> sPredecessors = currMS.getjoinPoints().get(s);
+      Set<CFGNode> sPredecessors = joinPoints.get(s);
       sPredecessors.remove(node); // this can be done blindly. Failure
          // would mean some bug somewhere else.
 
       // this means that all predecessors have been processed.
       if(sPredecessors.isEmpty()) {
-        currMS.getjoinPoints().remove(s);
+        joinPoints.remove(s); 
         resNode.addCP(s);
+        System.out.println(resNode);
       }
     }
     return resNode; 
@@ -330,27 +166,98 @@ Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignm
     return resNode; 
   }
 
-  private CFGNode randomSelect() {
-    int index = new Random().nextInt(this.controlPoints.size());
-    int i = 0;
-    for(CFGNode node : this.controlPoints) {
-      if(i == index) {
-        return node;
-      }
-      i++;
+  private Internode smallSim(CFGNode node , MachineState currMS) throws Exception{
+    if(node instanceof CFGAssignmentNode) {
+      return this.simulateAssignmentNode((CFGAssignmentNode)node , currMS);
     }
-    return null;
+    else if(node instanceof CFGSkipNode) {
+      return this.simulateSkipNode((CFGSkipNode)node);
+    }
+    else if(node instanceof CFGDecisionNode) {
+      return this.simulateDecisionNode((CFGDecisionNode)node , currMS);
+    }
+    return null; 
   }
 
-  private Map<Declaration, Expression> randomSelectEnv(Set<MachineState>endPoints) {
-    int index = new Random().nextInt(endPoints.size());
-    int i = 0;
-    for(MachineState node : endPoints) {
-      if(i == index) {
-        return node.getEnv();
+
+  private void generateNewReadySet(MachineState currMS) throws Exception{// machine state param
+    Set<CFGNode> currReadySet = currMS.getReadySet(); 
+    if(currReadySet.size() == 0)
+      return ; 
+
+    for(CFGNode iternode : currReadySet)
+    {
+      Set<CFGNode> newReadySet= new HashSet<CFGNode>(); 
+      Map<Declaration , Expression> newEnv = currMS.getCloneEnv();  
+      Map<CFGNode , Set<CFGNode>>newJPSet = currMS.getjoinPointsClone(); 
+
+      for(CFGNode compnode : currReadySet)
+      {
+        if(compnode.equals(iternode))
+        {
+          continue; 
+        }
+        newReadySet.add(compnode); 
       }
-      i++;
+
+
+      if(iternode.equals(iternode.getCFG().exitNode)) {
+        Internode resExit = this.simulateExitNode(iternode , currMS, newJPSet);
+
+        if(resExit != null && resExit.getCP() != null){
+          for(CFGNode n : resExit.getCP())
+          {
+            newReadySet.add(n); 
+          }
+        }
+      }
+
+      
+      Internode resNode = this.smallSim(iternode , currMS);
+      if(resNode != null && resNode.getEnv() != null)
+      {
+        newEnv = resNode.getCloneEnv(); 
+      } 
+      if(resNode != null && resNode.getCP() != null){
+        for(CFGNode n : resNode.getCP())
+        {
+          newReadySet.add(n); 
+        }
+      }
+      MachineState newMS = new MachineState(newReadySet , newEnv); 
+      newMS.addJoinPoints(newJPSet);  
+      this.internalControlFlowGraph.addChild(currMS , newMS); 
+      this.internalQueue.add(newMS); 
     }
-    return null;
+    this.mainSimulate();
+  }
+
+  private void mainSimulate() throws Exception {
+    if(this.internalQueue.size() == 0)
+      return; 
+
+    MachineState topMS = (MachineState)this.internalQueue.remove(); 
+    this.generateNewReadySet(topMS);
+  }
+
+  public void simulate() throws Exception {
+    Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
+    Set<CFGNode> initReadySet = new HashSet<CFGNode>(); 
+    for(CFGCode cfgCode : cfgCodes) {
+      initReadySet.add(cfgCode.cfg.entryNode);
+    }
+
+    
+    MachineState motherTree = new MachineState(initReadySet , initState.getCloneEnv()); 
+    this.internalControlFlowGraph = new Digraph<SimState>(motherTree); 
+    internalQueue.add(motherTree); 
+    this.mainSimulate(); 
+
+    System.out.println(" -- Code Simulation Ends. --");
+    
+  }
+
+  public Digraph<SimState>getInternalDigraph(){
+    return this.internalControlFlowGraph; 
   }
 }

@@ -12,28 +12,27 @@ import java.util.Map;
 import searchsim.cfg.*; 
 
 
-public class MachineState {
+public class MachineState extends SimState{
     private Map<CFGNode , Set<CFGNode>>joinPoints;  //joinSet for a particular interleaving
     private Set<CFGNode>currReadySet; // has to be a hashset of cps
-    private MachineState prevMachineState; //null for starting of code
+
     /*
      * Note : 
      * List of parent states in case of digraph
      */
-    private Map<Declaration, Expression>envd; //change in environment
+    private Map<Declaration, Expression>envd; //partial environment
 
     public MachineState(Set<CFGNode>rs , Map<Declaration , Expression> e) //rooted
     {
         this.currReadySet = rs;
         this.envd = e; 
-        this.prevMachineState = null; 
         this.joinPoints = new HashMap<>(); 
     }
 
     public MachineState(Map<Declaration , Expression> e , MachineState prev)
     {
         this.envd = e; 
-        this.prevMachineState = prev; 
+        this.parent = prev; 
     }
 
     public Set<CFGNode> getReadySet()
@@ -56,16 +55,48 @@ public class MachineState {
         return newEnv; 
     }
 
+    public void addJoinPoints(Map<CFGNode , Set<CFGNode>>jp)
+    {
+        this.joinPoints = new HashMap<CFGNode , Set<CFGNode>>(); 
+        for(Map.Entry<CFGNode , Set<CFGNode>>entry : jp.entrySet()){
+            Set<CFGNode>newval = new HashSet<CFGNode>(); 
+            for(CFGNode n : entry.getValue()){
+                newval.add(n);  
+            }
+            this.joinPoints.put(entry.getKey() , newval); 
+        }
+    }
+
+    public Map<CFGNode , Set<CFGNode>> getjoinPointsClone(){
+        Map<CFGNode , Set<CFGNode>>newMap = new HashMap<>(); 
+        for(Map.Entry<CFGNode , Set<CFGNode>>entry : this.joinPoints.entrySet()){
+            Set<CFGNode>newval = new HashSet<CFGNode>(); 
+            for(CFGNode n : entry.getValue()){
+                newval.add(n);  
+            }
+            newMap.put(entry.getKey() , newval); 
+        }
+        return newMap; 
+    }
 
     public Map<CFGNode , Set<CFGNode>> getjoinPoints()
     {
         return this.joinPoints;
     }
 
-    public String toString()
-    { 
-        String res = ""; 
+    public void putJoinPoint(CFGNode s , Set<CFGNode> sPredecessors)
+    {
+        this.joinPoints.put(s , sPredecessors); 
+    }
 
+    public void deleteJoinPoint(CFGNode s)
+    {
+        this.joinPoints.remove(s); 
+    }
+
+    public String getEnvString()
+    {
+        String res = "";
         for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
         {
             res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
@@ -73,23 +104,29 @@ public class MachineState {
         return res; 
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        MachineState m = (MachineState)o; 
-        for(Map.Entry<Declaration, Expression>entry: this.envd.entrySet())
+    public String toString()
+    { 
+        String res = this.currReadySet.toString() + " ";
+        
+        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
         {
-            if(m.getEnv().get(entry.getKey()) == null)
-            {
-                return false; 
-            }
-
-            if(m.getEnv().get(entry.getKey()) != entry.getValue())
-            {
-                return false; 
-            }
+            res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
         }
-        return true; 
+        //System.out.println(res.hashCode()); 
+        return res; 
     }
+
+
+    // @Override
+    // public boolean equals(Object o)
+    // {
+    //     return this.toString().equals(o.toString()); 
+    // }
+
+    // @Override
+    // public int hashCode()
+    // {
+    //     return this.toString().hashCode();
+    // }
 }
 
