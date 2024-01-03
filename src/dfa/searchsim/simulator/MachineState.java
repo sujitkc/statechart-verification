@@ -20,18 +20,18 @@ public class MachineState extends SimState{
      * Note : 
      * List of parent states in case of digraph
      */
-    private Map<Declaration, Expression>envd; //partial environment
+
 
     public MachineState(Set<CFGNode>rs , Map<Declaration , Expression> e) //rooted
     {
         this.currReadySet = rs;
-        this.envd = e; 
+        this.environment = e; 
         this.joinPoints = new HashMap<>(); 
     }
 
     public MachineState(Map<Declaration , Expression> e , MachineState prev)
     {
-        this.envd = e; 
+        this.environment = e; 
         this.parent = prev; 
     }
 
@@ -42,13 +42,13 @@ public class MachineState extends SimState{
 
     public Map<Declaration , Expression> getEnv()
     {
-        return this.envd; 
+        return this.environment; 
     }
 
     public Map<Declaration, Expression> getCloneEnv()
     {
         Map<Declaration, Expression> newEnv = new HashMap<Declaration, Expression>(); 
-        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        for(Map.Entry<Declaration , Expression>entry : this.environment.entrySet())
         {
             newEnv.put(entry.getKey(), entry.getValue()); 
         }
@@ -97,7 +97,7 @@ public class MachineState extends SimState{
     public String getEnvString()
     {
         String res = "";
-        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        for(Map.Entry<Declaration , Expression>entry : this.environment.entrySet())
         {
             res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
         }
@@ -106,9 +106,9 @@ public class MachineState extends SimState{
 
     public String toString()
     { 
-        String res = this.currReadySet.toString() + " ";
+        String res = "RS = " + this.currReadySet.toString() + " | delta env = ";
         
-        for(Map.Entry<Declaration , Expression>entry : this.envd.entrySet())
+        for(Map.Entry<Declaration , Expression>entry : this.environment.entrySet())
         {
             res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
         }

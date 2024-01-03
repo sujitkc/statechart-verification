@@ -3,6 +3,9 @@ package searchsim.simulator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+
+import javax.swing.Action;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
@@ -80,9 +83,12 @@ public class CodeSimulator{
 
 
   private Internode simulateAssignmentNode(CFGAssignmentNode node , MachineState currMS) throws Exception {
-    Map<Declaration, Expression> currEnv = currMS.getCloneEnv(); 
     CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
-    Map<Declaration, Expression> newEnv = interpreter.execute(assignmentNode.assignment, currEnv);
+    Set<Declaration> depVarSet = ActionLanguageInterpreter.getDependentVarSet(assignmentNode.assignment.rhs);
+    Map<Declaration, Expression> currEnv = currMS.getDependendentEnvironment(depVarSet); 
+
+    Map<Declaration, Expression> newEnv = interpreter.partialEval(assignmentNode.assignment, currEnv);
+    
     Internode res = new Internode(newEnv); 
     if(assignmentNode.getSuccessor()!=null)
     {
@@ -153,7 +159,9 @@ public class CodeSimulator{
   }
 
   private Internode simulateDecisionNode(CFGDecisionNode node , MachineState currMS) throws Exception {
-    Map<Declaration , Expression> currEnv = currMS.getCloneEnv(); 
+    Set<Declaration> depVarSet = ActionLanguageInterpreter.getDependentVarSet(node.condition);
+    Map<Declaration , Expression> currEnv = currMS.getDependendentEnvironment(depVarSet); 
+
     Expression e = this.interpreter.evaluate(node.condition, currEnv);
     Internode resNode = new Internode(null); 
     
@@ -225,6 +233,7 @@ public class CodeSimulator{
         }
       }
       MachineState newMS = new MachineState(newReadySet , newEnv); 
+      newMS.setParent(currMS);
       newMS.addJoinPoints(newJPSet);  
       this.internalControlFlowGraph.addChild(currMS , newMS); 
       this.internalQueue.add(newMS); 
@@ -248,7 +257,8 @@ public class CodeSimulator{
     }
 
     
-    MachineState motherTree = new MachineState(initReadySet , initState.getCloneEnv()); 
+    MachineState motherTree = new MachineState(initReadySet , new HashMap<>()); 
+    motherTree.setParent(this.initState);
     this.internalControlFlowGraph = new Digraph<SimState>(motherTree); 
     internalQueue.add(motherTree); 
     this.mainSimulate(); 

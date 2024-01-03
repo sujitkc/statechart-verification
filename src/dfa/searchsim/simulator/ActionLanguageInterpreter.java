@@ -2,6 +2,8 @@ package searchsim.simulator;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set; 
+import java.util.HashSet;
 
 import ast.*;
 import generators.*;
@@ -25,18 +27,53 @@ SkipStatement.java
 
 Name.java                  
 */
-  public Map<Declaration, Expression> partialEval(Statement statement, Map<Declaration, Expression> env) throws Exception{
-    Map<Declaration, Expression>partialEnv = new HashMap<>(); 
+  public static Set<Declaration> getDependentVarSet(Expression e){
+    if(e instanceof IntegerConstant || e instanceof BooleanConstant || e instanceof StringLiteral){
+      return null; 
+    }
+    else if(e instanceof BinaryExpression){
+      BinaryExpression be = (BinaryExpression)e;
+      Set<Declaration> left = ActionLanguageInterpreter.getDependentVarSet(be.left);
+      Set<Declaration> right = ActionLanguageInterpreter.getDependentVarSet(be.right); 
+
+      Set<Declaration> newSet = new HashSet<Declaration>(); 
+
+      if(left != null){
+        for(Declaration d : left){
+          newSet.add(d); 
+        }
+      }
+
+      if(right != null){
+        for(Declaration d : right){
+          newSet.add(d); 
+        }
+      }
+
+      return newSet; 
+    }
+    else if(e instanceof Name){
+      Declaration d=((Name)e).getDeclaration();
+      Set<Declaration> newSet = new HashSet<Declaration>(); 
+      newSet.add(d); 
+      return newSet; 
+    }
+    return null; 
+  }
+
+  public Map<Declaration, Expression> partialEval(Statement statement , Map<Declaration, Expression>partialEnv) throws Exception{
+    Map<Declaration, Expression>resPartialEnv = new HashMap<>(); 
 
     if(statement instanceof AssignmentStatement){
       AssignmentStatement assign = (AssignmentStatement)statement;
       Name lhs = assign.lhs;
-      Expression rhs = assign.rhs;
-      Expression newvalue = ActionLanguageInterpreter.evaluate(rhs, env);
+      Expression rhs = assign.rhs;      
+      Expression newvalue = ActionLanguageInterpreter.evaluate(rhs, partialEnv);
       Declaration d = lhs.getDeclaration();
-      partialEnv.put(d, newvalue);
+      resPartialEnv.put(d, newvalue);
     }
-    return partialEnv; 
+
+    return resPartialEnv; 
   }
   
   public Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {

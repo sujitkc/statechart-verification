@@ -42,25 +42,28 @@ public class Simulator {
   public final Map<Statement, CFG> CFGs = new HashMap<>();
   private final ASTToCFG converter = new ASTToCFG();
   private Set<State> configuration;
+  private Set<ExternalState>externStateSet = new HashSet<ExternalState>(); 
+  private boolean branchingFlag = false; 
 
   private Queue<SimState> BigQueue = new LinkedList<>(); 
-  private Digraph<SimState>controlFlowGraph;
+  private SimStateDigraph controlFlowGraph;
 
   public static void fuzzerInitialize() {
     // Optional initialization to be run before the first call to fuzzerTestOneInput.
   }
 
-  public Simulator(Statechart statechart) throws Exception {
-    this(statechart, new HashSet<State>());
+  public Simulator(Statechart statechart , boolean branchingFlag) throws Exception {
+    this(statechart, new HashSet<State>() , branchingFlag);
   }
 
-    public Simulator(Statechart statechart, Set<State> configuration) throws Exception {
+    public Simulator(Statechart statechart, Set<State> configuration , boolean branchingFlag) throws Exception {
         this.statechart = statechart;
         this.allTransitions = this.getAllTransitions();
         this.valueEnvironment = this.makeValueEnvironment();
         this.stateTree = this.getStateTree(this.statechart);
         this.makeCFGs(this.statechart);
-        this.configuration = configuration;
+        this.configuration = configuration; 
+        this.branchingFlag = branchingFlag; 
     }
 
     public void printCurrentExecutionInfo(String event){
@@ -118,10 +121,10 @@ public class Simulator {
         Code code = this.getDestinationCode(CFGTree);
         System.out.println(code); 
 
-        ExternalState motherExternal = new ExternalState(this.configuration, 
+        ExternalState motherExternal = new ExternalState(new HashSet<>(), 
         this.valueEnvironment, null 
         ); 
-        this.controlFlowGraph = new Digraph<SimState>(
+        this.controlFlowGraph = new SimStateDigraph(
         motherExternal
         ); 
         CodeSimulator codeSimulator = new CodeSimulator(code, motherExternal, mode);
@@ -132,15 +135,39 @@ public class Simulator {
 
         for(SimState s : subG.getLeafNodes()){
             MachineState tmp = (MachineState)s; 
-            ExternalState newEx = new ExternalState(this.configuration , tmp.getCloneEnv()); 
-            this.BigQueue.add(newEx); 
-            this.controlFlowGraph.addNode(newEx); 
+            ExternalState newEx = new ExternalState(this.configuration , tmp.collectEnv(tmp.getCloneEnv())); 
+            boolean isUnique = true; 
+
+            if(!this.branchingFlag){
+
+              for(ExternalState e : this.externStateSet){
+                //System.out.println(e.getConfiguration().toString()); 
+                //System.out.println(newEx.getConfiguration().toString()); 
+                if(e.equals(newEx)){
+                  isUnique = false; 
+                  this.controlFlowGraph.addChild(tmp , e); 
+                }
+              }
+
+              if(isUnique){
+                this.BigQueue.add(newEx); 
+                this.controlFlowGraph.addChild(tmp, newEx);
+                this.externStateSet.add(newEx);
+              }
+            }
+            else 
+            {
+              this.BigQueue.add(newEx); 
+              this.controlFlowGraph.addChild(tmp, newEx);
+              this.externStateSet.add(newEx); 
+            }
         }
 
         for(String event : events) {
           this.simulationStep(event); 
         }
         this.controlFlowGraph.toDotScript(); 
+        System.out.println(this.controlFlowGraph.getLeafNodes().size()); 
     }
 
     public void simulationStep(String event) throws Exception{
@@ -218,9 +245,32 @@ public class Simulator {
 
           for(SimState s : codeSimulator.getInternalDigraph().getLeafNodes()){
               MachineState tmp = (MachineState)s; 
-              ExternalState newEx = new ExternalState(newConfiguration , tmp.getCloneEnv()); 
-              this.BigQueue.add(newEx); 
-              this.controlFlowGraph.addNode(newEx); 
+              System.out.println(tmp); 
+              ExternalState newEx = new ExternalState(newConfiguration , tmp.collectEnv(tmp.getCloneEnv())); 
+              boolean isUnique = true; 
+
+              if(!this.branchingFlag){
+                for(ExternalState e : this.externStateSet){
+                  //System.out.println(e.getConfiguration().toString()); 
+                  //System.out.println(newEx.getConfiguration().toString()); 
+                  if(e.equals(newEx)){
+                    isUnique = false; 
+                    this.controlFlowGraph.addChild(tmp , e); 
+                  }
+                }
+
+                if(isUnique){
+                  this.BigQueue.add(newEx); 
+                  this.controlFlowGraph.addChild(tmp, newEx);
+                  this.externStateSet.add(newEx);
+                }
+              }
+              else
+              {
+                  this.BigQueue.add(newEx); 
+                  this.controlFlowGraph.addChild(tmp, newEx);
+                  this.externStateSet.add(newEx);
+              }
           }
         }
      }

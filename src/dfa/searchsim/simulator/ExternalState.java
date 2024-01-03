@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.HashMap; 
 
 public class ExternalState extends SimState{
-    private Map<Declaration, Expression>environment; 
     private Set<State> configuration; 
     private String event; 
 
@@ -35,16 +34,16 @@ public class ExternalState extends SimState{
 
     public String toString()
     {
-        String res = ""; 
+        String res = "Conf = ";
+        for(State s : this.configuration){
+            res = res + s.name + " "; 
+        } 
 
-        for(State s : this.configuration)
-        {
-            res = res + s.getUniqueName() + " "; 
-        }
+        res = res + " | "; 
 
         for(Map.Entry<Declaration , Expression>entry : this.environment.entrySet())
         {
-            res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
+            res = res + entry.getKey().getFullVName() + " " + entry.getValue() + " \n";
         }
 
         return res; 
@@ -68,6 +67,60 @@ public class ExternalState extends SimState{
     public Set<State> getConfiguration()
     {
         return this.configuration; 
+    }
+
+    @Override
+    public boolean equals(Object o){
+        ExternalState e = (ExternalState)o; 
+
+        if(e.getConfiguration().size() != this.configuration.size()){
+            System.out.println("cfg size"); 
+            return false; 
+        }
+
+        for(State s : this.configuration){
+            boolean found = false; 
+            for(State t : e.getConfiguration()){
+                if(s.toString().equals(t.toString())){
+                    found = true; 
+                }
+            }
+
+            if(!found){
+                System.out.println("state cannot be found"); 
+                return false; 
+            }
+        }
+
+        for(Declaration d : this.environment.keySet()){
+            if(!e.getEnv().keySet().contains(d)){
+                System.out.println("does not contain key");
+                return false; 
+            }
+
+
+            Expression l = e.getEnv().get(d); 
+            Expression r = this.environment.get(d); 
+
+            if(l == null ^ r == null){
+                System.out.println("null val"); 
+                return false; 
+            }
+
+            if(l == null && r == null)
+            {
+                return true; 
+            }
+
+            IntegerConstant il = (IntegerConstant)l; 
+            IntegerConstant ir = (IntegerConstant)r; 
+
+            if(il.getInt() != ir.getInt()){
+                return false;   
+            }
+        }
+
+        return true; 
     }
 
     // @Override

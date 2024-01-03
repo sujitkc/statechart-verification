@@ -33,6 +33,8 @@ public class Declaration {
     return this.getState().getFullName() + '.' + this.vname;
   }
 
+
+
   public Type getType() {
     return this.type;
   }
@@ -64,5 +66,15 @@ public class Declaration {
 
   public void visit (Visitor visitor) throws Exception {
     visitor.visitDeclaration(this);
+  }
+
+  //overloading equals and hashcode functions
+  @Override 
+  public boolean equals(Object o){
+    return this.toString().equals(o.toString()); 
+  }
+
+  public int hashCode(){
+    return this.toString().hashCode(); 
   }
 }

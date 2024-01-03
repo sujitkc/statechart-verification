@@ -6,11 +6,15 @@ init code:
 
 This code structure should create 6 interleavings
 
-Now if event "e" occurs the code that will be executed is
+Now if event "e1" occurs the code that will be executed is
 
-<[<x:=23>,<x:=31>],   y:=33, x:=x+y>
+[<x:=23;  x:=43; x:=35;>,<x:=31;y:=33, x:=39>]
 
-The first set concurrency will give 6 interleavings. Now there are 6*6 possibilities = 36 paths. followed by 2 nodes y:=33 and x:=x+1
+20 interleavings
+
+
+and total paths will be 20*6 leaf nodes.= 120
+
 
 */
 statechart  chart{
@@ -21,27 +25,27 @@ statechart  chart{
   }
     x:int:local;
     y:int:local;
-  entry : {x:=1;}
-  exit  : {x:=3;} 
+  entry : {x:=1;x:=2;}
+  exit  : {x:=3;x:=4;} 
   functions {
   input<||>() : int;
   }
    
   shell B{
-    entry:{x:=13;}
-    exit:{}
+    entry:{x:=13;x:=14;}
+    exit:{x:=15;x:=16;}
 
     state R1{
-      entry:{x:=17;}
+      entry:{x:=17;x:=18;}
       exit:{}
 
       state R1A{
         entry:{}
-        exit:{x:=23;}
+        exit:{x:=23; }
       }
 
       state R1B{
-        entry:{x:=35; x:=36;}
+        entry:{x:=35; }
         exit:{x:=37; x:=38;}
       }
 
@@ -50,21 +54,21 @@ statechart  chart{
         destination: chart.B.R1.R1B;
         trigger: e1;
         guard:(true);
-        action:{x:=43;x:=44;}
+        action:{x:=43;}
       }
     }
 
     state R2{
-      entry:{x:=26;}
+      entry:{x:=25; x:=26;}
       exit:{}
 
       state R2A{
         entry:{}
-        exit:{x:=31;}
+        exit:{y:=31;}
       }
 
       state R2B{
-        entry:{y:=39; y:=40;}
+        entry:{x:=39;}
         exit:{x:=41; x:=42;}
       }
 
@@ -73,12 +77,12 @@ statechart  chart{
         destination: chart.B.R2.R2B;
         trigger: e1;
         guard:(true);
-        action:{y:=33;y:=34;}
+        action:{y:=33;}
       }	    
     }
   }
    state C{
-   entry:{x:=x+y;}
+   entry:{x:=x+1;}
    exit:{}
    
    }      

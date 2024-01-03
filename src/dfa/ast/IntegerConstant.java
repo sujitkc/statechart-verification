@@ -21,4 +21,8 @@ public class IntegerConstant extends Expression {
   public int getInt(){
 	return value;
 	}
+
+  public boolean equals(IntegerConstant i){
+    return this.value == i.getInt(); 
+  }
 }

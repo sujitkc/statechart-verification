@@ -12,8 +12,8 @@ import java.util.HashSet;
 public class Digraph<T>{
     private T root; 
     private Map<T , Set<T>>adjList = new HashMap<T , Set<T>>(); 
-    private Map<Integer , T>indexToNode = new HashMap<Integer , T>(); 
-    private Map<T, Integer>nodeToIndex = new HashMap<T , Integer>();  
+    protected Map<Integer , T>indexToNode = new HashMap<Integer , T>(); 
+    protected Map<T, Integer>nodeToIndex = new HashMap<T , Integer>();  
     
     public Digraph(T root){
         this.root = root; 

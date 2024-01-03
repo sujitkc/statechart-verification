@@ -321,7 +321,7 @@ public class TestExhaustive {
   }
   
   public void populate_simulate(){
-  	String[] events={"e"};
+  	String[] events={"e1"};
   	// makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	// makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	
@@ -331,7 +331,7 @@ public class TestExhaustive {
   	// String events2[]={"e1","e2","e3"};
   	// makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
 	//makeTestCase("data/constabl_transitions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A" , "ShR2A" , "R2A"}, events);
-	makeTestCase("data/constabl_actions/7_concurrent_transitions/1_1_shell_exit.stbl", new String[] {"R1A","R2A"}, new String[]{"R1B" , "R2B"}, events);
+	makeTestCase("data/constabl_actions/7_concurrent_transitions/1_1_concurrent_less.stbl", new String[] {"R1A","R2A"}, new String[]{"R1B" , "R2B"}, events);
   }
   public void makeTestCase( String filename, String[] sourceConfig, String[] destConfig, String[] eventseq){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig, eventseq);
@@ -404,7 +404,7 @@ public class TestExhaustive {
     try
     {
       Set<State> configuration = new HashSet<>();
-      Simulator simulator = new Simulator(statechart, configuration);
+      Simulator simulator = new Simulator(statechart, configuration, false);
       for(int i=0;i<statename.length;i++){
         State s1 = simulator.getSubstateByName(statename[i], statechart);
         configuration.add(s1);
@@ -433,7 +433,7 @@ public class TestExhaustive {
     try
     {
       Set<State> configuration = new HashSet<>();
-      Simulator simulator = new Simulator(statechart);
+      Simulator simulator = new Simulator(statechart , false);
       
       simulator.simulate(Arrays.asList(events));
     }

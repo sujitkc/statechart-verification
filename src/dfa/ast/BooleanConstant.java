@@ -28,4 +28,5 @@ public class BooleanConstant extends Expression {
   public void visit (Visitor visitor) throws Exception {
     visitor.visitBooleanConstant(this);
   }
+  
 }
