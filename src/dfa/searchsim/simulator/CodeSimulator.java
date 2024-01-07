@@ -215,6 +215,9 @@ public class CodeSimulator{
         if(resExit != null && resExit.getCP() != null){
           for(CFGNode n : resExit.getCP())
           {
+            if(n instanceof CFGSkipNode){
+              continue; 
+            }
             newReadySet.add(n); 
           }
         }
@@ -229,6 +232,9 @@ public class CodeSimulator{
       if(resNode != null && resNode.getCP() != null){
         for(CFGNode n : resNode.getCP())
         {
+            if(n instanceof CFGSkipNode){
+              continue; 
+            }
           newReadySet.add(n); 
         }
       }
