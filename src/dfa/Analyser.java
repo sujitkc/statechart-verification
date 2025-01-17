@@ -22,7 +22,7 @@ import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
 import translation.*;
-import metric.Metric;
+// import metric.Metric;
 import program.Program;
 
 public class Analyser {
@@ -59,7 +59,7 @@ public class Analyser {
       System.out.println("Couldn't analyse '" + args[0] + "' : " + e.getMessage()); 
       e.printStackTrace();
     }
-
+/*
     System.out.println("statechart has " + Metric.getNumberOfStates(statechart) + " states.");
     System.out.println("statechart has " + Metric.getNumberOfTransitions(statechart) + " transitions.");
 
@@ -97,7 +97,7 @@ public class Analyser {
       System.out.println(vname + " : " + Rscope.get(vname));
     }
     System.out.println("Rscope -- End\n\n");
-
+*/
 
     Statechart flattenedSC = null;
     try {

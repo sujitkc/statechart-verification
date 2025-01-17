@@ -25,7 +25,7 @@ import ast.*;
 import translation.*;
 import program.*;
 
-import metric.Metric;
+//import metric.Metric;
 
 public class TestSCtoProg {
 

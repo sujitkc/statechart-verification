@@ -30,7 +30,7 @@ import ast.Declaration;
 import ast.Name;
 
 import translation.Flattener;
-import metric.Metric;
+// import metric.Metric;
 
 public class TestFlatten {
 
@@ -49,8 +49,8 @@ public class TestFlatten {
   public void testFlatten() {
 
     Typechecker typechecker;
-    //String input = "data/curfew1.txt";
-    String input="data/"+inputfile;
+    String input = "data/input.stb";
+    // String input="data/"+inputfile;
     Statechart statechart = null;
     try {
       Parser parser = new FrontEnd(input).getParser();    

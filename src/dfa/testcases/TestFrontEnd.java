@@ -20,7 +20,7 @@ import java_cup.runtime.Symbol;
 import frontend.FrontEnd;
 import frontend.Parser;
 import frontend.Typechecker;
-import simulator.Simulator;
+// import simulator.Simulator;
 
 import ast.State;
 import ast.Statechart;
@@ -66,13 +66,6 @@ public class TestFrontEnd {
     }
     catch(Exception e) {
       System.out.println("Couldn't typecheck '" + input + "' : " + e.getMessage()); 
-      e.printStackTrace();
-    }
-    try{
-      new Simulator(statechart);
-    }
-    catch(Exception e){
-      System.out.println("Error in Simulation");
       e.printStackTrace();
     }
   }

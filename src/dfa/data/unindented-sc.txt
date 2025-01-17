@@ -1,0 +1,887 @@
+startchart CoillisionAvoidance {
+types {
+basic type 'int'
+basic type 'boolean'
+basic type 'string'
+}
+events {
+	e;
+	Error;
+}
+UCuAgm : int : basic type 'int'
+ Scope : parameter Input status: false;
+nJzHzD : int : basic type 'int'
+ Scope : parameter Input status: false;
+aIDxji : int : basic type 'int'
+ Scope : parameter Input status: false;
+xSUrey : int : basic type 'int'
+ Scope : parameter Input status: false;
+xzlsjb : boolean : basic type 'boolean'
+ Scope : parameter Input status: false;
+IhFnPc : int : basic type 'int'
+ Scope : parameter Input status: false;
+jOVjmK : int : basic type 'int'
+ Scope : parameter Input status: false;
+ZOhPgH : int : basic type 'int'
+ Scope : parameter Input status: false;
+zBbtog : int : basic type 'int'
+ Scope : parameter Input status: false;
+OeUjPe : int : basic type 'int'
+ Scope : parameter Input status: false;
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+functions {
+input() : int;
+}
+
+state CoillisionAvoidance-Disabled{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Engaged-Warn{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Engaged-Avoid{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Engaged-Idle{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Disengaged{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Engaged-Mitigate{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Override{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Enabled-Halt{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+state CoillisionAvoidance-Fail{
+
+entry : 
+{
+}
+
+
+exit : 
+{
+}
+
+false}
+
+transition t27_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t27_CoillisionAvoidance-Enabled-Halt_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t20_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Enabled-Engaged-Idle{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+trigger : e
+guard : UCuAgm = 0 : boolean
+action : 
+{
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t23_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Enabled-Engaged-Idle{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+trigger : e
+guard : UCuAgm = 0 : boolean
+action : 
+{
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t17_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : xSUrey > 0 : boolean && xSUrey <= 25 : boolean : boolean || zBbtog != 3 : boolean : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 0;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t17_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : xSUrey > 0 : boolean && xSUrey <= 25 : boolean : boolean || zBbtog != 3 : boolean : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 0;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t19_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Enabled-Engaged-Warn{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+trigger : e
+guard : UCuAgm = 1 : boolean
+action : 
+{
+jOVjmK := 1;
+
+}
+
+
+}
+
+transition t27_CoillisionAvoidance-Enabled-Disengaged_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t32_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Enabled-Engaged-Avoid{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+trigger : e
+guard : UCuAgm = 2 : boolean
+action : 
+{
+jOVjmK := 2;
+
+OeUjPe := 30;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t29_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Enabled-Engaged-Mitigate{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+trigger : e
+guard : UCuAgm = 3 : boolean
+action : 
+{
+jOVjmK := 3;
+
+OeUjPe := 80;
+
+}
+
+
+}
+
+transition t39_CoillisionAvoidance-Override_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Override
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+}
+
+
+}
+
+transition t25_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Enabled-Halt{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+trigger : e
+guard : xSUrey = 0 : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 4;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t25_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Enabled-Halt{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+trigger : e
+guard : xSUrey = 0 : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 4;
+
+}
+
+
+}
+
+transition t24_CoillisionAvoidance-Enabled-Halt_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : nJzHzD > 10 : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 0;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t25_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Enabled-Halt{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+trigger : e
+guard : xSUrey = 0 : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 4;
+
+}
+
+
+}
+
+transition t14_CoillisionAvoidance-Disabled_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Disabled
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : xzlsjb = true : boolean
+action : 
+{
+IhFnPc := 1;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t16_CoillisionAvoidance-Enabled-Disengaged_CoillisionAvoidance-Enabled-Engaged-Idle{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+trigger : e
+guard : xSUrey > 25 : boolean && zBbtog = 3 : boolean : boolean
+action : 
+{
+IhFnPc := 2;
+
+}
+
+
+}
+
+transition t17_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : xSUrey > 0 : boolean && xSUrey <= 25 : boolean : boolean || zBbtog != 3 : boolean : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 0;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t22_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Enabled-Engaged-Avoid{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+trigger : e
+guard : UCuAgm = 2 : boolean
+action : 
+{
+jOVjmK := 2;
+
+OeUjPe := 30;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Halt_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Halt_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t30_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Enabled-Engaged-Mitigate{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+trigger : e
+guard : UCuAgm = 3 : boolean
+action : 
+{
+jOVjmK := 3;
+
+OeUjPe := 80;
+
+}
+
+
+}
+
+transition t35_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Enabled-Engaged-Mitigate{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+trigger : e
+guard : UCuAgm = 3 : boolean
+action : 
+{
+jOVjmK := 3;
+
+OeUjPe := 80;
+
+}
+
+
+}
+
+transition t38_CoillisionAvoidance-Override_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Override
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t27_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Disengaged_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t27_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Disengaged_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t17_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : xSUrey > 0 : boolean && xSUrey <= 25 : boolean : boolean || zBbtog != 3 : boolean : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 0;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t34_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Enabled-Engaged-Idle{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+trigger : e
+guard : UCuAgm = 0 : boolean
+action : 
+{
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t27_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Fail{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Fail
+trigger : Error
+guard : true
+action : 
+{
+IhFnPc := 3;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t37_CoillisionAvoidance-Override_CoillisionAvoidance-Enabled-Disengaged{
+source : CoillisionAvoidance.CoillisionAvoidance-Override
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Disengaged
+trigger : e
+guard : ZOhPgH < 35 : boolean
+action : 
+{
+IhFnPc := 1;
+
+zBbtog := input() : basic type 'int'
+;
+
+xSUrey := input() : basic type 'int'
+;
+
+}
+
+
+}
+
+transition t25_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Enabled-Halt{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Halt
+trigger : e
+guard : xSUrey = 0 : boolean
+action : 
+{
+IhFnPc := 1;
+
+jOVjmK := 4;
+
+}
+
+
+}
+
+transition t33_CoillisionAvoidance-Enabled-Engaged-Idle_CoillisionAvoidance-Enabled-Engaged-Avoid{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Idle
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+trigger : e
+guard : UCuAgm = 2 : boolean
+action : 
+{
+jOVjmK := 2;
+
+OeUjPe := 30;
+
+}
+
+
+}
+
+transition t21_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Enabled-Engaged-Warn{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+trigger : e
+guard : UCuAgm = 1 : boolean
+action : 
+{
+jOVjmK := 1;
+
+}
+
+
+}
+
+transition t15_CoillisionAvoidance-Enabled-Engaged-Avoid_CoillisionAvoidance-Disabled{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Avoid
+destination : CoillisionAvoidance.CoillisionAvoidance-Disabled
+trigger : e
+guard : xzlsjb != true : boolean
+action : 
+{
+IhFnPc := 0;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t36_CoillisionAvoidance-Enabled-Engaged-Warn_CoillisionAvoidance-Override{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+destination : CoillisionAvoidance.CoillisionAvoidance-Override
+trigger : e
+guard : ZOhPgH >= 35 : boolean
+action : 
+{
+IhFnPc := 4;
+
+jOVjmK := 0;
+
+}
+
+
+}
+
+transition t31_CoillisionAvoidance-Enabled-Engaged-Mitigate_CoillisionAvoidance-Enabled-Engaged-Warn{
+source : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Mitigate
+destination : CoillisionAvoidance.CoillisionAvoidance-Enabled-Engaged-Warn
+trigger : e
+guard : UCuAgm = 1 : boolean
+action : 
+{
+jOVjmK := 1;
+
+}
+
+
+}
+}

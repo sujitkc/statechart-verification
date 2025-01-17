@@ -29,7 +29,7 @@ import ast.Declaration;
 import ast.Name;
 
 import translation.Flattener;
-import metric.Metric;
+// import metric.Metric;
 import translation.StatechartToProgramTranslator;
 import translation.ProgramToCFG;
 import program.Program;
