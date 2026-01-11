@@ -8,7 +8,7 @@ This code structure should create 6 interleavings
 
 Now if event "e1" occurs the code that will be executed is
 
-[<x:=23;  x:=43; x:=35;>,<x:=31;y:=33, x:=39>]
+[<x:=23;  x:=43; x:=35;>,<Y:=31;y:=33, x:=39>]
 
 20 interleavings
 

@@ -3,6 +3,8 @@ package searchsim.cfg;
 import java.util.Set;
 import java.util.HashSet;
 
+import ast.Declaration;
+
 public abstract class CFGNode {
   protected CFG cfg;
 
@@ -29,7 +31,16 @@ public abstract class CFGNode {
   public void addPredecessor(CFGNode p) {
     this.predecessors.add(p);
   }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Abstract methods for dependency analysis
+  public abstract Set<Declaration> getReadSet();
+  public abstract Set<Declaration> getWriteSet();
 
+
+  public Set<CFGNode> getPredecessors() {
+    return new HashSet<>(this.predecessors);
+  }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
   @Override 
   public boolean equals(Object o)
   {

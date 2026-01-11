@@ -17,8 +17,7 @@ import searchsim.code.*;
 import searchsim.cfg.*;
 import searchsim.tree.*; 
 import searchsim.digraph.*;
-import searchsim.simulator.ExternalState; 
-
+import searchsim.simulator.ExternalState;
 
 public class CodeSimulator{
   private ActionLanguageInterpreter interpreter;
@@ -27,6 +26,10 @@ public class CodeSimulator{
   private ExternalState initState; 
   private Digraph<SimState>internalControlFlowGraph; 
   private Queue<SimState>internalQueue = new LinkedList<>(); 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Stubborn set integration
+  private StubbornSet stubbornSet;
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /*
    * Since the code simulator executes one whole code fragment
@@ -56,6 +59,9 @@ public class CodeSimulator{
     this.initState = init; 
     this.cfgMap = this.makeCFGMap();
     interpreter = new ActionLanguageInterpreter(mode);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    this.stubbornSet = new StubbornSet(this.cfgMap);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //this.internalControlFlowGraph = new Digraph<SimState>(this.initState); 
   }
 
@@ -80,7 +86,6 @@ public class CodeSimulator{
     }
     return map;
   }
-
 
   private Internode simulateAssignmentNode(CFGAssignmentNode node , MachineState currMS) throws Exception {
     CFGAssignmentNode assignmentNode = (CFGAssignmentNode)node;
@@ -193,12 +198,20 @@ public class CodeSimulator{
     if(currReadySet.size() == 0)
       return ; 
 
-    for(CFGNode iternode : currReadySet)
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Apply stubborn set reduction
+    Set<CFGNode> explorationSet = this.stubbornSet.buildStubbornSetWithNES(currReadySet);
+    // Store the stubborn set in the current machine state
+    currMS.setStubbornSet(explorationSet);
+
+    for(CFGNode iternode : explorationSet) // Use reduced set for exploration
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     {
       Set<CFGNode> newReadySet= new HashSet<CFGNode>(); 
       Map<Declaration , Expression> newEnv = currMS.getCloneEnv();  
       Map<CFGNode , Set<CFGNode>>newJPSet = currMS.getjoinPointsClone(); 
 
+      // Compute new ready set from ready set
       for(CFGNode compnode : currReadySet)
       {
         if(compnode.equals(iternode))
@@ -238,9 +251,9 @@ public class CodeSimulator{
           newReadySet.add(n); 
         }
       }
-      MachineState newMS = new MachineState(newReadySet , newEnv); 
+      MachineState newMS = new MachineState(newReadySet, newEnv); 
       newMS.setParent(currMS);
-      newMS.addJoinPoints(newJPSet);  
+      newMS.addJoinPoints(newJPSet);
       this.internalControlFlowGraph.addChild(currMS , newMS); 
       this.internalQueue.add(newMS); 
     }
@@ -262,8 +275,7 @@ public class CodeSimulator{
       initReadySet.add(cfgCode.cfg.entryNode);
     }
 
-    
-    MachineState motherTree = new MachineState(initReadySet , new HashMap<>()); 
+    MachineState motherTree = new MachineState(initReadySet, new HashMap<>()); 
     motherTree.setParent(this.initState);
     this.internalControlFlowGraph = new Digraph<SimState>(motherTree); 
     internalQueue.add(motherTree); 
@@ -276,4 +288,5 @@ public class CodeSimulator{
   public Digraph<SimState>getInternalDigraph(){
     return this.internalControlFlowGraph; 
   }
+
 }

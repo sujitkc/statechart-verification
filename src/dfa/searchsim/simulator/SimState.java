@@ -16,7 +16,11 @@ public abstract class SimState{
     public void setParent(SimState parent){
         this.parent = parent;
     }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public SimState getParent(){
+        return this.parent;
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Map<Declaration, Expression> getDependendentEnvironment(Set<Declaration> depVarSet){
         if(depVarSet == null || depVarSet.size() == 0){
             return new HashMap<Declaration, Expression>(); 
@@ -35,7 +39,6 @@ public abstract class SimState{
             System.out.println("Undefined variable found"); 
             return null; 
         }
-
 
         Map<Declaration, Expression> remnantMap = this.parent.getDependendentEnvironment(depVarSet); 
         if(remnantMap.size() != 0){

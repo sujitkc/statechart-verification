@@ -2,7 +2,7 @@ package searchsim.cfg;
 
 import java.util.Set;
 
-public class CFGBasicBlockNode extends CFGNode {
+public abstract class CFGBasicBlockNode extends CFGNode {
 
   protected CFGNode successor = null;
 

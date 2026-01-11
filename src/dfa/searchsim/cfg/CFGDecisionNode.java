@@ -1,9 +1,12 @@
 package searchsim.cfg;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import ast.*;
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import searchsim.simulator.ActionLanguageInterpreter;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public class CFGDecisionNode extends CFGNode {
   public final Expression condition;
   public CFGNode thenSuccessor;
@@ -14,7 +17,25 @@ public class CFGDecisionNode extends CFGNode {
     this.thenSuccessor = thenSuccessor;
     this.elseSuccessor = elseSuccessor;
   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  @Override
+  public Set<Declaration> getReadSet() {
+    Set<Declaration> readSet = new HashSet<>();
+    // read from condition
+    Set<Declaration> condDeps = ActionLanguageInterpreter.getDependentVarSet(condition);
+    if (condDeps != null) {
+      readSet.addAll(condDeps);
+    }
+    return readSet;
+  }
+
+  @Override
+  public Set<Declaration> getWriteSet() {
+    // DecisionNode has no writes
+    return new HashSet<>();
+  }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
   protected void setCFG(CFG cfg, Set<CFGNode> added) {
     if(added.contains(this) == false) {
       this.cfg = cfg;

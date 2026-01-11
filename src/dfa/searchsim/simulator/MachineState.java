@@ -15,7 +15,9 @@ import searchsim.cfg.*;
 public class MachineState extends SimState{
     private Map<CFGNode , Set<CFGNode>>joinPoints;  //joinSet for a particular interleaving
     private Set<CFGNode>currReadySet; // has to be a hashset of cps
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+    private Set<CFGNode>stubbornSet; // stubborn set used for exploration reduction
+//////////////////////////////////////////////////////////////////////////////////////////////
     /*
      * Note : 
      * List of parent states in case of digraph
@@ -27,6 +29,20 @@ public class MachineState extends SimState{
         this.currReadySet = rs;
         this.environment = e; 
         this.joinPoints = new HashMap<>(); 
+//////////////////////////////////////////////////////////////////////////////////////////////        
+        this.stubbornSet = new HashSet<>(); // Initialize as empty
+//////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
+    // Constructor with stubborn set
+    public MachineState(Set<CFGNode>rs , Map<Declaration , Expression> e, Set<CFGNode>ss)
+    {
+        this.currReadySet = rs;
+        this.environment = e; 
+        this.joinPoints = new HashMap<>(); 
+//////////////////////////////////////////////////////////////////////////////////////////////        
+        this.stubbornSet = new HashSet<>(ss); // Copy the stubborn set
+//////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     public MachineState(Map<Declaration , Expression> e , MachineState prev)
@@ -39,7 +55,17 @@ public class MachineState extends SimState{
     {
         return this.currReadySet; 
     }
+//////////////////////////////////////////////////////////////////////////////////////////////
+    public Set<CFGNode> getStubbornSet()
+    {
+        return this.stubbornSet;
+    }
 
+    public void setStubbornSet(Set<CFGNode> stubbornSet)
+    {
+        this.stubbornSet = new HashSet<>(stubbornSet);
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////
     public Map<Declaration , Expression> getEnv()
     {
         return this.environment; 
@@ -106,11 +132,22 @@ public class MachineState extends SimState{
 
     public String toString()
     { 
-        String res = "RS = " + this.currReadySet.toString() + " | delta env = ";
+        String res = "RS = " + this.currReadySet.toString();
+//////////////////////////////////////////////////////////////////////////////////////////////
+        if (this.stubbornSet != null && !this.stubbornSet.isEmpty()) {
+            res += " | SS = " + this.stubbornSet.toString();
+        }
+//////////////////////////////////////////////////////////////////////////////////////////////
+        res += " | delta env = ";
         
         for(Map.Entry<Declaration , Expression>entry : this.environment.entrySet())
         {
-            res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
+            try {
+                res = res + entry.getKey().getFullVName() + " " + entry.getValue() + "\n";
+            } catch (NullPointerException e) {
+                // Fallback if declaration doesn't have proper parent structure
+                res = res + entry.getKey().vname + " " + entry.getValue() + "\n";
+            }
         }
         //System.out.println(res.hashCode()); 
         return res; 
