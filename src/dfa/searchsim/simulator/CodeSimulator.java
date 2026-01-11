@@ -17,7 +17,11 @@ import searchsim.code.*;
 import searchsim.cfg.*;
 import searchsim.tree.*; 
 import searchsim.digraph.*;
-import searchsim.simulator.ExternalState;
+import searchsim.simulator.ExternalState; 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import searchsim.property.Property; 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 public class CodeSimulator{
   private ActionLanguageInterpreter interpreter;
@@ -29,6 +33,10 @@ public class CodeSimulator{
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Stubborn set integration
   private StubbornSet stubbornSet;
+  // Property checking integration
+  private Property property;
+  // Property violation flag - set to true when property is violated
+  private boolean propertyViolated = false;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /*
@@ -53,6 +61,10 @@ public class CodeSimulator{
    */
 
   public CodeSimulator(Code code, ExternalState init , String mode) {
+    this(code, init, mode, null); // Default: no property checking
+  }
+
+  public CodeSimulator(Code code, ExternalState init , String mode, Property prop) {
     this.code = code;
     CodeVisitor visitor = new CodeVisitor();
     visitor.visit(code);
@@ -60,7 +72,14 @@ public class CodeSimulator{
     this.cfgMap = this.makeCFGMap();
     interpreter = new ActionLanguageInterpreter(mode);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    this.stubbornSet = new StubbornSet(this.cfgMap);
+    // Property checking integration
+    this.property = prop;
+    // Stubborn set integration with property-aware dependencies
+    if (this.property != null) {
+        this.stubbornSet = new StubbornSet(this.cfgMap, this.property);
+    } else {
+        this.stubbornSet = new StubbornSet(this.cfgMap);
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //this.internalControlFlowGraph = new Digraph<SimState>(this.initState); 
   }
@@ -254,6 +273,22 @@ public class CodeSimulator{
       MachineState newMS = new MachineState(newReadySet, newEnv); 
       newMS.setParent(currMS);
       newMS.addJoinPoints(newJPSet);
+      // check property on the new state
+      if (this.property != null) {
+        Map<Declaration, Expression> fullEnv = newMS.collectEnv(newEnv);
+        boolean satisfied = this.property.evaluate(fullEnv);
+        newMS.setPropertyStatus(satisfied);
+        newMS.setPropertyName(this.property.getName());
+        
+        // If property is violated, print trace and stop execution
+        if (!satisfied) {
+          this.internalControlFlowGraph.addChild(currMS, newMS); // Add the violating state to graph
+          this.propertyViolated = true; // Set the violation flag
+          printTraceToState(newMS);
+          System.out.println("Stopping execution due to property violation.");
+          return; // Stop further exploration
+        }
+      }
       this.internalControlFlowGraph.addChild(currMS , newMS); 
       this.internalQueue.add(newMS); 
     }
@@ -268,6 +303,41 @@ public class CodeSimulator{
     this.generateNewReadySet(topMS);
   }
 
+  // Print the trace from initial state to the given state by backtracking through parent states
+  private void printTraceToState(MachineState violatingState) {
+    System.out.println("\n========================================");
+    System.out.println("PROPERTY VIOLATION DETECTED!");
+    System.out.println("Property: " + violatingState.getPropertyName() + " = false");
+    System.out.println("========================================\n");
+    
+    // Collect the trace by backtracking from violating state to initial state
+    List<MachineState> trace = new ArrayList<>();
+    SimState current = violatingState;
+    
+    while (current != null) {
+      if (current instanceof MachineState) {
+        trace.add(0, (MachineState)current); // Add at beginning to reverse order
+      }
+      current = current.getParent();
+    }
+    
+    // Print the trace
+    System.out.println("Trace from initial state to violating state:");
+    System.out.println("---------------------------------------------");
+    for (int i = 0; i < trace.size(); i++) {
+      MachineState state = trace.get(i);
+      System.out.println("\nState " + i + ":");
+      System.out.println(state.toString());
+      
+      if (i == trace.size() - 1) {
+        System.out.println(">>> VIOLATION OCCURS HERE <<<");
+      }
+    }
+    System.out.println("\n========================================");
+    System.out.println("Total states in trace: " + trace.size());
+    System.out.println("========================================\n");
+  }
+
   public void simulate() throws Exception {
     Set<CFGCode> cfgCodes = this.code.getFirstCFGCodeSet();
     Set<CFGNode> initReadySet = new HashSet<CFGNode>(); 
@@ -277,6 +347,22 @@ public class CodeSimulator{
 
     MachineState motherTree = new MachineState(initReadySet, new HashMap<>()); 
     motherTree.setParent(this.initState);
+    // check property on the initial state
+    if (this.property != null) {
+      Map<Declaration, Expression> fullEnv = motherTree.collectEnv(new HashMap<>());
+      boolean satisfied = this.property.evaluate(fullEnv);
+      motherTree.setPropertyStatus(satisfied);
+      motherTree.setPropertyName(this.property.getName());
+      
+      // If property is violated in initial state, print trace and stop
+      if (!satisfied) {
+        this.internalControlFlowGraph = new Digraph<SimState>(motherTree);
+        this.propertyViolated = true; // Set the violation flag
+        printTraceToState(motherTree);
+        System.out.println("Stopping execution due to property violation in initial state.");
+        return; // Stop execution
+      }
+    }
     this.internalControlFlowGraph = new Digraph<SimState>(motherTree); 
     internalQueue.add(motherTree); 
     this.mainSimulate(); 
@@ -289,4 +375,8 @@ public class CodeSimulator{
     return this.internalControlFlowGraph; 
   }
 
+  // if a property violation was detected during simulation
+  public boolean isPropertyViolated() {
+    return this.propertyViolated;
+  }
 }

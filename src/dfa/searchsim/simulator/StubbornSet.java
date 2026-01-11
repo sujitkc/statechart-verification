@@ -11,6 +11,7 @@ import java.util.ArrayDeque;
 import ast.*;
 import searchsim.cfg.*;
 import searchsim.code.*;
+import searchsim.property.Property;
 
 public class StubbornSet {
 
@@ -19,10 +20,18 @@ public class StubbornSet {
     private final Map<CFGNode, Set<CFGNode>> globalDependencyMap;
     private final Map<CFGNode, Set<CFGNode>> reverseReachablesMap;
     private CFGNode lastSeed; // seed used in stubborn set (for debugging)
+    private final Property property; // property for sound invariant checking
+    private final Set<Declaration> propertyVariables; // variables in the property
 
     public StubbornSet(Map<CFG, CFGCode> cfgMap) {
+        this(cfgMap, null);
+    }
+
+    public StubbornSet(Map<CFG, CFGCode> cfgMap, Property property) {
         this.cfgMap = cfgMap;
+        this.property = property;
         this.allNodes = this.getAllCFGNodes();
+        this.propertyVariables = extractPropertyVariables(property);
         this.globalDependencyMap = this.buildDependencyMap(this.allNodes);
         this.reverseReachablesMap = this.computeReverseReachables(this.allNodes);
     }
@@ -98,6 +107,20 @@ public class StubbornSet {
         }
     }
 
+    // Extracts all variables referenced in a property expression.
+    // Returns empty set if property is null
+    private Set<Declaration> extractPropertyVariables(Property property) {
+        if (property == null) {
+            return new HashSet<>();
+        }
+        
+        Expression expr = property.getExpression();
+        Set<Declaration> variables = ActionLanguageInterpreter.getDependentVarSet(expr);
+        
+        // getDependentVarSet returns null for constants, so handle that case
+        return (variables != null) ? variables : new HashSet<>();
+    }
+
     // check if two CFG nodes are dependent (RW, WR, or WW on same variable)
     public boolean areDependent(CFGNode n1, CFGNode n2) {
         Set<Declaration> read1 = n1.getReadSet();
@@ -122,6 +145,40 @@ public class StubbornSet {
         // check for RW:
         for (Declaration d : read1) {
             if (write2.contains(d)) {
+                return true;
+            }
+        }
+
+        // Property-aware dependency: if both nodes access ANY property variable,
+        // they are dependent to ensure sound invariant checking
+        if (!this.propertyVariables.isEmpty()) {
+            Set<Declaration> accessed1 = new HashSet<>();
+            accessed1.addAll(read1);
+            accessed1.addAll(write1);
+            
+            Set<Declaration> accessed2 = new HashSet<>();
+            accessed2.addAll(read2);
+            accessed2.addAll(write2);
+            
+            // Check if node1 accesses any property variable
+            boolean node1AccessesPropertyVar = false;
+            for (Declaration propVar : this.propertyVariables) {
+                if (accessed1.contains(propVar)) {
+                    node1AccessesPropertyVar = true;
+                    break;
+                }
+            }
+            
+            // Check if node2 accesses any property variable
+            boolean node2AccessesPropertyVar = false;
+            for (Declaration propVar : this.propertyVariables) {
+                if (accessed2.contains(propVar)) {
+                    node2AccessesPropertyVar = true;
+                    break;
+                }
+            }
+            
+            if (node1AccessesPropertyVar && node2AccessesPropertyVar) {
                 return true;
             }
         }

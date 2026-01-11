@@ -39,7 +39,12 @@ public abstract class SimState{
             System.out.println("Undefined variable found"); 
             return null; 
         }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // For ExternalState, we've found all variables or reported undefined - return here
+        if(this instanceof ExternalState){
+            return res;
+        }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Map<Declaration, Expression> remnantMap = this.parent.getDependendentEnvironment(depVarSet); 
         if(remnantMap.size() != 0){
             for(Map.Entry<Declaration , Expression> entry : remnantMap.entrySet()){

@@ -17,6 +17,8 @@ public class MachineState extends SimState{
     private Set<CFGNode>currReadySet; // has to be a hashset of cps
 //////////////////////////////////////////////////////////////////////////////////////////////
     private Set<CFGNode>stubbornSet; // stubborn set used for exploration reduction
+    private Boolean propertyStatus; // null = not checked, true = satisfied, false = violated
+    private String propertyName; // name of the property being checked
 //////////////////////////////////////////////////////////////////////////////////////////////
     /*
      * Note : 
@@ -64,6 +66,26 @@ public class MachineState extends SimState{
     public void setStubbornSet(Set<CFGNode> stubbornSet)
     {
         this.stubbornSet = new HashSet<>(stubbornSet);
+    }
+
+    public void setPropertyStatus(Boolean status)
+    {
+        this.propertyStatus = status;
+    }
+
+    public Boolean getPropertyStatus()
+    {
+        return this.propertyStatus;
+    }
+
+    public void setPropertyName(String name)
+    {
+        this.propertyName = name;
+    }
+
+    public String getPropertyName()
+    {
+        return this.propertyName;
     }
 //////////////////////////////////////////////////////////////////////////////////////////////
     public Map<Declaration , Expression> getEnv()
@@ -136,6 +158,13 @@ public class MachineState extends SimState{
 //////////////////////////////////////////////////////////////////////////////////////////////
         if (this.stubbornSet != null && !this.stubbornSet.isEmpty()) {
             res += " | SS = " + this.stubbornSet.toString();
+        }
+//////////////////////////////////////////////////////////////////////////////////////////////
+        // Add property evaluation result
+        if (this.propertyName != null && this.propertyStatus != null) {
+            res += " | Property: " + this.propertyName + " = " + this.propertyStatus;
+        } else if (this.propertyName != null) {
+            res += " | Property: " + this.propertyName + " = unknown";
         }
 //////////////////////////////////////////////////////////////////////////////////////////////
         res += " | delta env = ";

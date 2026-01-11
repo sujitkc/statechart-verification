@@ -22,6 +22,7 @@ import searchsim.cfg.*;
 import searchsim.code.*;
 import searchsim.digraph.*;
 import searchsim.simulator.CodeSimulator;
+import searchsim.property.Property;
 
 import com.code_intelligence.jazzer.api.FuzzerSecurityIssueMedium;
 
@@ -47,6 +48,13 @@ public class Simulator {
 
   private Queue<SimState> BigQueue = new LinkedList<>(); 
   private SimStateDigraph controlFlowGraph;
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // 1 = "x < 100"
+  // 2 = "x != 25"
+  // 3 = "x != y"
+  private static final int SELECTED_PROPERTY = 0;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public static void fuzzerInitialize() {
     // Optional initialization to be run before the first call to fuzzerTestOneInput.
@@ -96,6 +104,109 @@ public class Simulator {
  	    return "random";
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // x < 100
+    private Property createHardcodedProperty() {
+        try {
+            // find declaration for variable 'x' in the statechart
+            Declaration varX = null;
+            for (Declaration decl : this.getAllDeclarations()) {
+                if ("x".equals(decl.vname)) {
+                    varX = decl;
+                    break;
+                }
+            }
+            
+            // if variable 'x' doesn't exist, return null (no property checking)
+            if (varX == null) {
+                return null;
+            }
+            
+            // create expression: x < 100
+            Name xName = new Name("x");
+            xName.setDeclaration(varX);
+            IntegerConstant constant100 = new IntegerConstant(100);
+            BinaryExpression propertyExpr = new BinaryExpression(xName, constant100, "<");
+            
+            return new Property("x < 100", propertyExpr);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create property - " + e.getMessage());
+            return null;
+        }
+    }
+
+    // x != 25
+    private Property createHardcodedPropertyEquals25() {
+        try {
+            Declaration varX = null;
+            for (Declaration decl : this.getAllDeclarations()) {
+                if ("x".equals(decl.vname)) {
+                    varX = decl;
+                    break;
+                }
+            }
+            
+            if (varX == null) {
+                return null;
+            }
+            
+            Name xName = new Name("x");
+            xName.setDeclaration(varX);
+            IntegerConstant constant25 = new IntegerConstant(25);
+            BinaryExpression propertyExpr = new BinaryExpression(xName, constant25, "!=");
+            
+            return new Property("x != 25", propertyExpr);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create property - " + e.getMessage());
+            return null;
+        }
+    }
+    
+    // x != y
+    private Property createHardcodedPropertyXNotEqualsY() {
+        try {
+            Declaration varX = null;
+            Declaration varY = null;
+            for (Declaration decl : this.getAllDeclarations()) {
+                if ("x".equals(decl.vname)) {
+                    varX = decl;
+                }
+                if ("y".equals(decl.vname)) {
+                    varY = decl;
+                }
+            }
+            
+            if (varX == null || varY == null) {
+                return null;
+            }
+            
+            Name xName = new Name("x");
+            xName.setDeclaration(varX);
+            Name yName = new Name("y");
+            yName.setDeclaration(varY);
+            BinaryExpression propertyExpr = new BinaryExpression(xName, yName, "!=");
+            
+            return new Property("x != y", propertyExpr);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create property - " + e.getMessage());
+            return null;
+        }
+    }
+    
+    private Property getSelectedProperty() {
+        switch (SELECTED_PROPERTY) {
+            case 1:
+                return createHardcodedProperty();
+            case 2:
+                return createHardcodedPropertyEquals25();
+            case 3:
+                return createHardcodedPropertyXNotEqualsY();
+            default:
+                return null;
+        }
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public void simulate(List<String> events) throws Exception {
         System.out.println ("==== Statechart Simulation begins ===");
         printCurrentExecutionInfo(" initializing statechart");
@@ -126,9 +237,20 @@ public class Simulator {
         ); 
         this.controlFlowGraph = new SimStateDigraph(
         motherExternal
-        ); 
-        CodeSimulator codeSimulator = new CodeSimulator(code, motherExternal, mode);
+        );
+        // create selected property and pass it to CodeSimulator
+        Property property = this.getSelectedProperty();
+        if (property != null) {
+            System.out.println("Property checking enabled: " + property);
+        }
+        CodeSimulator codeSimulator = new CodeSimulator(code, motherExternal, mode, property);
         codeSimulator.simulate();
+
+        // Check if property violation occurred - if so, stop the entire simulation
+        if (codeSimulator.isPropertyViolated()) {
+            System.out.println("Property violation detected - stopping Simulator.");
+            return; // Stop the entire simulation
+        }
 
         Digraph<SimState> subG = codeSimulator.getInternalDigraph(); 
         this.controlFlowGraph.addSubgraph(motherExternal , subG); 
@@ -236,8 +358,16 @@ public class Simulator {
 	        } 
 
           System.out.println(" -- Code Simulation Begins --");
-          CodeSimulator codeSimulator = new CodeSimulator(code, state, mode);
+          // use the same selected property for all code simulations
+          Property property = this.getSelectedProperty();
+          CodeSimulator codeSimulator = new CodeSimulator(code, state, mode, property);
           codeSimulator.simulate();
+
+          // Check if property violation occurred - if so, stop the entire simulation
+          if (codeSimulator.isPropertyViolated()) {
+              System.out.println("Property violation detected - stopping Simulator.");
+              return; // Stop the entire simulation
+          }
 
           Digraph<SimState> subG = codeSimulator.getInternalDigraph(); 
           //subG.toDotScript();

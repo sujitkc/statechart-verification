@@ -332,6 +332,10 @@ public class TestExhaustive {
   	// makeTestCase("data/constabl_events/t6#2_6#3.stbl", new String[] {"Sh1R1Aa", "Sh1R2A"}, new String[]{"Sh1R1Ab","Sh1R2B"}, events2);
 	//makeTestCase("data/constabl_transitions/6#1_source_substateofregion(atomicsubstate)/t6#1_6#3.stbl", new String[] {"ShR1A","ShR2A"}, new String[]{"ShR1A" , "ShR2A" , "R2A"}, events);
 	makeTestCase("data/constabl_actions/7_concurrent_transitions/1_1_concurrent_less.stbl", new String[] {"R1A","R2A"}, new String[]{"R1B" , "R2B"}, events);
+	
+	// TVSetPlus8 test case - includes all events
+	String[] tvEvents = {"on", "txt", "mute", "sound", "in", "out", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "off"};
+	makeTestCase("data/TVSetPlus8.stb", new String[] {"STANDBY"}, new String[]{"STANDBY"}, tvEvents);
   }
   public void makeTestCase( String filename, String[] sourceConfig, String[] destConfig, String[] eventseq){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig, eventseq);
