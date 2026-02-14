@@ -207,6 +207,198 @@ public class Simulator {
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Get all unique events from all transitions in the statechart
+    private Set<String> getAllEvents() {
+        Set<String> events = new HashSet<>();
+        for(Transition t : this.allTransitions) {
+            if(t.trigger != null && !t.trigger.isEmpty()) {
+                events.add(t.trigger);
+            }
+        }
+        return events;
+    }
+
+    //exhaustive exploration - tries all events at each external state
+    public void exhaustiveExplore() throws Exception {
+        System.out.println("==== Exhaustive Statechart Exploration begins ===");
+        printCurrentExecutionInfo(" initializing statechart");
+        
+        String mode = setRandomSimulationMode();
+        
+        //get all possible events from the statechart
+        Set<String> allEvents = this.getAllEvents();
+        System.out.println("All events in statechart: " + allEvents);
+        
+        //initialize configuration
+        this.configuration = this.getEntrySubTree(this.statechart).getLeafNodes();
+        System.out.println("Initial configuration size: " + this.configuration.size());
+        
+        //execute entry actions
+        Tree<State> subtree = this.getEntrySubTree(statechart);
+        Map<Statement, CFG> CFGs = this.CFGs;
+        TreeMap<State, CFG> map = new TreeMap<>();
+        Tree<CFG> CFGTree = map.map(
+            new Function<State, CFG>() {
+                public CFG apply(State state) {
+                    return CFGs.get(state.entry);
+                }
+            },
+            subtree);
+
+        Code code = this.getDestinationCode(CFGTree);
+
+        ExternalState motherExternal = new ExternalState(new HashSet<>(), 
+            this.valueEnvironment, null
+        );
+        this.controlFlowGraph = new SimStateDigraph(motherExternal);
+        CodeSimulator codeSimulator = new CodeSimulator(code, motherExternal, mode);
+        codeSimulator.simulate();
+
+        Digraph<SimState> subG = codeSimulator.getInternalDigraph();
+        this.controlFlowGraph.addSubgraph(motherExternal, subG);
+
+        //add initial external states to queue
+        for(SimState s : subG.getLeafNodes()) {
+            MachineState tmp = (MachineState)s;
+            //create a copy of the configuration, not a reference to the same Set
+            Set<State> configCopy = new HashSet<>(this.configuration);
+            ExternalState newEx = new ExternalState(configCopy, tmp.collectEnv(tmp.getCloneEnv()));
+            
+            if(!this.branchingFlag) {
+                boolean isUnique = true;
+                for(ExternalState e : this.externStateSet) {
+                    if(e.equals(newEx)) {
+                        isUnique = false;
+                        this.controlFlowGraph.addChild(tmp, e);
+                        break;
+                    }
+                }
+                if(isUnique) {
+                    this.BigQueue.add(newEx);
+                    this.controlFlowGraph.addChild(tmp, newEx);
+                    this.externStateSet.add(newEx);
+                }
+            } else {
+                this.BigQueue.add(newEx);
+                this.controlFlowGraph.addChild(tmp, newEx);
+                this.externStateSet.add(newEx);
+            }
+        }
+
+        //main exhaustive exploration loop
+        while(!this.BigQueue.isEmpty()) {
+            ExternalState currentState = (ExternalState)this.BigQueue.remove();
+            
+            //try all events at this state
+            for(String event : allEvents) {
+                this.exploreEventAtState(event, currentState, mode);
+            }
+        }
+
+        System.out.println("==== Exhaustive Exploration Complete ===");
+        System.out.println("Total unique external states explored: " + this.externStateSet.size());
+        this.controlFlowGraph.toDotScript();
+        System.out.println("Leaf nodes: " + this.controlFlowGraph.getLeafNodes().size());
+    }
+
+    //explore a single event at a given external state
+    private void exploreEventAtState(String event, ExternalState state, String mode) throws Exception {
+        state.setEvent(event);
+        
+        //update simulator's configuration to match current state
+        //this is needed for getActiveAtomicSubstates() and other methods that use this.configuration
+        this.configuration = state.getConfiguration();
+        
+        Set<Transition> enabledTransitions = this.getEnabledTransitions(event, state);
+        
+        if(enabledTransitions.isEmpty()) {
+            //no transitions enabled for this event at this state - skip
+            return;
+        }
+        
+        System.out.println("\n--- Exploring event '" + event + "' at state ---");
+        System.out.println(state);
+        System.out.print("Enabled Transitions: ");
+        
+        Code code = null;
+        Set<State> newConfiguration = new HashSet<>();
+        
+        if(enabledTransitions.size() > 1) {
+            Set<Code> codes = new HashSet<>();
+            for(Transition t : enabledTransitions) {
+                System.out.print(t.name + ",");
+                codes.add(this.getCode(t));
+            }
+            System.out.println();
+            
+            // Check for nondeterminism (kept as bug detection)
+            this.detectNondeterminism(codes);
+            
+            if(this.detectNondeterminism(codes)) {
+                List<Transition> tlist = new ArrayList<>(enabledTransitions);
+                Random r = new Random();
+                code = this.getCode(tlist.get(r.nextInt(tlist.size())));
+            } else {
+                code = new ConcurrentCode(codes);
+            }
+        } else {
+            Transition t = enabledTransitions.iterator().next();
+            System.out.println(t.name);
+            code = this.getCode(t);
+        }
+        
+        //compute new configuration
+        for(State s : state.getConfiguration()) {
+            Transition t = getTransitionForState(s, enabledTransitions);
+            if(t != null) {
+                Set<State> atomicStates = this.getDestinationTree(t).getLeafNodes();
+                newConfiguration.addAll(atomicStates);
+            } else {
+                newConfiguration.add(s);
+            }
+        }
+        
+        //simulate the code
+        System.out.println(" -- Code Simulation Begins --");
+        CodeSimulator codeSimulator = new CodeSimulator(code, state, mode);
+        codeSimulator.simulate();
+        
+        Digraph<SimState> subG = codeSimulator.getInternalDigraph();
+        this.controlFlowGraph.addSubgraph(state, subG);
+        
+        //process resulting states
+        for(SimState s : subG.getLeafNodes()) {
+            MachineState tmp = (MachineState)s;
+            //create a copy of newConfiguration for each ExternalState to avoid aliasing
+            Set<State> configCopy = new HashSet<>(newConfiguration);
+            ExternalState newEx = new ExternalState(configCopy, tmp.collectEnv(tmp.getCloneEnv()));
+            
+            if(!this.branchingFlag) {
+                boolean isUnique = true;
+                for(ExternalState e : this.externStateSet) {
+                    if(e.equals(newEx)) {
+                        isUnique = false;
+                        this.controlFlowGraph.addChild(tmp, e);  //link to existing state (cycle)
+                        System.out.println("State already visited - creating back edge");
+                        break;
+                    }
+                }
+                if(isUnique) {
+                    this.BigQueue.add(newEx);
+                    this.controlFlowGraph.addChild(tmp, newEx);
+                    this.externStateSet.add(newEx);
+                }
+            } else {
+                this.BigQueue.add(newEx);
+                this.controlFlowGraph.addChild(tmp, newEx);
+                this.externStateSet.add(newEx);
+            }
+        }
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public void simulate(List<String> events) throws Exception {
         System.out.println ("==== Statechart Simulation begins ===");
         printCurrentExecutionInfo(" initializing statechart");

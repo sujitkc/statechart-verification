@@ -109,19 +109,19 @@ statechart TVSetPlus8 {
         
         state PICTURE {
           entry : {
-            d := d + 1;
+            d := 1;
           }
           exit  : {
-            d := d - 1;
+            d := 2;
           }
         }
         
         state TEXT {
           entry : {
-            d := d + 2;
+            d := 2;
           }
           exit  : {
-            d := d - 2;
+            d := 3;
           }
         }
         
@@ -157,19 +157,19 @@ statechart TVSetPlus8 {
         
         state ON {
           entry : {
-            d := d * 2;
+            d := 2;
           }
           exit  : {
-            d := d + 1;
+            d := 1;
           }
         }
         
         state OFF {
           entry : {
-            d := d - 2;
+            d := 2;
           }
           exit  : {
-            d := d + 2;
+            d := 2;
           }
         }
         
@@ -206,14 +206,14 @@ statechart TVSetPlus8 {
         state F1_ON {
           entry : {}
           exit  : {
-            a := a - 1;
+            a := 1;
           }
         }
         
         state F1_OFF {
           entry : {}
           exit  : {
-            a := a + 1;
+            a := 1;
           }
         }
         
@@ -250,14 +250,14 @@ statechart TVSetPlus8 {
         state F2_ON {
           entry : {}
           exit  : {
-            b := b - 1;
+            b := 1;
           }
         }
         
         state F2_OFF {
           entry : {}
           exit  : {
-            b := b + 1;
+            b := 1;
           }
         }
         
@@ -278,258 +278,6 @@ statechart TVSetPlus8 {
           guard       : true;
           action      : {
             b := b - 2;
-          }
-        }
-      }
-      
-      // Region 5: Feature F3
-      state F3 {
-        entry : {}
-        exit  : {
-          c := c + 1;
-        }
-        
-        state F3_ON {
-          entry : {}
-          exit  : {
-            d := d - 3;
-          }
-        }
-        
-        state F3_OFF {
-          entry : {}
-          exit  : {
-            d := d + 3;
-          }
-        }
-        
-        transition t_f3_on_to_off {
-          source      : TVSetPlus8.WORKING.F3.F3_ON;
-          destination : TVSetPlus8.WORKING.F3.F3_OFF;
-          trigger     : f3;
-          guard       : true;
-          action      : {
-            d := d + 3;
-          }
-        }
-        
-        transition t_f3_off_to_on {
-          source      : TVSetPlus8.WORKING.F3.F3_OFF;
-          destination : TVSetPlus8.WORKING.F3.F3_ON;
-          trigger     : f3;
-          guard       : true;
-          action      : {
-            d := d - 3;
-          }
-        }
-      }
-      
-      // Region 6: Feature F4
-      state F4 {
-        entry : {}
-        exit  : {
-          a := a + 1;
-        }
-        
-        state F4_ON {
-          entry : {}
-          exit  : {
-            c := c - 4;
-          }
-        }
-        
-        state F4_OFF {
-          entry : {}
-          exit  : {
-            c := c + 4;
-          }
-        }
-        
-        transition t_f4_on_to_off {
-          source      : TVSetPlus8.WORKING.F4.F4_ON;
-          destination : TVSetPlus8.WORKING.F4.F4_OFF;
-          trigger     : f4;
-          guard       : true;
-          action      : {
-            c := c * 2;
-          }
-        }
-        
-        transition t_f4_off_to_on {
-          source      : TVSetPlus8.WORKING.F4.F4_OFF;
-          destination : TVSetPlus8.WORKING.F4.F4_ON;
-          trigger     : f4;
-          guard       : true;
-          action      : {
-            c := c + 4;
-          }
-        }
-      }
-      
-      // Region 7: Feature F5
-      state F5 {
-        entry : {}
-        exit  : {
-          b := b - 1;
-        }
-        
-        state F5_ON {
-          entry : {}
-          exit  : {
-            a := a - 5;
-          }
-        }
-        
-        state F5_OFF {
-          entry : {}
-          exit  : {
-            a := a + 5;
-          }
-        }
-        
-        transition t_f5_on_to_off {
-          source      : TVSetPlus8.WORKING.F5.F5_ON;
-          destination : TVSetPlus8.WORKING.F5.F5_OFF;
-          trigger     : f5;
-          guard       : true;
-          action      : {
-            a := a + 5;
-          }
-        }
-        
-        transition t_f5_off_to_on {
-          source      : TVSetPlus8.WORKING.F5.F5_OFF;
-          destination : TVSetPlus8.WORKING.F5.F5_ON;
-          trigger     : f5;
-          guard       : true;
-          action      : {
-            a := a - 5;
-          }
-        }
-      }
-      
-      // Region 8: Feature F6
-      state F6 {
-        entry : {}
-        exit  : {
-          d := d + 1;
-        }
-        
-        state F6_ON {
-          entry : {}
-          exit  : {
-            b := b + 6;
-          }
-        }
-        
-        state F6_OFF {
-          entry : {}
-          exit  : {
-            b := b - 6;
-          }
-        }
-        
-        transition t_f6_on_to_off {
-          source      : TVSetPlus8.WORKING.F6.F6_ON;
-          destination : TVSetPlus8.WORKING.F6.F6_OFF;
-          trigger     : f6;
-          guard       : true;
-          action      : {
-            b := b - 3;
-          }
-        }
-        
-        transition t_f6_off_to_on {
-          source      : TVSetPlus8.WORKING.F6.F6_OFF;
-          destination : TVSetPlus8.WORKING.F6.F6_ON;
-          trigger     : f6;
-          guard       : true;
-          action      : {
-            b := b + 3;
-          }
-        }
-      }
-      
-      // Region 9: Feature F7
-      state F7 {
-        entry : {}
-        exit  : {
-          c := c - 1;
-        }
-        
-        state F7_ON {
-          entry : {}
-          exit  : {
-            d := d + 7;
-          }
-        }
-        
-        state F7_OFF {
-          entry : {}
-          exit  : {
-            d := d - 7;
-          }
-        }
-        
-        transition t_f7_on_to_off {
-          source      : TVSetPlus8.WORKING.F7.F7_ON;
-          destination : TVSetPlus8.WORKING.F7.F7_OFF;
-          trigger     : f7;
-          guard       : true;
-          action      : {
-            d := d + 7;
-          }
-        }
-        
-        transition t_f7_off_to_on {
-          source      : TVSetPlus8.WORKING.F7.F7_OFF;
-          destination : TVSetPlus8.WORKING.F7.F7_ON;
-          trigger     : f7;
-          guard       : true;
-          action      : {
-            d := d - 7;
-          }
-        }
-      }
-      
-      // Region 10: Feature F8
-      state F8 {
-        entry : {}
-        exit  : {
-          a := a + 2;
-        }
-        
-        state F8_ON {
-          entry : {}
-          exit  : {
-            c := c + 8;
-          }
-        }
-        
-        state F8_OFF {
-          entry : {}
-          exit  : {
-            c := c - 8;
-          }
-        }
-        
-        transition t_f8_on_to_off {
-          source      : TVSetPlus8.WORKING.F8.F8_ON;
-          destination : TVSetPlus8.WORKING.F8.F8_OFF;
-          trigger     : f8;
-          guard       : true;
-          action      : {
-            c := c + 8;
-          }
-        }
-        
-        transition t_f8_off_to_on {
-          source      : TVSetPlus8.WORKING.F8.F8_OFF;
-          destination : TVSetPlus8.WORKING.F8.F8_ON;
-          trigger     : f8;
-          guard       : true;
-          action      : {
-            c := c - 8;
           }
         }
       }

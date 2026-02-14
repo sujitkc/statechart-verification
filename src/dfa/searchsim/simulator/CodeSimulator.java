@@ -247,7 +247,18 @@ public class CodeSimulator{
         if(resExit != null && resExit.getCP() != null){
           for(CFGNode n : resExit.getCP())
           {
+            //for SkipNodes, immediately process their exit since they do nothing
+            //this is needed to maintain proper join synchronization
             if(n instanceof CFGSkipNode){
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              //SkipNode entry = exit, so process it as exit immediately
+              Internode skipExit = this.simulateExitNode(n, currMS, newJPSet);
+              if(skipExit != null && skipExit.getCP() != null) {
+                for(CFGNode skipNext : skipExit.getCP()) {
+                    newReadySet.add(skipNext);
+                }
+              }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
               continue; 
             }
             newReadySet.add(n); 
@@ -264,7 +275,17 @@ public class CodeSimulator{
       if(resNode != null && resNode.getCP() != null){
         for(CFGNode n : resNode.getCP())
         {
+            //handle SkipNodes - they still need to be processed for synchronization
             if(n instanceof CFGSkipNode){
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+              //since SkipNode entry = exit, process it as exit immediately
+              Internode skipExit = this.simulateExitNode(n, currMS, newJPSet);
+              if(skipExit != null && skipExit.getCP() != null) {
+                for(CFGNode skipNext : skipExit.getCP()) {
+                  newReadySet.add(skipNext);
+                }
+              }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
               continue; 
             }
           newReadySet.add(n); 
@@ -292,15 +313,21 @@ public class CodeSimulator{
       this.internalControlFlowGraph.addChild(currMS , newMS); 
       this.internalQueue.add(newMS); 
     }
-    this.mainSimulate();
+    // this.mainSimulate();
   }
 
   private void mainSimulate() throws Exception {
-    if(this.internalQueue.size() == 0)
-      return; 
+    // if(this.internalQueue.size() == 0)
+    //   return; 
 
-    MachineState topMS = (MachineState)this.internalQueue.remove(); 
-    this.generateNewReadySet(topMS);
+    // MachineState topMS = (MachineState)this.internalQueue.remove(); 
+    // this.generateNewReadySet(topMS);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    while(this.internalQueue.size() != 0 && !this.propertyViolated) {
+      MachineState topMS = (MachineState)this.internalQueue.remove(); 
+      this.generateNewReadySet(topMS);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   }
 
   // Print the trace from initial state to the given state by backtracking through parent states

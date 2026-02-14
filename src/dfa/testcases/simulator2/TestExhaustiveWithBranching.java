@@ -438,8 +438,10 @@ public class TestExhaustiveWithBranching {
     {
       Set<State> configuration = new HashSet<>();
       Simulator simulator = new Simulator(statechart , true);
-      
-      simulator.simulate(Arrays.asList(events));
+	  //simuator.simulate(Arrays.asList(events));
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////      
+      simulator.exhaustiveExplore();
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
     catch(Exception e) {
       System.out.println("Something Went Wrong!\n");
