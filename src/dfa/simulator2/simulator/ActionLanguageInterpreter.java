@@ -3,11 +3,15 @@ package simulator2.simulator;
 import java.util.Map;
 
 import ast.*;
-
+import generators.*;
 public class ActionLanguageInterpreter {
-
-  public ActionLanguageInterpreter() {
-
+  static InputGenerator ig;
+  public ActionLanguageInterpreter(String mode) {
+  	if(mode.equals("interactive"))
+    		this.ig=new InteractiveInputGenerator();
+    	else 
+    		this.ig=new RandomInputGenerator();	
+	
   }
 /*
 AssignmentStatement.java  
@@ -20,8 +24,8 @@ SkipStatement.java
 
 Name.java                  
 */
-  public static Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {
-    System.out.println("execute called.");
+  public Map<Declaration, Expression> execute(Statement statement, Map<Declaration, Expression> env) throws Exception {
+  //  System.out.println("execute called. on "+statement);
     if(statement instanceof AssignmentStatement) {
       AssignmentStatement assign = (AssignmentStatement)statement;
       Name lhs = assign.lhs;
@@ -29,7 +33,9 @@ Name.java
       Expression newvalue = ActionLanguageInterpreter.evaluate(rhs, env);
       Declaration d = lhs.getDeclaration();
       env.put(d, newvalue);
+     
     }
+    
     else if(statement instanceof IfStatement){
       System.out.println("ActionLanguageInterpreter::interpret - if statement detected");
     }
@@ -46,17 +52,28 @@ Name.java
   }
 
   public static Expression evaluate(Expression expression, Map<Declaration, Expression> env) throws Exception {
+  
+  //System.out.println("Binary expression :"+expression + expression.getClass());
+  
     if(
         expression instanceof IntegerConstant ||
         expression instanceof BooleanConstant ||
         expression instanceof StringLiteral
       ) {
+     //  System.out.println ("integer constant found");
       return expression;
     }
     else if(expression instanceof BinaryExpression) {
+   
       BinaryExpression be = (BinaryExpression)expression;
+     
       Expression left = ActionLanguageInterpreter.evaluate(be.left, env);
+
+      
       Expression right = ActionLanguageInterpreter.evaluate(be.right, env);
+    
+    
+      
       if(be.operator.equals("+")) {
 	IntegerConstant ileft  = (IntegerConstant)left;
 	IntegerConstant iright = (IntegerConstant)right;
@@ -92,6 +109,23 @@ Name.java
 	IntegerConstant iright = (IntegerConstant)right;
         return new BooleanConstant(ileft.value <= iright.value);
       }
+      else if(be.operator.equals("!=")) {
+        
+        if(left instanceof IntegerConstant && right instanceof IntegerConstant){
+          IntegerConstant ileft  = (IntegerConstant)left;
+	        IntegerConstant iright = (IntegerConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);
+        }
+        else{
+          BooleanConstant ileft  = (BooleanConstant)left;
+	        BooleanConstant iright = (BooleanConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);
+
+        }
+	/*IntegerConstant ileft  = (IntegerConstant)left;
+	IntegerConstant iright = (IntegerConstant)right;
+        return new BooleanConstant(ileft.value != iright.value);*/
+      }
       else if(be.operator.equals("<")) {
 	IntegerConstant ileft  = (IntegerConstant)left;
 	IntegerConstant iright = (IntegerConstant)right;
@@ -108,6 +142,7 @@ Name.java
         return new BooleanConstant(bleft.value || bright.value);
       }
       else if(be.operator.equals("=")) {
+      	
           Boolean answer = true;
           if(left instanceof BooleanConstant && right instanceof BooleanConstant) {
             BooleanConstant bleft  = (BooleanConstant)left;
@@ -130,8 +165,37 @@ Name.java
           }
         return new BooleanConstant(answer);
       }
+      
     }
-    else if(expression instanceof InputExpression) {
+    else if(expression instanceof Name){
+    //System.out.println("Name found");
+      	    Declaration d=((Name)expression).getDeclaration();
+      	    //            System.out.println("Declaration found :"+d + "and env is :"+env);
+      	     
+            Expression e = env.get(d);
+            //System.out.println("Expression found :"+e);
+            if(e instanceof IntegerConstant){
+              IntegerConstant val = (IntegerConstant)e;
+              return val;
+            }
+            else if(e instanceof BooleanConstant){
+              BooleanConstant val = (BooleanConstant)e;
+            	return val;
+            }	
+      }
+    else if(expression instanceof FunctionCall) {
+    	FunctionDeclaration fd=((FunctionCall)expression).getFunctionDeclaration();
+  	
+    	System.out.println("input function declaration found . "+fd.getReturnType());
+    	if(((fd.getReturnType()).name).equals("int")){
+        IntegerConstant temp=ig.getInt(-20,20);
+	System.out.println("integer generated :"+temp.getInt());
+	    	
+	return temp;
+	}
+    	else
+    		return ig.getBoolean();
+    	
     }
     throw new Exception("ActionLanguageInterpreter::evaluate - case not implemented." + expression +" : "+expression.getClass());
   }

@@ -1,0 +1,144 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+	e2;
+  }
+    x:int:local;
+  entry : {x:=1;}
+  exit  : {x:=2;} 
+
+  functions {
+  input<||>() : int;
+  }
+    state A{
+        entry:{x:=111;}
+	exit:{x:=112;}
+	shell Sh1{
+						entry:{x:=3;}
+						exit:{x:=4;}
+	    					state R1{
+	    						entry:{x:=5;}
+							exit:{x:=6;}
+							state Sh1R1A{
+	    							entry:{x:=7;}
+								exit:{x:=8;}
+							state Sh1R1Aa{
+	    							entry:{x:=9;}
+								exit:{x:=10;}
+							
+								}
+								state Sh1R1Ab{
+	    							entry:{x:=11;}
+								exit:{x:=12;}
+							
+								}
+							}
+							transition t1{
+							source: chart.A.Sh1.R1.Sh1R1A;
+							destination: chart.A.Sh1.R1.Sh1R1A.Sh1R1Ab;
+							trigger: e1;
+							guard:(true);
+							action:{x:=13;}
+							} 
+	    					}
+	    					state R2{
+	    						entry:{x:=14;}
+							exit:{x:=15;}
+							state Sh1R2A{
+									entry:{x:=16;}
+									exit:{x:=17;}
+					    
+				    				}
+				    				state Sh1R2B{
+									entry:{x:=18;}
+									exit:{x:=19;}
+					    
+				    				}
+				    				transition t2{
+									source: chart.A.Sh1.R2.Sh1R2A;
+									destination: chart.A.Sh1.R2.Sh1R2B;
+									trigger: e1;
+									guard:(true);
+									action:{x:=20;}
+									}
+							
+							
+	    					}
+    					}
+    }
+
+	
+		shell B{
+			entry:{x:=21;}
+			exit:{x:=22;}
+			state R1{
+				entry:{x:=23;}
+				exit:{x:=24;}
+	    				shell Sh2{
+						entry:{x:=25;}
+						exit:{x:=26;}
+	    					state R1{
+	    						entry:{x:=27;}
+							exit:{x:=28;}
+							state Sh2R1A{
+	    							entry:{x:=29;}
+								exit:{x:=30;}
+							
+							}
+	    					}
+	    					state R2{
+	    						entry:{x:=31;}
+							exit:{x:=32;}
+							state Sh2R2A{
+	    							entry:{x:=33;}
+								exit:{x:=34;}
+							
+							}
+	    					}
+    					
+    				}
+    				state R1B{
+					entry:{x:=35;}
+					exit:{x:=36;}
+	    
+    				}
+   			 }
+			state R2{
+				entry:{x:=37;}
+				exit:{x:=38;}
+	    			state R2A{
+					entry:{x:=39;}
+					exit:{x:=40;}
+	    
+    				}
+    				state R2B{
+					entry:{x:=41;}
+					exit:{x:=42;}
+	    
+    				}
+    				transition t3{
+					source: chart.B.R2.R2A;
+					destination: chart.B.R2.R2B;
+					trigger: e1;
+					guard:(true);
+					action:{x:=43;}
+					} 	    
+   			 }
+
+    		}
+
+    	
+
+  
+
+     
+   transition t4{
+        source: chart.A.Sh1.R2.Sh1R2A;
+        destination: chart.B.R1.Sh2;
+        trigger: e1;
+        guard:(true);
+        action:{}
+	}
+}

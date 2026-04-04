@@ -1,0 +1,217 @@
+
+statechart ABP {
+
+  events {
+    send0;
+    send1;
+    deliver0;
+    deliver1;
+    ack0;
+    ack1;
+    lose;
+  }
+
+  // Sender's current sequence bit
+  bit : int : local;
+  // Receiver's expected sequence bit
+  expected : int : local;
+
+  entry : {
+    bit := 0;
+    expected := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  // Shell System - all 3 regions execute concurrently
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // SENDER
+    // Two states: WAIT_FOR_CALL (ready to send) and WAIT_FOR_ACK (waiting)
+    // Sends packet with current 'bit', waits for matching ACK, then flips bit
+    state Sender {
+      entry : {}
+      exit  : {}
+
+      // Initial state: ready to send next packet
+      state WAIT_FOR_CALL {
+        entry : {}
+        exit  : {}
+      }
+
+      // Waiting for acknowledgment from receiver
+      state WAIT_FOR_ACK {
+        entry : {}
+        exit  : {}
+      }
+
+      // Send packet with bit=0
+      transition s1 {
+        source      : ABP.System.Sender.WAIT_FOR_CALL;
+        destination : ABP.System.Sender.WAIT_FOR_ACK;
+        trigger     : send0;
+        guard       : (bit = 0);
+        action      : {}
+      }
+
+      // Send packet with bit=1
+      transition s2 {
+        source      : ABP.System.Sender.WAIT_FOR_CALL;
+        destination : ABP.System.Sender.WAIT_FOR_ACK;
+        trigger     : send1;
+        guard       : (bit = 1);
+        action      : {}
+      }
+
+      // Receive ACK for bit=0 => flip bit to 1, go back to ready
+      transition s3 {
+        source      : ABP.System.Sender.WAIT_FOR_ACK;
+        destination : ABP.System.Sender.WAIT_FOR_CALL;
+        trigger     : ack0;
+        guard       : (bit = 0);
+        action      : { bit := 1; }
+      }
+
+      // Receive ACK for bit=1 => flip bit to 0, go back to ready
+      transition s4 {
+        source      : ABP.System.Sender.WAIT_FOR_ACK;
+        destination : ABP.System.Sender.WAIT_FOR_CALL;
+        trigger     : ack1;
+        guard       : (bit = 1);
+        action      : { bit := 0; }
+      }
+    }
+
+    // RECEIVER
+    // Two states: WAIT0 (expecting bit=0) and WAIT1 (expecting bit=1)
+    // Accepts matching packets, discards duplicates.
+    state Receiver {
+      entry : {}
+      exit  : {}
+
+      // Expecting a packet with bit=0
+      state WAIT0 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Expecting a packet with bit=1
+      state WAIT1 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Correct delivery: bit=0 matches expected=0
+      // Accept packet, advance to expecting bit=1
+      transition r1 {
+        source      : ABP.System.Receiver.WAIT0;
+        destination : ABP.System.Receiver.WAIT1;
+        trigger     : deliver0;
+        guard       : (expected = 0);
+        action      : { expected := 1; }
+      }
+
+      // Correct delivery: bit=1 matches expected=1
+      // Accept packet, advance to expecting bit=0
+      transition r2 {
+        source      : ABP.System.Receiver.WAIT1;
+        destination : ABP.System.Receiver.WAIT0;
+        trigger     : deliver1;
+        guard       : (expected = 1);
+        action      : { expected := 0; }
+      }
+    }
+
+    // CHANNEL
+    // Three states: EMPTY, HAS_PKT0, HAS_PKT1
+    // Models an unreliable channel that buffers one packet at a time.
+    // Packets can be delivered to receiver or lost.
+    state Channel {
+      entry : {}
+      exit  : {}
+
+      // Channel is empty, ready to accept a packet
+      state EMPTY {
+        entry : {}
+        exit  : {}
+      }
+
+      // Channel holds a packet with bit=0
+      state HAS_PKT0 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Channel holds a packet with bit=1
+      state HAS_PKT1 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Sender transmits packet with bit=0 => channel buffers it
+      transition c1 {
+        source      : ABP.System.Channel.EMPTY;
+        destination : ABP.System.Channel.HAS_PKT0;
+        trigger     : send0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Sender transmits packet with bit=1 => channel buffers it
+      transition c2 {
+        source      : ABP.System.Channel.EMPTY;
+        destination : ABP.System.Channel.HAS_PKT1;
+        trigger     : send1;
+        guard       : true;
+        action      : {}
+      }
+
+      // Channel delivers packet with bit=0 to receiver
+      // SHARED with Receiver (r1) when receiver is in WAIT0
+      // If receiver is in WAIT1, only Channel fires (duplicate discarded)
+      transition c3 {
+        source      : ABP.System.Channel.HAS_PKT0;
+        destination : ABP.System.Channel.EMPTY;
+        trigger     : deliver0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Channel delivers packet with bit=1 to receiver
+      // SHARED with Receiver (r2) when receiver is in WAIT1
+      // If receiver is in WAIT0, only Channel fires (duplicate discarded)
+      transition c4 {
+        source      : ABP.System.Channel.HAS_PKT1;
+        destination : ABP.System.Channel.EMPTY;
+        trigger     : deliver1;
+        guard       : true;
+        action      : {}
+      }
+
+      // Channel loses packet with bit=0 (dropped)
+      transition c5 {
+        source      : ABP.System.Channel.HAS_PKT0;
+        destination : ABP.System.Channel.EMPTY;
+        trigger     : lose;
+        guard       : true;
+        action      : {}
+      }
+
+      // Channel loses packet with bit=1 (dropped)
+      transition c6 {
+        source      : ABP.System.Channel.HAS_PKT1;
+        destination : ABP.System.Channel.EMPTY;
+        trigger     : lose;
+        guard       : true;
+        action      : {}
+      }
+    }
+
+  }
+}

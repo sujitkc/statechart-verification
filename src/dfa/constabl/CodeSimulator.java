@@ -9,7 +9,7 @@ public class CodeSimulator extends Simulator{
    
     public CodeSimulator(List<CodeNode> codenodelist){
         super(codenodelist);
-        System.out.println("CodeNode list composed... cfa : " +getCFACount()+ " : fork : "+getForkCount()+" : Join : "+getJoinCount()+" : Seq :"+getSeqCount());
+       // System.out.println("CodeNode list composed... cfa : " +getCFACount()+ " : fork : "+getForkCount()+" : Join : "+getJoinCount()+" : Seq :"+getSeqCount());
 
     }
     public void execute(CFA cfa){

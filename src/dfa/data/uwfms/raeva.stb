@@ -1,0 +1,536 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+  
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+	TargetSpeed : int : local;
+  	  FollowDist : int : local;
+    PRNDL_In:int:local;
+  RA_Enabled : boolean : local;
+  
+ RA_HVI : int : local;
+  EVA_Enabled : boolean : local;
+  
+ EVA_HVI : int : local;
+ 
+  RA_Warning:int:local;
+  Warning :int: local;
+  AccelPedal :int: local;
+    BrakePedal:int:local;
+
+  minusten:int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  Set_Brake:int:local;
+  Speed: int: local;
+
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        RA_Enabled:=true;  
+    EVA_Enabled:=true;  
+	minusone:=0-1;
+	minusten:=0-10;
+
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+  shell raeva{
+  	//TargetSpeed : int : local;
+  	//  FollowDist : int : local;
+    entry:{}
+    exit:{}
+
+    state ReversingAssistance{
+     state raDisabled{
+   entry: {}
+   exit : {}
+  }
+  state raOverride{
+   entry: {}
+   exit : {}
+  }
+  state raFail{
+   entry: {}
+   exit : {}
+  }
+  state raEnabled{
+   //BrakePedal:int:local;
+   //Speed:int:local;
+   //PRNDL_In:int:local;
+   
+   
+   entry: {
+     
+ }
+   exit : {}
+   state raDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state raEngaged{
+     
+	 //Set_Brake:int:local;
+	 ObstacleZone:int:local;
+
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state raIdle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state raWarn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state raAssist{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition rat23{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raIdle;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raWarn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+	
+	transition rat24{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raWarn;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raIdle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+    transition rat27{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raWarn;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raAssist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition rat28{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raAssist;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raWarn;
+    trigger: e;
+    guard:(ObstacleZone=1);
+    action:{RA_Warning:=1;}
+    }
+    transition rat29{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raIdle;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raAssist;
+    trigger: e;
+    guard:(ObstacleZone=2);
+    action:{RA_Warning:=2;Set_Brake:=60;}
+    }
+    transition rat30{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raAssist;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged.raIdle;
+    trigger: e;
+    guard:(ObstacleZone=0);
+    action:{RA_Warning:=0;}
+    }
+    
+	
+   }
+   state raHold{
+   	entry:{}
+   	exit:{}
+   }
+   
+   transition rat22{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raDisengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<10))||(Speed>25)||(PRNDL_In!=1);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+   transition rat21{
+    source: sc.raeva.ReversingAssistance.raEnabled.raDisengaged;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raEngaged;
+    trigger: e;
+    guard:(Speed>=10)&&(Speed<=25)&&(PRNDL_In=1);
+    action:{RA_HVI:=2;}
+  }
+    transition rat25{
+    source: sc.raeva.ReversingAssistance.raEnabled.raEngaged;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raHold;
+    trigger: e;
+    guard:(Speed=0);
+    action:{RA_Warning:=3;}
+  }
+  transition rat26{
+    source: sc.raeva.ReversingAssistance.raEnabled.raHold;
+    destination: sc.raeva.ReversingAssistance.raEnabled.raDisengaged;
+    trigger: e;
+    guard:(BrakePedal>20);
+    action:{RA_HVI:=1;RA_Warning:=0;}
+  }
+   
+  }
+  transition rat13{
+  source: sc.raeva.ReversingAssistance.raDisabled;
+  destination: sc.raeva.ReversingAssistance.raEnabled;
+  trigger: e;
+  guard:(RA_Enabled=BoolTRUE);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition rat14{
+  source: sc.raeva.ReversingAssistance.raEnabled;
+  destination: sc.raeva.ReversingAssistance.raDisabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+   
+  transition rat16{
+  source: sc.raeva.ReversingAssistance.raOverride;
+  destination: sc.raeva.ReversingAssistance.raDisabled;
+  trigger: e;
+  guard:(RA_Enabled!=BoolTRUE);
+  action:{RA_HVI:=0;RA_Warning:=0;}
+  }
+  
+  transition rat19{
+  source: sc.raeva.ReversingAssistance.raEnabled;
+  destination: sc.raeva.ReversingAssistance.raOverride;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{RA_HVI:=4;RA_Warning:=0;}
+  }
+  
+  transition rat15{
+  source: sc.raeva.ReversingAssistance.raOverride;
+  destination: sc.raeva.ReversingAssistance.raEnabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{RA_HVI:=1;}
+  }
+  
+  transition rat32{
+  source: sc.raeva.ReversingAssistance.raOverride;
+  destination: sc.raeva.ReversingAssistance.raFail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+  
+  transition rat18{
+  source: sc.raeva.ReversingAssistance.raEnabled;
+  destination: sc.raeva.ReversingAssistance.raFail;
+  trigger: Error;
+  guard:true;
+  action:{RA_HVI:=3;RA_Warning:=0;}
+  }
+    }
+
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.raeva.SpeedSetting.DecSpeed;
+				destination: sc.raeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.raeva.SpeedSetting.IncSpeed;
+				destination: sc.raeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.raeva.SpeedSetting.HoldSpeed;
+				destination: sc.raeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.raeva.SpeedSetting.IncSpeed;
+				destination: sc.raeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.raeva.SpeedSetting.DecSpeed;
+				destination: sc.raeva.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.raeva.SpeedSetting.HoldSpeed;
+				destination: sc.raeva.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+    state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+                //AccelPedal:=input<|int|>();
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+    
+    state eva{
+    
+    	 state evaDisabled{
+   entry: {}
+   exit : {}
+  }
+  state evaOverride{
+   entry: {}
+   exit : {}
+  }
+  state evaFail{
+   entry: {}
+   exit : {}
+  }
+  state evaEnabled{
+   //Speed:int:local;
+  // PRNDL_In:int:local;
+	 Siren :boolean : local;
+
+   
+   entry: {
+    PRNDL_In:=input<|int|>();
+   //  Speed:=input<|int|>();
+   // BrakePedal:=input<|int|>();
+    	   Siren:=input<|boolean|>();
+
+ }
+   exit : {}
+   state evaDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state evaEngaged{
+     
+	 /*Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;*/
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state evaSlow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaCoast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaPullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition evat24{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition evat23{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition evat25{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat26{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition evat22{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat27{
+    source: sc.raeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition evat19{
+    source: sc.raeva.eva.evaEnabled.evaEngaged;
+    destination: sc.raeva.eva.evaEnabled.evaDisengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition evat20{
+    source: sc.raeva.eva.evaEnabled.evaDisengaged;
+    destination: sc.raeva.eva.evaEnabled.evaEngaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition evat13{
+  source: sc.raeva.eva.evaDisabled;
+  destination: sc.raeva.eva.evaEnabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition evat14{
+  source: sc.raeva.eva.evaEnabled;
+  destination: sc.raeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition evat16{
+  source: sc.raeva.eva.evaOverride;
+  destination: sc.raeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition evat17{
+  source: sc.raeva.eva.evaEnabled;
+  destination: sc.raeva.eva.evaOverride;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat18{
+  source: sc.raeva.eva.evaOverride;
+  destination: sc.raeva.eva.evaEnabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat29{
+  source: sc.raeva.eva.evaOverride;
+  destination: sc.raeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition evat28{
+  source: sc.raeva.eva.evaEnabled;
+  destination: sc.raeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+ 
+    }
+	
+  
+  }
+}

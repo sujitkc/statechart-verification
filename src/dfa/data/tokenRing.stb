@@ -1,0 +1,278 @@
+// =============================================================================
+// Token Ring Mutual Exclusion Protocol - 3 Nodes
+// =============================================================================
+//
+// Reference: Le Lann, G. (1977). "Distributed Systems - Towards a Formal
+//            Approach". IFIP Congress, pp. 155-160.
+//            Also: Tanenbaum, A.S. & Van Steen, M. (2007). "Distributed
+//            Systems: Principles and Paradigms", 2nd ed., Ch. 6.
+//
+// PROTOCOL DESCRIPTION:
+//   N nodes are arranged in a logical ring. A single token circulates
+//   around the ring. Only the node holding the token may enter the
+//   critical section (CS). After using the CS, the node passes the
+//   token to the next node in the ring.
+//
+//   This is one of the simplest distributed mutual exclusion algorithms.
+//   It guarantees:
+//     - Mutual exclusion: only one node in CS at a time (token uniqueness)
+//     - Deadlock freedom: the token always circulates
+//     - Bounded waiting: each node gets the token within N-1 passes
+//
+// MODELLING APPROACH:
+//   3 nodes in a ring: Node0 -> Node1 -> Node2 -> Node0
+//   The token is represented by variable 'tok' (0, 1, or 2 = who has it).
+//   Each node cycles through: Idle -> HasToken -> InCS -> PassToken -> Done
+//   
+//   Phase variable per node (phN):
+//     0: idle, waiting for token
+//     1: has token, will enter CS
+//     2: in critical section
+//     3: passing token to next node
+//     4: done
+//
+//   Each node enters CS exactly once then goes Done.
+//   Token starts at Node0.
+//
+// STRUCTURE:
+//   tokenRing
+//   + shell Ring
+//       + state Node0  { N0_IdleA/B, N0_CSA/B, N0_PassA/B, N0_Done }
+//       + state Node1  { N1_IdleA/B, N1_CSA/B, N1_PassA/B, N1_Done }
+//       + state Node2  { N2_IdleA/B, N2_CSA/B, N2_PassA/B, N2_Done }
+//
+// =============================================================================
+
+statechart tokenRing {
+
+  events {
+    step;
+  }
+
+  // Token holder: 0=Node0, 1=Node1, 2=Node2
+  tok : int : local;
+
+  // Node phases: 0=idle, 1=in CS, 2=pass token, 3=done
+  ph0 : int : local;
+  ph1 : int : local;
+  ph2 : int : local;
+
+  entry : {
+    tok := 0;
+    ph0 := 0;
+    ph1 := 0;
+    ph2 := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  shell Ring {
+    entry : {}
+    exit  : {}
+
+    // -----------------------------------------------------------------------
+    // NODE 0 - token starts here
+    // -----------------------------------------------------------------------
+    state Node0 {
+      entry : {}
+      exit  : {}
+
+      state N0_IdleA { entry : {} exit : {} }
+      state N0_IdleB { entry : {} exit : {} }
+      state N0_CSA   { entry : {} exit : {} }
+      state N0_CSB   { entry : {} exit : {} }
+      state N0_PassA { entry : {} exit : {} }
+      state N0_PassB { entry : {} exit : {} }
+      state N0_Done  { entry : {} exit : {} }
+
+      // Idle -> CS: grab token if tok=0 and not done
+      transition t0_grab_A {
+        source      : tokenRing.Ring.Node0.N0_IdleA;
+        destination : tokenRing.Ring.Node0.N0_CSB;
+        trigger     : step;
+        guard       : (tok = 0) && (ph0 = 0);
+        action      : { ph0 := 1; }
+      }
+      transition t0_grab_B {
+        source      : tokenRing.Ring.Node0.N0_IdleB;
+        destination : tokenRing.Ring.Node0.N0_CSA;
+        trigger     : step;
+        guard       : (tok = 0) && (ph0 = 0);
+        action      : { ph0 := 1; }
+      }
+
+      // CS -> Pass: finish CS, prepare to pass
+      transition t0_cs_A {
+        source      : tokenRing.Ring.Node0.N0_CSA;
+        destination : tokenRing.Ring.Node0.N0_PassB;
+        trigger     : step;
+        guard       : (ph0 = 1);
+        action      : { ph0 := 2; }
+      }
+      transition t0_cs_B {
+        source      : tokenRing.Ring.Node0.N0_CSB;
+        destination : tokenRing.Ring.Node0.N0_PassA;
+        trigger     : step;
+        guard       : (ph0 = 1);
+        action      : { ph0 := 2; }
+      }
+
+      // Pass -> Done: pass token to Node1 (tok := 1)
+      transition t0_pass_A {
+        source      : tokenRing.Ring.Node0.N0_PassA;
+        destination : tokenRing.Ring.Node0.N0_Done;
+        trigger     : step;
+        guard       : (ph0 = 2);
+        action      : { tok := 1; ph0 := 3; }
+      }
+      transition t0_pass_B {
+        source      : tokenRing.Ring.Node0.N0_PassB;
+        destination : tokenRing.Ring.Node0.N0_Done;
+        trigger     : step;
+        guard       : (ph0 = 2);
+        action      : { tok := 1; ph0 := 3; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // NODE 1
+    // -----------------------------------------------------------------------
+    state Node1 {
+      entry : {}
+      exit  : {}
+
+      state N1_IdleA { entry : {} exit : {} }
+      state N1_IdleB { entry : {} exit : {} }
+      state N1_CSA   { entry : {} exit : {} }
+      state N1_CSB   { entry : {} exit : {} }
+      state N1_PassA { entry : {} exit : {} }
+      state N1_PassB { entry : {} exit : {} }
+      state N1_Done  { entry : {} exit : {} }
+
+      transition t1_grab_A {
+        source      : tokenRing.Ring.Node1.N1_IdleA;
+        destination : tokenRing.Ring.Node1.N1_CSB;
+        trigger     : step;
+        guard       : (tok = 1) && (ph1 = 0);
+        action      : { ph1 := 1; }
+      }
+      transition t1_grab_B {
+        source      : tokenRing.Ring.Node1.N1_IdleB;
+        destination : tokenRing.Ring.Node1.N1_CSA;
+        trigger     : step;
+        guard       : (tok = 1) && (ph1 = 0);
+        action      : { ph1 := 1; }
+      }
+
+      transition t1_cs_A {
+        source      : tokenRing.Ring.Node1.N1_CSA;
+        destination : tokenRing.Ring.Node1.N1_PassB;
+        trigger     : step;
+        guard       : (ph1 = 1);
+        action      : { ph1 := 2; }
+      }
+      transition t1_cs_B {
+        source      : tokenRing.Ring.Node1.N1_CSB;
+        destination : tokenRing.Ring.Node1.N1_PassA;
+        trigger     : step;
+        guard       : (ph1 = 1);
+        action      : { ph1 := 2; }
+      }
+
+      transition t1_pass_A {
+        source      : tokenRing.Ring.Node1.N1_PassA;
+        destination : tokenRing.Ring.Node1.N1_Done;
+        trigger     : step;
+        guard       : (ph1 = 2);
+        action      : { tok := 2; ph1 := 3; }
+      }
+      transition t1_pass_B {
+        source      : tokenRing.Ring.Node1.N1_PassB;
+        destination : tokenRing.Ring.Node1.N1_Done;
+        trigger     : step;
+        guard       : (ph1 = 2);
+        action      : { tok := 2; ph1 := 3; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // NODE 2
+    // -----------------------------------------------------------------------
+    state Node2 {
+      entry : {}
+      exit  : {}
+
+      state N2_IdleA { entry : {} exit : {} }
+      state N2_IdleB { entry : {} exit : {} }
+      state N2_CSA   { entry : {} exit : {} }
+      state N2_CSB   { entry : {} exit : {} }
+      state N2_PassA { entry : {} exit : {} }
+      state N2_PassB { entry : {} exit : {} }
+      state N2_Done  { entry : {} exit : {} }
+
+      transition t2_grab_A {
+        source      : tokenRing.Ring.Node2.N2_IdleA;
+        destination : tokenRing.Ring.Node2.N2_CSB;
+        trigger     : step;
+        guard       : (tok = 2) && (ph2 = 0);
+        action      : { ph2 := 1; }
+      }
+      transition t2_grab_B {
+        source      : tokenRing.Ring.Node2.N2_IdleB;
+        destination : tokenRing.Ring.Node2.N2_CSA;
+        trigger     : step;
+        guard       : (tok = 2) && (ph2 = 0);
+        action      : { ph2 := 1; }
+      }
+
+      transition t2_cs_A {
+        source      : tokenRing.Ring.Node2.N2_CSA;
+        destination : tokenRing.Ring.Node2.N2_PassB;
+        trigger     : step;
+        guard       : (ph2 = 1);
+        action      : { ph2 := 2; }
+      }
+      transition t2_cs_B {
+        source      : tokenRing.Ring.Node2.N2_CSB;
+        destination : tokenRing.Ring.Node2.N2_PassA;
+        trigger     : step;
+        guard       : (ph2 = 1);
+        action      : { ph2 := 2; }
+      }
+
+      // Pass token back to Node0 (closes the ring: tok := 0)
+      // But since all nodes enter CS only once, this completes the protocol
+      transition t2_pass_A {
+        source      : tokenRing.Ring.Node2.N2_PassA;
+        destination : tokenRing.Ring.Node2.N2_Done;
+        trigger     : step;
+        guard       : (ph2 = 2);
+        action      : { tok := 0; ph2 := 3; }
+      }
+      transition t2_pass_B {
+        source      : tokenRing.Ring.Node2.N2_PassB;
+        destination : tokenRing.Ring.Node2.N2_Done;
+        trigger     : step;
+        guard       : (ph2 = 2);
+        action      : { tok := 0; ph2 := 3; }
+      }
+    }
+  }
+
+  transition t_start {
+    source      : tokenRing.Init;
+    destination : tokenRing.Ring;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

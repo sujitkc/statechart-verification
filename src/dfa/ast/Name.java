@@ -46,6 +46,7 @@ public class Name extends Expression {
   }
 
   public boolean equals(Object o) {
+  System.out.println("names equals::");
     boolean result = true;
     Name n = null;
     if((o instanceof Name) == false) {

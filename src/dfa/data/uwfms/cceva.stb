@@ -1,0 +1,477 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+	Set_Brake:int:local;
+	Set_Throttle:int:local;
+	Set_SteerOut:int:local;
+  	CC_Enabled : boolean : local;
+  	CC_Engaged : boolean : local;
+ 	CA_HVI : int : local;
+  	EVA_Enabled : boolean : local;
+  	EVA_HVI : int : local;
+	LG_Warning:boolean:local;
+  	Warning :int: local;
+  	AccelPedal :int: local;
+    BrakePedal:int:local;
+
+  	minusten:int:local;
+  	BoolTRUE : boolean : local;
+  	BoolFALSE : boolean : local;
+  	minusone: int :local;
+    TargetSpeed : int : local;
+  	FollowDist : int : local;
+  	Speed: int: local;
+ 
+ 	PRNDL_In:int:local;
+	Siren :boolean : local;
+	set_Throttle :int:local;
+    
+	entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        CC_Enabled:=true;  
+        CC_Engaged:=true;  
+    EVA_Enabled:=true;  
+	minusone:=0-1;
+	minusten:=0-10;
+
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+
+  shell cceva
+  {
+  	
+    entry:{}
+    exit:{}
+  
+	state LogicControl{
+	entry:{
+		CC_Engaged:=true;
+		
+	//	Speed:=input<|int|>();
+	//	BrakePedal:=input<|int|>();
+		TargetSpeed:=60;
+		CC_Enabled:=true;
+	}
+	exit:{}
+		state Disabled{
+			entry:{}
+			exit:{}
+		}
+		state Fail{
+			entry:{}
+			exit:{}
+		}
+		state Enabled{
+		//	PRNDL_In:int:local;
+			
+			entry:{
+				PRNDL_In:=3;
+					PRNDL_In:=3;
+			}
+			exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				//set_Throttle :int:local;
+				
+				
+				entry:{
+					
+				}
+				exit:{}
+				state Coasting{
+					entry:{}
+					exit:{}
+				}
+				state Accelerating{
+					entry:{}
+					exit:{}
+				}
+				transition lct20{
+					source: sc.cceva.LogicControl.Enabled.Engaged.Coasting;
+					destination: sc.cceva.LogicControl.Enabled.Engaged.Accelerating;
+					trigger: e;
+					guard:(FollowDist>50) && (Speed<TargetSpeed);
+					action:{set_Throttle:=TargetSpeed-Speed;}
+				}
+				transition lct21{
+					source: sc.cceva.LogicControl.Enabled.Engaged.Accelerating;
+					destination: sc.cceva.LogicControl.Enabled.Engaged.Coasting;
+					trigger: e;
+					guard:(FollowDist<=50) || (Speed>=TargetSpeed);
+					action:{}
+				}
+			}
+			transition lct18{
+				source: sc.cceva.LogicControl.Enabled.Disengaged;
+				destination: sc.cceva.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=40) && (PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition lct37{
+				source: sc.cceva.LogicControl.Enabled.Engaged;
+				destination: sc.cceva.LogicControl.Enabled.Disengaged;
+				trigger: e;
+				guard:(Speed<40) || (PRNDL_In!=3);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct19{
+				source: sc.cceva.LogicControl.Enabled.Engaged;
+				destination: sc.cceva.LogicControl.Enabled.Override;
+				trigger: Cancel;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct24{
+				source: sc.cceva.LogicControl.Enabled.Engaged;
+				destination: sc.cceva.LogicControl.Enabled.Override;
+				trigger: e;
+				guard:(BrakePedal>0);
+				action:{CC_Engaged:=BoolFALSE;}
+			}
+			transition lct25_1{
+				source: sc.cceva.LogicControl.Enabled.Override;
+				destination: sc.cceva.LogicControl.Enabled.Engaged;
+				trigger: SetAccelIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			transition lct25_2{
+				source: sc.cceva.LogicControl.Enabled.Override;
+				destination: sc.cceva.LogicControl.Enabled.Engaged;
+				trigger: ResumeCoastIn;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{CC_Engaged:=BoolTRUE;}
+			}
+			
+		}
+		transition lct22{
+				source: sc.cceva.LogicControl.Disabled;
+				destination: sc.cceva.LogicControl.Enabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolTRUE);
+				action:{TargetSpeed:=0;}
+		}
+		transition lct23{
+				source: sc.cceva.LogicControl.Enabled;
+				destination: sc.cceva.LogicControl.Disabled;
+				trigger: e;
+				guard:(CC_Enabled=BoolFALSE);
+				action:{TargetSpeed:=0;CC_Engaged:=BoolFALSE;}
+		}
+		transition lct26{
+				source: sc.cceva.LogicControl.Enabled;
+				destination: sc.cceva.LogicControl.Disabled;
+				trigger: Error;
+				guard:(true);
+				action:{CC_Engaged:=BoolFALSE;}
+		}
+	}
+
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.cceva.SpeedSetting.DecSpeed;
+				destination: sc.cceva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.cceva.SpeedSetting.IncSpeed;
+				destination: sc.cceva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.cceva.SpeedSetting.HoldSpeed;
+				destination: sc.cceva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.cceva.SpeedSetting.IncSpeed;
+				destination: sc.cceva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.cceva.SpeedSetting.DecSpeed;
+				destination: sc.cceva.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.cceva.SpeedSetting.HoldSpeed;
+				destination: sc.cceva.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>=0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+	
+	  state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+               // AccelPedal:=input<|int|>();
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+    
+        state eva{
+    
+    	 state evaDisabled{
+   entry: {}
+   exit : {}
+  }
+  state evaOverride{
+   entry: {}
+   exit : {}
+  }
+  state evaFail{
+   entry: {}
+   exit : {}
+  }
+  state evaEnabled{
+   //Speed:int:local;
+   //PRNDL_In:int:local;
+	// Siren :boolean : local;
+
+   
+   entry: {
+    
+
+ }
+   exit : {}
+   state evaDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state evaEngaged{
+     
+	 //Set_Brake:int:local;
+	 //Set_Throttle:int:local;
+	 //Set_SteerOut:int:local;
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state evaSlow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaCoast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaPullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition evat24{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition evat23{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition evat25{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat26{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition evat22{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat27{
+    source: sc.cceva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition evat19{
+    source: sc.cceva.eva.evaEnabled.evaEngaged;
+    destination: sc.cceva.eva.evaEnabled.evaDisengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition evat20{
+    source: sc.cceva.eva.evaEnabled.evaDisengaged;
+    destination: sc.cceva.eva.evaEnabled.evaEngaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition evat13{
+  source: sc.cceva.eva.evaDisabled;
+  destination: sc.cceva.eva.evaEnabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition evat14{
+  source: sc.cceva.eva.evaEnabled;
+  destination: sc.cceva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition evat16{
+  source: sc.cceva.eva.evaOverride;
+  destination: sc.cceva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition evat17{
+  source: sc.cceva.eva.evaEnabled;
+  destination: sc.cceva.eva.evaOverride;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat18{
+  source: sc.cceva.eva.evaOverride;
+  destination: sc.cceva.eva.evaEnabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat29{
+  source: sc.cceva.eva.evaOverride;
+  destination: sc.cceva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition evat28{
+  source: sc.cceva.eva.evaEnabled;
+  destination: sc.cceva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+ 
+    }
+  
+    
+
+  }
+  
+}

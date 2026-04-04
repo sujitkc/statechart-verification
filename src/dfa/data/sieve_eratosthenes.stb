@@ -1,0 +1,1021 @@
+// Sieve of Eratosthenes - finds all prime numbers up to MAX (25)
+// Modeled after the Promela concurrent sieve, translated into a
+// sequential statechart with flags and iterative marking.
+//
+// Self-transitions are not supported by the simulator, so iterative
+// phases use pairs of alternating states (A <-> B) to avoid them.
+
+statechart SieveOfEratosthenes {
+
+  events {
+    step;
+  }
+
+  // --- Sieve flags: 1 = candidate, 0 = composite ---
+  p2  : int : local;
+  p3  : int : local;
+  p4  : int : local;
+  p5  : int : local;
+  p6  : int : local;
+  p7  : int : local;
+  p8  : int : local;
+  p9  : int : local;
+  p10 : int : local;
+  p11 : int : local;
+  p12 : int : local;
+  p13 : int : local;
+  p14 : int : local;
+  p15 : int : local;
+  p16 : int : local;
+  p17 : int : local;
+  p18 : int : local;
+  p19 : int : local;
+  p20 : int : local;
+  p21 : int : local;
+  p22 : int : local;
+  p23 : int : local;
+  p24 : int : local;
+  p25 : int : local;
+
+  // --- Working variables ---
+  currentPrime : int : local;
+  multiple     : int : local;
+  primeCount   : int : local;
+  candidate    : int : local;
+
+  entry : {
+    p2  := 1;
+    p3  := 1;
+    p4  := 1;
+    p5  := 1;
+    p6  := 1;
+    p7  := 1;
+    p8  := 1;
+    p9  := 1;
+    p10 := 1;
+    p11 := 1;
+    p12 := 1;
+    p13 := 1;
+    p14 := 1;
+    p15 := 1;
+    p16 := 1;
+    p17 := 1;
+    p18 := 1;
+    p19 := 1;
+    p20 := 1;
+    p21 := 1;
+    p22 := 1;
+    p23 := 1;
+    p24 := 1;
+    p25 := 1;
+    currentPrime := 2;
+    multiple     := 0;
+    primeCount   := 0;
+    candidate    := 2;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  // ================================================================
+  //  STATES
+  // ================================================================
+
+  state Init {
+    entry : {
+      currentPrime := 2;
+      multiple := 4;
+    }
+    exit : {}
+  }
+
+  // Marking uses two alternating states to avoid self-transitions
+  state MarkA {
+    entry : {}
+    exit  : {}
+  }
+
+  state MarkB {
+    entry : {}
+    exit  : {}
+  }
+
+  // Finding next prime uses two alternating states
+  state FindA {
+    entry : {}
+    exit  : {}
+  }
+
+  state FindB {
+    entry : {}
+    exit  : {}
+  }
+
+  // Collecting results uses two alternating states
+  state CollectA {
+    entry : {}
+    exit  : {}
+  }
+
+  state CollectB {
+    entry : {}
+    exit  : {}
+  }
+
+  state Done {
+    entry : {}
+    exit  : {}
+  }
+
+  // ================================================================
+  //  TRANSITIONS
+  // ================================================================
+
+  // --- Init -> MarkA ---
+  transition t_init {
+    source      : SieveOfEratosthenes.Init;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : true;
+    action      : {
+      multiple := currentPrime * currentPrime;
+    }
+  }
+
+  // ================================================================
+  //  MARK MULTIPLES: MarkA -> MarkB -> MarkA -> ... (alternating)
+  //  Each transition marks p[multiple]=0 and advances multiple.
+  // ================================================================
+
+  // --- MarkA -> MarkB transitions (one per markable number) ---
+  transition t_mAB_4 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 4);
+    action      : { p4 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_6 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 6);
+    action      : { p6 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_8 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 8);
+    action      : { p8 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_9 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 9);
+    action      : { p9 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_10 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 10);
+    action      : { p10 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_12 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 12);
+    action      : { p12 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_14 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 14);
+    action      : { p14 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_15 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 15);
+    action      : { p15 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_16 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 16);
+    action      : { p16 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_18 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 18);
+    action      : { p18 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_20 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 20);
+    action      : { p20 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_21 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 21);
+    action      : { p21 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_22 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 22);
+    action      : { p22 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_24 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 24);
+    action      : { p24 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mAB_25 {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.MarkB;
+    trigger     : step;
+    guard       : (multiple = 25);
+    action      : { p25 := 0; multiple := multiple + currentPrime; }
+  }
+
+  // --- MarkB -> MarkA transitions (mirror of above) ---
+  transition t_mBA_4 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 4);
+    action      : { p4 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_6 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 6);
+    action      : { p6 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_8 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 8);
+    action      : { p8 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_9 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 9);
+    action      : { p9 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_10 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 10);
+    action      : { p10 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_12 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 12);
+    action      : { p12 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_14 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 14);
+    action      : { p14 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_15 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 15);
+    action      : { p15 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_16 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 16);
+    action      : { p16 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_18 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 18);
+    action      : { p18 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_20 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 20);
+    action      : { p20 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_21 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 21);
+    action      : { p21 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_22 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 22);
+    action      : { p22 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_24 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 24);
+    action      : { p24 := 0; multiple := multiple + currentPrime; }
+  }
+
+  transition t_mBA_25 {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (multiple = 25);
+    action      : { p25 := 0; multiple := multiple + currentPrime; }
+  }
+
+  // --- MarkA/MarkB -> FindA: done marking (multiple > 25) ---
+  transition t_mA_done {
+    source      : SieveOfEratosthenes.MarkA;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (multiple > 25);
+    action      : { candidate := currentPrime + 1; }
+  }
+
+  transition t_mB_done {
+    source      : SieveOfEratosthenes.MarkB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (multiple > 25);
+    action      : { candidate := currentPrime + 1; }
+  }
+
+  // ================================================================
+  //  FIND NEXT PRIME: FindA -> FindB -> FindA -> ... (alternating)
+  //  Skip composite candidates.
+  // ================================================================
+
+  // --- FindA -> FindB: skip composite ---
+  transition t_fAB_4 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 4) && (p4 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_6 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 6) && (p6 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_8 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 8) && (p8 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_9 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 9) && (p9 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_10 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 10) && (p10 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_12 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 12) && (p12 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_14 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 14) && (p14 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_15 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 15) && (p15 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_16 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 16) && (p16 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_18 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 18) && (p18 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_20 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 20) && (p20 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_21 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 21) && (p21 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_22 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 22) && (p22 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_24 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 24) && (p24 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fAB_25 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.FindB;
+    trigger     : step;
+    guard       : (candidate = 25) && (p25 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  // --- FindB -> FindA: skip composite (mirror) ---
+  transition t_fBA_4 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 4) && (p4 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_6 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 6) && (p6 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_8 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 8) && (p8 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_9 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 9) && (p9 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_10 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 10) && (p10 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_12 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 12) && (p12 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_14 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 14) && (p14 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_15 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 15) && (p15 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_16 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 16) && (p16 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_18 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 18) && (p18 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_20 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 20) && (p20 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_21 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 21) && (p21 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_22 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 22) && (p22 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_24 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 24) && (p24 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  transition t_fBA_25 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.FindA;
+    trigger     : step;
+    guard       : (candidate = 25) && (p25 = 0);
+    action      : { candidate := candidate + 1; }
+  }
+
+  // --- FindA/FindB -> MarkA: found next prime (candidate^2 <= 25 means candidate <= 5) ---
+  // Only primes 2,3,5 satisfy candidate^2 <= 25. We check the flag.
+  transition t_fA_found3 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (candidate = 3) && (p3 = 1);
+    action      : { currentPrime := 3; multiple := 9; }
+  }
+
+  transition t_fA_found5 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (candidate = 5) && (p5 = 1);
+    action      : { currentPrime := 5; multiple := 25; }
+  }
+
+  transition t_fB_found3 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (candidate = 3) && (p3 = 1);
+    action      : { currentPrime := 3; multiple := 9; }
+  }
+
+  transition t_fB_found5 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.MarkA;
+    trigger     : step;
+    guard       : (candidate = 5) && (p5 = 1);
+    action      : { currentPrime := 5; multiple := 25; }
+  }
+
+  // --- FindA/FindB -> CollectA: sieving complete ---
+  transition t_fA_doneOver {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate > 25);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done7 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 7) && (p7 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done11 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 11) && (p11 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done13 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 13) && (p13 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done17 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 17) && (p17 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done19 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 19) && (p19 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fA_done23 {
+    source      : SieveOfEratosthenes.FindA;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 23) && (p23 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_doneOver {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate > 25);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done7 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 7) && (p7 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done11 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 11) && (p11 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done13 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 13) && (p13 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done17 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 17) && (p17 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done19 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 19) && (p19 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  transition t_fB_done23 {
+    source      : SieveOfEratosthenes.FindB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 23) && (p23 = 1);
+    action      : { candidate := 2; primeCount := 0; }
+  }
+
+  // ================================================================
+  //  COLLECT RESULTS: CollectA -> CollectB -> CollectA -> ...
+  //  Count primes by adding each flag to primeCount.
+  // ================================================================
+
+  // --- CollectA -> CollectB ---
+  transition t_cAB_2 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 2);
+    action      : { primeCount := primeCount + p2; candidate := 3; }
+  }
+
+  transition t_cAB_4 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 4);
+    action      : { primeCount := primeCount + p4; candidate := 5; }
+  }
+
+  transition t_cAB_6 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 6);
+    action      : { primeCount := primeCount + p6; candidate := 7; }
+  }
+
+  transition t_cAB_8 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 8);
+    action      : { primeCount := primeCount + p8; candidate := 9; }
+  }
+
+  transition t_cAB_10 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 10);
+    action      : { primeCount := primeCount + p10; candidate := 11; }
+  }
+
+  transition t_cAB_12 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 12);
+    action      : { primeCount := primeCount + p12; candidate := 13; }
+  }
+
+  transition t_cAB_14 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 14);
+    action      : { primeCount := primeCount + p14; candidate := 15; }
+  }
+
+  transition t_cAB_16 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 16);
+    action      : { primeCount := primeCount + p16; candidate := 17; }
+  }
+
+  transition t_cAB_18 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 18);
+    action      : { primeCount := primeCount + p18; candidate := 19; }
+  }
+
+  transition t_cAB_20 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 20);
+    action      : { primeCount := primeCount + p20; candidate := 21; }
+  }
+
+  transition t_cAB_22 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 22);
+    action      : { primeCount := primeCount + p22; candidate := 23; }
+  }
+
+  transition t_cAB_24 {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.CollectB;
+    trigger     : step;
+    guard       : (candidate = 24);
+    action      : { primeCount := primeCount + p24; candidate := 25; }
+  }
+
+  // --- CollectB -> CollectA ---
+  transition t_cBA_3 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 3);
+    action      : { primeCount := primeCount + p3; candidate := 4; }
+  }
+
+  transition t_cBA_5 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 5);
+    action      : { primeCount := primeCount + p5; candidate := 6; }
+  }
+
+  transition t_cBA_7 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 7);
+    action      : { primeCount := primeCount + p7; candidate := 8; }
+  }
+
+  transition t_cBA_9 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 9);
+    action      : { primeCount := primeCount + p9; candidate := 10; }
+  }
+
+  transition t_cBA_11 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 11);
+    action      : { primeCount := primeCount + p11; candidate := 12; }
+  }
+
+  transition t_cBA_13 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 13);
+    action      : { primeCount := primeCount + p13; candidate := 14; }
+  }
+
+  transition t_cBA_15 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 15);
+    action      : { primeCount := primeCount + p15; candidate := 16; }
+  }
+
+  transition t_cBA_17 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 17);
+    action      : { primeCount := primeCount + p17; candidate := 18; }
+  }
+
+  transition t_cBA_19 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 19);
+    action      : { primeCount := primeCount + p19; candidate := 20; }
+  }
+
+  transition t_cBA_21 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 21);
+    action      : { primeCount := primeCount + p21; candidate := 22; }
+  }
+
+  transition t_cBA_23 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 23);
+    action      : { primeCount := primeCount + p23; candidate := 24; }
+  }
+
+  transition t_cBA_25 {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.CollectA;
+    trigger     : step;
+    guard       : (candidate = 25);
+    action      : { primeCount := primeCount + p25; candidate := 26; }
+  }
+
+  // --- CollectA/CollectB -> Done ---
+  transition t_cA_done {
+    source      : SieveOfEratosthenes.CollectA;
+    destination : SieveOfEratosthenes.Done;
+    trigger     : step;
+    guard       : (candidate > 25);
+    action      : {}
+  }
+
+  transition t_cB_done {
+    source      : SieveOfEratosthenes.CollectB;
+    destination : SieveOfEratosthenes.Done;
+    trigger     : step;
+    guard       : (candidate > 25);
+    action      : {}
+  }
+}

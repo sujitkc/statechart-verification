@@ -1,0 +1,565 @@
+// Concurrent Sieve of Eratosthenes - finds all prime numbers up to 25
+// Uses ConStaBL shell states with orthogonal regions for true concurrency.
+//
+// Architecture: 3 concurrent sieve filters + 1 collector running in parallel
+// Sieve filters for primes: 2, 3, 5
+// Expected result: 9 primes
+// Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23
+
+statechart ConcurrentSieve {
+
+  events {
+    step;
+  }
+
+  // Primality flags: 1 = prime candidate, 0 = composite
+  p2 : int : local;
+  p3 : int : local;
+  p4 : int : local;
+  p5 : int : local;
+  p6 : int : local;
+  p7 : int : local;
+  p8 : int : local;
+  p9 : int : local;
+  p10 : int : local;
+  p11 : int : local;
+  p12 : int : local;
+  p13 : int : local;
+  p14 : int : local;
+  p15 : int : local;
+  p16 : int : local;
+  p17 : int : local;
+  p18 : int : local;
+  p19 : int : local;
+  p20 : int : local;
+  p21 : int : local;
+  p22 : int : local;
+  p23 : int : local;
+  p24 : int : local;
+  p25 : int : local;
+
+  // Working variables for each concurrent sieve
+  mult2 : int : local;
+  mult3 : int : local;
+  mult5 : int : local;
+
+  // Result collection
+  primeCount : int : local;
+  candidate  : int : local;
+
+  entry : {
+    p2 := 1;
+    p3 := 1;
+    p4 := 1;
+    p5 := 1;
+    p6 := 1;
+    p7 := 1;
+    p8 := 1;
+    p9 := 1;
+    p10 := 1;
+    p11 := 1;
+    p12 := 1;
+    p13 := 1;
+    p14 := 1;
+    p15 := 1;
+    p16 := 1;
+    p17 := 1;
+    p18 := 1;
+    p19 := 1;
+    p20 := 1;
+    p21 := 1;
+    p22 := 1;
+    p23 := 1;
+    p24 := 1;
+    p25 := 1;
+    mult2 := 4;
+    mult3 := 9;
+    mult5 := 25;
+    primeCount := 0;
+    candidate := 2;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  // Shell state with 4 concurrent regions (3 sieves + 1 collector)
+  shell SievePipeline {
+    entry : {}
+    exit  : {}
+
+    // Region: Sieve2 - concurrently marks multiples of 2
+    // Marks 11 multiples starting from 2^2 = 4
+    state Sieve2 {
+      entry : {}
+      exit  : {}
+
+      state S2_MarkA { entry : {} exit : {} }
+      state S2_MarkB { entry : {} exit : {} }
+      state S2_Done  { entry : {} exit : {} }
+
+      transition t_s2_mAB_4 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 4);
+        action      : { p4 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mBA_6 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 6);
+        action      : { p6 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mAB_8 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 8);
+        action      : { p8 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mBA_10 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 10);
+        action      : { p10 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mAB_12 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 12);
+        action      : { p12 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mBA_14 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 14);
+        action      : { p14 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mAB_16 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 16);
+        action      : { p16 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mBA_18 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 18);
+        action      : { p18 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mAB_20 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 20);
+        action      : { p20 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mBA_22 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 22);
+        action      : { p22 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mAB_24 {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 24);
+        action      : { p24 := 0; mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mA_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_Done;
+        trigger     : step;
+        guard       : (mult2 > 25);
+        action      : {}
+      }
+
+      transition t_s2_mB_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve2.S2_Done;
+        trigger     : step;
+        guard       : (mult2 > 25);
+        action      : {}
+      }
+    }
+
+    // Region: Sieve3 - concurrently marks multiples of 3
+    // Marks 6 multiples starting from 3^2 = 9
+    state Sieve3 {
+      entry : {}
+      exit  : {}
+
+      state S3_MarkA { entry : {} exit : {} }
+      state S3_MarkB { entry : {} exit : {} }
+      state S3_Done  { entry : {} exit : {} }
+
+      transition t_s3_mAB_9 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 9);
+        action      : { p9 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mBA_12 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 12);
+        action      : { p12 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mAB_15 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 15);
+        action      : { p15 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mBA_18 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 18);
+        action      : { p18 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mAB_21 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 21);
+        action      : { p21 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mBA_24 {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 24);
+        action      : { p24 := 0; mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mA_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_Done;
+        trigger     : step;
+        guard       : (mult3 > 25);
+        action      : {}
+      }
+
+      transition t_s3_mB_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve3.S3_Done;
+        trigger     : step;
+        guard       : (mult3 > 25);
+        action      : {}
+      }
+    }
+
+    // Region: Sieve5 - concurrently marks multiples of 5
+    // Marks 1 multiples starting from 5^2 = 25
+    state Sieve5 {
+      entry : {}
+      exit  : {}
+
+      state S5_MarkA { entry : {} exit : {} }
+      state S5_MarkB { entry : {} exit : {} }
+      state S5_Done  { entry : {} exit : {} }
+
+      transition t_s5_mAB_25 {
+        source      : ConcurrentSieve.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 25);
+        action      : { p25 := 0; mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mA_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve.SievePipeline.Sieve5.S5_Done;
+        trigger     : step;
+        guard       : (mult5 > 25);
+        action      : {}
+      }
+
+      transition t_s5_mB_done {
+        source      : ConcurrentSieve.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve.SievePipeline.Sieve5.S5_Done;
+        trigger     : step;
+        guard       : (mult5 > 25);
+        action      : {}
+      }
+    }
+
+    // Region: Collector - waits for all sieves to finish, then counts primes
+    state Collector {
+      entry : {}
+      exit  : {}
+
+      state CollWaiting { entry : {} exit : {} }
+      state CollCountA  { entry : {} exit : {} }
+      state CollCountB  { entry : {} exit : {} }
+      state CollDone    { entry : {} exit : {} }
+
+      // Wait for all sieves to complete
+      transition t_coll_start {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollWaiting;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (mult2 > 25) && (mult3 > 25) && (mult5 > 25);
+        action      : { candidate := 2; primeCount := 0; }
+      }
+
+      transition t_coll_cAB_2 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 2);
+        action      : { primeCount := primeCount + p2; candidate := 3; }
+      }
+
+      transition t_coll_cBA_3 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 3);
+        action      : { primeCount := primeCount + p3; candidate := 4; }
+      }
+
+      transition t_coll_cAB_4 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 4);
+        action      : { primeCount := primeCount + p4; candidate := 5; }
+      }
+
+      transition t_coll_cBA_5 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 5);
+        action      : { primeCount := primeCount + p5; candidate := 6; }
+      }
+
+      transition t_coll_cAB_6 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 6);
+        action      : { primeCount := primeCount + p6; candidate := 7; }
+      }
+
+      transition t_coll_cBA_7 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 7);
+        action      : { primeCount := primeCount + p7; candidate := 8; }
+      }
+
+      transition t_coll_cAB_8 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 8);
+        action      : { primeCount := primeCount + p8; candidate := 9; }
+      }
+
+      transition t_coll_cBA_9 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 9);
+        action      : { primeCount := primeCount + p9; candidate := 10; }
+      }
+
+      transition t_coll_cAB_10 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 10);
+        action      : { primeCount := primeCount + p10; candidate := 11; }
+      }
+
+      transition t_coll_cBA_11 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 11);
+        action      : { primeCount := primeCount + p11; candidate := 12; }
+      }
+
+      transition t_coll_cAB_12 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 12);
+        action      : { primeCount := primeCount + p12; candidate := 13; }
+      }
+
+      transition t_coll_cBA_13 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 13);
+        action      : { primeCount := primeCount + p13; candidate := 14; }
+      }
+
+      transition t_coll_cAB_14 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 14);
+        action      : { primeCount := primeCount + p14; candidate := 15; }
+      }
+
+      transition t_coll_cBA_15 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 15);
+        action      : { primeCount := primeCount + p15; candidate := 16; }
+      }
+
+      transition t_coll_cAB_16 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 16);
+        action      : { primeCount := primeCount + p16; candidate := 17; }
+      }
+
+      transition t_coll_cBA_17 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 17);
+        action      : { primeCount := primeCount + p17; candidate := 18; }
+      }
+
+      transition t_coll_cAB_18 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 18);
+        action      : { primeCount := primeCount + p18; candidate := 19; }
+      }
+
+      transition t_coll_cBA_19 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 19);
+        action      : { primeCount := primeCount + p19; candidate := 20; }
+      }
+
+      transition t_coll_cAB_20 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 20);
+        action      : { primeCount := primeCount + p20; candidate := 21; }
+      }
+
+      transition t_coll_cBA_21 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 21);
+        action      : { primeCount := primeCount + p21; candidate := 22; }
+      }
+
+      transition t_coll_cAB_22 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 22);
+        action      : { primeCount := primeCount + p22; candidate := 23; }
+      }
+
+      transition t_coll_cBA_23 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 23);
+        action      : { primeCount := primeCount + p23; candidate := 24; }
+      }
+
+      transition t_coll_cAB_24 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 24);
+        action      : { primeCount := primeCount + p24; candidate := 25; }
+      }
+
+      transition t_coll_cBA_25 {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 25);
+        action      : { primeCount := primeCount + p25; candidate := 26; }
+      }
+
+      transition t_coll_cA_done {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollDone;
+        trigger     : step;
+        guard       : (candidate > 25);
+        action      : {}
+      }
+
+      transition t_coll_cB_done {
+        source      : ConcurrentSieve.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve.SievePipeline.Collector.CollDone;
+        trigger     : step;
+        guard       : (candidate > 25);
+        action      : {}
+      }
+    }
+  }
+
+  state Done {
+    entry : {}
+    exit  : {}
+  }
+
+  // Transition from Init to concurrent pipeline
+  transition t_start {
+    source      : ConcurrentSieve.Init;
+    destination : ConcurrentSieve.SievePipeline;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

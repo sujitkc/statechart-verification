@@ -1,0 +1,547 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+    PRNDL_In:int:local;
+  PA_Enabled : boolean : local;
+  Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+ PA_HVI : int : local;
+  EVA_Enabled : boolean : local;
+  
+ EVA_HVI : int : local;
+ 
+  LG_Warning:boolean:local;
+  Warning :int: local;
+  AccelPedal :int: local;
+    BrakePedal:int:local;
+
+  minusten:int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+    TargetSpeed : int : local;
+  	  FollowDist : int : local;
+  Speed: int: local;
+set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        PA_Enabled:=true;  
+    EVA_Enabled:=true;  
+	minusone:=0-1;
+	minusten:=0-10;
+
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+
+  shell paeva
+  {
+  	
+    entry:{}
+    exit:{}
+  
+    state ParkAssist{
+        entry:{}
+        exit:{}
+    /*    	state paFail{
+		entry:{}
+		exit:{}
+	}*/
+	state paDisabled{
+		entry:{}
+		exit:{}
+	}
+	state paEnabled{
+		//PRNDL_In:int:local;
+
+		Accepted:boolean:local;
+		SpaceFound:boolean:local;
+		/*set_Throttle:int:local;
+		set_SteerOut:int:local;
+		SteerIn:int:local;
+		AccelPedal:int:local;*/
+		entry:{}
+		exit:{}
+			state paIdle{
+				entry:{}
+				exit:{}
+			}
+			state paSearching{
+				entry:{}
+				exit:{}
+			}
+			state paPrompting{
+				entry:{}
+				exit:{}
+			}
+			state paOverride{
+				entry:{}
+				exit:{}
+			}
+			state paEngaged{
+				//set_Brake:int:local;
+	
+				entry:{}
+				exit:{}
+				state paSwivelIn{
+					entry:{}
+					exit:{}
+				}
+				state paSwivelOut{
+					entry:{}
+					exit:{}
+				}
+				state paCenter{
+					entry:{}
+					exit:{}
+				}
+				state paStop1{
+					entry:{}
+					exit:{}
+				}
+				state paStop2{
+					entry:{}
+					exit:{}
+				}
+				transition pat30{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop1;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;Set_Brake:=30;}
+				}
+				transition pat27{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: Next;
+					guard:(PRNDL_In=1)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=minusone;} //set_SteerOut=-1
+				}
+				transition pat23{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop1;
+					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paCenter;
+					trigger: Next;
+					guard:(Speed=0);
+					action:{PA_HVI:=4;set_Throttle:=20;}
+				}
+				transition pat19{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop2;
+					trigger: Next;
+					guard:(PRNDL_In=3)&&(Speed>0)&&(Speed<=5);
+					action:{PA_HVI:=4;Set_Brake:=30;}
+				}
+				
+			}
+			state paAbort{
+					entry:{}
+					exit:{}
+			}
+			transition pat21{
+					source: sc.paeva.ParkAssist.paEnabled.paIdle;
+					destination: sc.paeva.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(Speed>0) && (Speed<=10) && (PRNDL_In=3);
+					action:{PA_HVI:=2;}
+				}
+			transition pat22{
+					source: sc.paeva.ParkAssist.paEnabled.paSearching;
+					destination: sc.paeva.ParkAssist.paEnabled.paIdle;
+					trigger: e;
+					guard:(Speed=0) || (Speed>0) || (PRNDL_In!=3);
+					action:{PA_HVI:=1;}
+				}
+			transition pat24{
+					source: sc.paeva.ParkAssist.paEnabled.paSearching;
+					destination: sc.paeva.ParkAssist.paEnabled.paPrompting;
+					trigger: e;
+					guard:(SpaceFound=BoolTRUE);
+					action:{PA_HVI:=3;}
+				}
+			transition pat25{
+					source: sc.paeva.ParkAssist.paEnabled.paPrompting;
+					destination: sc.paeva.ParkAssist.paEnabled.paSearching;
+					trigger: e;
+					guard:(SpaceFound=BoolFALSE)||(Accepted=BoolFALSE);
+					action:{PA_HVI:=2;}
+				}
+			transition pat26{
+					source: sc.paeva.ParkAssist.paEnabled.paPrompting;
+					destination: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					trigger: e;
+					guard:(Accepted=BoolTRUE)&&(Speed=0)&&(PRNDL_In=1);
+					action:{PA_HVI:=4;set_Throttle:=20;set_SteerOut:=1;}
+				}
+			/*transition pat39{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelOut;
+					destination: sc.paeva.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat38{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paCenter;
+					destination: sc.paeva.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=3);
+					action:{PA_HVI:=6;}
+				}
+			transition pat37{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged.paSwivelIn;
+					destination: sc.paeva.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(PRNDL_In!=1);
+					action:{PA_HVI:=6;}
+				}
+			transition pat30{
+					source: sc.paeva.ParkAssist.paEnabled.paEngaged;
+					destination: sc.paeva.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}
+			transition pat36{
+					source: sc.paeva.ParkAssist.paEnabled.paOverride;
+					destination: sc.paeva.ParkAssist.paEnabled.paAbort;
+					trigger: e;
+					guard:(SteerIn>0)||(AccelPedal>0);
+					action:{PA_HVI:=6;}
+				}*/
+	}
+	
+	transition pat29{
+		source: sc.paeva.ParkAssist.paDisabled;
+		destination: sc.paeva.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolTRUE);
+		action:{PA_HVI:=1;}
+	}
+	transition pat20{
+		source: sc.paeva.ParkAssist.paDisabled;
+		destination: sc.paeva.ParkAssist.paEnabled;
+		trigger: e;
+		guard:(PA_Enabled=BoolFALSE);
+		action:{PA_HVI:=0;}
+	}
+	transition pat33{
+		source: sc.paeva.ParkAssist.paDisabled;
+		destination: sc.paeva.ParkAssist.paEnabled;
+		trigger: Error;
+		guard:(true);
+		action:{PA_HVI:=8;}
+	}
+	transition pat35{
+		source: sc.paeva.ParkAssist.paEnabled.paEngaged.paStop2;
+		destination: sc.paeva.ParkAssist.paDisabled;
+		trigger: e;
+		guard:(Speed=0);
+		action:{PA_HVI:=5;}
+	}
+	}
+
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.paeva.SpeedSetting.DecSpeed;
+				destination: sc.paeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.paeva.SpeedSetting.IncSpeed;
+				destination: sc.paeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.paeva.SpeedSetting.HoldSpeed;
+				destination: sc.paeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.paeva.SpeedSetting.IncSpeed;
+				destination: sc.paeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.paeva.SpeedSetting.DecSpeed;
+				destination: sc.paeva.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.paeva.SpeedSetting.HoldSpeed;
+				destination: sc.paeva.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+	
+	  state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+               
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+    
+        state eva{
+    
+    	 state evaDisabled{
+   entry: {}
+   exit : {}
+  }
+  state evaOverride{
+   entry: {}
+   exit : {}
+  }
+  state evaFail{
+   entry: {}
+   exit : {}
+  }
+  state evaEnabled{
+   /*Speed:int:local;
+   PRNDL_In:int:local;*/
+	 Siren :boolean : local;
+
+   
+   entry: {
+    PRNDL_In:=input<|int|>();
+  //   Speed:=input<|int|>();
+  //  BrakePedal:=input<|int|>();
+    	   Siren:=input<|boolean|>();
+
+ }
+   exit : {}
+   state evaDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state evaEngaged{
+     
+	/* Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;*/
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state evaSlow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaCoast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaPullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition evat24{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition evat23{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition evat25{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat26{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition evat22{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat27{
+    source: sc.paeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition evat19{
+    source: sc.paeva.eva.evaEnabled.evaEngaged;
+    destination: sc.paeva.eva.evaEnabled.evaDisengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition evat20{
+    source: sc.paeva.eva.evaEnabled.evaDisengaged;
+    destination: sc.paeva.eva.evaEnabled.evaEngaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition evat13{
+  source: sc.paeva.eva.evaDisabled;
+  destination: sc.paeva.eva.evaEnabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition evat14{
+  source: sc.paeva.eva.evaEnabled;
+  destination: sc.paeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition evat16{
+  source: sc.paeva.eva.evaOverride;
+  destination: sc.paeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition evat17{
+  source: sc.paeva.eva.evaEnabled;
+  destination: sc.paeva.eva.evaOverride;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat18{
+  source: sc.paeva.eva.evaOverride;
+  destination: sc.paeva.eva.evaEnabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat29{
+  source: sc.paeva.eva.evaOverride;
+  destination: sc.paeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition evat28{
+  source: sc.paeva.eva.evaEnabled;
+  destination: sc.paeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+ 
+    }
+  
+    
+
+  }
+  
+}

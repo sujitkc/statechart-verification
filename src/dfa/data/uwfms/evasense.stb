@@ -1,0 +1,324 @@
+// Evaluates the behavior for when History is maintained
+//A.4 - https://cs.uwaterloo.ca/~aljuarez/Docs/Thesis_Juarez_Alma.pdf
+
+statechart evasense{
+
+events {
+	e;
+	No_event;
+	Error;
+	e1;
+	e2;
+  }
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  LG_Enabled : boolean : local;
+  LG_Warning : boolean :local;
+  minusten:int:local;
+  minusone:int:local;
+  PRNDL_In:int:local;
+  Speed: int: local;
+  Siren :boolean : local;
+  BrakePedal:int:local;
+  set_SteerOut:int:local;
+
+  EVA_Enabled : boolean : local;
+  EVA_HVI : int : local;
+  
+  AccelPedal :int: local;
+
+ WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  	 iWayClear: int : local;
+  	 iDontStop: int : local;
+  
+  entry : {
+	BoolTRUE:=true;
+	BoolFALSE:=false;
+	minusten:=0-10;
+	minusone:=0-1;
+	LG_Enabled:=true;
+	PRNDL_In:=3;
+        Siren:=true;
+	EVA_Enabled:=true;
+	DontStop:=true;
+	WayClear:=true;
+  }
+  exit  : {
+  	
+  } 
+  functions {
+  input<||>() : int;
+ 
+  }
+  
+  
+shell sh{
+entry:{}
+exit:{}
+
+
+state sensor{
+entry:{}
+exit:{}
+	state sense{
+			from_min:int:local;
+			from_max:int:local;
+			to_min:int:local;
+			to_max:int:local;
+			
+		entry:{
+
+
+			Speed:=input<||>();
+			BrakePedal:=input<||>();
+			AccelPedal:=input<||>();
+			
+			from_min:= minusten * 2;
+			from_max:= 20;
+			to_min:= 0;
+			to_max:= 100;
+			
+			if (Speed < from_min)
+				Speed := to_min;
+			    else if (Speed > from_max)
+				Speed := to_max;
+			    else {
+				Speed := (((Speed - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }
+			    
+			    if (BrakePedal < from_min)
+				BrakePedal := to_min;
+			    else if (BrakePedal > from_max)
+				BrakePedal := to_max;
+			    else {
+				BrakePedal := (((BrakePedal - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }
+			    
+			     if (AccelPedal < from_min)
+				AccelPedal := to_min;
+			    else if (AccelPedal > from_max)
+				AccelPedal := to_max;
+			    else {
+				AccelPedal := (((AccelPedal - from_min) * (to_max - to_min)) / (from_max - from_min)) + to_min;
+			    }
+			    
+			    iWayClear:=input<||>();
+	 			iDontStop:=input<||>();
+		 		if(iWayClear<=0){
+		 			WayClear:=false;
+				 }
+		 		else{
+		 			WayClear:=true;
+		 		}
+	 			 if(iDontStop<=0){
+	 			DontStop:=false;
+	 			}
+			 	else{
+			 	DontStop:=true;
+			 	}
+		}
+		exit:{}	
+	}
+	transition t33{
+		source: evasense.sh.sensor.sense;
+		destination: evasense.sh.sensor.sense;
+		trigger: e;
+		guard:true; 
+		action:{}
+		}
+}
+
+state  EmergencyVehicleAvoidance{
+  
+
+  
+
+  entry : {}
+
+  exit  : {} 
+
+  state Disabled{
+   entry: {}
+   exit : {}
+  }
+  state Override{
+   entry: {}
+   exit : {}
+  }
+ /* state Fail{
+   entry: {}
+   exit : {}
+  }*/
+  state Enabled{
+   
+   
+   entry: {
+   
+
+ }
+   exit : {}
+   state Disengaged{
+     entry: {}
+     exit : {}
+   }
+   state Engaged{
+     
+	 Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+  	 
+	
+	 
+	 entry: {
+	 
+
+	 }
+     exit : {}
+	 
+	 state Slow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state Coast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state PullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition t24{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition t23{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition t25{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t26{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition t22{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Slow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition t27{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.PullOver;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged.Coast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition t19{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Disengaged;
+    trigger: e2;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition t20{
+    source: evasense.sh.EmergencyVehicleAvoidance.Enabled.Disengaged;
+    destination: evasense.sh.EmergencyVehicleAvoidance.Enabled.Engaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition t13{
+  source: evasense.sh.EmergencyVehicleAvoidance.Disabled;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition t14{
+  source: evasense.sh.EmergencyVehicleAvoidance.Enabled;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition t16{
+  source: evasense.sh.EmergencyVehicleAvoidance.Override;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Disabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition t17{
+  source: evasense.sh.EmergencyVehicleAvoidance.Enabled;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Override;
+  trigger: e1;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition t18{
+  source: evasense.sh.EmergencyVehicleAvoidance.Override;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Enabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  /*transition t29{
+  source: evasense.sh.EmergencyVehicleAvoidance.Override;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition t28{
+  source: evasense.sh.EmergencyVehicleAvoidance.Enabled;
+  destination: evasense.sh.EmergencyVehicleAvoidance.Fail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }*/
+  
+}
+}
+}

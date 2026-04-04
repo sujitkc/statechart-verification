@@ -1,0 +1,107 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+	e2;
+  }
+  x:int:local;
+  y:boolean:static;
+  entry : {x:=1;}
+  exit  : {} 
+  functions {
+  //input<|Te|>() : Te;
+  
+  }
+    shell A{
+        entry:{
+       
+        
+        }
+	exit:{
+		y:=true;	  
+        }
+	state A1{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;
+		
+		}
+		state A11{
+		entry:{
+		y:=false;
+		}
+		exit:{  
+		y:=true;
+		}
+	    }    
+	    
+    	}    
+	
+state A2{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;
+		
+		}
+	    state A21{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;
+		
+		}
+	    
+    	}    
+    	}    
+
+
+    }
+  state B{
+        entry:{
+          
+          y:=true;
+        }
+        exit:{
+          x:=x+1;
+          }
+
+    }
+
+    transition t1{
+		source: chart.A.A1;
+		destination: chart.B;
+		trigger: e1;
+		guard:(x>0);
+		action:{y:=true;}
+	}  
+	
+	transition t2{
+		source: chart.A.A2;
+		destination: chart.B;
+		trigger: e1;
+		guard:(x>5);
+		action:{y:=false;}
+        }
+        transition t3{
+		source: chart.B;
+		destination: chart.A.A1;
+		trigger: e2;
+		guard:(true);
+		action:{
+		}
+        
+	}
+	transition t4{
+		source: chart.B;
+		destination: chart.A;
+		trigger: e1;
+		guard:(true);
+		action:{x:=1;}
+        } 
+}

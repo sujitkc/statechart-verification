@@ -1,0 +1,165 @@
+statechart  chart{
+  
+  events {
+	e;
+	e1;
+	e2;
+	e1block;
+	e2block;
+  }
+  x:int:local;
+  y:boolean:static;
+  entry : {x:=1;}
+  exit  : {} 
+  functions {
+  //input<|Te|>() : Te;
+  
+  }
+    shell G{
+        entry:{
+       
+        
+        }
+	exit:{
+		y:=true;	  
+        }
+	state E{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;
+		
+		}
+		state A{
+		entry:{
+		y:=false;
+		}
+		exit:{  
+		y:=true;
+		}
+	    }
+		state B{
+		entry:{y:=false;}
+		exit:{y:=false;}
+		}    
+	transition tAB{
+ 			source: chart.G.E.A;
+			destination: chart.G.E.B;
+			trigger: e1;
+			guard:true;
+			action:{y:=true;}
+		
+		}
+
+	    
+    	}    
+	
+state F{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;
+		
+		}
+	      state C{
+		entry:{
+		y:=false;
+		}
+		exit:{
+		  y:=true;		
+		}
+	    
+    	}
+		state D{
+		entry:{y:=false;}
+		exit:{y:=false;}
+		}    
+
+	transition tCD{
+			source: chart.G.F.C;
+			destination: chart.G.F.D;
+			trigger: e1block;
+			guard:true;
+			action:{y:=true;}
+		
+		}
+
+
+    	}    
+
+
+    }
+  shell N{
+        entry:{
+          
+          y:=true;
+        }
+        exit:{
+          x:=x+1;
+          }
+	state L{
+		entry:{y:=false;}
+		exit:{y:=false;}
+		state H{
+			entry:{y:=true;}
+			exit:{y:=true;}
+		}
+		state I{
+			entry:{y:=false;}
+			exit:{y:=false;}
+		}
+	        transition tHI{
+			source: chart.N.L.H;
+			destination: chart.N.L.I;
+			trigger: e1;
+			guard:true;
+			action:{y:=true;}
+		
+		}
+		
+	}
+	state M{
+		entry:{y:=false;}
+		exit:{y:=false;}
+		state J{
+			entry:{y:=true;}
+			exit:{y:=true;}
+		}
+		state K{
+			entry:{y:=true;}
+			exit:{y:=true;}
+		}
+		transition tJK{
+			source: chart.N.M.J;
+			destination: chart.N.M.K;
+			trigger: e1;
+			guard:true;
+			action:{y:=true;}
+		
+		}
+		
+	}
+    }
+
+    transition tGN{
+		source: chart.G;
+		destination: chart.N;
+		trigger: e2block;
+		guard:true;
+		action:{y:=true;}
+	}  
+    transition tBK{
+	source:chart.G.E.B;
+	destination: chart.N.M.K;
+	trigger: e1;
+	guard:true;
+	action:{y:=true;}
+	
+   }
+
+	
+ 
+ 
+}

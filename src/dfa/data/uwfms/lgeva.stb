@@ -1,0 +1,543 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+    PRNDL_In:int:local;
+  	LG_Enabled : boolean : local;
+ 
+ 	LG_HVI : int : local;
+  	EVA_Enabled : boolean : local;
+  
+ 	EVA_HVI : int : local;
+ 
+  	LG_Warning:boolean:local;
+  	Warning :int: local;
+  	AccelPedal :int: local;
+
+  	minusten:int:local;
+  	BoolTRUE : boolean : local;
+  	BoolFALSE : boolean : local;
+  	minusone: int :local;
+    TargetSpeed : int : local;
+  	FollowDist : int : local;
+  	Speed: int: local;
+	Siren :boolean : local;
+	SteerIn:int:local;
+	BrakePedal:int:local;
+	TurnSignal:boolean:local;
+	set_SteerOut:int:local;
+	Set_Brake:int:local;
+	Set_Throttle:int:local;
+
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        LG_Enabled:=true;  
+    EVA_Enabled:=true;  
+	minusone:=0-1;
+	minusten:=0-10;
+	SteerIn:=0;
+	TurnSignal:=BoolFALSE;
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+
+  shell lgeva
+  {
+  	
+    entry:{}
+    exit:{}
+  
+   state LaneGuide{
+    /*	state Fail{
+		entry:{}
+		exit:{}
+	}*/
+	state Disabled{
+		entry:{}
+		exit:{}
+	}
+	state Enabled{
+		/*PRNDL_In:int:local;
+		Speed: int: local;
+		SteerIn:int:local;
+		BrakePedal:int:local;
+		TurnSignal:boolean:local;*/
+		
+		entry:{}
+		exit:{}
+			state Disengaged{
+				entry:{}
+				exit:{}
+			}
+			state Override{
+				entry:{}
+				exit:{}
+			}
+			state Engaged{
+				LGMode:int:local;
+				//set_SteerOut:int:local;
+				LaneDrift:int:local;
+				
+				entry:{
+					LGMode:=input<|int|>();
+					LaneDrift:=input<|int|>();
+				}
+				exit:{}
+				state WarnLeft{
+					entry:{}
+					exit:{}
+				}
+				state Idle{
+					entry:{}
+					exit:{}
+				}
+				state AssistLeft{
+					entry:{}
+					exit:{}
+				}
+				state WarnRight{
+					entry:{}
+					exit:{}
+				}
+				state AssistRight{
+					entry:{}
+					exit:{}
+				}
+				transition lgt16{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=0); //LaneDrift<-10
+					action:{LG_Warning:=BoolTRUE;}
+				}	
+				transition lgt17{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt20{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.WarnLeft;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} 
+				}
+				transition lgt19{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.WarnLeft;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;} 
+				}
+				transition lgt21{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift>minusten); //LaneDrift>-10
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt22{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistLeft;
+					trigger: e;
+					guard:(LaneDrift<minusten)&&(LGMode=1); //LaneDrift<-10
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=minusone;} 
+				}
+				transition lgt23{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;}
+				}
+				transition lgt24{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.WarnRight;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt25{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.WarnRight;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LGMode=1); 
+					action:{LG_Warning:=BoolTRUE;set_SteerOut:=1;}
+				}
+				transition lgt26{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.AssistRight;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.WarnRight;
+					trigger: e;
+					guard:(LGMode=0); 
+					action:{LG_Warning:=BoolTRUE;}
+				}
+				transition lgt27{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.AssistRight;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					trigger: e;
+					guard:(LaneDrift<10); 
+					action:{LG_Warning:=BoolFALSE;}
+				}
+				transition lgt28{
+					source: sc.lgeva.LaneGuide.Enabled.Engaged.Idle;
+					destination: sc.lgeva.LaneGuide.Enabled.Engaged.AssistRight;
+					trigger: e;
+					guard:(LaneDrift>10)&&(LGMode=1); 
+					action:{LG_Warning:=BoolFALSE;set_SteerOut:=1;}
+				}
+				
+			}
+			transition lgt35{
+				source: sc.lgeva.LaneGuide.Enabled.Disengaged;
+				destination: sc.lgeva.LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed<40)||(PRNDL_In!=3);
+				action:{LG_Warning:=BoolFALSE;}
+			}
+			transition lgt34{
+				source: sc.lgeva.LaneGuide.Enabled.Disengaged;
+				destination: sc.lgeva.LaneGuide.Enabled.Engaged;
+				trigger: e;
+				guard:(Speed>=40)&&(PRNDL_In=3);
+				action:{}
+			}
+			transition lgt29{
+				source: sc.lgeva.LaneGuide.Enabled.Override;
+				destination: sc.lgeva.LaneGuide.Enabled.Disengaged;
+				trigger: e;
+				guard:(SteerIn=0)&&(TurnSignal=BoolFALSE)&&(BrakePedal=0);
+				action:{}
+			}
+			transition lgt30{
+				source: sc.lgeva.LaneGuide.Enabled.Engaged;
+				destination: sc.lgeva.LaneGuide.Enabled.Override;
+				trigger: e;
+				guard:(SteerIn>10)||(SteerIn<minusten)||(TurnSignal=BoolTRUE)||(BrakePedal>0); // SteerIn<-10
+				action:{LG_Warning:=BoolFALSE;}
+			}
+			
+			
+	}
+	transition lgt14{
+		source: sc.lgeva.LaneGuide.Disabled;
+		destination: sc.lgeva.LaneGuide.Enabled;
+		trigger: e;
+		guard:(LG_Enabled=BoolTRUE);
+		action:{}
+	}
+	transition lgt15{
+		source: sc.lgeva.LaneGuide.Enabled;
+		destination: sc.lgeva.LaneGuide.Disabled;
+		trigger: e;
+		guard:(LG_Enabled=BoolFALSE);
+		action:{LG_Warning:=BoolFALSE;}
+	}
+	/*transition lgt31{
+		source: sc.lgeva.LaneGuide.Fail;
+		destination: sc.lgeva.LaneGuide.Enabled;
+		trigger: Error;
+		guard:(true);
+		action:{LG_Warning:=BoolFALSE;}
+	}*/
+    }
+    state SpeedSetting{
+		entry:{ Speed:=0;}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.lgeva.SpeedSetting.DecSpeed;
+				destination: sc.lgeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.lgeva.SpeedSetting.IncSpeed;
+				destination: sc.lgeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.lgeva.SpeedSetting.HoldSpeed;
+				destination: sc.lgeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.lgeva.SpeedSetting.IncSpeed;
+				destination: sc.lgeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.lgeva.SpeedSetting.DecSpeed;
+				destination: sc.lgeva.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.lgeva.SpeedSetting.HoldSpeed;
+				destination: sc.lgeva.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:(BrakePedal>=0);
+				action:{Speed:=Speed-1;}
+
+		}
+		
+		
+		
+	}
+	
+	  state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+                
+                    PRNDL_In:=input<|int|>();
+
+            }
+            exit:{}
+
+        }
+    }
+    
+        state eva{
+    
+    	 state evaDisabled{
+   entry: {}
+   exit : {}
+  }
+  state evaOverride{
+   entry: {}
+   exit : {}
+  }
+ /* state evaFail{
+   entry: {}
+   exit : {}
+  }*/
+  state evaEnabled{
+   /*Speed:int:local;
+   PRNDL_In:int:local;
+	 Siren :boolean : local;*/
+
+   
+   entry: {
+    PRNDL_In:=input<|int|>();
+    Siren:=BoolTRUE;
+ }
+   exit : {}
+   state evaDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state evaEngaged{
+     
+	 /*Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;*/
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+
+	 }
+     exit : {}
+	 
+	 state evaSlow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaCoast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaPullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition evat24{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition evat23{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;set_SteerOut:=minusone;}
+    }
+    
+    
+    transition evat25{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat26{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;set_SteerOut:=minusone;}
+    }
+    
+     transition evat22{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat27{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition evat19{
+    source: sc.lgeva.eva.evaEnabled.evaEngaged;
+    destination: sc.lgeva.eva.evaEnabled.evaDisengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition evat20{
+    source: sc.lgeva.eva.evaEnabled.evaDisengaged;
+    destination: sc.lgeva.eva.evaEnabled.evaEngaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition evat13{
+  source: sc.lgeva.eva.evaDisabled;
+  destination: sc.lgeva.eva.evaEnabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition evat14{
+  source: sc.lgeva.eva.evaEnabled;
+  destination: sc.lgeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition evat16{
+  source: sc.lgeva.eva.evaOverride;
+  destination: sc.lgeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition evat17{
+  source: sc.lgeva.eva.evaEnabled;
+  destination: sc.lgeva.eva.evaOverride;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat18{
+  source: sc.lgeva.eva.evaOverride;
+  destination: sc.lgeva.eva.evaEnabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+ /* transition evat29{
+  source: sc.lgeva.eva.evaOverride;
+  destination: sc.lgeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition evat28{
+  source: sc.lgeva.eva.evaEnabled;
+  destination: sc.lgeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }*/
+ 
+    }
+  
+    
+
+  }
+  
+}

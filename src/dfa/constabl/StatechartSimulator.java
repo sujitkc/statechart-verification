@@ -24,7 +24,7 @@ public class StatechartSimulator extends Simulator {
         traverseStates((State)sc);
         traverseTransitions((State)sc);
 
-        System.out.println("CFAs... " + codenodelist);
+       // System.out.println("CFAs... " + codenodelist);
 
      }
      public void traverseTransitions(State s){
@@ -203,7 +203,7 @@ public class StatechartSimulator extends Simulator {
         }
      }
     public void simulate(){
-        System.out.println("simulate inside Statechart simulator");
+       // System.out.println("simulate inside Statechart simulator");
 
         initialize();
         for(String ev : eq.eventQueue){
@@ -221,7 +221,7 @@ public class StatechartSimulator extends Simulator {
     }
     public void initialize(){
         //initialize the statechart with tinit transition
-        System.out.println("initialize");
+    //    System.out.println("initialize");
         List<Transition> identifiedTransitions=new ArrayList<Transition>();
         Transition initTransition=new Transition(tinit,null,null,null,null,null);
         identifiedTransitions.add(initTransition);
@@ -281,7 +281,7 @@ public class StatechartSimulator extends Simulator {
     }
     public Configuration computeDefaultEntry(Configuration currentconfig)
     {
-        System.out.println("inside compute default entry");
+       // System.out.println("inside compute default entry");
         Configuration newconfig=new Configuration();
         Connector initial;
         if((currentconfig.getCurrentStates()).size()>0){

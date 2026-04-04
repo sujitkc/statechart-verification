@@ -9,7 +9,7 @@ public class Simulator {
      List<CodeNode> codenodelist=new ArrayList<CodeNode>();
      List<CodeNode> execnodelist=new ArrayList<CodeNode>();
      public Simulator(){
-        System.out.println("inside default constructor");
+        //System.out.println("inside default constructor");
         
     }
     public Simulator(Statechart sc){
@@ -17,7 +17,7 @@ public class Simulator {
     }
     
     public Simulator(List<CodeNode> codenodelist){
-        System.out.println("inside codenodelist constructor");
+        //System.out.println("inside codenodelist constructor");
         this.codenodelist.addAll(codenodelist);
         
      }
@@ -103,7 +103,7 @@ public class Simulator {
      
     public List<CodeNode> getNextNode(CodeNode currentNode){
         List<CodeNode> returnList=new ArrayList<CodeNode>();
-        System.out.println("current node : "+currentNode);
+       // System.out.println("current node : "+currentNode);
         for(CodeNode codenode: codenodelist){
             if(codenode.getPrev()!=null){
                 if((codenode.getPrev()).contains(currentNode)){

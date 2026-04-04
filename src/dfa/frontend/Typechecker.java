@@ -29,10 +29,16 @@ public class Typechecker {
 
   private void typecheckFunctionDeclarations(
       Statechart statechart) throws Exception {
-
+    /** adding library function input begin **/
+    List<String> typeParameterNames = new ArrayList<String>();
+    TypeName typename=new TypeName("T");
+    typeParameterNames.add("T");  
+    statechart.functionDeclarations.add(new InputFunctionDeclaration(typeParameterNames,typename));
+     /** adding library function input ends **/
     for(FunctionDeclaration fdec : statechart.functionDeclarations) {
       Type type = null;
       try {
+      //System.out.println("fdec found : " +fdec.returnTypeName+" ::: "+ fdec.typeParameterNames);
         type = this.lookupType(fdec.returnTypeName, fdec.typeParameterNames,
           this.statechart.types.size());
       }
@@ -76,6 +82,7 @@ public class Typechecker {
   private void typecheckTypeDeclarations() throws Exception {
     for(int i = 0; i < this.statechart.types.size(); i++) {
       Type td = this.statechart.types.get(i);
+      
       if(td instanceof Struct) {
         this.typecheckStruct((Struct)td, i);
       }
@@ -265,8 +272,8 @@ public class Typechecker {
       }
       if(dec == null) {
         // System.out.println(env);
-        throw new Exception("Name " + name + 
-        " didn't type check. Couldn't locate a variable with matching" +
+        throw new Exception("Name - " + name + 
+        " - didn't type check. Couldn't locate a variable with matching" +
         " description.");
       }
 
@@ -534,7 +541,7 @@ public class Typechecker {
       Environment roenv,
       Environment woenv) throws Exception {
       AssignmentStatement as = (AssignmentStatement)s;
-
+    //System.out.println("typechecking the name : "+as.lhs);
     this.typecheckName(as.lhs, wenv);
     this.typecheckExpression(as.rhs, renv);
     

@@ -1,0 +1,310 @@
+// TVSetPlus-8: Models a TV with power control and 10 parallel features
+
+statechart TVSetPlus8 {
+  
+  types {}
+  
+  events {
+    on;
+    off;
+    txt;
+    mute;
+    sound;
+    in;
+    out;
+    f1;
+    f2;
+    f3;
+    f4;
+    f5;
+    f6;
+    f7;
+    f8;
+  }
+  
+  a : int : local;
+  b : int : local;
+  c : int : local;
+  d : int : local;
+  
+  entry : {
+    a := 0;
+    b := 0;
+    c := 0;
+    d := 1;
+  }
+  exit  : {}
+  
+  functions {
+    input<||>() : int;
+  }
+  
+  // Top-level states: WAITING and WORKING
+  state WAITING {
+    entry : {
+      b := 0;
+    }
+    exit  : {
+      b := 1;
+    }
+    
+    // POWER subsystem (part of WAITING)
+    state STANDBY {
+      entry : {
+        d := 1;
+      }
+      exit  : {
+        d := d + 1;
+      }
+    }
+    
+    state DISCONNECTED {
+      entry : {
+        d := 0;
+      }
+      exit  : {
+        d := 1;
+      }
+    }
+    
+    transition t_standby_to_disconnected {
+      source      : TVSetPlus8.WAITING.STANDBY;
+      destination : TVSetPlus8.WAITING.DISCONNECTED;
+      trigger     : out;
+      guard       : true;
+      action      : {
+        a := a - 1;
+      }
+    }
+    
+    transition t_disconnected_to_standby {
+      source      : TVSetPlus8.WAITING.DISCONNECTED;
+      destination : TVSetPlus8.WAITING.STANDBY;
+      trigger     : in;
+      guard       : true;
+      action      : {
+        a := a + 1;
+      }
+    }
+  }
+  
+  shell WORKING {
+    entry : {
+      b := 2;
+      c := 0;
+    }
+    exit  : {
+      b := 0;
+      c := 0;
+    }
+    
+    // Region 1: IMAGE control
+    state IMAGE {
+        entry : {
+          c := c + 1;
+        }
+        exit  : {
+          c := c - 1;
+        }
+        
+        state PICTURE {
+          entry : {
+            d := 1;
+          }
+          exit  : {
+            d := 2;
+          }
+        }
+        
+        state TEXT {
+          entry : {
+            d := 2;
+          }
+          exit  : {
+            d := 3;
+          }
+        }
+        
+        transition t_picture_to_text {
+          source      : TVSetPlus8.WORKING.IMAGE.PICTURE;
+          destination : TVSetPlus8.WORKING.IMAGE.TEXT;
+          trigger     : txt;
+          guard       : true;
+          action      : {
+            b := b + 1;
+          }
+        }
+        
+        transition t_text_to_picture {
+          source      : TVSetPlus8.WORKING.IMAGE.TEXT;
+          destination : TVSetPlus8.WORKING.IMAGE.PICTURE;
+          trigger     : txt;
+          guard       : true;
+          action      : {
+            b := b - 1;
+          }
+        }
+      }
+      
+      // Region 2: SOUND control
+      state SOUND {
+        entry : {
+          c := c + 1;
+        }
+        exit  : {
+          c := c - 1;
+        }
+        
+        state ON {
+          entry : {
+            d := 2;
+          }
+          exit  : {
+            d := 1;
+          }
+        }
+        
+        state OFF {
+          entry : {
+            d := 2;
+          }
+          exit  : {
+            d := 2;
+          }
+        }
+        
+        transition t_sound_on_to_off {
+          source      : TVSetPlus8.WORKING.SOUND.ON;
+          destination : TVSetPlus8.WORKING.SOUND.OFF;
+          trigger     : mute;
+          guard       : true;
+          action      : {
+            d := d - 1;
+          }
+        }
+        
+        transition t_sound_off_to_on {
+          source      : TVSetPlus8.WORKING.SOUND.OFF;
+          destination : TVSetPlus8.WORKING.SOUND.ON;
+          trigger     : sound;
+          guard       : true;
+          action      : {
+            d := d + 1;
+          }
+        }
+      }
+      
+      // Region 3: Feature F1
+      state F1 {
+        entry : {
+          c := c + 1;
+        }
+        exit  : {
+          c := c - 1;
+        }
+        
+        state F1_ON {
+          entry : {}
+          exit  : {
+            a := 1;
+          }
+        }
+        
+        state F1_OFF {
+          entry : {}
+          exit  : {
+            a := 1;
+          }
+        }
+        
+        transition t_f1_on_to_off {
+          source      : TVSetPlus8.WORKING.F1.F1_ON;
+          destination : TVSetPlus8.WORKING.F1.F1_OFF;
+          trigger     : f1;
+          guard       : true;
+          action      : {
+            a := a + 1;
+          }
+        }
+        
+        transition t_f1_off_to_on {
+          source      : TVSetPlus8.WORKING.F1.F1_OFF;
+          destination : TVSetPlus8.WORKING.F1.F1_ON;
+          trigger     : f1;
+          guard       : true;
+          action      : {
+            a := a - 1;
+          }
+        }
+      }
+      
+      // Region 4: Feature F2
+      state F2 {
+        entry : {
+          c := c + 2;
+        }
+        exit  : {
+          c := c - 2;
+        }
+        
+        state F2_ON {
+          entry : {}
+          exit  : {
+            b := 1;
+          }
+        }
+        
+        state F2_OFF {
+          entry : {}
+          exit  : {
+            b := 1;
+          }
+        }
+        
+        transition t_f2_on_to_off {
+          source      : TVSetPlus8.WORKING.F2.F2_ON;
+          destination : TVSetPlus8.WORKING.F2.F2_OFF;
+          trigger     : f2;
+          guard       : true;
+          action      : {
+            b := b + 2;
+          }
+        }
+        
+        transition t_f2_off_to_on {
+          source      : TVSetPlus8.WORKING.F2.F2_OFF;
+          destination : TVSetPlus8.WORKING.F2.F2_ON;
+          trigger     : f2;
+          guard       : true;
+          action      : {
+            b := b - 2;
+          }
+        }
+      }
+    }
+  
+  // Main transitions between WAITING and WORKING
+  // Power ON: from WAITING.STANDBY to WORKING (enters all default substates)
+  transition t_power_on {
+    source      : TVSetPlus8.WAITING.STANDBY;
+    destination : TVSetPlus8.WORKING;
+    trigger     : on;
+    guard       : true;
+    action      : {
+      a := a + 1;
+      b := 1;
+    }
+  }
+  
+  // Power OFF: from WORKING back to WAITING.STANDBY
+  transition t_power_off {
+    source      : TVSetPlus8.WORKING;
+    destination : TVSetPlus8.WAITING.STANDBY;
+    trigger     : off;
+    guard       : true;
+    action      : {
+      a := a - 1;
+      b := 0;
+    }
+  }
+}

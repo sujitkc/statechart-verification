@@ -1,0 +1,321 @@
+
+statechart ABP4 {
+
+  events {
+    send0;
+    send1;
+    deliver0;
+    deliver1;
+    sendack0;
+    sendack1;
+    deliverack0;
+    deliverack1;
+    lose;
+    loseack;
+  }
+
+  // Sender's current sequence bit
+  bit : int : local;
+  // Receiver's expected sequence bit
+  expected : int : local;
+
+  entry : {
+    bit := 0;
+    expected := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  // Shell System
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // SENDER
+    // WAIT_FOR_CALL: ready to send next packet
+    // WAIT_FOR_ACK: waiting for ACK from AckChannel
+    // Shared events: send0/send1 (with Channel), deliverack0/deliverack1 (with AckChannel)
+    state Sender {
+      entry : {}
+      exit  : {}
+
+      state WAIT_FOR_CALL {
+        entry : {}
+        exit  : {}
+      }
+
+      state WAIT_FOR_ACK {
+        entry : {}
+        exit  : {}
+      }
+
+      // Send packet with bit=0 => SHARED with Channel (c1)
+      transition s1 {
+        source      : ABP4.System.Sender.WAIT_FOR_CALL;
+        destination : ABP4.System.Sender.WAIT_FOR_ACK;
+        trigger     : send0;
+        guard       : (bit = 0);
+        action      : {}
+      }
+
+      // Send packet with bit=1 => SHARED with Channel (c2)
+      transition s2 {
+        source      : ABP4.System.Sender.WAIT_FOR_CALL;
+        destination : ABP4.System.Sender.WAIT_FOR_ACK;
+        trigger     : send1;
+        guard       : (bit = 1);
+        action      : {}
+      }
+
+      // Receive ACK for bit=0 via AckChannel => SHARED with AckChannel (a3)
+      transition s3 {
+        source      : ABP4.System.Sender.WAIT_FOR_ACK;
+        destination : ABP4.System.Sender.WAIT_FOR_CALL;
+        trigger     : deliverack0;
+        guard       : (bit = 0);
+        action      : { bit := 1; }
+      }
+
+      // Receive ACK for bit=1 via AckChannel => SHARED with AckChannel (a4)
+      transition s4 {
+        source      : ABP4.System.Sender.WAIT_FOR_ACK;
+        destination : ABP4.System.Sender.WAIT_FOR_CALL;
+        trigger     : deliverack1;
+        guard       : (bit = 1);
+        action      : { bit := 0; }
+      }
+    }
+
+    // CHANNEL (data channel)
+    // EMPTY: no packet buffered
+    // HAS_PKT0: holding packet with bit=0
+    // HAS_PKT1: holding packet with bit=1
+    // Shared events: send0/send1 (with Sender), deliver0/deliver1 (with Receiver)
+    state Channel {
+      entry : {}
+      exit  : {}
+
+      state EMPTY {
+        entry : {}
+        exit  : {}
+      }
+
+      state HAS_PKT0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state HAS_PKT1 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Receive packet bit=0 from Sender => SHARED with Sender (s1)
+      transition c1 {
+        source      : ABP4.System.Channel.EMPTY;
+        destination : ABP4.System.Channel.HAS_PKT0;
+        trigger     : send0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Receive packet bit=1 from Sender => SHARED with Sender (s2)
+      transition c2 {
+        source      : ABP4.System.Channel.EMPTY;
+        destination : ABP4.System.Channel.HAS_PKT1;
+        trigger     : send1;
+        guard       : true;
+        action      : {}
+      }
+
+      // Deliver packet bit=0 to Receiver => SHARED with Receiver (r1)
+      transition c3 {
+        source      : ABP4.System.Channel.HAS_PKT0;
+        destination : ABP4.System.Channel.EMPTY;
+        trigger     : deliver0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Deliver packet bit=1 to Receiver => SHARED with Receiver (r2)
+      transition c4 {
+        source      : ABP4.System.Channel.HAS_PKT1;
+        destination : ABP4.System.Channel.EMPTY;
+        trigger     : deliver1;
+        guard       : true;
+        action      : {}
+      }
+
+      // Packet bit=0 lost
+      transition c5 {
+        source      : ABP4.System.Channel.HAS_PKT0;
+        destination : ABP4.System.Channel.EMPTY;
+        trigger     : lose;
+        guard       : true;
+        action      : {}
+      }
+
+      // Packet bit=1 lost
+      transition c6 {
+        source      : ABP4.System.Channel.HAS_PKT1;
+        destination : ABP4.System.Channel.EMPTY;
+        trigger     : lose;
+        guard       : true;
+        action      : {}
+      }
+    }
+
+    // RECEIVER
+    // WAIT0: expecting packet with bit=0
+    // GOT_PKT0: received correct bit=0, ready to send ACK
+    // WAIT1: expecting packet with bit=1
+    // GOT_PKT1: received correct bit=1, ready to send ACK
+    // Shared events: deliver0/deliver1 (with Channel), sendack0/sendack1 (with AckChannel)
+    state Receiver {
+      entry : {}
+      exit  : {}
+
+      state WAIT0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state GOT_PKT0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state WAIT1 {
+        entry : {}
+        exit  : {}
+      }
+
+      state GOT_PKT1 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Correct delivery bit=0: accept, advance to GOT_PKT0
+      // SHARED with Channel (c3)
+      transition r1 {
+        source      : ABP4.System.Receiver.WAIT0;
+        destination : ABP4.System.Receiver.GOT_PKT0;
+        trigger     : deliver0;
+        guard       : (expected = 0);
+        action      : { expected := 1; }
+      }
+
+      // Send ACK for bit=0 => SHARED with AckChannel (a1)
+      transition r2 {
+        source      : ABP4.System.Receiver.GOT_PKT0;
+        destination : ABP4.System.Receiver.WAIT1;
+        trigger     : sendack0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Correct delivery bit=1: accept, advance to GOT_PKT1
+      // SHARED with Channel (c4)
+      transition r3 {
+        source      : ABP4.System.Receiver.WAIT1;
+        destination : ABP4.System.Receiver.GOT_PKT1;
+        trigger     : deliver1;
+        guard       : (expected = 1);
+        action      : { expected := 0; }
+      }
+
+      // Send ACK for bit=1 => SHARED with AckChannel (a2)
+      transition r4 {
+        source      : ABP4.System.Receiver.GOT_PKT1;
+        destination : ABP4.System.Receiver.WAIT0;
+        trigger     : sendack1;
+        guard       : true;
+        action      : {}
+      }
+    }
+
+    // ACKCHANNEL (acknowledgment channel)
+    // ACKEMPTY: no ACK buffered
+    // HAS_ACK0: holding ACK for bit=0
+    // HAS_ACK1: holding ACK for bit=1
+    // Shared events: sendack0/sendack1 (with Receiver), deliverack0/deliverack1 (with Sender)
+    state AckChannel {
+      entry : {}
+      exit  : {}
+
+      state ACKEMPTY {
+        entry : {}
+        exit  : {}
+      }
+
+      state HAS_ACK0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state HAS_ACK1 {
+        entry : {}
+        exit  : {}
+      }
+
+      // Receive ACK bit=0 from Receiver => SHARED with Receiver (r2)
+      transition a1 {
+        source      : ABP4.System.AckChannel.ACKEMPTY;
+        destination : ABP4.System.AckChannel.HAS_ACK0;
+        trigger     : sendack0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Receive ACK bit=1 from Receiver => SHARED with Receiver (r4)
+      transition a2 {
+        source      : ABP4.System.AckChannel.ACKEMPTY;
+        destination : ABP4.System.AckChannel.HAS_ACK1;
+        trigger     : sendack1;
+        guard       : true;
+        action      : {}
+      }
+
+      // Deliver ACK bit=0 to Sender => SHARED with Sender (s3)
+      transition a3 {
+        source      : ABP4.System.AckChannel.HAS_ACK0;
+        destination : ABP4.System.AckChannel.ACKEMPTY;
+        trigger     : deliverack0;
+        guard       : true;
+        action      : {}
+      }
+
+      // Deliver ACK bit=1 to Sender => SHARED with Sender (s4)
+      transition a4 {
+        source      : ABP4.System.AckChannel.HAS_ACK1;
+        destination : ABP4.System.AckChannel.ACKEMPTY;
+        trigger     : deliverack1;
+        guard       : true;
+        action      : {}
+      }
+
+      // ACK bit=0 lost
+      transition a5 {
+        source      : ABP4.System.AckChannel.HAS_ACK0;
+        destination : ABP4.System.AckChannel.ACKEMPTY;
+        trigger     : loseack;
+        guard       : true;
+        action      : {}
+      }
+
+      // ACK bit=1 lost
+      transition a6 {
+        source      : ABP4.System.AckChannel.HAS_ACK1;
+        destination : ABP4.System.AckChannel.ACKEMPTY;
+        trigger     : loseack;
+        guard       : true;
+        action      : {}
+      }
+    }
+
+  }
+}

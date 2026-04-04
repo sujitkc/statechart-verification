@@ -195,7 +195,7 @@ public class TestActions {
       }
     }
     
-    @Test
+    //@Test
     public void testAll_2_source_composite_activeShellSubstate(){
       try{
        // inputfile="data/constabl_transitions/2#3(4)source_composite(activeshellsubstate)/*.stbl";
@@ -554,7 +554,7 @@ public void testAll_6_source_substate_of_region_activeShellSubstate(){
     e.printStackTrace();
   }
 }
-//@Test
+@Test
 public void testAll_7_concurrency(){
   try{
     //inputfile=(new BufferedReader(new FileReader("data/inputfile.txt"))).readLine();

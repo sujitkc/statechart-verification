@@ -1,0 +1,293 @@
+// =============================================================================
+// Dining Philosophers Problem (DPP) - 3 Philosophers
+// =============================================================================
+//
+// Reference: Dijkstra, E.W. (1971). "Hierarchical Ordering of Sequential
+//            Processes". Acta Informatica 1(2):115-138.
+//            Also: Hoare, C.A.R. (1985). "Communicating Sequential Processes".
+//
+// PROBLEM DESCRIPTION:
+//   N philosophers sit around a circular table. Between each pair of adjacent
+//   philosophers lies a single fork. A philosopher alternates between thinking
+//   and eating. To eat, a philosopher must acquire BOTH adjacent forks (left
+//   and right). After eating, the philosopher puts down both forks and resumes
+//   thinking.
+//
+// MODELLING APPROACH:
+//   Each philosopher is a concurrent region inside a shell, with states:
+//     ThinkingA/B -> HungryA/B -> EatingA/B -> Done
+//   Alternating A/B states ensure the exhaustive explorer tracks progress.
+//   Each philosopher eats exactly once, then enters Done (bounded execution).
+//
+//   A single "step" event is used with guards on philosopher phase (ph_i)
+//   and fork availability. The phase variable controls which action the
+//   philosopher takes next:
+//     ph=0: thinking (get hungry)
+//     ph=1: hungry (try to acquire forks)
+//     ph=2: eating (release forks)
+//     ph=3: done
+//
+//   DEADLOCK AVOIDANCE: Philosopher 2 picks up forks in REVERSE order
+//   (right then left), breaking the circular wait condition. This is
+//   Dijkstra's classic asymmetry solution.
+//
+// FORK LAYOUT (circular, 3 philosophers):
+//   fork0 between Philo0 (left) and Philo1 (right)
+//   fork1 between Philo1 (left) and Philo2 (right)
+//   fork2 between Philo2 (left) and Philo0 (right)
+//
+//   Philosopher i needs fork_i (left) and fork_{(i+1) mod 3} (right).
+//     Philo0 needs fork0 and fork1
+//     Philo1 needs fork1 and fork2
+//     Philo2 needs fork2 and fork0  (picks up fork0 first -- asymmetry)
+//
+// PROPERTIES:
+//   - Mutual exclusion: no two adjacent philosophers eat simultaneously
+//   - Termination: all philosophers eventually reach Done
+//   - No deadlock: asymmetric fork ordering prevents circular wait
+//
+// =============================================================================
+
+statechart dining {
+
+  events {
+    step;
+  }
+
+  // Fork status: 0 = free, 1 = taken
+  fork0 : int : local;
+  fork1 : int : local;
+  fork2 : int : local;
+
+  // Philosopher phases: 0=thinking, 1=hungry, 2=eating, 3=done
+  ph0 : int : local;
+  ph1 : int : local;
+  ph2 : int : local;
+
+  entry : {
+    fork0 := 0;
+    fork1 := 0;
+    fork2 := 0;
+    ph0 := 0;
+    ph1 := 0;
+    ph2 := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  // =========================================================================
+  // Shell System - all philosopher regions execute concurrently
+  // =========================================================================
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // -----------------------------------------------------------------------
+    // PHILOSOPHER 0 - needs fork0 (left) and fork1 (right)
+    // -----------------------------------------------------------------------
+    state Philo0 {
+      entry : {}
+      exit  : {}
+
+      state P0_ThinkA { entry : {} exit : {} }
+      state P0_ThinkB { entry : {} exit : {} }
+      state P0_HungryA { entry : {} exit : {} }
+      state P0_HungryB { entry : {} exit : {} }
+      state P0_EatingA { entry : {} exit : {} }
+      state P0_EatingB { entry : {} exit : {} }
+      state P0_Done    { entry : {} exit : {} }
+
+      // Thinking -> Hungry (ph0=0 -> ph0=1)
+      transition t0_think_A {
+        source      : dining.System.Philo0.P0_ThinkA;
+        destination : dining.System.Philo0.P0_HungryB;
+        trigger     : step;
+        guard       : (ph0 = 0);
+        action      : { ph0 := 1; }
+      }
+      transition t0_think_B {
+        source      : dining.System.Philo0.P0_ThinkB;
+        destination : dining.System.Philo0.P0_HungryA;
+        trigger     : step;
+        guard       : (ph0 = 0);
+        action      : { ph0 := 1; }
+      }
+
+      // Hungry -> Eating: acquire fork0 and fork1 if both free (ph0=1 -> ph0=2)
+      transition t0_eat_A {
+        source      : dining.System.Philo0.P0_HungryA;
+        destination : dining.System.Philo0.P0_EatingB;
+        trigger     : step;
+        guard       : (ph0 = 1) && (fork0 = 0) && (fork1 = 0);
+        action      : { fork0 := 1; fork1 := 1; ph0 := 2; }
+      }
+      transition t0_eat_B {
+        source      : dining.System.Philo0.P0_HungryB;
+        destination : dining.System.Philo0.P0_EatingA;
+        trigger     : step;
+        guard       : (ph0 = 1) && (fork0 = 0) && (fork1 = 0);
+        action      : { fork0 := 1; fork1 := 1; ph0 := 2; }
+      }
+
+      // Eating -> Done: release both forks (ph0=2 -> ph0=3)
+      transition t0_done_A {
+        source      : dining.System.Philo0.P0_EatingA;
+        destination : dining.System.Philo0.P0_Done;
+        trigger     : step;
+        guard       : (ph0 = 2);
+        action      : { fork0 := 0; fork1 := 0; ph0 := 3; }
+      }
+      transition t0_done_B {
+        source      : dining.System.Philo0.P0_EatingB;
+        destination : dining.System.Philo0.P0_Done;
+        trigger     : step;
+        guard       : (ph0 = 2);
+        action      : { fork0 := 0; fork1 := 0; ph0 := 3; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // PHILOSOPHER 1 - needs fork1 (left) and fork2 (right)
+    // -----------------------------------------------------------------------
+    state Philo1 {
+      entry : {}
+      exit  : {}
+
+      state P1_ThinkA { entry : {} exit : {} }
+      state P1_ThinkB { entry : {} exit : {} }
+      state P1_HungryA { entry : {} exit : {} }
+      state P1_HungryB { entry : {} exit : {} }
+      state P1_EatingA { entry : {} exit : {} }
+      state P1_EatingB { entry : {} exit : {} }
+      state P1_Done    { entry : {} exit : {} }
+
+      transition t1_think_A {
+        source      : dining.System.Philo1.P1_ThinkA;
+        destination : dining.System.Philo1.P1_HungryB;
+        trigger     : step;
+        guard       : (ph1 = 0);
+        action      : { ph1 := 1; }
+      }
+      transition t1_think_B {
+        source      : dining.System.Philo1.P1_ThinkB;
+        destination : dining.System.Philo1.P1_HungryA;
+        trigger     : step;
+        guard       : (ph1 = 0);
+        action      : { ph1 := 1; }
+      }
+
+      transition t1_eat_A {
+        source      : dining.System.Philo1.P1_HungryA;
+        destination : dining.System.Philo1.P1_EatingB;
+        trigger     : step;
+        guard       : (ph1 = 1) && (fork1 = 0) && (fork2 = 0);
+        action      : { fork1 := 1; fork2 := 1; ph1 := 2; }
+      }
+      transition t1_eat_B {
+        source      : dining.System.Philo1.P1_HungryB;
+        destination : dining.System.Philo1.P1_EatingA;
+        trigger     : step;
+        guard       : (ph1 = 1) && (fork1 = 0) && (fork2 = 0);
+        action      : { fork1 := 1; fork2 := 1; ph1 := 2; }
+      }
+
+      transition t1_done_A {
+        source      : dining.System.Philo1.P1_EatingA;
+        destination : dining.System.Philo1.P1_Done;
+        trigger     : step;
+        guard       : (ph1 = 2);
+        action      : { fork1 := 0; fork2 := 0; ph1 := 3; }
+      }
+      transition t1_done_B {
+        source      : dining.System.Philo1.P1_EatingB;
+        destination : dining.System.Philo1.P1_Done;
+        trigger     : step;
+        guard       : (ph1 = 2);
+        action      : { fork1 := 0; fork2 := 0; ph1 := 3; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // PHILOSOPHER 2 - needs fork2 (left) and fork0 (right)
+    //   ASYMMETRY: picks up fork0 (right) first to break circular wait
+    // -----------------------------------------------------------------------
+    state Philo2 {
+      entry : {}
+      exit  : {}
+
+      state P2_ThinkA { entry : {} exit : {} }
+      state P2_ThinkB { entry : {} exit : {} }
+      state P2_HungryA { entry : {} exit : {} }
+      state P2_HungryB { entry : {} exit : {} }
+      state P2_EatingA { entry : {} exit : {} }
+      state P2_EatingB { entry : {} exit : {} }
+      state P2_Done    { entry : {} exit : {} }
+
+      transition t2_think_A {
+        source      : dining.System.Philo2.P2_ThinkA;
+        destination : dining.System.Philo2.P2_HungryB;
+        trigger     : step;
+        guard       : (ph2 = 0);
+        action      : { ph2 := 1; }
+      }
+      transition t2_think_B {
+        source      : dining.System.Philo2.P2_ThinkB;
+        destination : dining.System.Philo2.P2_HungryA;
+        trigger     : step;
+        guard       : (ph2 = 0);
+        action      : { ph2 := 1; }
+      }
+
+      // Guard checks fork0 AND fork2 -- both must be free (same atomicity)
+      // The asymmetry is conceptual (fork ordering for deadlock-freedom);
+      // in the statechart, forks are acquired atomically in one transition.
+      transition t2_eat_A {
+        source      : dining.System.Philo2.P2_HungryA;
+        destination : dining.System.Philo2.P2_EatingB;
+        trigger     : step;
+        guard       : (ph2 = 1) && (fork2 = 0) && (fork0 = 0);
+        action      : { fork2 := 1; fork0 := 1; ph2 := 2; }
+      }
+      transition t2_eat_B {
+        source      : dining.System.Philo2.P2_HungryB;
+        destination : dining.System.Philo2.P2_EatingA;
+        trigger     : step;
+        guard       : (ph2 = 1) && (fork2 = 0) && (fork0 = 0);
+        action      : { fork2 := 1; fork0 := 1; ph2 := 2; }
+      }
+
+      transition t2_done_A {
+        source      : dining.System.Philo2.P2_EatingA;
+        destination : dining.System.Philo2.P2_Done;
+        trigger     : step;
+        guard       : (ph2 = 2);
+        action      : { fork2 := 0; fork0 := 0; ph2 := 3; }
+      }
+      transition t2_done_B {
+        source      : dining.System.Philo2.P2_EatingB;
+        destination : dining.System.Philo2.P2_Done;
+        trigger     : step;
+        guard       : (ph2 = 2);
+        action      : { fork2 := 0; fork0 := 0; ph2 := 3; }
+      }
+    }
+  }
+
+  // Entry transition into the shell
+  transition t_start {
+    source      : dining.Init;
+    destination : dining.System;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

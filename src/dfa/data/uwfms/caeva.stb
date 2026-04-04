@@ -1,0 +1,620 @@
+statechart sc{
+   events {
+	e;
+	Next;
+	No_event;
+	Error;
+	SetAccelIn;
+	SetAccelOut;
+	ResumeCoastIn;
+	ResumeCoastOut;
+	Cancel;
+  }
+
+  PRNDL_In:int:local;
+  CA_Enabled : boolean : local;
+  CA_HVI : int : local;
+  EVA_Enabled : boolean : local;
+  EVA_HVI : int : local;
+  LG_Warning:boolean:local;
+  Warning :int: local;
+  AccelPedal :int: local;
+  BrakePedal:int:local;
+  minusten:int:local;
+  BoolTRUE : boolean : local;
+  BoolFALSE : boolean : local;
+  minusone: int :local;
+  TargetSpeed : int : local;
+  FollowDist : int : local;
+  Speed: int: local;
+ Siren :boolean : local;
+    entry:{
+        BoolTRUE:=true;
+        BoolFALSE:=false;
+        CA_Enabled:=true;  
+    EVA_Enabled:=true;  
+	minusone:=0-1;
+	minusten:=0-10;
+        Siren:=true;
+        Speed:=0;
+
+    }
+    exit:{}
+    functions {
+  input<|int|>() : int;
+  }
+
+  shell caeva
+  {
+  	
+    entry:{}
+    exit:{}
+  
+	state CollisionAvoidance{
+        entry:{}
+        exit:{}   
+
+  state caEnabled{
+   //BreakPedal:int:local;
+   //Speed:int:local;
+   //PRNDL_In:int:local;
+
+   
+   entry: {
+
+   }
+   exit : {}
+ 
+   state caEngaged{
+     ThreatCA:int:local;
+	 Set_Brake:int:local;
+	 
+	 
+	 entry: {
+         ThreatCA:=input<|int|>();
+         //ThreatCA:=ThreatCA%2;
+
+	 }
+     exit : {}
+	 
+	 state caIdle{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state caWarn{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state caAvoid{
+	 entry: {}
+     exit : {}
+	}
+	
+	state caMitigate{
+	 entry: {}
+     exit : {}
+    }
+          state caDisabled{
+   entry: {}
+   exit : {}
+  }
+  state caOverride{
+   entry: {}
+   exit : {}
+  }
+  state caFail{
+   entry: {}
+   exit : {}
+  }
+
+	transition cat19{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition cat20{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition cat21{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition cat22{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2; Set_Brake:=30;}
+    }
+	
+	transition cat23{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition cat33{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+	transition cat34{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    trigger: e;
+    guard:(ThreatCA=0);
+    action:{Warning:=0;}
+    }
+	
+	transition cat35{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caIdle;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3; Set_Brake:=80;}
+    }
+	
+	transition cat29{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition cat31{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caWarn;
+    trigger: e;
+    guard:(ThreatCA=1);
+    action:{Warning:=1;}
+    }
+	
+	transition cat30{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    trigger: e;
+    guard:(ThreatCA=3);
+    action:{Warning:=3;Set_Brake:=80;}
+    }
+	
+	transition cat32{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caMitigate;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged.caAvoid;
+    trigger: e;
+    guard:(ThreatCA=2);
+    action:{Warning:=2;Set_Brake:=30;}
+    }
+	
+   }
+  state caDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state caHalt{
+	 entry: {}
+     exit : {}
+   }
+   transition cat16{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caDisengaged;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caEngaged;
+    trigger: e;
+    guard:(Speed>25);//&&(PRNDL_In=3);
+    action:{CA_HVI:=2;}
+  }
+   
+   transition cat17{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caDisengaged;
+    trigger: e;
+    guard:((Speed>0)&&(Speed<=25));//||(PRNDL_In!=3);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition cat24{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caHalt;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caDisengaged;
+    trigger: e;
+    guard:(BrakePedal>10);
+    action:{CA_HVI:=1;Warning:=0;}
+  }
+   
+   transition cat25{
+    source:sc.caeva.CollisionAvoidance.caEnabled.caEngaged;
+    destination:sc.caeva.CollisionAvoidance.caEnabled.caHalt;
+    trigger: e;
+    guard:(Speed=1);
+    action:{CA_HVI:=1;Warning:=4;}
+  }
+   
+  }
+  state caDisabled{
+	entry:{}
+	exit:{}
+	}
+  state caOverride{
+	entry:{}
+	exit:{}
+	
+	}
+  transition cat14{
+  source:sc.caeva.CollisionAvoidance.caDisabled;
+  destination:sc.caeva.CollisionAvoidance.caEnabled;
+  trigger: e;
+  guard:(CA_Enabled=BoolTRUE);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition cat15{
+  source:sc.caeva.CollisionAvoidance.caEnabled;
+  destination:sc.caeva.CollisionAvoidance.caDisabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+   
+  transition cat38{
+  source:sc.caeva.CollisionAvoidance.caOverride;
+  destination:sc.caeva.CollisionAvoidance.caDisabled;
+  trigger: e;
+  guard:(CA_Enabled!=BoolTRUE);
+  action:{CA_HVI:=0;Warning:=0;}
+  }
+  
+  transition cat36{
+  source:sc.caeva.CollisionAvoidance.caEnabled;
+  destination:sc.caeva.CollisionAvoidance.caOverride;
+  trigger: e;
+  guard:(AccelPedal>=35);
+  action:{CA_HVI:=4;Warning:=0;}
+  }
+  
+  transition cat37{
+  source:sc.caeva.CollisionAvoidance.caOverride;
+  destination:sc.caeva.CollisionAvoidance.caEnabled;
+  trigger: e;
+  guard:(AccelPedal<35);
+  action:{CA_HVI:=1;}
+  }
+  
+  transition t39{
+  source:sc.caeva.CollisionAvoidance.caOverride;
+  destination:sc.caeva.CollisionAvoidance.caFail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;}
+  }
+  
+  transition t27{
+  source:sc.caeva.CollisionAvoidance.caEnabled;
+  destination:sc.caeva.CollisionAvoidance.caFail;
+  trigger: Error;
+  guard:true;
+  action:{CA_HVI:=3;Warning:=0;}
+  }
+ 
+    }
+
+    state SpeedSetting{
+		entry:{}
+		exit:{}
+			
+      state HoldSpeed{
+				entry:{
+         
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+      state IncSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+	}
+			state DecSpeed{
+				entry:{
+          AccelPedal:=input<|int|>();
+          BrakePedal:=input<|int|>();
+        }
+				exit:{}
+			}
+			
+		transition sst27{
+				source: sc.caeva.SpeedSetting.DecSpeed;
+				destination: sc.caeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		transition sst32{
+				source: sc.caeva.SpeedSetting.IncSpeed;
+				destination: sc.caeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+				guard:(BrakePedal>=0);
+				action:{}
+		}
+		
+		transition sst31{
+				source: sc.caeva.SpeedSetting.HoldSpeed;
+				destination: sc.caeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((AccelPedal>30) && (BrakePedal=0)); 
+				action:{Speed:=Speed+1;} 
+
+		}
+		
+		transition sst33{
+				source: sc.caeva.SpeedSetting.IncSpeed;
+				destination: sc.caeva.SpeedSetting.IncSpeed;
+				trigger: e;
+				guard:((BrakePedal=0)&&(Speed<100));
+				action:{Speed:=Speed+1;}
+		}
+		transition sst34{
+				source: sc.caeva.SpeedSetting.DecSpeed;
+				destination: sc.caeva.SpeedSetting.DecSpeed;
+				trigger: e;
+				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+		}
+		transition sst35{
+				source: sc.caeva.SpeedSetting.HoldSpeed;
+				destination: sc.caeva.SpeedSetting.DecSpeed;
+				trigger: e;
+
+       				guard:((BrakePedal>0)&&(Speed>0));
+				action:{Speed:=Speed-1;}
+
+		}
+		/*transition sst36{
+				source: sc.caeva.SpeedSetting.HoldSpeed;
+				destination: sc.caeva.SpeedSetting.HoldSpeed;
+				trigger: e;
+       				guard:true;
+				action:{}
+
+		}*/
+		
+		
+		
+	}
+	
+	  state Sensor{
+        entry:{}
+        exit:{}
+        state sense{
+            entry:{
+                PRNDL_In:=input<|int|>();
+               // Siren:=input<|boolean|>();
+            }
+            exit:{}
+
+        }
+transition ss1{
+				source: sc.caeva.Sensor.sense;
+				destination: sc.caeva.Sensor.sense;
+				trigger: e;
+       				guard:true;
+				action:{AccelPedal:=input<|int|>(); BrakePedal:=input<|int|>();}
+
+		}
+        
+    }
+    
+        state eva{
+    
+    	 state evaDisabled{
+   entry: {}
+   exit : {}
+  }
+  state evaOverride{
+   entry: {}
+   exit : {}
+  }
+  state evaFail{
+   entry: {}
+   exit : {}
+  }
+  state evaEnabled{
+  // Speed:int:local;
+  // PRNDL_In:int:local;
+	// Siren :boolean : local;
+
+   
+   entry: {
+    // Siren :=input<|boolean|>();
+ }
+   exit : {}
+   state evaDisengaged{
+     entry: {}
+     exit : {}
+   }
+   state evaEngaged{
+     
+	 Set_Brake:int:local;
+	 Set_Throttle:int:local;
+	 Set_SteerOut:int:local;
+  	 WayClear: boolean : local;
+  	 DontStop: boolean : local;
+  
+	
+	 
+	 entry: {
+		DontStop:=true;
+		WayClear:=true;
+
+	 }
+     exit : {}
+	 
+	 state evaSlow{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaCoast{
+	 entry: {}
+     exit : {}
+	 }
+	 
+	 state evaPullOver{
+	 entry: {}
+     exit : {}
+	}
+	
+	
+	transition evat24{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+    transition evat23{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaSlow;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+    
+    transition evat25{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat26{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaCoast;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    trigger: e;
+    guard:(DontStop!=BoolTRUE)&&(WayClear=BoolTRUE);
+    action:{Set_Brake:=60;Set_SteerOut:=minusone;}
+    }
+    
+     transition evat22{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaSlow;
+    trigger: e;
+    guard:(DontStop=BoolFALSE)&&(WayClear=BoolFALSE);
+    action:{Set_Brake:=30;}
+    }
+	
+	transition evat27{
+    source: sc.caeva.eva.evaEnabled.evaEngaged.evaPullOver;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged.evaCoast;
+    trigger: e;
+    guard:(DontStop=BoolTRUE);
+    action:{Set_Throttle:=35;}
+    }
+	
+	
+   }
+   
+   transition evat19{
+    source: sc.caeva.eva.evaEnabled.evaEngaged;
+    destination: sc.caeva.eva.evaEnabled.evaDisengaged;
+    trigger: e;
+    guard:(Siren=BoolFALSE)||(Speed=0)||(PRNDL_In!=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+   transition evat20{
+    source: sc.caeva.eva.evaEnabled.evaDisengaged;
+    destination: sc.caeva.eva.evaEnabled.evaEngaged;
+    trigger: e;
+    guard:(Siren=BoolTRUE)&&(Speed>0)&&(PRNDL_In=3);
+    action:{EVA_HVI:=1;}
+  }
+   
+ 
+   
+  }
+  transition evat13{
+  source: sc.caeva.eva.evaDisabled;
+  destination: sc.caeva.eva.evaEnabled;
+  trigger: e;
+  guard:(EVA_Enabled=BoolTRUE);
+  action:{EVA_HVI:=1;}
+  }
+  
+  transition evat14{
+  source: sc.caeva.eva.evaEnabled;
+  destination: sc.caeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+   
+  transition evat16{
+  source: sc.caeva.eva.evaOverride;
+  destination: sc.caeva.eva.evaDisabled;
+  trigger: e;
+  guard:(EVA_Enabled!=BoolTRUE);
+  action:{EVA_HVI:=0;}
+  }
+  
+  transition evat17{
+  source: sc.caeva.eva.evaEnabled;
+  destination: sc.caeva.eva.evaOverride;
+  trigger: e;
+  guard:(BrakePedal!=0)||(AccelPedal>=30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat18{
+  source: sc.caeva.eva.evaOverride;
+  destination: sc.caeva.eva.evaEnabled;
+  trigger: e;
+  guard:(BrakePedal=0)&&(AccelPedal<30);
+  action:{EVA_HVI:=2;}
+  }
+  
+  transition evat29{
+  source: sc.caeva.eva.evaOverride;
+  destination: sc.caeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+  
+  transition evat28{
+  source: sc.caeva.eva.evaEnabled;
+  destination: sc.caeva.eva.evaFail;
+  trigger: Error;
+  guard:true;
+  action:{EVA_HVI:=4;}
+  }
+ 
+    }
+  
+    
+
+  }
+  
+}
