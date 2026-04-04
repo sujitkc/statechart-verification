@@ -1,0 +1,2902 @@
+// =============================================================================
+// Concurrent Sieve of Eratosthenes -- finds all prime numbers up to 100
+// =============================================================================
+//
+// Architecture: concurrent sieve filters + 1 collector running in parallel
+// Sieve filters for each prime p: mark ALL multiples (from 2p to N)
+// Guards check whether a number has already been marked by another filter;
+// if already filtered (pN = 0), the mark transition is not taken and a
+// skip transition advances the counter instead.
+//
+// This models the true concurrent sieve algorithm: every filter independently
+// processes every multiple, relying only on the shared primality flags.
+//
+// Expected result: 25 primes
+// Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97
+
+statechart ConcurrentSieve100 {
+
+  events {
+    step;
+  }
+
+  // Primality flags: 1 = prime candidate, 0 = composite
+  p2 : int : local;
+  p3 : int : local;
+  p4 : int : local;
+  p5 : int : local;
+  p6 : int : local;
+  p7 : int : local;
+  p8 : int : local;
+  p9 : int : local;
+  p10 : int : local;
+  p11 : int : local;
+  p12 : int : local;
+  p13 : int : local;
+  p14 : int : local;
+  p15 : int : local;
+  p16 : int : local;
+  p17 : int : local;
+  p18 : int : local;
+  p19 : int : local;
+  p20 : int : local;
+  p21 : int : local;
+  p22 : int : local;
+  p23 : int : local;
+  p24 : int : local;
+  p25 : int : local;
+  p26 : int : local;
+  p27 : int : local;
+  p28 : int : local;
+  p29 : int : local;
+  p30 : int : local;
+  p31 : int : local;
+  p32 : int : local;
+  p33 : int : local;
+  p34 : int : local;
+  p35 : int : local;
+  p36 : int : local;
+  p37 : int : local;
+  p38 : int : local;
+  p39 : int : local;
+  p40 : int : local;
+  p41 : int : local;
+  p42 : int : local;
+  p43 : int : local;
+  p44 : int : local;
+  p45 : int : local;
+  p46 : int : local;
+  p47 : int : local;
+  p48 : int : local;
+  p49 : int : local;
+  p50 : int : local;
+  p51 : int : local;
+  p52 : int : local;
+  p53 : int : local;
+  p54 : int : local;
+  p55 : int : local;
+  p56 : int : local;
+  p57 : int : local;
+  p58 : int : local;
+  p59 : int : local;
+  p60 : int : local;
+  p61 : int : local;
+  p62 : int : local;
+  p63 : int : local;
+  p64 : int : local;
+  p65 : int : local;
+  p66 : int : local;
+  p67 : int : local;
+  p68 : int : local;
+  p69 : int : local;
+  p70 : int : local;
+  p71 : int : local;
+  p72 : int : local;
+  p73 : int : local;
+  p74 : int : local;
+  p75 : int : local;
+  p76 : int : local;
+  p77 : int : local;
+  p78 : int : local;
+  p79 : int : local;
+  p80 : int : local;
+  p81 : int : local;
+  p82 : int : local;
+  p83 : int : local;
+  p84 : int : local;
+  p85 : int : local;
+  p86 : int : local;
+  p87 : int : local;
+  p88 : int : local;
+  p89 : int : local;
+  p90 : int : local;
+  p91 : int : local;
+  p92 : int : local;
+  p93 : int : local;
+  p94 : int : local;
+  p95 : int : local;
+  p96 : int : local;
+  p97 : int : local;
+  p98 : int : local;
+  p99 : int : local;
+  p100 : int : local;
+
+  // Working variables for each concurrent sieve
+  mult2 : int : local;
+  mult3 : int : local;
+  mult5 : int : local;
+  mult7 : int : local;
+
+  // Result collection
+  primeCount : int : local;
+  candidate  : int : local;
+
+  entry : {
+    p2 := 1;
+    p3 := 1;
+    p4 := 1;
+    p5 := 1;
+    p6 := 1;
+    p7 := 1;
+    p8 := 1;
+    p9 := 1;
+    p10 := 1;
+    p11 := 1;
+    p12 := 1;
+    p13 := 1;
+    p14 := 1;
+    p15 := 1;
+    p16 := 1;
+    p17 := 1;
+    p18 := 1;
+    p19 := 1;
+    p20 := 1;
+    p21 := 1;
+    p22 := 1;
+    p23 := 1;
+    p24 := 1;
+    p25 := 1;
+    p26 := 1;
+    p27 := 1;
+    p28 := 1;
+    p29 := 1;
+    p30 := 1;
+    p31 := 1;
+    p32 := 1;
+    p33 := 1;
+    p34 := 1;
+    p35 := 1;
+    p36 := 1;
+    p37 := 1;
+    p38 := 1;
+    p39 := 1;
+    p40 := 1;
+    p41 := 1;
+    p42 := 1;
+    p43 := 1;
+    p44 := 1;
+    p45 := 1;
+    p46 := 1;
+    p47 := 1;
+    p48 := 1;
+    p49 := 1;
+    p50 := 1;
+    p51 := 1;
+    p52 := 1;
+    p53 := 1;
+    p54 := 1;
+    p55 := 1;
+    p56 := 1;
+    p57 := 1;
+    p58 := 1;
+    p59 := 1;
+    p60 := 1;
+    p61 := 1;
+    p62 := 1;
+    p63 := 1;
+    p64 := 1;
+    p65 := 1;
+    p66 := 1;
+    p67 := 1;
+    p68 := 1;
+    p69 := 1;
+    p70 := 1;
+    p71 := 1;
+    p72 := 1;
+    p73 := 1;
+    p74 := 1;
+    p75 := 1;
+    p76 := 1;
+    p77 := 1;
+    p78 := 1;
+    p79 := 1;
+    p80 := 1;
+    p81 := 1;
+    p82 := 1;
+    p83 := 1;
+    p84 := 1;
+    p85 := 1;
+    p86 := 1;
+    p87 := 1;
+    p88 := 1;
+    p89 := 1;
+    p90 := 1;
+    p91 := 1;
+    p92 := 1;
+    p93 := 1;
+    p94 := 1;
+    p95 := 1;
+    p96 := 1;
+    p97 := 1;
+    p98 := 1;
+    p99 := 1;
+    p100 := 1;
+    mult2 := 4;
+    mult3 := 6;
+    mult5 := 10;
+    mult7 := 14;
+    primeCount := 0;
+    candidate := 2;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  // Shell state with concurrent regions (sieves + collector)
+  shell SievePipeline {
+    entry : {}
+    exit  : {}
+
+    // Region: Sieve2 -- marks ALL multiples of 2 (from 4 to 100)
+    // Multiples: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100
+    // Guard checks: if p_N=1 (not yet marked) -> mark; if p_N=0 (already marked) -> skip
+    state Sieve2 {
+      entry : {}
+      exit  : {}
+
+      state S2_MarkA { entry : {} exit : {} }
+      state S2_MarkB { entry : {} exit : {} }
+      state S2_Done  { entry : {} exit : {} }
+
+      transition t_s2_mark_AB_4 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 4) && (p4 = 1);
+        action      : { p4 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_4 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 4) && (p4 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_6 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 6) && (p6 = 1);
+        action      : { p6 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_6 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 6) && (p6 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_8 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 8) && (p8 = 1);
+        action      : { p8 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_8 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 8) && (p8 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_10 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 10) && (p10 = 1);
+        action      : { p10 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_10 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 10) && (p10 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_12 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 12) && (p12 = 1);
+        action      : { p12 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_12 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 12) && (p12 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_14 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 14) && (p14 = 1);
+        action      : { p14 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_14 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 14) && (p14 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_16 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 16) && (p16 = 1);
+        action      : { p16 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_16 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 16) && (p16 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_18 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 18) && (p18 = 1);
+        action      : { p18 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_18 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 18) && (p18 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_20 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 20) && (p20 = 1);
+        action      : { p20 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_20 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 20) && (p20 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_22 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 22) && (p22 = 1);
+        action      : { p22 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_22 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 22) && (p22 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_24 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 24) && (p24 = 1);
+        action      : { p24 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_24 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 24) && (p24 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_26 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 26) && (p26 = 1);
+        action      : { p26 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_26 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 26) && (p26 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_28 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 28) && (p28 = 1);
+        action      : { p28 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_28 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 28) && (p28 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 30) && (p30 = 1);
+        action      : { p30 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 30) && (p30 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_32 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 32) && (p32 = 1);
+        action      : { p32 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_32 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 32) && (p32 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_34 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 34) && (p34 = 1);
+        action      : { p34 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_34 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 34) && (p34 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_36 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 36) && (p36 = 1);
+        action      : { p36 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_36 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 36) && (p36 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_38 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 38) && (p38 = 1);
+        action      : { p38 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_38 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 38) && (p38 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_40 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 40) && (p40 = 1);
+        action      : { p40 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_40 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 40) && (p40 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 42) && (p42 = 1);
+        action      : { p42 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 42) && (p42 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_44 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 44) && (p44 = 1);
+        action      : { p44 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_44 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 44) && (p44 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_46 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 46) && (p46 = 1);
+        action      : { p46 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_46 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 46) && (p46 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_48 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 48) && (p48 = 1);
+        action      : { p48 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_48 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 48) && (p48 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_50 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 50) && (p50 = 1);
+        action      : { p50 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_50 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 50) && (p50 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_52 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 52) && (p52 = 1);
+        action      : { p52 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_52 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 52) && (p52 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_54 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 54) && (p54 = 1);
+        action      : { p54 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_54 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 54) && (p54 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_56 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 56) && (p56 = 1);
+        action      : { p56 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_56 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 56) && (p56 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_58 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 58) && (p58 = 1);
+        action      : { p58 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_58 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 58) && (p58 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 60) && (p60 = 1);
+        action      : { p60 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 60) && (p60 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_62 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 62) && (p62 = 1);
+        action      : { p62 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_62 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 62) && (p62 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_64 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 64) && (p64 = 1);
+        action      : { p64 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_64 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 64) && (p64 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_66 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 66) && (p66 = 1);
+        action      : { p66 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_66 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 66) && (p66 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_68 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 68) && (p68 = 1);
+        action      : { p68 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_68 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 68) && (p68 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 70) && (p70 = 1);
+        action      : { p70 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 70) && (p70 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_72 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 72) && (p72 = 1);
+        action      : { p72 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_72 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 72) && (p72 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_74 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 74) && (p74 = 1);
+        action      : { p74 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_74 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 74) && (p74 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_76 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 76) && (p76 = 1);
+        action      : { p76 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_76 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 76) && (p76 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_78 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 78) && (p78 = 1);
+        action      : { p78 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_78 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 78) && (p78 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_80 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 80) && (p80 = 1);
+        action      : { p80 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_80 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 80) && (p80 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_82 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 82) && (p82 = 1);
+        action      : { p82 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_82 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 82) && (p82 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 84) && (p84 = 1);
+        action      : { p84 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 84) && (p84 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_86 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 86) && (p86 = 1);
+        action      : { p86 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_86 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 86) && (p86 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_88 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 88) && (p88 = 1);
+        action      : { p88 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_88 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 88) && (p88 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 90) && (p90 = 1);
+        action      : { p90 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 90) && (p90 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_92 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 92) && (p92 = 1);
+        action      : { p92 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_92 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 92) && (p92 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_94 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 94) && (p94 = 1);
+        action      : { p94 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_94 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 94) && (p94 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_96 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 96) && (p96 = 1);
+        action      : { p96 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_96 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 96) && (p96 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_BA_98 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 98) && (p98 = 1);
+        action      : { p98 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_BA_98 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        trigger     : step;
+        guard       : (mult2 = 98) && (p98 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mark_AB_100 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 100) && (p100 = 1);
+        action      : { p100 := 0; mult2 := mult2 + 2; }
+      }
+      transition t_s2_skip_AB_100 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        trigger     : step;
+        guard       : (mult2 = 100) && (p100 = 0);
+        action      : { mult2 := mult2 + 2; }
+      }
+
+      transition t_s2_mA_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_Done;
+        trigger     : step;
+        guard       : (mult2 > 100);
+        action      : {}
+      }
+
+      transition t_s2_mB_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve2.S2_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve2.S2_Done;
+        trigger     : step;
+        guard       : (mult2 > 100);
+        action      : {}
+      }
+    }
+
+    // Region: Sieve3 -- marks ALL multiples of 3 (from 6 to 100)
+    // Multiples: 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99
+    // Guard checks: if p_N=1 (not yet marked) -> mark; if p_N=0 (already marked) -> skip
+    state Sieve3 {
+      entry : {}
+      exit  : {}
+
+      state S3_MarkA { entry : {} exit : {} }
+      state S3_MarkB { entry : {} exit : {} }
+      state S3_Done  { entry : {} exit : {} }
+
+      transition t_s3_mark_AB_6 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 6) && (p6 = 1);
+        action      : { p6 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_6 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 6) && (p6 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_9 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 9) && (p9 = 1);
+        action      : { p9 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_9 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 9) && (p9 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_12 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 12) && (p12 = 1);
+        action      : { p12 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_12 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 12) && (p12 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_15 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 15) && (p15 = 1);
+        action      : { p15 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_15 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 15) && (p15 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_18 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 18) && (p18 = 1);
+        action      : { p18 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_18 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 18) && (p18 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_21 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 21) && (p21 = 1);
+        action      : { p21 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_21 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 21) && (p21 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_24 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 24) && (p24 = 1);
+        action      : { p24 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_24 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 24) && (p24 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_27 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 27) && (p27 = 1);
+        action      : { p27 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_27 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 27) && (p27 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 30) && (p30 = 1);
+        action      : { p30 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 30) && (p30 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_33 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 33) && (p33 = 1);
+        action      : { p33 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_33 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 33) && (p33 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_36 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 36) && (p36 = 1);
+        action      : { p36 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_36 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 36) && (p36 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_39 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 39) && (p39 = 1);
+        action      : { p39 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_39 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 39) && (p39 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 42) && (p42 = 1);
+        action      : { p42 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 42) && (p42 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_45 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 45) && (p45 = 1);
+        action      : { p45 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_45 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 45) && (p45 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_48 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 48) && (p48 = 1);
+        action      : { p48 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_48 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 48) && (p48 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_51 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 51) && (p51 = 1);
+        action      : { p51 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_51 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 51) && (p51 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_54 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 54) && (p54 = 1);
+        action      : { p54 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_54 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 54) && (p54 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_57 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 57) && (p57 = 1);
+        action      : { p57 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_57 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 57) && (p57 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 60) && (p60 = 1);
+        action      : { p60 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 60) && (p60 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_63 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 63) && (p63 = 1);
+        action      : { p63 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_63 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 63) && (p63 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_66 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 66) && (p66 = 1);
+        action      : { p66 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_66 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 66) && (p66 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_69 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 69) && (p69 = 1);
+        action      : { p69 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_69 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 69) && (p69 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_72 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 72) && (p72 = 1);
+        action      : { p72 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_72 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 72) && (p72 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_75 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 75) && (p75 = 1);
+        action      : { p75 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_75 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 75) && (p75 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_78 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 78) && (p78 = 1);
+        action      : { p78 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_78 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 78) && (p78 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_81 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 81) && (p81 = 1);
+        action      : { p81 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_81 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 81) && (p81 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 84) && (p84 = 1);
+        action      : { p84 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 84) && (p84 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_87 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 87) && (p87 = 1);
+        action      : { p87 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_87 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 87) && (p87 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 90) && (p90 = 1);
+        action      : { p90 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 90) && (p90 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_93 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 93) && (p93 = 1);
+        action      : { p93 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_93 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 93) && (p93 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_AB_96 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 96) && (p96 = 1);
+        action      : { p96 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_AB_96 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        trigger     : step;
+        guard       : (mult3 = 96) && (p96 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mark_BA_99 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 99) && (p99 = 1);
+        action      : { p99 := 0; mult3 := mult3 + 3; }
+      }
+      transition t_s3_skip_BA_99 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        trigger     : step;
+        guard       : (mult3 = 99) && (p99 = 0);
+        action      : { mult3 := mult3 + 3; }
+      }
+
+      transition t_s3_mA_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_Done;
+        trigger     : step;
+        guard       : (mult3 > 100);
+        action      : {}
+      }
+
+      transition t_s3_mB_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve3.S3_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve3.S3_Done;
+        trigger     : step;
+        guard       : (mult3 > 100);
+        action      : {}
+      }
+    }
+
+    // Region: Sieve5 -- marks ALL multiples of 5 (from 10 to 100)
+    // Multiples: 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100
+    // Guard checks: if p_N=1 (not yet marked) -> mark; if p_N=0 (already marked) -> skip
+    state Sieve5 {
+      entry : {}
+      exit  : {}
+
+      state S5_MarkA { entry : {} exit : {} }
+      state S5_MarkB { entry : {} exit : {} }
+      state S5_Done  { entry : {} exit : {} }
+
+      transition t_s5_mark_AB_10 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 10) && (p10 = 1);
+        action      : { p10 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_10 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 10) && (p10 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_15 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 15) && (p15 = 1);
+        action      : { p15 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_15 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 15) && (p15 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_20 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 20) && (p20 = 1);
+        action      : { p20 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_20 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 20) && (p20 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_25 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 25) && (p25 = 1);
+        action      : { p25 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_25 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 25) && (p25 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 30) && (p30 = 1);
+        action      : { p30 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_30 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 30) && (p30 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_35 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 35) && (p35 = 1);
+        action      : { p35 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_35 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 35) && (p35 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_40 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 40) && (p40 = 1);
+        action      : { p40 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_40 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 40) && (p40 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_45 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 45) && (p45 = 1);
+        action      : { p45 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_45 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 45) && (p45 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_50 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 50) && (p50 = 1);
+        action      : { p50 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_50 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 50) && (p50 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_55 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 55) && (p55 = 1);
+        action      : { p55 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_55 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 55) && (p55 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 60) && (p60 = 1);
+        action      : { p60 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 60) && (p60 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_65 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 65) && (p65 = 1);
+        action      : { p65 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_65 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 65) && (p65 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 70) && (p70 = 1);
+        action      : { p70 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 70) && (p70 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_75 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 75) && (p75 = 1);
+        action      : { p75 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_75 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 75) && (p75 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_80 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 80) && (p80 = 1);
+        action      : { p80 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_80 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 80) && (p80 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_85 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 85) && (p85 = 1);
+        action      : { p85 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_85 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 85) && (p85 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 90) && (p90 = 1);
+        action      : { p90 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_90 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 90) && (p90 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_BA_95 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 95) && (p95 = 1);
+        action      : { p95 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_BA_95 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        trigger     : step;
+        guard       : (mult5 = 95) && (p95 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mark_AB_100 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 100) && (p100 = 1);
+        action      : { p100 := 0; mult5 := mult5 + 5; }
+      }
+      transition t_s5_skip_AB_100 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        trigger     : step;
+        guard       : (mult5 = 100) && (p100 = 0);
+        action      : { mult5 := mult5 + 5; }
+      }
+
+      transition t_s5_mA_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_Done;
+        trigger     : step;
+        guard       : (mult5 > 100);
+        action      : {}
+      }
+
+      transition t_s5_mB_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve5.S5_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve5.S5_Done;
+        trigger     : step;
+        guard       : (mult5 > 100);
+        action      : {}
+      }
+    }
+
+    // Region: Sieve7 -- marks ALL multiples of 7 (from 14 to 100)
+    // Multiples: 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98
+    // Guard checks: if p_N=1 (not yet marked) -> mark; if p_N=0 (already marked) -> skip
+    state Sieve7 {
+      entry : {}
+      exit  : {}
+
+      state S7_MarkA { entry : {} exit : {} }
+      state S7_MarkB { entry : {} exit : {} }
+      state S7_Done  { entry : {} exit : {} }
+
+      transition t_s7_mark_AB_14 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 14) && (p14 = 1);
+        action      : { p14 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_14 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 14) && (p14 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_21 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 21) && (p21 = 1);
+        action      : { p21 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_21 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 21) && (p21 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_28 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 28) && (p28 = 1);
+        action      : { p28 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_28 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 28) && (p28 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_35 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 35) && (p35 = 1);
+        action      : { p35 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_35 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 35) && (p35 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 42) && (p42 = 1);
+        action      : { p42 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_42 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 42) && (p42 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_49 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 49) && (p49 = 1);
+        action      : { p49 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_49 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 49) && (p49 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_56 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 56) && (p56 = 1);
+        action      : { p56 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_56 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 56) && (p56 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_63 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 63) && (p63 = 1);
+        action      : { p63 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_63 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 63) && (p63 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 70) && (p70 = 1);
+        action      : { p70 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_70 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 70) && (p70 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_77 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 77) && (p77 = 1);
+        action      : { p77 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_77 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 77) && (p77 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 84) && (p84 = 1);
+        action      : { p84 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 84) && (p84 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_BA_91 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 91) && (p91 = 1);
+        action      : { p91 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_BA_91 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        trigger     : step;
+        guard       : (mult7 = 91) && (p91 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mark_AB_98 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 98) && (p98 = 1);
+        action      : { p98 := 0; mult7 := mult7 + 7; }
+      }
+      transition t_s7_skip_AB_98 {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        trigger     : step;
+        guard       : (mult7 = 98) && (p98 = 0);
+        action      : { mult7 := mult7 + 7; }
+      }
+
+      transition t_s7_mA_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkA;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_Done;
+        trigger     : step;
+        guard       : (mult7 > 100);
+        action      : {}
+      }
+
+      transition t_s7_mB_done {
+        source      : ConcurrentSieve100.SievePipeline.Sieve7.S7_MarkB;
+        destination : ConcurrentSieve100.SievePipeline.Sieve7.S7_Done;
+        trigger     : step;
+        guard       : (mult7 > 100);
+        action      : {}
+      }
+    }
+
+    // Region: Collector -- waits for all sieves, then counts primes from 2..N
+    state Collector {
+      entry : {}
+      exit  : {}
+
+      state CollWaiting { entry : {} exit : {} }
+      state CollCountA  { entry : {} exit : {} }
+      state CollCountB  { entry : {} exit : {} }
+      state CollDone    { entry : {} exit : {} }
+
+      // Wait for all sieves to complete
+      transition t_coll_start {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollWaiting;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (mult2 > 100) && (mult3 > 100) && (mult5 > 100) && (mult7 > 100);
+        action      : { candidate := 2; primeCount := 0; }
+      }
+
+      transition t_coll_cAB_2 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 2);
+        action      : { primeCount := primeCount + p2; candidate := 3; }
+      }
+
+      transition t_coll_cBA_3 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 3);
+        action      : { primeCount := primeCount + p3; candidate := 4; }
+      }
+
+      transition t_coll_cAB_4 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 4);
+        action      : { primeCount := primeCount + p4; candidate := 5; }
+      }
+
+      transition t_coll_cBA_5 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 5);
+        action      : { primeCount := primeCount + p5; candidate := 6; }
+      }
+
+      transition t_coll_cAB_6 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 6);
+        action      : { primeCount := primeCount + p6; candidate := 7; }
+      }
+
+      transition t_coll_cBA_7 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 7);
+        action      : { primeCount := primeCount + p7; candidate := 8; }
+      }
+
+      transition t_coll_cAB_8 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 8);
+        action      : { primeCount := primeCount + p8; candidate := 9; }
+      }
+
+      transition t_coll_cBA_9 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 9);
+        action      : { primeCount := primeCount + p9; candidate := 10; }
+      }
+
+      transition t_coll_cAB_10 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 10);
+        action      : { primeCount := primeCount + p10; candidate := 11; }
+      }
+
+      transition t_coll_cBA_11 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 11);
+        action      : { primeCount := primeCount + p11; candidate := 12; }
+      }
+
+      transition t_coll_cAB_12 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 12);
+        action      : { primeCount := primeCount + p12; candidate := 13; }
+      }
+
+      transition t_coll_cBA_13 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 13);
+        action      : { primeCount := primeCount + p13; candidate := 14; }
+      }
+
+      transition t_coll_cAB_14 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 14);
+        action      : { primeCount := primeCount + p14; candidate := 15; }
+      }
+
+      transition t_coll_cBA_15 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 15);
+        action      : { primeCount := primeCount + p15; candidate := 16; }
+      }
+
+      transition t_coll_cAB_16 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 16);
+        action      : { primeCount := primeCount + p16; candidate := 17; }
+      }
+
+      transition t_coll_cBA_17 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 17);
+        action      : { primeCount := primeCount + p17; candidate := 18; }
+      }
+
+      transition t_coll_cAB_18 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 18);
+        action      : { primeCount := primeCount + p18; candidate := 19; }
+      }
+
+      transition t_coll_cBA_19 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 19);
+        action      : { primeCount := primeCount + p19; candidate := 20; }
+      }
+
+      transition t_coll_cAB_20 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 20);
+        action      : { primeCount := primeCount + p20; candidate := 21; }
+      }
+
+      transition t_coll_cBA_21 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 21);
+        action      : { primeCount := primeCount + p21; candidate := 22; }
+      }
+
+      transition t_coll_cAB_22 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 22);
+        action      : { primeCount := primeCount + p22; candidate := 23; }
+      }
+
+      transition t_coll_cBA_23 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 23);
+        action      : { primeCount := primeCount + p23; candidate := 24; }
+      }
+
+      transition t_coll_cAB_24 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 24);
+        action      : { primeCount := primeCount + p24; candidate := 25; }
+      }
+
+      transition t_coll_cBA_25 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 25);
+        action      : { primeCount := primeCount + p25; candidate := 26; }
+      }
+
+      transition t_coll_cAB_26 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 26);
+        action      : { primeCount := primeCount + p26; candidate := 27; }
+      }
+
+      transition t_coll_cBA_27 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 27);
+        action      : { primeCount := primeCount + p27; candidate := 28; }
+      }
+
+      transition t_coll_cAB_28 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 28);
+        action      : { primeCount := primeCount + p28; candidate := 29; }
+      }
+
+      transition t_coll_cBA_29 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 29);
+        action      : { primeCount := primeCount + p29; candidate := 30; }
+      }
+
+      transition t_coll_cAB_30 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 30);
+        action      : { primeCount := primeCount + p30; candidate := 31; }
+      }
+
+      transition t_coll_cBA_31 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 31);
+        action      : { primeCount := primeCount + p31; candidate := 32; }
+      }
+
+      transition t_coll_cAB_32 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 32);
+        action      : { primeCount := primeCount + p32; candidate := 33; }
+      }
+
+      transition t_coll_cBA_33 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 33);
+        action      : { primeCount := primeCount + p33; candidate := 34; }
+      }
+
+      transition t_coll_cAB_34 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 34);
+        action      : { primeCount := primeCount + p34; candidate := 35; }
+      }
+
+      transition t_coll_cBA_35 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 35);
+        action      : { primeCount := primeCount + p35; candidate := 36; }
+      }
+
+      transition t_coll_cAB_36 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 36);
+        action      : { primeCount := primeCount + p36; candidate := 37; }
+      }
+
+      transition t_coll_cBA_37 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 37);
+        action      : { primeCount := primeCount + p37; candidate := 38; }
+      }
+
+      transition t_coll_cAB_38 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 38);
+        action      : { primeCount := primeCount + p38; candidate := 39; }
+      }
+
+      transition t_coll_cBA_39 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 39);
+        action      : { primeCount := primeCount + p39; candidate := 40; }
+      }
+
+      transition t_coll_cAB_40 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 40);
+        action      : { primeCount := primeCount + p40; candidate := 41; }
+      }
+
+      transition t_coll_cBA_41 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 41);
+        action      : { primeCount := primeCount + p41; candidate := 42; }
+      }
+
+      transition t_coll_cAB_42 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 42);
+        action      : { primeCount := primeCount + p42; candidate := 43; }
+      }
+
+      transition t_coll_cBA_43 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 43);
+        action      : { primeCount := primeCount + p43; candidate := 44; }
+      }
+
+      transition t_coll_cAB_44 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 44);
+        action      : { primeCount := primeCount + p44; candidate := 45; }
+      }
+
+      transition t_coll_cBA_45 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 45);
+        action      : { primeCount := primeCount + p45; candidate := 46; }
+      }
+
+      transition t_coll_cAB_46 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 46);
+        action      : { primeCount := primeCount + p46; candidate := 47; }
+      }
+
+      transition t_coll_cBA_47 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 47);
+        action      : { primeCount := primeCount + p47; candidate := 48; }
+      }
+
+      transition t_coll_cAB_48 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 48);
+        action      : { primeCount := primeCount + p48; candidate := 49; }
+      }
+
+      transition t_coll_cBA_49 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 49);
+        action      : { primeCount := primeCount + p49; candidate := 50; }
+      }
+
+      transition t_coll_cAB_50 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 50);
+        action      : { primeCount := primeCount + p50; candidate := 51; }
+      }
+
+      transition t_coll_cBA_51 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 51);
+        action      : { primeCount := primeCount + p51; candidate := 52; }
+      }
+
+      transition t_coll_cAB_52 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 52);
+        action      : { primeCount := primeCount + p52; candidate := 53; }
+      }
+
+      transition t_coll_cBA_53 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 53);
+        action      : { primeCount := primeCount + p53; candidate := 54; }
+      }
+
+      transition t_coll_cAB_54 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 54);
+        action      : { primeCount := primeCount + p54; candidate := 55; }
+      }
+
+      transition t_coll_cBA_55 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 55);
+        action      : { primeCount := primeCount + p55; candidate := 56; }
+      }
+
+      transition t_coll_cAB_56 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 56);
+        action      : { primeCount := primeCount + p56; candidate := 57; }
+      }
+
+      transition t_coll_cBA_57 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 57);
+        action      : { primeCount := primeCount + p57; candidate := 58; }
+      }
+
+      transition t_coll_cAB_58 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 58);
+        action      : { primeCount := primeCount + p58; candidate := 59; }
+      }
+
+      transition t_coll_cBA_59 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 59);
+        action      : { primeCount := primeCount + p59; candidate := 60; }
+      }
+
+      transition t_coll_cAB_60 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 60);
+        action      : { primeCount := primeCount + p60; candidate := 61; }
+      }
+
+      transition t_coll_cBA_61 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 61);
+        action      : { primeCount := primeCount + p61; candidate := 62; }
+      }
+
+      transition t_coll_cAB_62 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 62);
+        action      : { primeCount := primeCount + p62; candidate := 63; }
+      }
+
+      transition t_coll_cBA_63 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 63);
+        action      : { primeCount := primeCount + p63; candidate := 64; }
+      }
+
+      transition t_coll_cAB_64 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 64);
+        action      : { primeCount := primeCount + p64; candidate := 65; }
+      }
+
+      transition t_coll_cBA_65 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 65);
+        action      : { primeCount := primeCount + p65; candidate := 66; }
+      }
+
+      transition t_coll_cAB_66 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 66);
+        action      : { primeCount := primeCount + p66; candidate := 67; }
+      }
+
+      transition t_coll_cBA_67 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 67);
+        action      : { primeCount := primeCount + p67; candidate := 68; }
+      }
+
+      transition t_coll_cAB_68 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 68);
+        action      : { primeCount := primeCount + p68; candidate := 69; }
+      }
+
+      transition t_coll_cBA_69 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 69);
+        action      : { primeCount := primeCount + p69; candidate := 70; }
+      }
+
+      transition t_coll_cAB_70 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 70);
+        action      : { primeCount := primeCount + p70; candidate := 71; }
+      }
+
+      transition t_coll_cBA_71 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 71);
+        action      : { primeCount := primeCount + p71; candidate := 72; }
+      }
+
+      transition t_coll_cAB_72 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 72);
+        action      : { primeCount := primeCount + p72; candidate := 73; }
+      }
+
+      transition t_coll_cBA_73 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 73);
+        action      : { primeCount := primeCount + p73; candidate := 74; }
+      }
+
+      transition t_coll_cAB_74 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 74);
+        action      : { primeCount := primeCount + p74; candidate := 75; }
+      }
+
+      transition t_coll_cBA_75 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 75);
+        action      : { primeCount := primeCount + p75; candidate := 76; }
+      }
+
+      transition t_coll_cAB_76 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 76);
+        action      : { primeCount := primeCount + p76; candidate := 77; }
+      }
+
+      transition t_coll_cBA_77 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 77);
+        action      : { primeCount := primeCount + p77; candidate := 78; }
+      }
+
+      transition t_coll_cAB_78 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 78);
+        action      : { primeCount := primeCount + p78; candidate := 79; }
+      }
+
+      transition t_coll_cBA_79 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 79);
+        action      : { primeCount := primeCount + p79; candidate := 80; }
+      }
+
+      transition t_coll_cAB_80 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 80);
+        action      : { primeCount := primeCount + p80; candidate := 81; }
+      }
+
+      transition t_coll_cBA_81 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 81);
+        action      : { primeCount := primeCount + p81; candidate := 82; }
+      }
+
+      transition t_coll_cAB_82 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 82);
+        action      : { primeCount := primeCount + p82; candidate := 83; }
+      }
+
+      transition t_coll_cBA_83 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 83);
+        action      : { primeCount := primeCount + p83; candidate := 84; }
+      }
+
+      transition t_coll_cAB_84 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 84);
+        action      : { primeCount := primeCount + p84; candidate := 85; }
+      }
+
+      transition t_coll_cBA_85 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 85);
+        action      : { primeCount := primeCount + p85; candidate := 86; }
+      }
+
+      transition t_coll_cAB_86 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 86);
+        action      : { primeCount := primeCount + p86; candidate := 87; }
+      }
+
+      transition t_coll_cBA_87 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 87);
+        action      : { primeCount := primeCount + p87; candidate := 88; }
+      }
+
+      transition t_coll_cAB_88 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 88);
+        action      : { primeCount := primeCount + p88; candidate := 89; }
+      }
+
+      transition t_coll_cBA_89 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 89);
+        action      : { primeCount := primeCount + p89; candidate := 90; }
+      }
+
+      transition t_coll_cAB_90 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 90);
+        action      : { primeCount := primeCount + p90; candidate := 91; }
+      }
+
+      transition t_coll_cBA_91 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 91);
+        action      : { primeCount := primeCount + p91; candidate := 92; }
+      }
+
+      transition t_coll_cAB_92 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 92);
+        action      : { primeCount := primeCount + p92; candidate := 93; }
+      }
+
+      transition t_coll_cBA_93 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 93);
+        action      : { primeCount := primeCount + p93; candidate := 94; }
+      }
+
+      transition t_coll_cAB_94 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 94);
+        action      : { primeCount := primeCount + p94; candidate := 95; }
+      }
+
+      transition t_coll_cBA_95 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 95);
+        action      : { primeCount := primeCount + p95; candidate := 96; }
+      }
+
+      transition t_coll_cAB_96 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 96);
+        action      : { primeCount := primeCount + p96; candidate := 97; }
+      }
+
+      transition t_coll_cBA_97 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 97);
+        action      : { primeCount := primeCount + p97; candidate := 98; }
+      }
+
+      transition t_coll_cAB_98 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 98);
+        action      : { primeCount := primeCount + p98; candidate := 99; }
+      }
+
+      transition t_coll_cBA_99 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        trigger     : step;
+        guard       : (candidate = 99);
+        action      : { primeCount := primeCount + p99; candidate := 100; }
+      }
+
+      transition t_coll_cAB_100 {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        trigger     : step;
+        guard       : (candidate = 100);
+        action      : { primeCount := primeCount + p100; candidate := 101; }
+      }
+
+      transition t_coll_cA_done {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountA;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollDone;
+        trigger     : step;
+        guard       : (candidate > 100);
+        action      : {}
+      }
+
+      transition t_coll_cB_done {
+        source      : ConcurrentSieve100.SievePipeline.Collector.CollCountB;
+        destination : ConcurrentSieve100.SievePipeline.Collector.CollDone;
+        trigger     : step;
+        guard       : (candidate > 100);
+        action      : {}
+      }
+    }
+  }
+
+  // Transition from Init to concurrent pipeline
+  transition t_start {
+    source      : ConcurrentSieve100.Init;
+    destination : ConcurrentSieve100.SievePipeline;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

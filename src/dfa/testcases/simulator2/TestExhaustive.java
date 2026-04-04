@@ -322,6 +322,14 @@ public class TestExhaustive {
   
   public void populate_simulate(){
   	String[] events={"e1"};
+	// makeTestCase("data/snoopy_cache.stb", new String[] {"Init"}, new String[]{"C0_Done", "C1_Done", "Arb_Done"}, events);
+
+	// makeTestCase("data/petersonMutex.stb", new String[] {"Init"}, new String[]{"P0_Done", "P1_Done"}, events);
+
+	// makeTestCase("data/tokenRing.stb", new String[] {"Init"}, new String[]{"N0_Done", "N1_Done", "N2_Done"}, events);
+
+	// makeTestCase("data/producerConsumer.stb", new String[] {"Init"}, new String[]{"ProdFinished", "ConsFinished"}, events);
+	
   	// makeTestCase("data/constabl_events/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	// makeTestCase("data/constabl_actions/1_source_atomic/t1_1.stbl", new String[] {"A"}, new String[]{"C"}, events);
   	
@@ -335,8 +343,18 @@ public class TestExhaustive {
 	
 	// TVSetPlus8 test case - includes all events
 	String[] tvEvents = {"on", "txt", "mute", "sound", "in", "out", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "off"};
-	makeTestCase("data/TVSetPlus8.stb", new String[] {"STANDBY"}, new String[]{"STANDBY"}, tvEvents);
-  }
+	// makeTestCase("data/TVSetPlus8.stb", new String[] {"STANDBY"}, new String[]{"STANDBY"}, tvEvents);
+	
+	// makeTestCase("data/sieve_concurrent.stb", new String[] {"Init"}, new String[]{"CollDone" , "S2_Done", "S3_Done", "S5_Done"}, events);
+	
+	// makeTestCase("data/sieve_concurrent_49.stb", new String[] {"Init"}, new String[]{"S2_Done", "S3_Done", "S5_Done", "S7_Done", "CollDone"}, events);
+	
+	// makeTestCase("data/diningPhilosopherSharedEvents.stb", new String[] {"Init"}, new String[]{"P0_Done", "P1_Done", "P2_Done"}, events);
+	makeTestCase("data/ABP4.stb", new String[] {""}, new String[]{""}, events);
+	// makeTestCase("data/snoopy_cache.stb", new String[] {""}, new String[]{""}, events);
+	// makeTestCase("data/snoopy_cache_4region.stb", new String[] {""}, new String[]{""}, events);
+
+}
   public void makeTestCase( String filename, String[] sourceConfig, String[] destConfig, String[] eventseq){
   	TestCase tc=new TestCase(filename,sourceConfig, destConfig, eventseq);
   	this.testlist.add(tc);

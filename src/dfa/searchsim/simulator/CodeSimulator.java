@@ -255,7 +255,13 @@ public class CodeSimulator{
               Internode skipExit = this.simulateExitNode(n, currMS, newJPSet);
               if(skipExit != null && skipExit.getCP() != null) {
                 for(CFGNode skipNext : skipExit.getCP()) {
+                  if(!(skipNext instanceof CFGSkipNode)) {
                     newReadySet.add(skipNext);
+                  } else {
+                    //recursively handle chained skip nodes would be complex
+                    //for now, just add them - they'll be handled next iteration
+                    newReadySet.add(skipNext);
+                  }
                 }
               }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////

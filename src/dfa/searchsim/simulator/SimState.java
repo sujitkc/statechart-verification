@@ -2,7 +2,8 @@ package searchsim.simulator;
 
 import java.util.Set;
 import java.util.Map; 
-import java.util.HashMap; 
+import java.util.HashMap;
+import java.util.Iterator;
 
 import ast.*;
 
@@ -27,11 +28,13 @@ public abstract class SimState{
         } 
 
         Map<Declaration, Expression> res = new HashMap<Declaration, Expression>(); 
-        for(Declaration d : depVarSet){
+        Iterator<Declaration> it = depVarSet.iterator();
+        while(it.hasNext()){
+            Declaration d = it.next();
             if(this.environment.containsKey(d))
             {
                 res.put(d , this.environment.get(d)); 
-                depVarSet.remove(d); 
+                it.remove(); 
             }
         }
 

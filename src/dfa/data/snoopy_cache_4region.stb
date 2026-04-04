@@ -1,0 +1,792 @@
+statechart SnoopyCacheProtocol {
+
+  events {
+    step;
+  }
+
+  // Cache coherence states: W=1 (modified), R=2 (shared), X=3 (invalid)
+  c0 : int : local;
+  c1 : int : local;
+
+  // CPU request generation: choice0/choice1 cycle 1->2->3 for deterministic requests
+  choice0 : int : local;
+  choice1 : int : local;
+
+  // Current pending request from each cache
+  req0_type : int : local;  // 1=read, 2=write, 3=raw, 0=none
+  req1_type : int : local;
+
+  // Bus state
+  bus_free : int : local;   // 1=free, 0=in-use
+  bus_owner : int : local;  // 0=cache0, 1=cache1 (when bus_free=0)
+  bus_op_type : int : local; // 1=RD, 2=MX, 3=RX (the operation on bus)
+
+  // Arbiter round-robin
+  arbchoice : int : local;  // 0=prefer cache0, 1=prefer cache1
+
+  // Step counters for bounded execution
+  n0 : int : local;
+  n1 : int : local;
+
+  max_n0 : int : local;
+  max_n1 : int : local;
+
+  entry : {
+    c0 := 3;
+    c1 := 3;
+    choice0 := 1;
+    choice1 := 1;
+    req0_type := 0;
+    req1_type := 0;
+    bus_free := 1;
+    bus_owner := 0;
+    bus_op_type := 0;
+    arbchoice := 0;
+    n0 := 0;
+    n1 := 0;
+    max_n0 := 30;
+    max_n1 := 30;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  shell CacheSystem {
+    entry : {}
+    exit  : {}
+
+    // Region: Cache0
+    state Cache0 {
+      entry : {}
+      exit  : {}
+
+      state C0_IdleA { entry : {} exit : {} }
+      state C0_IdleB { entry : {} exit : {} }
+      state C0_WaitA { entry : {} exit : {} }
+      state C0_WaitB { entry : {} exit : {} }
+      state C0_Done  { entry : {} exit : {} }
+
+      // Generate request: choice0 cycles 1->2->3->1
+      transition t_c0_gen_read_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (choice0 = 1) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 1; choice0 := 2; }
+      }
+      transition t_c0_gen_read_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (choice0 = 1) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 1; choice0 := 2; }
+      }
+
+      transition t_c0_gen_write_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (choice0 = 2) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 2; choice0 := 3; }
+      }
+      transition t_c0_gen_write_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (choice0 = 2) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 2; choice0 := 3; }
+      }
+
+      transition t_c0_gen_raw_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (choice0 = 3) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 3; choice0 := 1; }
+      }
+      transition t_c0_gen_raw_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (choice0 = 3) && (req0_type = 0) && (n0 < max_n0);
+        action      : { req0_type := 3; choice0 := 1; }
+      }
+
+      // Handle cache hit (request satisfied locally)
+      transition t_c0_hit_read_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (req0_type = 1) && ((c0 = 1) || (c0 = 2)) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+      transition t_c0_hit_read_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (req0_type = 1) && ((c0 = 1) || (c0 = 2)) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+
+      transition t_c0_hit_write_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (req0_type = 2) && (c0 = 1) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+      transition t_c0_hit_write_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (req0_type = 2) && (c0 = 1) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+
+      transition t_c0_hit_raw_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (req0_type = 3) && (c0 = 1) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+      transition t_c0_hit_raw_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (req0_type = 3) && (c0 = 1) && (n0 < max_n0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+
+      // Miss: wait for bus (c0 = X means cache miss)
+      transition t_c0_miss_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_WaitA;
+        trigger     : step;
+        guard       : (req0_type > 0) && (c0 = 3) && (n0 < max_n0);
+        action      : {}
+      }
+      transition t_c0_miss_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_WaitB;
+        trigger     : step;
+        guard       : (req0_type > 0) && (c0 = 3) && (n0 < max_n0);
+        action      : {}
+      }
+
+      // Bus granted: wait for bus to complete
+      transition t_c0_bus_grant_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_WaitA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 1) && (bus_owner = 0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+      transition t_c0_bus_grant_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_WaitB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 1) && (bus_owner = 0);
+        action      : { req0_type := 0; n0 := n0 + 1; }
+      }
+
+      // Done
+      transition t_c0_done_A {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0);
+        action      : {}
+      }
+      transition t_c0_done_B {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache0.C0_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache0.C0_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0);
+        action      : {}
+      }
+    }
+
+    // Region: Cache1 
+    state Cache1 {
+      entry : {}
+      exit  : {}
+
+      state C1_IdleA { entry : {} exit : {} }
+      state C1_IdleB { entry : {} exit : {} }
+      state C1_WaitA { entry : {} exit : {} }
+      state C1_WaitB { entry : {} exit : {} }
+      state C1_Done  { entry : {} exit : {} }
+
+      // Generate request: choice1 cycles 1->2->3->1
+      transition t_c1_gen_read_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (choice1 = 1) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 1; choice1 := 2; }
+      }
+      transition t_c1_gen_read_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (choice1 = 1) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 1; choice1 := 2; }
+      }
+
+      transition t_c1_gen_write_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (choice1 = 2) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 2; choice1 := 3; }
+      }
+      transition t_c1_gen_write_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (choice1 = 2) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 2; choice1 := 3; }
+      }
+
+      transition t_c1_gen_raw_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (choice1 = 3) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 3; choice1 := 1; }
+      }
+      transition t_c1_gen_raw_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (choice1 = 3) && (req1_type = 0) && (n1 < max_n1);
+        action      : { req1_type := 3; choice1 := 1; }
+      }
+
+      // Handle cache hit
+      transition t_c1_hit_read_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (req1_type = 1) && ((c1 = 1) || (c1 = 2)) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+      transition t_c1_hit_read_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (req1_type = 1) && ((c1 = 1) || (c1 = 2)) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+
+      transition t_c1_hit_write_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (req1_type = 2) && (c1 = 1) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+      transition t_c1_hit_write_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (req1_type = 2) && (c1 = 1) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+
+      transition t_c1_hit_raw_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (req1_type = 3) && (c1 = 1) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+      transition t_c1_hit_raw_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (req1_type = 3) && (c1 = 1) && (n1 < max_n1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+
+      // Miss: wait for bus
+      transition t_c1_miss_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_WaitA;
+        trigger     : step;
+        guard       : (req1_type > 0) && (c1 = 3) && (n1 < max_n1);
+        action      : {}
+      }
+      transition t_c1_miss_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_WaitB;
+        trigger     : step;
+        guard       : (req1_type > 0) && (c1 = 3) && (n1 < max_n1);
+        action      : {}
+      }
+
+      // Bus granted
+      transition t_c1_bus_grant_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_WaitA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 1) && (bus_owner = 1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+      transition t_c1_bus_grant_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_WaitB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 1) && (bus_owner = 1);
+        action      : { req1_type := 0; n1 := n1 + 1; }
+      }
+
+      // Done
+      transition t_c1_done_A {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_Done;
+        trigger     : step;
+        guard       : (n1 = max_n1);
+        action      : {}
+      }
+      transition t_c1_done_B {
+        source      : SnoopyCacheProtocol.CacheSystem.Cache1.C1_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Cache1.C1_Done;
+        trigger     : step;
+        guard       : (n1 = max_n1);
+        action      : {}
+      }
+    }
+
+    // Region: Arbiter (grants bus to one cache at a time)
+
+    state Arbiter {
+      entry : {}
+      exit  : {}
+
+      state Arb_A    { entry : {} exit : {} }
+      state Arb_B    { entry : {} exit : {} }
+      state Arb_Done { entry : {} exit : {} }
+
+      // Only cache0 requesting
+      transition t_arb_g0_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type = 0) && (bus_free = 1);
+        action      : { bus_free := 0; bus_owner := 0; bus_op_type := req0_type; arbchoice := 1; }
+      }
+      transition t_arb_g0_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type = 0) && (bus_free = 1);
+        action      : { bus_free := 0; bus_owner := 0; bus_op_type := req0_type; arbchoice := 1; }
+      }
+
+      // Only cache1 requesting
+      transition t_arb_g1_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        trigger     : step;
+        guard       : (req1_type > 0) && (req0_type = 0) && (bus_free = 1);
+        action      : { bus_free := 0; bus_owner := 1; bus_op_type := req1_type; arbchoice := 0; }
+      }
+      transition t_arb_g1_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        trigger     : step;
+        guard       : (req1_type > 0) && (req0_type = 0) && (bus_free = 1);
+        action      : { bus_free := 0; bus_owner := 1; bus_op_type := req1_type; arbchoice := 0; }
+      }
+
+      // Both requesting, arbchoice=0: grant cache0
+      transition t_arb_gboth0_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type > 0) && (bus_free = 1) && (arbchoice = 0);
+        action      : { bus_free := 0; bus_owner := 0; bus_op_type := req0_type; arbchoice := 1; }
+      }
+      transition t_arb_gboth0_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type > 0) && (bus_free = 1) && (arbchoice = 0);
+        action      : { bus_free := 0; bus_owner := 0; bus_op_type := req0_type; arbchoice := 1; }
+      }
+
+      // Both requesting, arbchoice=1: grant cache1
+      transition t_arb_gboth1_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type > 0) && (bus_free = 1) && (arbchoice = 1);
+        action      : { bus_free := 0; bus_owner := 1; bus_op_type := req1_type; arbchoice := 0; }
+      }
+      transition t_arb_gboth1_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        trigger     : step;
+        guard       : (req0_type > 0) && (req1_type > 0) && (bus_free = 1) && (arbchoice = 1);
+        action      : { bus_free := 0; bus_owner := 1; bus_op_type := req1_type; arbchoice := 0; }
+      }
+
+      // Release bus after bus operation completes
+      transition t_arb_release_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_op_type = 0);
+        action      : { bus_free := 1; bus_owner := 0; }
+      }
+      transition t_arb_release_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_op_type = 0);
+        action      : { bus_free := 1; bus_owner := 0; }
+      }
+
+      // Arbiter done
+      transition t_arb_done_A {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_A;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0) && (n1 = max_n1) && (bus_free = 1) && (bus_op_type = 0);
+        action      : {}
+      }
+      transition t_arb_done_B {
+        source      : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_B;
+        destination : SnoopyCacheProtocol.CacheSystem.Arbiter.Arb_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0) && (n1 = max_n1) && (bus_free = 1) && (bus_op_type = 0);
+        action      : {}
+      }
+    }
+
+    // Region: Bus (executes operations atomically & snoops both caches)
+
+    state Bus {
+      entry : {}
+      exit  : {}
+
+      state Bus_IdleA { entry : {} exit : {} }
+      state Bus_IdleB { entry : {} exit : {} }
+      state Bus_Done  { entry : {} exit : {} }
+
+      // RD (read miss)
+      // Cache0 reads, c1=W: downgrade c1 to R
+      transition t_bus_rd_c0_c1W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 1);
+        action      : { c0 := 2; c1 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c0_c1W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 1);
+        action      : { c0 := 2; c1 := 2; bus_op_type := 0; }
+      }
+
+      // Cache0 reads, c1=R: no change needed (both already R)
+      transition t_bus_rd_c0_c1R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 2);
+        action      : { c0 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c0_c1R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 2);
+        action      : { c0 := 2; bus_op_type := 0; }
+      }
+
+      // Cache0 reads, c1=X: c0 becomes R, c1 unchanged
+      transition t_bus_rd_c0_c1X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 3);
+        action      : { c0 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c0_c1X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 1) && (c1 = 3);
+        action      : { c0 := 2; bus_op_type := 0; }
+      }
+
+      // Cache1 reads (symmetric to cache0)
+      transition t_bus_rd_c1_c0W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 1);
+        action      : { c1 := 2; c0 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c1_c0W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 1);
+        action      : { c1 := 2; c0 := 2; bus_op_type := 0; }
+      }
+
+      transition t_bus_rd_c1_c0R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 2);
+        action      : { c1 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c1_c0R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 2);
+        action      : { c1 := 2; bus_op_type := 0; }
+      }
+
+      transition t_bus_rd_c1_c0X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 3);
+        action      : { c1 := 2; bus_op_type := 0; }
+      }
+      transition t_bus_rd_c1_c0X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 1) && (c0 = 3);
+        action      : { c1 := 2; bus_op_type := 0; }
+      }
+
+      // MX (write miss)
+      // Cache0 writes: c0->W, snoop c1: W/R/X->X (invalidate)
+      transition t_bus_mx_c0_c1W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 1);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c0_c1W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 1);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_mx_c0_c1R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 2);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c0_c1R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 2);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_mx_c0_c1X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 3);
+        action      : { c0 := 1; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c0_c1X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 2) && (c1 = 3);
+        action      : { c0 := 1; bus_op_type := 0; }
+      }
+
+      // Cache1 writes
+      transition t_bus_mx_c1_c0W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 1);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c1_c0W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 1);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_mx_c1_c0R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 2);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c1_c0R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 2);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_mx_c1_c0X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 3);
+        action      : { c1 := 1; bus_op_type := 0; }
+      }
+      transition t_bus_mx_c1_c0X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 2) && (c0 = 3);
+        action      : { c1 := 1; bus_op_type := 0; }
+      }
+
+      // RX (raw/write-after-read miss)
+      // Same behavior as MX: c0/c1->W, other->X
+      transition t_bus_rx_c0_c1W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 1);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c0_c1W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 1);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_rx_c0_c1R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 2);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c0_c1R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 2);
+        action      : { c0 := 1; c1 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_rx_c0_c1X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 3);
+        action      : { c0 := 1; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c0_c1X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 0) && (bus_op_type = 3) && (c1 = 3);
+        action      : { c0 := 1; bus_op_type := 0; }
+      }
+
+      transition t_bus_rx_c1_c0W_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 1);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c1_c0W_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 1);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_rx_c1_c0R_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 2);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c1_c0R_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 2);
+        action      : { c1 := 1; c0 := 3; bus_op_type := 0; }
+      }
+
+      transition t_bus_rx_c1_c0X_AB {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 3);
+        action      : { c1 := 1; bus_op_type := 0; }
+      }
+      transition t_bus_rx_c1_c0X_BA {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        trigger     : step;
+        guard       : (bus_free = 0) && (bus_owner = 1) && (bus_op_type = 3) && (c0 = 3);
+        action      : { c1 := 1; bus_op_type := 0; }
+      }
+
+      // Bus done
+      transition t_bus_done_A {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleA;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0) && (n1 = max_n1) && (bus_free = 1) && (bus_op_type = 0);
+        action      : {}
+      }
+      transition t_bus_done_B {
+        source      : SnoopyCacheProtocol.CacheSystem.Bus.Bus_IdleB;
+        destination : SnoopyCacheProtocol.CacheSystem.Bus.Bus_Done;
+        trigger     : step;
+        guard       : (n0 = max_n0) && (n1 = max_n1) && (bus_free = 1) && (bus_op_type = 0);
+        action      : {}
+      }
+    }
+  }
+
+  transition t_start {
+    source      : SnoopyCacheProtocol.Init;
+    destination : SnoopyCacheProtocol.CacheSystem;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

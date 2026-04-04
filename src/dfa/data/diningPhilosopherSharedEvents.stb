@@ -1,0 +1,298 @@
+// Dining Philosophers Problem (DPP) - 5 Philosophers with SHARED EVENTS
+
+statechart dining {
+
+  events {
+    think;  // shared: all philosophers can get hungry
+    eat;    // shared: all hungry philosophers try to eat
+    done;   // shared: all eating philosophers finish
+  }
+
+  // Fork status: 0 = free, 1 = taken
+  fork0 : int : local;
+  fork1 : int : local;
+  fork2 : int : local;
+  fork3 : int : local;
+  fork4 : int : local;
+
+  entry : {
+    fork0 := 0;
+    fork1 := 0;
+    fork2 := 0;
+    fork3 := 0;
+    fork4 := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  // Shell System - all regions execute concurrently (orthogonal composition)
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // PHILOSOPHER 0
+    // Philo0 needs fork0 (left) and fork1 (right)
+    state Philo0 {
+      entry : {}
+      exit  : {}
+
+      state Thinking0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Hungry0 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Eating0 {
+        entry : {}
+        exit  : {}
+      }
+
+      transition t0_think_hungry {
+        source      : dining.System.Philo0.Thinking0;
+        destination : dining.System.Philo0.Hungry0;
+        trigger     : think;
+        guard       : true;
+        action      : {}
+      }
+
+      transition t0_hungry_eating {
+        source      : dining.System.Philo0.Hungry0;
+        destination : dining.System.Philo0.Eating0;
+        trigger     : eat;
+        guard       : (fork0 = 0) && (fork1 = 0);
+        action      : {
+          fork0 := 1;
+          fork1 := 1;
+        }
+      }
+
+      transition t0_eating_thinking {
+        source      : dining.System.Philo0.Eating0;
+        destination : dining.System.Philo0.Thinking0;
+        trigger     : done;
+        guard       : true;
+        action      : {
+          fork0 := 0;
+          fork1 := 0;
+        }
+      }
+    }
+
+    // PHILOSOPHER 1
+    // Philo1 needs fork1 (left) and fork2 (right)
+    state Philo1 {
+      entry : {}
+      exit  : {}
+
+      state Thinking1 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Hungry1 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Eating1 {
+        entry : {}
+        exit  : {}
+      }
+
+      transition t1_think_hungry {
+        source      : dining.System.Philo1.Thinking1;
+        destination : dining.System.Philo1.Hungry1;
+        trigger     : think;
+        guard       : true;
+        action      : {}
+      }
+
+      transition t1_hungry_eating {
+        source      : dining.System.Philo1.Hungry1;
+        destination : dining.System.Philo1.Eating1;
+        trigger     : eat;
+        guard       : (fork1 = 0) && (fork2 = 0);
+        action      : {
+          fork1 := 1;
+          fork2 := 1;
+        }
+      }
+
+      transition t1_eating_thinking {
+        source      : dining.System.Philo1.Eating1;
+        destination : dining.System.Philo1.Thinking1;
+        trigger     : done;
+        guard       : true;
+        action      : {
+          fork1 := 0;
+          fork2 := 0;
+        }
+      }
+    }
+
+    // PHILOSOPHER 2
+    // Philo2 needs fork2 (left) and fork3 (right)
+    state Philo2 {
+      entry : {}
+      exit  : {}
+
+      state Thinking2 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Hungry2 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Eating2 {
+        entry : {}
+        exit  : {}
+      }
+
+      transition t2_think_hungry {
+        source      : dining.System.Philo2.Thinking2;
+        destination : dining.System.Philo2.Hungry2;
+        trigger     : think;
+        guard       : true;
+        action      : {}
+      }
+
+      transition t2_hungry_eating {
+        source      : dining.System.Philo2.Hungry2;
+        destination : dining.System.Philo2.Eating2;
+        trigger     : eat;
+        guard       : (fork2 = 0) && (fork3 = 0);
+        action      : {
+          fork2 := 1;
+          fork3 := 1;
+        }
+      }
+
+      transition t2_eating_thinking {
+        source      : dining.System.Philo2.Eating2;
+        destination : dining.System.Philo2.Thinking2;
+        trigger     : done;
+        guard       : true;
+        action      : {
+          fork2 := 0;
+          fork3 := 0;
+        }
+      }
+    }
+
+    // PHILOSOPHER 3
+    // Philo3 needs fork3 (left) and fork4 (right)
+    state Philo3 {
+      entry : {}
+      exit  : {}
+
+      state Thinking3 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Hungry3 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Eating3 {
+        entry : {}
+        exit  : {}
+      }
+
+      transition t3_think_hungry {
+        source      : dining.System.Philo3.Thinking3;
+        destination : dining.System.Philo3.Hungry3;
+        trigger     : think;
+        guard       : true;
+        action      : {}
+      }
+
+      transition t3_hungry_eating {
+        source      : dining.System.Philo3.Hungry3;
+        destination : dining.System.Philo3.Eating3;
+        trigger     : eat;
+        guard       : (fork3 = 0) && (fork4 = 0);
+        action      : {
+          fork3 := 1;
+          fork4 := 1;
+        }
+      }
+
+      transition t3_eating_thinking {
+        source      : dining.System.Philo3.Eating3;
+        destination : dining.System.Philo3.Thinking3;
+        trigger     : done;
+        guard       : true;
+        action      : {
+          fork3 := 0;
+          fork4 := 0;
+        }
+      }
+    }
+/*
+    // PHILOSOPHER 4
+    // Philo4 needs fork4 (left) and fork0 (right) -- closes the circle
+    state Philo4 {
+      entry : {}
+      exit  : {}
+
+      state Thinking4 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Hungry4 {
+        entry : {}
+        exit  : {}
+      }
+
+      state Eating4 {
+        entry : {}
+        exit  : {}
+      }
+
+      transition t4_think_hungry {
+        source      : dining.System.Philo4.Thinking4;
+        destination : dining.System.Philo4.Hungry4;
+        trigger     : think;
+        guard       : true;
+        action      : {}
+      }
+
+      transition t4_hungry_eating {
+        source      : dining.System.Philo4.Hungry4;
+        destination : dining.System.Philo4.Eating4;
+        trigger     : eat;
+        guard       : (fork4 = 0) && (fork0 = 0);
+        action      : {
+          fork4 := 1;
+          fork0 := 1;
+        }
+      }
+
+      transition t4_eating_thinking {
+        source      : dining.System.Philo4.Eating4;
+        destination : dining.System.Philo4.Thinking4;
+        trigger     : done;
+        guard       : true;
+        action      : {
+          fork4 := 0;
+          fork0 := 0;
+        }
+      }
+    }
+*/
+  }
+}

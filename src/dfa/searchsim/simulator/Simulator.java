@@ -299,8 +299,19 @@ public class Simulator {
 
         System.out.println("==== Exhaustive Exploration Complete ===");
         System.out.println("Total unique external states explored: " + this.externStateSet.size());
+        
+        // Count dead states (external states with no outgoing transitions)
+        int deadStateCount = 0;
+        Set<SimState> leafNodes = this.controlFlowGraph.getLeafNodes();
+        for(SimState node : leafNodes) {
+            if(node instanceof ExternalState) {
+                deadStateCount++;
+            }
+        }
+        
         this.controlFlowGraph.toDotScript();
-        System.out.println("Leaf nodes: " + this.controlFlowGraph.getLeafNodes().size());
+        System.out.println("Leaf nodes: " + leafNodes.size());
+        System.out.println("Total dead states (no outgoing transitions): " + deadStateCount);
     }
 
     //explore a single event at a given external state

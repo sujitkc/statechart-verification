@@ -1,0 +1,223 @@
+// =============================================================================
+// Producer-Consumer with Bounded Buffer - 1 Producer, 1 Consumer
+// =============================================================================
+//
+// Reference: Dijkstra, E.W. (1965). "Cooperating Sequential Processes".
+//            Technical Report EWD-123, Technological University, Eindhoven.
+//            Also: Tanenbaum, A.S. (2014). "Modern Operating Systems",
+//            4th ed., Section 2.3.5.
+//
+// PROBLEM DESCRIPTION:
+//   A producer generates items and places them into a bounded buffer.
+//   A consumer removes items from the buffer and processes them.
+//   The buffer has a fixed capacity (BUF_MAX). The producer must wait
+//   when the buffer is full, and the consumer must wait when the buffer
+//   is empty. This is the classic synchronization problem that motivated
+//   the invention of semaphores by Dijkstra (1965).
+//
+// MODELLING APPROACH:
+//   - Buffer capacity: 2 (variable 'buf', range 0..2)
+//   - Producer produces exactly 2 items, then Done
+//   - Consumer consumes exactly 2 items, then Done
+//   - Phase variables track progress:
+//       pp (producer phase): 0=ready to produce, 1=produced (buf++), 2=done
+//       cp (consumer phase): 0=ready to consume, 1=consumed (buf--), 2=done
+//   - Counting variables:
+//       pcnt: items produced so far (0..2)
+//       ccnt: items consumed so far (0..2)
+//   - buf: current buffer occupancy (0..2)
+//
+// GUARDS (mutual exclusion):
+//   Producer: can produce when buf < 2 AND pcnt < 2 AND pp = 0
+//   Consumer: can consume when buf > 0 AND ccnt < 2 AND cp = 0
+//   These are naturally disjoint per-region (different source states).
+//
+// STRUCTURE:
+//   producerConsumer
+//   + state Init
+//   + shell System
+//       + state Producer { ProdReadyA/B, ProdDoneA/B, ProdFinished }
+//       + state Consumer { ConsReadyA/B, ConsDoneA/B, ConsFinished }
+//
+// =============================================================================
+
+statechart producerConsumer {
+
+  events {
+    step;
+  }
+
+  // Buffer occupancy: 0..2
+  buf : int : local;
+
+  // Producer: pp=0 ready, pp=1 just produced, pp=2 finished all
+  pp : int : local;
+  // Consumer: cp=0 ready, cp=1 just consumed, cp=2 finished all
+  cp : int : local;
+
+  // Counters: how many produced/consumed so far
+  pcnt : int : local;
+  ccnt : int : local;
+
+  entry : {
+    buf  := 0;
+    pp   := 0;
+    cp   := 0;
+    pcnt := 0;
+    ccnt := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // -----------------------------------------------------------------------
+    // PRODUCER: produces 2 items into the buffer
+    // -----------------------------------------------------------------------
+    state Producer {
+      entry : {}
+      exit  : {}
+
+      state ProdReadyA    { entry : {} exit : {} }
+      state ProdReadyB    { entry : {} exit : {} }
+      state ProdDoneA     { entry : {} exit : {} }
+      state ProdDoneB     { entry : {} exit : {} }
+      state ProdFinished  { entry : {} exit : {} }
+
+      // Ready -> Done: produce if buffer not full and not finished
+      // guard: pp=0 AND buf < 2 AND pcnt < 2
+      transition tp_produce_A {
+        source      : producerConsumer.System.Producer.ProdReadyA;
+        destination : producerConsumer.System.Producer.ProdDoneB;
+        trigger     : step;
+        guard       : (pp = 0) && (buf < 2) && (pcnt < 2);
+        action      : { buf := buf + 1; pcnt := pcnt + 1; pp := 1; }
+      }
+      transition tp_produce_B {
+        source      : producerConsumer.System.Producer.ProdReadyB;
+        destination : producerConsumer.System.Producer.ProdDoneA;
+        trigger     : step;
+        guard       : (pp = 0) && (buf < 2) && (pcnt < 2);
+        action      : { buf := buf + 1; pcnt := pcnt + 1; pp := 1; }
+      }
+
+      // Done -> Ready: reset phase if more to produce
+      // guard: pp=1 AND pcnt < 2
+      transition tp_reset_A {
+        source      : producerConsumer.System.Producer.ProdDoneA;
+        destination : producerConsumer.System.Producer.ProdReadyB;
+        trigger     : step;
+        guard       : (pp = 1) && (pcnt < 2);
+        action      : { pp := 0; }
+      }
+      transition tp_reset_B {
+        source      : producerConsumer.System.Producer.ProdDoneB;
+        destination : producerConsumer.System.Producer.ProdReadyA;
+        trigger     : step;
+        guard       : (pp = 1) && (pcnt < 2);
+        action      : { pp := 0; }
+      }
+
+      // Done -> Finished: all items produced
+      // guard: pp=1 AND pcnt >= 2
+      transition tp_finish_A {
+        source      : producerConsumer.System.Producer.ProdDoneA;
+        destination : producerConsumer.System.Producer.ProdFinished;
+        trigger     : step;
+        guard       : (pp = 1) && (pcnt = 2);
+        action      : { pp := 2; }
+      }
+      transition tp_finish_B {
+        source      : producerConsumer.System.Producer.ProdDoneB;
+        destination : producerConsumer.System.Producer.ProdFinished;
+        trigger     : step;
+        guard       : (pp = 1) && (pcnt = 2);
+        action      : { pp := 2; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // CONSUMER: consumes 2 items from the buffer
+    // -----------------------------------------------------------------------
+    state Consumer {
+      entry : {}
+      exit  : {}
+
+      state ConsReadyA    { entry : {} exit : {} }
+      state ConsReadyB    { entry : {} exit : {} }
+      state ConsDoneA     { entry : {} exit : {} }
+      state ConsDoneB     { entry : {} exit : {} }
+      state ConsFinished  { entry : {} exit : {} }
+
+      // Ready -> Done: consume if buffer not empty and not finished
+      // guard: cp=0 AND buf > 0 AND ccnt < 2
+      transition tc_consume_A {
+        source      : producerConsumer.System.Consumer.ConsReadyA;
+        destination : producerConsumer.System.Consumer.ConsDoneB;
+        trigger     : step;
+        guard       : (cp = 0) && (buf > 0) && (ccnt < 2);
+        action      : { buf := buf - 1; ccnt := ccnt + 1; cp := 1; }
+      }
+      transition tc_consume_B {
+        source      : producerConsumer.System.Consumer.ConsReadyB;
+        destination : producerConsumer.System.Consumer.ConsDoneA;
+        trigger     : step;
+        guard       : (cp = 0) && (buf > 0) && (ccnt < 2);
+        action      : { buf := buf - 1; ccnt := ccnt + 1; cp := 1; }
+      }
+
+      // Done -> Ready: reset phase if more to consume
+      // guard: cp=1 AND ccnt < 2
+      transition tc_reset_A {
+        source      : producerConsumer.System.Consumer.ConsDoneA;
+        destination : producerConsumer.System.Consumer.ConsReadyB;
+        trigger     : step;
+        guard       : (cp = 1) && (ccnt < 2);
+        action      : { cp := 0; }
+      }
+      transition tc_reset_B {
+        source      : producerConsumer.System.Consumer.ConsDoneB;
+        destination : producerConsumer.System.Consumer.ConsReadyA;
+        trigger     : step;
+        guard       : (cp = 1) && (ccnt < 2);
+        action      : { cp := 0; }
+      }
+
+      // Done -> Finished: all items consumed
+      // guard: cp=1 AND ccnt >= 2
+      transition tc_finish_A {
+        source      : producerConsumer.System.Consumer.ConsDoneA;
+        destination : producerConsumer.System.Consumer.ConsFinished;
+        trigger     : step;
+        guard       : (cp = 1) && (ccnt = 2);
+        action      : { cp := 2; }
+      }
+      transition tc_finish_B {
+        source      : producerConsumer.System.Consumer.ConsDoneB;
+        destination : producerConsumer.System.Consumer.ConsFinished;
+        trigger     : step;
+        guard       : (cp = 1) && (ccnt = 2);
+        action      : { cp := 2; }
+      }
+    }
+  }
+
+  transition t_start {
+    source      : producerConsumer.Init;
+    destination : producerConsumer.System;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}

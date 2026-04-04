@@ -1,0 +1,294 @@
+// =============================================================================
+// Peterson's Mutual Exclusion Algorithm - 2 Processes
+// =============================================================================
+//
+// Reference: Peterson, G.L. (1981). "Myths About the Mutual Exclusion Problem".
+//            Information Processing Letters, 12(3):115-116.
+//
+// ALGORITHM DESCRIPTION:
+//   Two processes (P0 and P1) compete for access to a critical section.
+//   Peterson's algorithm uses two flag variables and a turn variable:
+//     - flag0, flag1: process i wants to enter the critical section
+//     - turn: whose turn it is to wait (the "polite" variable)
+//
+//   Process i:
+//     1. Set flag_i = 1          (I want to enter)
+//     2. Set turn = i            (I yield to the other)
+//     3. Wait until flag_j = 0   (other doesn't want in)
+//                OR turn != i    (it's my turn after all)
+//     4. Enter critical section
+//     5. Set flag_i = 0          (I'm done)
+//
+// PROPERTIES VERIFIED:
+//   - Mutual exclusion: P0 and P1 are never both in the critical section
+//     (enforced by guard: cannot enter CS if other's flag=1 AND turn=self)
+//   - Deadlock freedom: at least one process can always make progress
+//   - Bounded waiting: each process enters CS within bounded steps
+//   - Termination: both processes complete one CS access then enter Done
+//
+// MODELLING APPROACH:
+//   Each process is a concurrent region inside a shell.
+//   Process phases (controlled by ph0/ph1):
+//     0: idle (not interested)
+//     1: flag raised (wants to enter)
+//     2: turn set (yielding)
+//     3: in critical section
+//     4: done (exited CS, flag lowered)
+//
+//   The guard for entering CS checks Peterson's condition:
+//     (flag_other = 0) || (turn != self)
+//   i.e., either the other process isn't interested, or it's our turn.
+//
+// STRUCTURE:
+//   petersonMutex
+//   + shell System
+//       + state Proc0  { P0_IdleA/B, P0_FlagA/B, P0_TurnA/B,
+//                         P0_CSA/B, P0_Done }
+//       + state Proc1  { P1_IdleA/B, P1_FlagA/B, P1_TurnA/B,
+//                         P1_CSA/B, P1_Done }
+//
+// =============================================================================
+
+statechart petersonMutex {
+
+  events {
+    step;
+  }
+
+  // Peterson's shared variables
+  flag0 : int : local;     // Process 0 wants to enter CS
+  flag1 : int : local;     // Process 1 wants to enter CS
+  turn  : int : local;     // Whose turn to defer (0 or 1)
+
+  // Process phases: 0=idle, 1=flag raised, 2=turn set, 3=in CS, 4=done
+  ph0 : int : local;
+  ph1 : int : local;
+
+  entry : {
+    flag0 := 0;
+    flag1 := 0;
+    turn  := 0;
+    ph0   := 0;
+    ph1   := 0;
+  }
+
+  exit : {}
+
+  functions {
+    input<||>() : int;
+  }
+
+  state Init {
+    entry : {}
+    exit  : {}
+  }
+
+  shell System {
+    entry : {}
+    exit  : {}
+
+    // -----------------------------------------------------------------------
+    // PROCESS 0
+    // -----------------------------------------------------------------------
+    state Proc0 {
+      entry : {}
+      exit  : {}
+
+      state P0_IdleA  { entry : {} exit : {} }
+      state P0_IdleB  { entry : {} exit : {} }
+      state P0_FlagA  { entry : {} exit : {} }
+      state P0_FlagB  { entry : {} exit : {} }
+      state P0_TurnA  { entry : {} exit : {} }
+      state P0_TurnB  { entry : {} exit : {} }
+      state P0_CSA    { entry : {} exit : {} }
+      state P0_CSB    { entry : {} exit : {} }
+      state P0_Done   { entry : {} exit : {} }
+
+      // Step 1: Idle -> Flag: raise flag0
+      transition t0_idle_A {
+        source      : petersonMutex.System.Proc0.P0_IdleA;
+        destination : petersonMutex.System.Proc0.P0_FlagB;
+        trigger     : step;
+        guard       : (ph0 = 0);
+        action      : { flag0 := 1; ph0 := 1; }
+      }
+      transition t0_idle_B {
+        source      : petersonMutex.System.Proc0.P0_IdleB;
+        destination : petersonMutex.System.Proc0.P0_FlagA;
+        trigger     : step;
+        guard       : (ph0 = 0);
+        action      : { flag0 := 1; ph0 := 1; }
+      }
+
+      // Step 2: Flag -> Turn: set turn = 0 (yield to other)
+      transition t0_flag_A {
+        source      : petersonMutex.System.Proc0.P0_FlagA;
+        destination : petersonMutex.System.Proc0.P0_TurnB;
+        trigger     : step;
+        guard       : (ph0 = 1);
+        action      : { turn := 0; ph0 := 2; }
+      }
+      transition t0_flag_B {
+        source      : petersonMutex.System.Proc0.P0_FlagB;
+        destination : petersonMutex.System.Proc0.P0_TurnA;
+        trigger     : step;
+        guard       : (ph0 = 1);
+        action      : { turn := 0; ph0 := 2; }
+      }
+
+      // Step 3: Turn -> CS: enter CS when flag1=0 OR turn!=0
+      // (a) Other not interested (flag1=0)
+      transition t0_enter_noflag_A {
+        source      : petersonMutex.System.Proc0.P0_TurnA;
+        destination : petersonMutex.System.Proc0.P0_CSB;
+        trigger     : step;
+        guard       : (ph0 = 2) && (flag1 = 0);
+        action      : { ph0 := 3; }
+      }
+      transition t0_enter_noflag_B {
+        source      : petersonMutex.System.Proc0.P0_TurnB;
+        destination : petersonMutex.System.Proc0.P0_CSA;
+        trigger     : step;
+        guard       : (ph0 = 2) && (flag1 = 0);
+        action      : { ph0 := 3; }
+      }
+      // (b) It's P0's turn (turn != 0, i.e., turn=1 means P1 yielded)
+      transition t0_enter_turn_A {
+        source      : petersonMutex.System.Proc0.P0_TurnA;
+        destination : petersonMutex.System.Proc0.P0_CSB;
+        trigger     : step;
+        guard       : (ph0 = 2) && (flag1 = 1) && (turn = 1);
+        action      : { ph0 := 3; }
+      }
+      transition t0_enter_turn_B {
+        source      : petersonMutex.System.Proc0.P0_TurnB;
+        destination : petersonMutex.System.Proc0.P0_CSA;
+        trigger     : step;
+        guard       : (ph0 = 2) && (flag1 = 1) && (turn = 1);
+        action      : { ph0 := 3; }
+      }
+
+      // Step 4: CS -> Done: exit CS, lower flag
+      transition t0_exit_A {
+        source      : petersonMutex.System.Proc0.P0_CSA;
+        destination : petersonMutex.System.Proc0.P0_Done;
+        trigger     : step;
+        guard       : (ph0 = 3);
+        action      : { flag0 := 0; ph0 := 4; }
+      }
+      transition t0_exit_B {
+        source      : petersonMutex.System.Proc0.P0_CSB;
+        destination : petersonMutex.System.Proc0.P0_Done;
+        trigger     : step;
+        guard       : (ph0 = 3);
+        action      : { flag0 := 0; ph0 := 4; }
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // PROCESS 1
+    // -----------------------------------------------------------------------
+    state Proc1 {
+      entry : {}
+      exit  : {}
+
+      state P1_IdleA  { entry : {} exit : {} }
+      state P1_IdleB  { entry : {} exit : {} }
+      state P1_FlagA  { entry : {} exit : {} }
+      state P1_FlagB  { entry : {} exit : {} }
+      state P1_TurnA  { entry : {} exit : {} }
+      state P1_TurnB  { entry : {} exit : {} }
+      state P1_CSA    { entry : {} exit : {} }
+      state P1_CSB    { entry : {} exit : {} }
+      state P1_Done   { entry : {} exit : {} }
+
+      // Step 1: Idle -> Flag: raise flag1
+      transition t1_idle_A {
+        source      : petersonMutex.System.Proc1.P1_IdleA;
+        destination : petersonMutex.System.Proc1.P1_FlagB;
+        trigger     : step;
+        guard       : (ph1 = 0);
+        action      : { flag1 := 1; ph1 := 1; }
+      }
+      transition t1_idle_B {
+        source      : petersonMutex.System.Proc1.P1_IdleB;
+        destination : petersonMutex.System.Proc1.P1_FlagA;
+        trigger     : step;
+        guard       : (ph1 = 0);
+        action      : { flag1 := 1; ph1 := 1; }
+      }
+
+      // Step 2: Flag -> Turn: set turn = 1 (yield to other)
+      transition t1_flag_A {
+        source      : petersonMutex.System.Proc1.P1_FlagA;
+        destination : petersonMutex.System.Proc1.P1_TurnB;
+        trigger     : step;
+        guard       : (ph1 = 1);
+        action      : { turn := 1; ph1 := 2; }
+      }
+      transition t1_flag_B {
+        source      : petersonMutex.System.Proc1.P1_FlagB;
+        destination : petersonMutex.System.Proc1.P1_TurnA;
+        trigger     : step;
+        guard       : (ph1 = 1);
+        action      : { turn := 1; ph1 := 2; }
+      }
+
+      // Step 3: Turn -> CS: enter CS when flag0=0 OR turn!=1
+      // (a) Other not interested (flag0=0)
+      transition t1_enter_noflag_A {
+        source      : petersonMutex.System.Proc1.P1_TurnA;
+        destination : petersonMutex.System.Proc1.P1_CSB;
+        trigger     : step;
+        guard       : (ph1 = 2) && (flag0 = 0);
+        action      : { ph1 := 3; }
+      }
+      transition t1_enter_noflag_B {
+        source      : petersonMutex.System.Proc1.P1_TurnB;
+        destination : petersonMutex.System.Proc1.P1_CSA;
+        trigger     : step;
+        guard       : (ph1 = 2) && (flag0 = 0);
+        action      : { ph1 := 3; }
+      }
+      // (b) It's P1's turn (turn != 1, i.e., turn=0 means P0 yielded)
+      transition t1_enter_turn_A {
+        source      : petersonMutex.System.Proc1.P1_TurnA;
+        destination : petersonMutex.System.Proc1.P1_CSB;
+        trigger     : step;
+        guard       : (ph1 = 2) && (flag0 = 1) && (turn = 0);
+        action      : { ph1 := 3; }
+      }
+      transition t1_enter_turn_B {
+        source      : petersonMutex.System.Proc1.P1_TurnB;
+        destination : petersonMutex.System.Proc1.P1_CSA;
+        trigger     : step;
+        guard       : (ph1 = 2) && (flag0 = 1) && (turn = 0);
+        action      : { ph1 := 3; }
+      }
+
+      // Step 4: CS -> Done: exit CS, lower flag
+      transition t1_exit_A {
+        source      : petersonMutex.System.Proc1.P1_CSA;
+        destination : petersonMutex.System.Proc1.P1_Done;
+        trigger     : step;
+        guard       : (ph1 = 3);
+        action      : { flag1 := 0; ph1 := 4; }
+      }
+      transition t1_exit_B {
+        source      : petersonMutex.System.Proc1.P1_CSB;
+        destination : petersonMutex.System.Proc1.P1_Done;
+        trigger     : step;
+        guard       : (ph1 = 3);
+        action      : { flag1 := 0; ph1 := 4; }
+      }
+    }
+  }
+
+  transition t_start {
+    source      : petersonMutex.Init;
+    destination : petersonMutex.System;
+    trigger     : step;
+    guard       : true;
+    action      : {}
+  }
+}
