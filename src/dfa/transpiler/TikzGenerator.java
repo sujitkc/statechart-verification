@@ -1,20 +1,26 @@
 package transpiler;
 
+import java.util.Map;
+
 import ast.*;
 import transpiler.TikzVisitor;
+import layout.LayoutEngine;
+import layout.LayoutNode;
 
 public class TikzGenerator {
 
     private final Statechart statechart;
     private final StringBuilder tikzCode;
-
+    private final Map<State, LayoutNode> nodeCoordinates;
 
     public TikzGenerator(Statechart statechart) {
 
         this.statechart = statechart;
         this.tikzCode = new StringBuilder();
-    }
 
+        LayoutEngine engine = new LayoutEngine();
+        this.nodeCoordinates = engine.calculateCoordinates(this.statechart);
+    }
 
     public String generate() {
 
@@ -47,7 +53,20 @@ public class TikzGenerator {
     private void generateNodes(State current) {
 
         String nodeID = current.getFullName().replace(".", "_");
-        this.tikzCode.append("\t\t\\node[state] (" + nodeID + ") {" + current.name + "};\n");
+        LayoutNode mathNode = this.nodeCoordinates.get(current);
+
+        int yCoordinate;
+        int xCoordinate;
+        
+        if (mathNode != null) {
+            yCoordinate = -(mathNode.layer * 3);
+            xCoordinate = mathNode.x;
+        } else {
+            yCoordinate = 0;
+            xCoordinate = 0;
+        }
+        
+        this.tikzCode.append("\t\t\\node[state] (" + nodeID + ") at (" + xCoordinate + ", " + yCoordinate + ") {" + current.name + "};\n");
 
         if (current.states != null) {
 
