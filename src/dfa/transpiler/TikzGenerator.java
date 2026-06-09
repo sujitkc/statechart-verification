@@ -54,24 +54,35 @@ public class TikzGenerator {
 
         String nodeID = current.getFullName().replace(".", "_");
         LayoutNode mathNode = this.nodeCoordinates.get(current);
-
-        int yCoordinate;
-        int xCoordinate;
+        
+        int xCoordinate = 0;
+        int yCoordinate = 0;
+        int boxWidth = 4;
+        int boxHeight = 3;
         
         if (mathNode != null) {
-            yCoordinate = -(mathNode.layer * 3);
-            xCoordinate = mathNode.x;
-        } else {
-            yCoordinate = 0;
-            xCoordinate = 0;
+            LayoutNode curr = mathNode;
+            while (curr != null && curr.originalState != null) {
+                xCoordinate += curr.x;
+                yCoordinate -= curr.y;
+                
+                if (curr.parent != null && curr.parent.originalState != null) {
+                    xCoordinate += 1;
+                    yCoordinate -= 1;
+                }
+                curr = curr.parent;
+            }
+            
+            boxWidth = mathNode.width;
+            boxHeight = mathNode.height;
         }
-        
-        this.tikzCode.append("\t\t\\node[state] (" + nodeID + ") at (" + xCoordinate + ", " + yCoordinate + ") {" + current.name + "};\n");
+
+        this.tikzCode.append("\t\t\\node[draw, rectangle, rounded corners, minimum width=" + boxWidth + "cm, minimum height=" + boxHeight + "cm, anchor=north west, label={[anchor=north west] north west:" + current.name + "}] (" + nodeID + ") at (" + xCoordinate + ", " + yCoordinate + ") {};\n");
 
         if (current.states != null) {
-
-            for (State substate : current.states)
+            for (State substate : current.states) {
                 generateNodes(substate);
+            }
         }
     }
 
@@ -127,8 +138,3 @@ public class TikzGenerator {
         }
     }
 }
-
-
-
-
-

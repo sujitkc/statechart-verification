@@ -4,20 +4,25 @@ import ast.Statechart;
 import ast.State;
 import ast.Transition;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class LayoutEngine {
 
-    public List<Transition> flippedEdges = new ArrayList<>();
     public Map<State, LayoutNode> layoutNodes = new HashMap<>();
 
     public Map<State, LayoutNode> calculateCoordinates(Statechart statechart) {
         layoutNodes.clear();
         
-        for (State s : statechart.getAllSubstates()) {
-            layoutNodes.put(s, new LayoutNode(s));
+        LayoutNode rootNode = new LayoutNode(statechart); 
+        layoutNodes.put(statechart, rootNode);
+        if (statechart.states != null) {
+            for (State s : statechart.states) {
+                LayoutNode childNode = buildHierarchy(s, rootNode);
+                rootNode.children.add(childNode);
+            }
         }
         
         if (statechart.transitions != null) {
@@ -35,26 +40,61 @@ public class LayoutEngine {
             }
         }
         
-        List<LayoutNode> nodeList = new ArrayList<>(layoutNodes.values());
-        
-        breakCycles(nodeList, statechart);
-        assignLayers(nodeList);
-        calculateXCoordinates(nodeList);
+        processHierarchy(rootNode);
         return layoutNodes;
     }
 
-    private void updateNeighbours(LayoutNode node) {
-        node.removed = true;
-        for (LayoutNode dest : node.outgoingNodes) {
-            if (!dest.removed) dest.inDegree--;
+    private LayoutNode buildHierarchy(State currentState, LayoutNode parentNode) {
+        LayoutNode node = new LayoutNode(currentState);
+        node.parent = parentNode;
+        layoutNodes.put(currentState, node);
+
+        if (currentState.states != null) {
+            for (State childState : currentState.states) {
+                LayoutNode childNode = buildHierarchy(childState, node);
+                node.children.add(childNode);
+            }
         }
-        for (LayoutNode source : node.incomingNodes) {
-            if (!source.removed) source.outDegree--;
+        return node;
+    }
+
+    private void processHierarchy(LayoutNode parent) {
+        for (LayoutNode child : parent.children) {
+            if (!child.children.isEmpty()) {
+                processHierarchy(child);
+            }
+        }
+
+        if (!parent.children.isEmpty()) {
+            
+            breakCycles(parent.children);
+            assignLayers(parent.children);
+            reduceCrossings(parent.children);
+            
+            calculateYCoordinates(parent.children);
+            calculateXCoordinates(parent.children);
+            
+            int maxWidth = 0;
+            int maxHeight = 0;
+            
+            for (LayoutNode child : parent.children) {
+                int childRightEdge = child.x + child.width;
+                if (childRightEdge > maxWidth) {
+                    maxWidth = childRightEdge;
+                }
+                
+                int childBottomEdge = child.y + child.height; 
+                if (childBottomEdge > maxHeight) {
+                    maxHeight = childBottomEdge;
+                }
+            }
+            
+            parent.width = maxWidth + 2;
+            parent.height = maxHeight + 2;
         }
     }
 
-    // 1: Cycle Breaking
-    private void breakCycles(List<LayoutNode> nodes, Statechart statechart) {
+    private void breakCycles(List<LayoutNode> nodes) {
         int left = 1;
         int right = nodes.size();
         int remaining = nodes.size();
@@ -101,7 +141,16 @@ public class LayoutEngine {
         }
     }
 
-    // 2: Layer Assignment (Y-Coordinate grouping)
+    private void updateNeighbours(LayoutNode node) {
+        node.removed = true;
+        for (LayoutNode dest : node.outgoingNodes) {
+            if (!dest.removed) dest.inDegree--;
+        }
+        for (LayoutNode source : node.incomingNodes) {
+            if (!source.removed) source.outDegree--;
+        }
+    }
+
     private void assignLayers(List<LayoutNode> nodes) {
         for (LayoutNode node : nodes) {
             node.layer = 0; 
@@ -112,7 +161,7 @@ public class LayoutEngine {
             changed = false;
             for (LayoutNode source : nodes) {
                 for (LayoutNode dest : source.outgoingNodes) {
-                    if (source.mark < dest.mark) {
+                    if (nodes.contains(dest) && source.mark < dest.mark) {
                         if (dest.layer < source.layer + 1) {
                             dest.layer = source.layer + 1;
                             changed = true;
@@ -121,11 +170,41 @@ public class LayoutEngine {
                 }
             }
         }
-        System.out.println("Phase 2 Complete");
     }
 
-    // 3 & 4: Vertex Ordering and X-Coordinate Assignment
-    public void calculateXCoordinates(List<LayoutNode> nodes) {
+    // Phase 3 - Crossing Reduction (The Barycenter Method)
+    private void reduceCrossings(List<LayoutNode> nodes) {
+        Map<Integer, List<LayoutNode>> layers = new HashMap<>();
+        int maxLayer = 0;
+        
+        for (LayoutNode node : nodes) {
+            layers.putIfAbsent(node.layer, new ArrayList<>());
+            layers.get(node.layer).add(node);
+            if (node.layer > maxLayer) maxLayer = node.layer;
+        }
+
+        for (int i = 1; i <= maxLayer; i++) {
+            List<LayoutNode> currentLayer = layers.get(i);
+            if (currentLayer == null) continue;
+
+            for (LayoutNode node : currentLayer) {
+                double sum = 0;
+                int count = 0;
+                for (LayoutNode parentNode : node.incomingNodes) {
+                    if (nodes.contains(parentNode) && parentNode.layer == i - 1) {
+                        sum += parentNode.x; 
+                        count++;
+                    }
+                }
+                node.barycenter = (count == 0) ? 0 : (sum / count);
+            }
+
+            currentLayer.sort((a, b) -> Double.compare(a.barycenter, b.barycenter));
+        }
+    }
+
+    // Phase 4 - Coordinate Assignment
+    private void calculateXCoordinates(List<LayoutNode> nodes) {
         Map<Integer, List<LayoutNode>> rows = new HashMap<>();
         for (LayoutNode node : nodes) {
             rows.putIfAbsent(node.layer, new ArrayList<>());
@@ -138,42 +217,33 @@ public class LayoutEngine {
             int currentX = 0; 
             for (LayoutNode node : nodesInRow) {
                 node.x = currentX;
-                currentX += 4; 
             }
         }
-        
-        System.out.println("Phase 3 & 4 Complete");
     }
 
-    // testing
-    public static void main(String[] args) {
-        System.out.println("local testing");
-        
-        LayoutNode nodeA = new LayoutNode(null);
-        LayoutNode nodeB = new LayoutNode(null);
-        LayoutNode nodeC = new LayoutNode(null);
-        
-        nodeA.outDegree = 1; nodeA.inDegree = 1;
-        nodeA.outgoingNodes.add(nodeB); nodeA.incomingNodes.add(nodeC);
-        
-        nodeB.outDegree = 1; nodeB.inDegree = 1;
-        nodeB.outgoingNodes.add(nodeC); nodeB.incomingNodes.add(nodeA);
-        
-        nodeC.outDegree = 1; nodeC.inDegree = 1;
-        nodeC.outgoingNodes.add(nodeA); nodeC.incomingNodes.add(nodeB);
-        
-        List<LayoutNode> fakeGraph = new ArrayList<>();
-        fakeGraph.add(nodeA); fakeGraph.add(nodeB); fakeGraph.add(nodeC);
-        
-        LayoutEngine engine = new LayoutEngine();
-        
-        engine.breakCycles(fakeGraph, null);
-        engine.assignLayers(fakeGraph);
-        engine.calculateXCoordinates(fakeGraph);
-        
-        System.out.println("(X, Y):");
-        System.out.println("Node A: (" + nodeA.x + ", " + -(nodeA.layer * 3) + ")"); 
-        System.out.println("Node B: (" + nodeB.x + ", " + -(nodeB.layer * 3) + ")"); 
-        System.out.println("Node C: (" + nodeC.x + ", " + -(nodeC.layer * 3) + ")"); 
+    // Phase 2.5 - Dynamic Y-Coordinate Assignment
+    private void calculateYCoordinates(List<LayoutNode> nodes) {
+        Map<Integer, List<LayoutNode>> rows = new HashMap<>();
+        int maxLayer = 0;
+        for (LayoutNode node : nodes) {
+            rows.putIfAbsent(node.layer, new ArrayList<>());
+            rows.get(node.layer).add(node);
+            if (node.layer > maxLayer) maxLayer = node.layer;
+        }
+
+        int currentY = 0;
+        for (int i = 0; i <= maxLayer; i++) {
+            List<LayoutNode> row = rows.get(i);
+            if (row == null) continue;
+
+            int tallestInRow = 0;
+            for (LayoutNode node : row) {
+                node.y = currentY;
+                if (node.height > tallestInRow) {
+                    tallestInRow = node.height;
+                }
+            }
+            currentY += tallestInRow + 2; 
+        }
     }
 }
