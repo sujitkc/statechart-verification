@@ -1,0 +1,59 @@
+state main {
+  state A {
+    state A1 {
+      var a;
+      entry {
+        a = 5;
+      }
+      exit {
+        a++;
+      }
+    }
+
+    state A2 {
+      var b;
+      entry {
+      }
+      do {
+        b = A1.a; // should result in scope error
+      }
+      exit {
+      }
+    }
+
+    transition T1 {
+      trigger { submit }
+      guard   { true   }
+      action  { A2.b = 0; }
+    }
+  }
+
+  state B {
+      do {
+        A.A1.a = 0; // scope error: variable not allowed to lvalue.
+        A.A2.b = 0; // scope error: variable not allowed to lvalue.
+      }
+  }
+
+  state C {
+      do {
+        A.A1.a = 0; // scope error: variable not allowed to lvalue.
+      }
+  }
+
+  transition T2 {
+    source      : A;
+    destination : B;
+    trigger { resetA } // events should either be explicitly declared, or should be implicit events like click etc. 
+    guard   { true   }
+    action  { A2.b = 0; }
+  }
+
+  transition T3 { // interlevel transitions can be placed within the closest common ancestor state of the source and destination.
+    source      : A.A1; // inner state names should be qualified with their relative position. 
+    destination : C;
+    trigger { resetA1 } 
+    guard   { true   }
+    action  { A2.b = 0; }
+  }
+}

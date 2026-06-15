@@ -1,0 +1,15 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[state] (c1) {c1};
+		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:c1}] (c1) at (0, 0) {};
+		\node[state] (c1_c12) {c12};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c12}] (c1_c12) at (1, -1) {};
+		\node[state] (c1_c11) {c11};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c11}] (c1_c11) at (1, -1) {};
+		\node[state] (c1_c13) {c13};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c1_c13) at (1, -1) {};
+	\end{tikzpicture}
+\end{document}

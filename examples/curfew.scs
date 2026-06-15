@@ -1,0 +1,363 @@
+/*
+
+Use case: registration
+----------------------
+From the homepage, the user clicks on a button 'register'. This leads him to the registration page.
+Use case: Login
+---------------
+
+*/
+
+statechart curfew {
+
+  type UserType = ADMIN | STUDENT;
+
+  type LogType = ENTRY | EXIT | VACATION;
+
+
+  struct Duration = {
+    startTime : int;
+    endTime : int
+  }
+
+  type RequestStatus = PENDING | APPROVED | REJECTED;
+
+  type RequestType =
+      CURFEW of int               // time (represented as integer)
+    | CORECURFEW int * string     // time (represented as integer), reason
+    | VACATION of Duration;       // duration
+
+  struct Request = {
+    requester : string;
+    team : string list;
+    requestType : RequestType;
+    status : RequestStatus;
+  }
+
+  struct User = {
+    password : string;
+    userType : UserType;
+  }
+
+  events {
+    select_register;
+    select_login;
+    login;
+    register;
+    login_cancel;
+    curfew_submit;
+    core_curfew_submit;
+    vacation_submit;
+    curfew_select;
+    core_curfew_select;
+    vacation_select;
+    pr_select;
+    cr_select;
+    rr_select;
+    prsel_select;
+  }
+
+  registeredUsers : (string, User) map;
+  loggedinUser : string;
+  requests : Request list;
+
+
+  state init {
+  
+  }
+
+  state registration {
+    userName : string;
+    password : string;
+    userType # : UserType;
+
+  }
+
+  state login {
+    username # : string; // # indicates input variable
+    password # : string; 
+  }
+
+  state admin_dashboard {
+    state init {
+
+    }
+
+    state view_requests {
+      state pending_requests {
+        pr : string list;
+        prsel: string list;
+
+        entry {
+          pr := [r.requester for r in requests if r.status = PENDING]; // pr contains the requesters whose status is PENDING.
+        }
+
+        during {
+          [prsel_select] {
+            prsel = pr.shuffle().random_sublist(); // select a random subset of pr.
+          }
+
+          [prsel_approve] {
+            for( r in requests ) {
+              if(r.requester in prsel) {
+                r.status := APPROVED;
+              }
+            }
+            pr := [r.requester for r in requests if r.status = PENDING]; // pr contains requesters whose status is PENDING.
+            prsel := []; // unselect all
+          }
+ 
+          [prsel_reject] {
+            for( r in requests ) {
+              if(r.requester in prsel) {
+                r.status := REJECTED;
+              }
+            }
+            pr := [r.requester for r in requests if r.status = PENDING]; // pr contains requesters whose status is PENDING.
+            prsel := []; // unselect all
+          }
+       }
+      }
+
+      state closed_requests {
+
+      }
+
+      state rejected_requests {
+
+      }
+
+      transition pr_cr {
+        source : pending_requests;
+        destination : closed_requests;
+
+        trigger: cr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition pr_rr {
+        source : pending_requests;
+        destination : rejected_requests;
+
+        trigger: rr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition cr_pr {
+        source : closed_requests;
+        destination : pending_requests;
+
+        trigger: pr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition cr_rr {
+        source : closed_requests;
+        destination : rejected_requests;
+
+        trigger: rr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition rr_pr {
+        source : rejected_requests;
+        destination : pending_requests;
+
+        trigger: pr_select;
+        guard: true;
+        action : {}
+      }
+
+      transition rr_cr {
+        source : rejected_requests;
+        destination : closed_requests;
+
+        trigger: cr_select;
+        guard: true;
+        action : {}
+      }
+    }
+  }
+
+  state student_dashboard {
+
+    state init {
+
+    }
+
+    state request_curfew {
+      request # : Request;
+    }
+
+    state request_core_curfew {
+      request # : Request;
+    }
+
+    state request_vacation {
+      request # : Request;
+    }
+
+    transition init_curfew {
+      source : init;
+      destination : request_curfew;
+
+      trigger: curfew_select;
+      guard: true;
+      action : {}
+    }
+
+    transition init_core_curfew {
+      source : init;
+      destination : request_core_curfew;
+
+      trigger: core_curfew_select;
+      guard: true;
+      action : {}
+    }
+
+    transition init_vacation {
+      source : init;
+      destination : vacation;
+
+      trigger: vacation_select;
+      guard: true;
+      action : {}
+    }
+
+    transition curfew_init_success {
+      source : request_curfew;
+      destination : init;
+
+      trigger: curfew_submit;
+      guard: true;
+      action : { requests.add( (loggedinUser, request_curfew.request) ); }
+    }
+
+    transition core_curfew_init_success {
+      source : request_core_curfew;
+      destination : init;
+
+      trigger: core_curfew_submit;
+      guard: true;
+      action : { requests.add( (loggedinUser, request_core_curfew.request) ); }
+    }
+
+    transition vacation_init_success {
+      source : init;
+      destination : login;
+
+      trigger: vacation_submit;
+      guard: true;
+      action : { requests.add( (loggedinUser, vacation_curfew.request) ); }
+    }
+  }
+
+  transition init_login {
+    source : init;
+    destination : login;
+
+    trigger: select_login;
+    guard: true;
+    action : {}
+  }
+
+  transition login_admin_dashboard {
+    source : login;
+    destination : admin_dashboard;
+
+    trigger : login;
+    guard :
+      login.username in registeredUsers.keys and
+      login.password = registeredUsers[login.username].password and
+      registeredUsers[login.username].usertype = ADMIN;
+    action: { loggedinUser := login.username; }
+  }
+
+  transition login_student_dashboard {
+    source : login;
+    destination : student_dashboard;
+
+    trigger : login;
+    guard :
+      login.username in registeredUsers.keys and
+      login.password = registeredUsers[login.username].password and
+      registeredUsers[login.username].usertype = STUDENT;
+    action: { loggedinUser := login.username; }
+  }
+
+  transition student_dashboard_init {
+    source : student_dashboard;
+    destination : init;
+
+    trigger : student_logout;
+    guard : true;
+    action: { loggedinUser := ""; }
+  }
+
+  transition admin_dashboard_init {
+    source : admin_dashboard;
+    destination : init;
+
+    trigger : admin_logout;
+    guard : true;
+    action: { loggedinUser := ""; }
+  }
+
+
+  transition login_init_failure {
+    source : login;
+    destination : init;
+
+    trigger : login;
+    guard :
+      not (login.username in registeredUsers.keys) or
+      not (login.password = registeredUsers[init.username].password);
+    action: {}
+  }
+
+  transition login_init_cancel {
+    source : login;
+    destination : init;
+
+    trigger : cancel;
+    guard : true;
+    action: {}
+  }
+
+  transition init_register {
+    source : init;
+    destination : register;
+
+    trigger: select_register;
+    guard: true;
+    action : {}
+  }
+
+  transition register_init_success {
+    source : registration;
+    destination : init;
+
+    trigger : register;
+    guard : not registration.username in registeredUsers.keys;
+    action: {
+      registeredUsers[registration.username] := User
+        {
+          password = registration.password;
+          userType = registration.userType
+        }
+    }
+  }
+
+  transition register_init_failure {
+    source : registration;
+    destination : init;
+
+    trigger : register;
+    guard : (registration.username in registeredUsers.keys);
+    action: {}
+  }
+}
