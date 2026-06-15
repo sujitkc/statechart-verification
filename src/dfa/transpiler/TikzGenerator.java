@@ -37,7 +37,7 @@ public class TikzGenerator {
 
     private void generatePrelude() {
 
-        this.tikzCode.append("\\documentclass{article}\n"
+        this.tikzCode.append("\\documentclass[margin=1cm]{standalone}\n"
                             + "\\usepackage{tikz}\n"
                             + "\\usetikzlibrary{automata, positioning}\n"
                             + "\\begin{document}\n");
