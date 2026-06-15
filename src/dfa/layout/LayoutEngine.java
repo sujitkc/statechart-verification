@@ -41,6 +41,9 @@ public class LayoutEngine {
         }
         
         processHierarchy(rootNode);
+
+        //convertToAbsoluteCoordinates(rootNode, 0, 0);
+
         return layoutNodes;
     }
 
@@ -66,7 +69,6 @@ public class LayoutEngine {
         }
 
         if (!parent.children.isEmpty()) {
-            
             breakCycles(parent.children);
             assignLayers(parent.children);
             reduceCrossings(parent.children);
@@ -91,6 +93,15 @@ public class LayoutEngine {
             
             parent.width = maxWidth + 2;
             parent.height = maxHeight + 2;
+        }
+    }
+
+    private void convertToAbsoluteCoordinates(LayoutNode node, int parentAbsoluteX, int parentAbsoluteY) {
+        node.x += parentAbsoluteX;
+        node.y += parentAbsoluteY;
+        
+        for (LayoutNode child : node.children) {
+            convertToAbsoluteCoordinates(child, node.x, node.y);
         }
     }
 
@@ -172,7 +183,6 @@ public class LayoutEngine {
         }
     }
 
-    // Phase 3 - Crossing Reduction (The Barycenter Method)
     private void reduceCrossings(List<LayoutNode> nodes) {
         Map<Integer, List<LayoutNode>> layers = new HashMap<>();
         int maxLayer = 0;
@@ -203,7 +213,6 @@ public class LayoutEngine {
         }
     }
 
-    // Phase 4 - Coordinate Assignment
     private void calculateXCoordinates(List<LayoutNode> nodes) {
         Map<Integer, List<LayoutNode>> rows = new HashMap<>();
         for (LayoutNode node : nodes) {
@@ -214,14 +223,14 @@ public class LayoutEngine {
         for (Map.Entry<Integer, List<LayoutNode>> entry : rows.entrySet()) {
             List<LayoutNode> nodesInRow = entry.getValue();
             
-            int currentX = 0; 
+            int currentX = 2; 
             for (LayoutNode node : nodesInRow) {
                 node.x = currentX;
+                currentX += node.width + 2; 
             }
         }
     }
 
-    // Phase 2.5 - Dynamic Y-Coordinate Assignment
     private void calculateYCoordinates(List<LayoutNode> nodes) {
         Map<Integer, List<LayoutNode>> rows = new HashMap<>();
         int maxLayer = 0;
@@ -231,7 +240,7 @@ public class LayoutEngine {
             if (node.layer > maxLayer) maxLayer = node.layer;
         }
 
-        int currentY = 0;
+        int currentY = 3; 
         for (int i = 0; i <= maxLayer; i++) {
             List<LayoutNode> row = rows.get(i);
             if (row == null) continue;
