@@ -80,7 +80,7 @@ public class TikzGenerator {
         nodeID = current.getFullName().replace(".", "_"); 
         String nodeLabel = current.name.replace("_", "-");
         // String nodeLabel = current.name;
-        tikzCode.append("\t\t\\node[state] (" + nodeID + ") {" + nodeLabel + "};\n");
+        // tikzCode.append("\t\t\\node[state] (" + nodeID + ") {" + nodeLabel + "};\n");
 
         this.tikzCode.append("\t\t\\node[draw, rectangle, rounded corners, minimum width=" + boxWidth + "cm, minimum height=" + boxHeight + "cm, anchor=north west, label={[anchor=north west] north west:" + nodeLabel + "}] (" + nodeID + ") at (" + xCoordinate + ", " + yCoordinate + ") {};\n");
 

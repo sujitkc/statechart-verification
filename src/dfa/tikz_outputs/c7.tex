@@ -1,16 +1,12 @@
-\documentclass{article}
+\documentclass[margin=1cm]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning}
 \begin{document}
 	\begin{tikzpicture}[node distance=3cm, auto]
-		\node[state] (c5) {c5};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=12cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
-		\node[state] (c5_B) {B};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_B) at (1, -1) {};
-		\node[state] (c5_B_A) {A};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_B_A) at (2, -2) {};
-		\node[state] (c5_C) {C};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (1, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=12cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_B) at (3, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_B_A) at (6, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (3, -14) {};
 		\draw[->] (c5_B) edge node  {e1} (c5_C);
 		\draw[->] (c5_B) edge node  {e1} (c5_C);
 	\end{tikzpicture}

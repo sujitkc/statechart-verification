@@ -1,34 +1,21 @@
-\documentclass{article}
+\documentclass[margin=1cm]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning}
 \begin{document}
 	\begin{tikzpicture}[node distance=3cm, auto]
-		\node[state] (c5) {c5};
-		\node[draw, rectangle, rounded corners, minimum width=14cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
-		\node[state] (c5_Aprior) {Aprior};
-		\node[draw, rectangle, rounded corners, minimum width=12cm, minimum height=11cm, anchor=north west, label={[anchor=north west] north west:Aprior}] (c5_Aprior) at (1, -1) {};
-		\node[state] (c5_Aprior_Sh) {Sh};
-		\node[draw, rectangle, rounded corners, minimum width=10cm, minimum height=9cm, anchor=north west, label={[anchor=north west] north west:Sh}] (c5_Aprior_Sh) at (2, -2) {};
-		\node[state] (c5_Aprior_Sh_A) {A};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=7cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_Aprior_Sh_A) at (3, -3) {};
-		\node[state] (c5_Aprior_Sh_A_A1) {A1};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:A1}] (c5_Aprior_Sh_A_A1) at (4, -4) {};
-		\node[state] (c5_Aprior_Sh_A_A1_A11) {A11};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A11}] (c5_Aprior_Sh_A_A1_A11) at (5, -5) {};
-		\node[state] (c5_Aprior_Sh_A_A2) {A2};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A2}] (c5_Aprior_Sh_A_A2) at (4, -4) {};
-		\node[state] (c5_Aprior_Sh_B) {B};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=7cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_Aprior_Sh_B) at (3, -3) {};
-		\node[state] (c5_Aprior_Sh_B_B1) {B1};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B1}] (c5_Aprior_Sh_B_B1) at (4, -4) {};
-		\node[state] (c5_Aprior_Sh_B_B2) {B2};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:B2}] (c5_Aprior_Sh_B_B2) at (4, -4) {};
-		\node[state] (c5_Aprior_Sh_B_B2_B21) {B21};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B21}] (c5_Aprior_Sh_B_B2_B21) at (5, -5) {};
-		\node[state] (c5_Aprior_Sh_B_B2_B22) {B22};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B22}] (c5_Aprior_Sh_B_B2_B22) at (5, -5) {};
-		\node[state] (c5_C) {C};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (1, -1) {};
+		\node[draw, rectangle, rounded corners, minimum width=62cm, minimum height=28cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=52cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:Aprior}] (c5_Aprior) at (3, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=48cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:Sh}] (c5_Aprior_Sh) at (6, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=18cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_Aprior_Sh_A) at (9, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:A1}] (c5_Aprior_Sh_A_A1) at (12, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A11}] (c5_Aprior_Sh_A_A1_A11) at (15, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A2}] (c5_Aprior_Sh_A_A2) at (22, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=24cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_Aprior_Sh_B) at (29, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B1}] (c5_Aprior_Sh_B_B1) at (32, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=14cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:B2}] (c5_Aprior_Sh_B_B2) at (38, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B21}] (c5_Aprior_Sh_B_B2_B21) at (41, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B22}] (c5_Aprior_Sh_B_B2_B22) at (47, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (57, -4) {};
 		\draw[->] (c5_Aprior_Sh_A_A1_A11) edge node  {e1} (c5_C);
 		\draw[->] (c5_Aprior_Sh_B_B1) edge node  {e1} (c5_Aprior_Sh_B_B2);
 		\draw[->] (c5_Aprior_Sh_B_B1) edge node  {e1} (c5_Aprior_Sh_B_B2_B22);

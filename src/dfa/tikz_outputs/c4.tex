@@ -1,24 +1,16 @@
-\documentclass{article}
+\documentclass[margin=1cm]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning}
 \begin{document}
 	\begin{tikzpicture}[node distance=3cm, auto]
-		\node[state] (c4) {c4};
-		\node[draw, rectangle, rounded corners, minimum width=12cm, minimum height=11cm, anchor=north west, label={[anchor=north west] north west:c4}] (c4) at (0, 0) {};
-		\node[state] (c4_c12) {c12};
-		\node[draw, rectangle, rounded corners, minimum width=10cm, minimum height=9cm, anchor=north west, label={[anchor=north west] north west:c12}] (c4_c12) at (1, -1) {};
-		\node[state] (c4_c12_c11) {c11};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=7cm, anchor=north west, label={[anchor=north west] north west:c11}] (c4_c12_c11) at (2, -2) {};
-		\node[state] (c4_c12_c11_c111) {c111};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:c111}] (c4_c12_c11_c111) at (3, -3) {};
-		\node[state] (c4_c12_c11_c111_c11a) {c11a};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c11a}] (c4_c12_c11_c111_c11a) at (4, -4) {};
-		\node[state] (c4_c13) {c13};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:c13}] (c4_c13) at (1, -1) {};
-		\node[state] (c4_c13_c131) {c131};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c131}] (c4_c13_c131) at (2, -2) {};
-		\node[state] (c4_c13_c133) {c133};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c133}] (c4_c13_c133) at (2, -2) {};
+		\node[draw, rectangle, rounded corners, minimum width=36cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:c4}] (c4) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c12}] (c4_c12) at (3, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=12cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c11}] (c4_c12_c11) at (6, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c111}] (c4_c12_c11_c111) at (9, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c11a}] (c4_c12_c11_c111_c11a) at (12, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=14cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c13}] (c4_c13) at (21, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c131}] (c4_c13_c131) at (24, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c133}] (c4_c13_c133) at (30, -8) {};
 		\draw[->] (c4_c12_c11_c111) edge node  {e1} (c4_c12);
 		\draw[->] (c4_c12) edge node  {e1} (c4_c12);
 		\draw[->] (c4_c12) edge node  {e1} (c4_c12);

@@ -1,18 +1,13 @@
-\documentclass{article}
+\documentclass[margin=1cm]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning}
 \begin{document}
 	\begin{tikzpicture}[node distance=3cm, auto]
-		\node[state] (c5) {c5};
-		\node[draw, rectangle, rounded corners, minimum width=10cm, minimum height=14cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
-		\node[state] (c5_D) {D};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=7cm, anchor=north west, label={[anchor=north west] north west:D}] (c5_D) at (1, -1) {};
-		\node[state] (c5_D_B) {B};
-		\node[draw, rectangle, rounded corners, minimum width=6cm, minimum height=5cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_D_B) at (2, -2) {};
-		\node[state] (c5_D_B_A) {A};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_D_B_A) at (3, -3) {};
-		\node[state] (c5_C) {C};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (1, -10) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:c5}] (c5) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=12cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:D}] (c5_D) at (3, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:B}] (c5_D_B) at (6, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A}] (c5_D_B_A) at (9, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (3, -19) {};
 		\draw[->] (c5_D_B) edge node  {e1} (c5_C);
 		\draw[->] (c5_D) edge node  {e1} (c5_C);
 	\end{tikzpicture}
