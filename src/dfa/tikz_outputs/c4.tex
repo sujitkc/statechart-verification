@@ -11,9 +11,9 @@
 		\node[draw, rectangle, rounded corners, minimum width=14cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c13}] (c4_c13) at (21, -4) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c131}] (c4_c13_c131) at (24, -8) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c133}] (c4_c13_c133) at (30, -8) {};
-		\draw[->] (c4_c12_c11_c111) edge node  {e1} (c4_c12);
-		\draw[->] (c4_c12) edge node  {e1} (c4_c12);
-		\draw[->] (c4_c12) edge node  {e1} (c4_c12);
-		\draw[->] (c4_c12) edge node  {e1} (c4_c12);
+		\draw[->] (c4_c12_c11_c111) edge[bend left=15] node {e1} (c4_c12);
+		\draw[->] (c4_c12) edge[loop above] node {e1} (c4_c12);
+		\draw[->] (c4_c12) edge[loop right] node {e1} (c4_c12);
+		\draw[->] (c4_c12) edge[loop below] node {e1} (c4_c12);
 	\end{tikzpicture}
 \end{document}

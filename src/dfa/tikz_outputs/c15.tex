@@ -17,7 +17,7 @@
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B1}] (c9_Sh_B_B1) at (47, -12) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B2}] (c9_Sh_B_B2) at (53, -12) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c9_C) at (61, -4) {};
-		\draw[->] (c9_Sh_A_A1) edge node  {e1 {$[true]  / x \leftarrow 1; y \leftarrow 1;$}} (c9_C);
-		\draw[->] (c9_Sh_A) edge node  {e2} (c9_C);
+		\draw[->] (c9_Sh_A_A1) edge[bend left=15] node {e1 {$[true]  / x \leftarrow 1; y \leftarrow 1;$}} (c9_C);
+		\draw[->] (c9_Sh_A) edge[bend left=15] node {e2} (c9_C);
 	\end{tikzpicture}
 \end{document}

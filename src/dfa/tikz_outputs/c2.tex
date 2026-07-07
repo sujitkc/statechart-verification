@@ -9,6 +9,6 @@
 		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c131}] (c2_c12_c11_c131) at (9, -12) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c132}] (c2_c12_c11_c131_c132) at (12, -16) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c2_c13) at (3, -24) {};
-		\draw[->] (c2_c12) edge node  {e1 {$[true]  / x \leftarrow 1; y \leftarrow 1;$}} (c2_c13);
+		\draw[->] (c2_c12) edge[bend left=15] node {e1 {$[true]  / x \leftarrow 1; y \leftarrow 1;$}} (c2_c13);
 	\end{tikzpicture}
 \end{document}

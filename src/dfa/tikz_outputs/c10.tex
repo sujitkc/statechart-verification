@@ -12,7 +12,7 @@
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B1}] (c5_Sh_B_B1) at (25, -12) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B2}] (c5_Sh_B_B2) at (31, -12) {};
 		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c5_C) at (39, -4) {};
-		\draw[->] (c5_Sh_A) edge node  {e1} (c5_C);
-		\draw[->] (c5_Sh_B) edge node  {e1} (c5_C);
+		\draw[->] (c5_Sh_A) edge[bend left=15] node {e1} (c5_C);
+		\draw[->] (c5_Sh_B) edge[bend left=15] node {e1} (c5_C);
 	\end{tikzpicture}
 \end{document}

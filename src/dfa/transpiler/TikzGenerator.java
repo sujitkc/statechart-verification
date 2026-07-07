@@ -91,6 +91,8 @@ public class TikzGenerator {
         }
     }
 
+    private int loopCounter = 0;
+    private String[] loopDirs = {"above", "right", "below", "left"};
 
     private void generateEdges(State current) {
 
@@ -126,7 +128,22 @@ public class TikzGenerator {
                     if (!guardStr.isEmpty() && !actionStr.isEmpty())
                         label += " {$" + guardStr + " " + actionStr + "$}";
 
-                    tikzCode.append("\t\t\\draw[->] (" + startID + ") edge node  {" + label + "} (" + endID + ");\n");
+                    if (startID.equals(endID)) {
+
+                        String dir = this.loopDirs[this.loopCounter++ % 4];
+
+                        tikzCode.append(String.format(
+                            "\t\t\\draw[->] (%s) edge[loop %s] node {%s} (%s);\n", 
+                                startID, dir, label, endID
+                        ));
+
+                    } else {
+
+                        tikzCode.append(String.format(
+                            "\t\t\\draw[->] (%s) edge[bend left=15] node {%s} (%s);\n", 
+                                startID, label, endID
+                        ));
+                    }
                 }
 
             } catch (Exception e) {
