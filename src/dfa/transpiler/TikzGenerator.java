@@ -36,10 +36,9 @@ public class TikzGenerator {
 
 
     private void generatePrelude() {
-
         this.tikzCode.append("\\documentclass[margin=1cm]{standalone}\n"
                             + "\\usepackage{tikz}\n"
-                            + "\\usetikzlibrary{automata, positioning}\n"
+                            + "\\usetikzlibrary{automata, positioning, calc}\n" 
                             + "\\begin{document}\n");
     }
 
@@ -79,8 +78,6 @@ public class TikzGenerator {
 
         nodeID = current.getFullName().replace(".", "_"); 
         String nodeLabel = current.name.replace("_", "-");
-        // String nodeLabel = current.name;
-        // tikzCode.append("\t\t\\node[state] (" + nodeID + ") {" + nodeLabel + "};\n");
 
         this.tikzCode.append("\t\t\\node[draw, rectangle, rounded corners, minimum width=" + boxWidth + "cm, minimum height=" + boxHeight + "cm, anchor=north west, label={[anchor=north west] north west:" + nodeLabel + "}] (" + nodeID + ") at (" + xCoordinate + ", " + yCoordinate + ") {};\n");
 
@@ -99,15 +96,22 @@ public class TikzGenerator {
         if (current.transitions != null) {
 
             try {
+                double rightTrackOffset = 1.0; 
+                double leftTrackOffset  = 1.0;
 
                 for (Transition transition : current.transitions) {
 
-                    String startID = transition.getSource().getFullName().replace(".", "_");
-                    String endID = transition.getDestination().getFullName().replace(".", "_");
+                    State sourceState = transition.getSource();
+                    State destState = transition.getDestination();
+                    
+                    String startID = sourceState.getFullName().replace(".", "_");
+                    String endID = destState.getFullName().replace(".", "_");
+
+                    LayoutNode sourceNode = this.nodeCoordinates.get(sourceState);
+                    LayoutNode destNode = this.nodeCoordinates.get(destState);
 
                     String guardStr = "";
                     if (transition.guard != null) {
-
                         TikzVisitor visitor = new TikzVisitor();
                         visitor.dispatchExpression(transition.guard);
                         guardStr = "[" + visitor.getOutput() + "]";
@@ -115,7 +119,6 @@ public class TikzGenerator {
 
                     String actionStr = "";
                     if (transition.action != null && !(transition.action instanceof SkipStatement)) {
-
                         TikzVisitor visitor = new TikzVisitor();
                         visitor.dispatchStatement(transition.action);
                         String rawAction = visitor.getOutput().trim();
@@ -129,32 +132,48 @@ public class TikzGenerator {
                         label += " {$" + guardStr + " " + actionStr + "$}";
 
                     if (startID.equals(endID)) {
-
                         String dir = this.loopDirs[this.loopCounter++ % 4];
-
                         tikzCode.append(String.format(
                             "\t\t\\draw[->] (%s) edge[loop %s] node {%s} (%s);\n", 
                                 startID, dir, label, endID
                         ));
+                    } else if (sourceNode != null && destNode != null) {
+                        
+                        int deltaX = destNode.x - sourceNode.x;
 
+                        if (deltaX == 0) {
+                            tikzCode.append(String.format(
+                                "\t\t\\draw[->, rounded corners=5pt] (%s.south) -- node[fill=white, inner sep=2pt] {%s} (%s.north);\n", 
+                                    startID, label, endID
+                            ));
+                        } else if (deltaX > 0) {
+                            tikzCode.append(String.format(
+                                "\t\t\\draw[->, rounded corners=5pt] (%s.east) -- ++(%.1f, 0) |- node[pos=0.75, fill=white, inner sep=2pt] {%s} (%s.west);\n", 
+                                    startID, rightTrackOffset, label, endID
+                            ));
+                            rightTrackOffset += 0.5; 
+                        } else {
+                            tikzCode.append(String.format(
+                                "\t\t\\draw[->, rounded corners=5pt] (%s.west) -- ++(-%.1f, 0) |- node[pos=0.75, fill=white, inner sep=2pt] {%s} (%s.east);\n", 
+                                    startID, leftTrackOffset, label, endID
+                            ));
+                            leftTrackOffset += 0.5; 
+                        }
                     } else {
-
                         tikzCode.append(String.format(
-                            "\t\t\\draw[->] (%s) edge[bend left=15] node {%s} (%s);\n", 
+                            "\t\t\\draw[->, rounded corners=5pt] (%s.east) -- ++(1.5, 0) |- node[pos=0.75, fill=white, inner sep=2pt] {%s} (%s.east);\n", 
                                 startID, label, endID
                         ));
                     }
                 }
 
             } catch (Exception e) {
-
                 System.err.println(e.getMessage());
                 e.printStackTrace();
             }
         }
 
         if (current.states != null) {
-
             for (State substate : current.states)
                 generateEdges(substate);
         }

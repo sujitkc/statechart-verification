@@ -227,7 +227,3 @@ public class TikzVisitor implements Visitor {
         this.sb.append(" \\} ");
     }
 }
-
-
-
-

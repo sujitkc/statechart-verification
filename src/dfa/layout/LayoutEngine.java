@@ -25,26 +25,36 @@ public class LayoutEngine {
             }
         }
         
-        if (statechart.transitions != null) {
-            for (Transition t : statechart.transitions) {
-                LayoutNode sourceNode = layoutNodes.get(t.getSource());
-                LayoutNode destNode = layoutNodes.get(t.getDestination());
+        List<Transition> allTransitions = new ArrayList<>();
+        collectAllTransitions(statechart, allTransitions);
+        
+        for (Transition t : allTransitions) {
+            LayoutNode sourceNode = layoutNodes.get(t.getSource());
+            LayoutNode destNode = layoutNodes.get(t.getDestination());
+            
+            if (sourceNode != null && destNode != null) {
+                sourceNode.outDegree++;
+                sourceNode.outgoingNodes.add(destNode);
                 
-                if (sourceNode != null && destNode != null) {
-                    sourceNode.outDegree++;
-                    sourceNode.outgoingNodes.add(destNode);
-                    
-                    destNode.inDegree++;
-                    destNode.incomingNodes.add(sourceNode);
-                }
+                destNode.inDegree++;
+                destNode.incomingNodes.add(sourceNode);
             }
         }
         
         processHierarchy(rootNode);
 
-        //convertToAbsoluteCoordinates(rootNode, 0, 0);
-
         return layoutNodes;
+    }
+
+    private void collectAllTransitions(State currentState, List<Transition> allTransitions) {
+        if (currentState.transitions != null) {
+            allTransitions.addAll(currentState.transitions);
+        }
+        if (currentState.states != null) {
+            for (State childState : currentState.states) {
+                collectAllTransitions(childState, allTransitions);
+            }
+        }
     }
 
     private LayoutNode buildHierarchy(State currentState, LayoutNode parentNode) {
@@ -91,7 +101,10 @@ public class LayoutEngine {
                 }
             }
             
-            parent.width = maxWidth + 2;
+            int leftChannelPadding = 4;
+            int rightChannelPadding = 4;
+            
+            parent.width = maxWidth + leftChannelPadding + rightChannelPadding;
             parent.height = maxHeight + 2;
         }
     }
@@ -195,14 +208,15 @@ public class LayoutEngine {
 
         for (int i = 1; i <= maxLayer; i++) {
             List<LayoutNode> currentLayer = layers.get(i);
-            if (currentLayer == null) continue;
+            List<LayoutNode> previousLayer = layers.get(i - 1);
+            if (currentLayer == null || previousLayer == null) continue;
 
             for (LayoutNode node : currentLayer) {
                 double sum = 0;
                 int count = 0;
                 for (LayoutNode parentNode : node.incomingNodes) {
-                    if (nodes.contains(parentNode) && parentNode.layer == i - 1) {
-                        sum += parentNode.x; 
+                    if (previousLayer.contains(parentNode)) {
+                        sum += previousLayer.indexOf(parentNode); 
                         count++;
                     }
                 }
@@ -210,6 +224,13 @@ public class LayoutEngine {
             }
 
             currentLayer.sort((a, b) -> Double.compare(a.barycenter, b.barycenter));
+        }
+
+        nodes.clear();
+        for (int i = 0; i <= maxLayer; i++) {
+            if (layers.containsKey(i)) {
+                nodes.addAll(layers.get(i));
+            }
         }
     }
 
@@ -223,7 +244,8 @@ public class LayoutEngine {
         for (Map.Entry<Integer, List<LayoutNode>> entry : rows.entrySet()) {
             List<LayoutNode> nodesInRow = entry.getValue();
             
-            int currentX = 2; 
+            // Start rendering after the left channel padding
+            int currentX = 4; 
             for (LayoutNode node : nodesInRow) {
                 node.x = currentX;
                 currentX += node.width + 2; 
