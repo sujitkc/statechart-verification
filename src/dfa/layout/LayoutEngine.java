@@ -13,6 +13,16 @@ public class LayoutEngine {
 
     public Map<State, LayoutNode> layoutNodes = new HashMap<>();
 
+    private List<LayoutNode> getPathToRoot(LayoutNode node) { 
+        List<LayoutNode> path = new ArrayList<>(); 
+        LayoutNode current = node; 
+        while (current != null) { 
+            path.add(current); current = current.parent; 
+        } 
+        Collections.reverse(path); 
+        return path;
+    }
+
     public Map<State, LayoutNode> calculateCoordinates(Statechart statechart) {
         layoutNodes.clear();
         
@@ -42,7 +52,7 @@ public class LayoutEngine {
         }
         
         processHierarchy(rootNode);
-
+        
         return layoutNodes;
     }
 
@@ -81,7 +91,9 @@ public class LayoutEngine {
         if (!parent.children.isEmpty()) {
             breakCycles(parent.children);
             assignLayers(parent.children);
-            reduceCrossings(parent.children);
+            for (int i = 0; i < 4; i++) {
+                reduceCrossings(parent.children);
+            }
             
             calculateYCoordinates(parent.children);
             calculateXCoordinates(parent.children);
@@ -101,11 +113,11 @@ public class LayoutEngine {
                 }
             }
             
-            int leftChannelPadding = 4;
-            int rightChannelPadding = 4;
-            
-            parent.width = maxWidth + leftChannelPadding + rightChannelPadding;
-            parent.height = maxHeight + 2;
+            int horizontalPadding = Math.max(4, parent.children.size() / 2);
+            int verticalPadding = Math.max(2, parent.children.size() / 3);
+
+            parent.width = maxWidth + horizontalPadding * 2;
+            parent.height = maxHeight + verticalPadding;
         }
     }
 
@@ -244,11 +256,12 @@ public class LayoutEngine {
         for (Map.Entry<Integer, List<LayoutNode>> entry : rows.entrySet()) {
             List<LayoutNode> nodesInRow = entry.getValue();
             
-            // Start rendering after the left channel padding
             int currentX = 4; 
             for (LayoutNode node : nodesInRow) {
                 node.x = currentX;
-                currentX += node.width + 2; 
+                int spacing = Math.max(2, Math.max(node.outDegree, node.inDegree));
+
+        currentX += node.width + spacing;
             }
         }
     }
@@ -274,7 +287,9 @@ public class LayoutEngine {
                     tallestInRow = node.height;
                 }
             }
-            currentY += tallestInRow + 2; 
+            int rowSpacing = Math.max(2, row.size() / 2);
+
+        currentY += tallestInRow + rowSpacing;
         }
     }
 }
