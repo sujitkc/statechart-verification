@@ -1,0 +1,94 @@
+statechart sc {
+
+  events {
+    e1;
+    e2;
+    e3;
+    e4;
+  }
+
+  state A {
+    counter : int : local;
+    flag : boolean : local;
+
+    entry : {}
+    exit  : {}
+  }
+
+  state B {
+    entry : {}
+    exit  : {}
+  }
+
+  state C {
+    entry : {}
+    exit  : {}
+  }
+
+  transition tAB { 
+    source      : sc.A; 
+    destination : sc.B; 
+    trigger     : e1; 
+    guard       : (true); 
+    action      : { sc.A.counter := 1; sc.A.flag := true; } 
+  }
+  
+  transition tBA { 
+    source      : sc.B; 
+    destination : sc.A; 
+    trigger     : e2; 
+    guard       : (true); 
+    action      : {} 
+  }
+
+  transition tBC { 
+    source      : sc.B; 
+    destination : sc.C; 
+    trigger     : e1; 
+    guard       : (sc.A.flag = true); 
+    action      : {} 
+  }
+  
+  transition tCB { 
+    source      : sc.C; 
+    destination : sc.B; 
+    trigger     : e2; 
+    guard       : (true); 
+    action      : {} 
+  }
+
+  transition tAC { 
+    source      : sc.A; 
+    destination : sc.C; 
+    trigger     : e3; 
+    guard       : (sc.A.counter >= 1); 
+    action      : {} 
+  }
+  
+  transition tCA { 
+    source      : sc.C; 
+    destination : sc.A; 
+    trigger     : e4; 
+    guard       : (true); 
+    action      : { sc.A.counter := 0; sc.A.flag := false; } 
+  }
+
+  transition tAA { 
+    source      : sc.A; 
+    destination : sc.A; 
+    trigger     : e4; 
+    guard       : (true); 
+    action      : { sc.A.counter := 0; } 
+  }
+  
+  transition tBB { 
+    source      : sc.B; 
+    destination : sc.B; 
+    trigger     : e4; 
+    guard       : (true); 
+    action      : {} 
+  }
+}
+
+
+

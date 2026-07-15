@@ -10,10 +10,12 @@ import java.io.FileWriter;
 
 public class TestTikz {
 
+    private static int NUM_TEST = 18;
+
     @Test
     public void transpile() {
 
-        for (int i = 1; i <= 17; i++) {
+        for (int i = 1; i <= NUM_TEST; i++) {
 
             String input = "data/c" + i + ".stb";
             Statechart statechart = null;

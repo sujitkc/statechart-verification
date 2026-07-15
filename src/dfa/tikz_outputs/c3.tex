@@ -1,20 +1,20 @@
 \documentclass[margin=1cm]{standalone}
 \usepackage{tikz}
-\usetikzlibrary{automata, positioning}
+\usetikzlibrary{automata, positioning, calc}
 \begin{document}
 	\begin{tikzpicture}[node distance=3cm, auto]
-		\node[draw, rectangle, rounded corners, minimum width=58cm, minimum height=43cm, anchor=north west, label={[anchor=north west] north west:c3}] (c3) at (0, 0) {};
-		\node[draw, rectangle, rounded corners, minimum width=48cm, minimum height=38cm, anchor=north west, label={[anchor=north west] north west:c12}] (c3_c12) at (3, -4) {};
-		\node[draw, rectangle, rounded corners, minimum width=44cm, minimum height=33cm, anchor=north west, label={[anchor=north west] north west:c11}] (c3_c12_c11) at (6, -8) {};
-		\node[draw, rectangle, rounded corners, minimum width=40cm, minimum height=28cm, anchor=north west, label={[anchor=north west] north west:c131}] (c3_c12_c11_c131) at (9, -12) {};
-		\node[draw, rectangle, rounded corners, minimum width=8cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c1311}] (c3_c12_c11_c131_c1311) at (12, -16) {};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13111}] (c3_c12_c11_c131_c1311_c13111) at (15, -20) {};
-		\node[draw, rectangle, rounded corners, minimum width=26cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:c1312}] (c3_c12_c11_c131_c1312) at (22, -16) {};
-		\node[draw, rectangle, rounded corners, minimum width=22cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c13121}] (c3_c12_c11_c131_c1312_c13121) at (25, -20) {};
-		\node[draw, rectangle, rounded corners, minimum width=18cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c131211}] (c3_c12_c11_c131_c1312_c13121_c131211) at (28, -24) {};
-		\node[draw, rectangle, rounded corners, minimum width=14cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:cshell1}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1) at (31, -28) {};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:a}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1_a) at (34, -32) {};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:b}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1_b) at (40, -32) {};
-		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c3_c13) at (53, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=130cm, minimum height=43cm, anchor=north west, label={[anchor=north west] north west:c3}] (c3) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=112cm, minimum height=38cm, anchor=north west, label={[anchor=north west] north west:c12}] (c3_c12) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=100cm, minimum height=33cm, anchor=north west, label={[anchor=north west] north west:c11}] (c3_c12_c11) at (10, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=88cm, minimum height=28cm, anchor=north west, label={[anchor=north west] north west:c131}] (c3_c12_c11_c131) at (15, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c1311}] (c3_c12_c11_c131_c1311) at (20, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13111}] (c3_c12_c11_c131_c1311_c13111) at (25, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=58cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:c1312}] (c3_c12_c11_c131_c1312) at (38, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=46cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c13121}] (c3_c12_c11_c131_c1312_c13121) at (43, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=34cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c131211}] (c3_c12_c11_c131_c1312_c13121_c131211) at (48, -24) {};
+		\node[draw, rectangle, rounded corners, minimum width=22cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:cshell1}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1) at (53, -28) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:a}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1_a) at (58, -32) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:b}] (c3_c12_c11_c131_c1312_c13121_c131211_cshell1_b) at (64, -32) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c3_c13) at (119, -4) {};
 	\end{tikzpicture}
 \end{document}
