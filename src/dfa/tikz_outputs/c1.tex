@@ -1,0 +1,11 @@
+\documentclass[margin=1cm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, calc}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[draw, rectangle, rounded corners, minimum width=28cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c1}] (c1) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c12}] (c1_c12) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c11}] (c1_c11) at (11, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c1_c13) at (17, -4) {};
+	\end{tikzpicture}
+\end{document}

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 testcase=${1}
 

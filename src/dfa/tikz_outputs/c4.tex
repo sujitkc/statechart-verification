@@ -1,0 +1,19 @@
+\documentclass[margin=1cm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, calc}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[draw, rectangle, rounded corners, minimum width=77cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:c4}] (c4) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=40cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c12}] (c4_c12) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=28cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c11}] (c4_c12_c11) at (10, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c111}] (c4_c12_c11_c111) at (15, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c11a}] (c4_c12_c11_c111_c11a) at (20, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=22cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c13}] (c4_c13) at (48, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c131}] (c4_c13_c131) at (53, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c133}] (c4_c13_c133) at (59, -8) {};
+		\draw[->] ($(c4_c12_c11_c111.west) + (0, 0.0pt)$) to[out=180, in=0, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true]$}} ($(c4_c12.east) + (0, 0.0pt)$);
+		\draw[->] ($(c4_c12.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true]$}} ($(c4_c12.south) + (0.0pt, 0)$);
+		\draw[->] ($(c4_c12.north) + (25.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true]$}} ($(c4_c12.south) + (25.0pt, 0)$);
+		\draw[->] ($(c4_c12.north) + (-25.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true]$}} ($(c4_c12.south) + (-25.0pt, 0)$);
+	\end{tikzpicture}
+\end{document}

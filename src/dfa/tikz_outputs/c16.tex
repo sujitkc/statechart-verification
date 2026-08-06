@@ -1,0 +1,23 @@
+\documentclass[margin=1cm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, calc}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[draw, rectangle, rounded corners, minimum width=130cm, minimum height=33cm, anchor=north west, label={[anchor=north west] north west:c9}] (c9) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=112cm, minimum height=28cm, anchor=north west, label={[anchor=north west] north west:Sh}] (c9_Sh) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=76cm, minimum height=23cm, anchor=north west, label={[anchor=north west] north west:A}] (c9_Sh_A) at (10, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=58cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:A1}] (c9_Sh_A_A1) at (15, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=46cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:sh1}] (c9_Sh_A_A1_sh1) at (20, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:sh1-a}] (c9_Sh_A_A1_sh1_sh1_a) at (25, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:sh1-a-a1}] (c9_Sh_A_A1_sh1_sh1_a_sh1_a_a1) at (30, -24) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:sh1-b}] (c9_Sh_A_A1_sh1_sh1_b) at (43, -20) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:sh1-b-b1}] (c9_Sh_A_A1_sh1_sh1_b_sh1_b_b1) at (48, -24) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A2}] (c9_Sh_A_A2) at (75, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=22cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:B}] (c9_Sh_B) at (88, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B1}] (c9_Sh_B_B1) at (93, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B2}] (c9_Sh_B_B2) at (99, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (c9_C) at (119, -4) {};
+		\draw[->] ($(c9_Sh_A_A1.east) + (0, 0.0pt)$) to[out=0, in=180, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true] / x \leftarrow 1; y \leftarrow 1;$}} ($(c9_C.west) + (0, 0.0pt)$);
+		\draw[->] ($(c9_Sh_A.east) + (0, 0.0pt)$) to[out=0, in=180, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e2 {$[true]$}} ($(c9_C.west) + (0, 0.0pt)$);
+	\end{tikzpicture}
+\end{document}

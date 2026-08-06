@@ -1,0 +1,19 @@
+\documentclass[margin=1cm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, calc}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:sc}] (sc) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:A}] (sc_A) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:B}] (sc_B) at (5, -9) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:C}] (sc_C) at (5, -14) {};
+		\draw[->] ($(sc_A.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true] / sc.A.counter \leftarrow 1; sc.A.flag \leftarrow true;$}} ($(sc_B.south) + (0.0pt, 0)$);
+		\draw[->] ($(sc_B.south) + (25.0pt, 0)$) to[out=270, in=90, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e2 {$[true]$}} ($(sc_A.north) + (25.0pt, 0)$);
+		\draw[->] ($(sc_B.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[(sc.A.flag = true)]$}} ($(sc_C.south) + (0.0pt, 0)$);
+		\draw[->] ($(sc_C.south) + (25.0pt, 0)$) to[out=270, in=90, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e2 {$[true]$}} ($(sc_B.north) + (25.0pt, 0)$);
+		\draw[->] ($(sc_A.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e3 {$[(sc.A.counter \geq 1)]$}} ($(sc_C.south) + (0.0pt, 0)$);
+		\draw[->] ($(sc_C.south) + (25.0pt, 0)$) to[out=270, in=90, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e4 {$[true] / sc.A.counter \leftarrow 0; sc.A.flag \leftarrow false;$}} ($(sc_A.north) + (25.0pt, 0)$);
+		\draw[->] ($(sc_A.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e4 {$[true] / sc.A.counter \leftarrow 0;$}} ($(sc_A.south) + (0.0pt, 0)$);
+		\draw[->] ($(sc_B.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e4 {$[true]$}} ($(sc_B.south) + (0.0pt, 0)$);
+	\end{tikzpicture}
+\end{document}

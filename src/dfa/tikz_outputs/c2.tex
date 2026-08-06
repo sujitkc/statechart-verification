@@ -1,0 +1,14 @@
+\documentclass[margin=1cm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, calc}
+\begin{document}
+	\begin{tikzpicture}[node distance=3cm, auto]
+		\node[draw, rectangle, rounded corners, minimum width=52cm, minimum height=28cm, anchor=north west, label={[anchor=north west] north west:c2}] (c2) at (0, 0) {};
+		\node[draw, rectangle, rounded corners, minimum width=40cm, minimum height=18cm, anchor=north west, label={[anchor=north west] north west:c12}] (c2_c12) at (5, -4) {};
+		\node[draw, rectangle, rounded corners, minimum width=28cm, minimum height=13cm, anchor=north west, label={[anchor=north west] north west:c11}] (c2_c12_c11) at (10, -8) {};
+		\node[draw, rectangle, rounded corners, minimum width=16cm, minimum height=8cm, anchor=north west, label={[anchor=north west] north west:c131}] (c2_c12_c11_c131) at (15, -12) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c132}] (c2_c12_c11_c131_c132) at (20, -16) {};
+		\node[draw, rectangle, rounded corners, minimum width=4cm, minimum height=3cm, anchor=north west, label={[anchor=north west] north west:c13}] (c2_c13) at (5, -24) {};
+		\draw[->] ($(c2_c12.north) + (0.0pt, 0)$) to[out=90, in=270, looseness=1.2] node[pos=0.5, fill=white, inner sep=2pt] {e1 {$[true] / x \leftarrow 1; y \leftarrow 1;$}} ($(c2_c13.south) + (0.0pt, 0)$);
+	\end{tikzpicture}
+\end{document}
